@@ -1,0 +1,321 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
+		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
+		5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */; };
+		5A9856BB15213DAE003A8EB0 /* Facebook.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856AC15213DAE003A8EB0 /* Facebook.h */; };
+		5A9856BC15213DAE003A8EB0 /* FBConnect.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856AD15213DAE003A8EB0 /* FBConnect.h */; };
+		5A9856BD15213DAE003A8EB0 /* FBDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856AF15213DAE003A8EB0 /* FBDialog.h */; };
+		5A9856BE15213DAE003A8EB0 /* FBFrictionlessRequestSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B015213DAE003A8EB0 /* FBFrictionlessRequestSettings.h */; };
+		5A9856BF15213DAE003A8EB0 /* FBLoginDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B115213DAE003A8EB0 /* FBLoginDialog.h */; };
+		5A9856C015213DAE003A8EB0 /* FBRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B215213DAE003A8EB0 /* FBRequest.h */; };
+		5A9856C115213DAE003A8EB0 /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B315213DAE003A8EB0 /* JSON.h */; };
+		5A9856C215213DAE003A8EB0 /* libfacebook_ios_sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A9856B415213DAE003A8EB0 /* libfacebook_ios_sdk.a */; };
+		5A9856C315213DAE003A8EB0 /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B515213DAE003A8EB0 /* NSObject+SBJSON.h */; };
+		5A9856C415213DAE003A8EB0 /* NSString+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B615213DAE003A8EB0 /* NSString+SBJSON.h */; };
+		5A9856C515213DAE003A8EB0 /* SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B715213DAE003A8EB0 /* SBJSON.h */; };
+		5A9856C615213DAE003A8EB0 /* SBJsonBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B815213DAE003A8EB0 /* SBJsonBase.h */; };
+		5A9856C715213DAE003A8EB0 /* SBJsonParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856B915213DAE003A8EB0 /* SBJsonParser.h */; };
+		5A9856C815213DAE003A8EB0 /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856BA15213DAE003A8EB0 /* SBJsonWriter.h */; };
+		5A9856D21524D02B003A8EB0 /* AirFBRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856D01524D02B003A8EB0 /* AirFBRequest.h */; };
+		5A9856D31524D02B003A8EB0 /* AirFBRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856D11524D02B003A8EB0 /* AirFBRequest.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5A98569815213BC3003A8EB0 /* libAirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAirFacebook.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A98569B15213BC3003A8EB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirFacebook-Prefix.pch"; sourceTree = "<group>"; };
+		5A9856A015213BC3003A8EB0 /* AirFacebook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirFacebook.h; sourceTree = "<group>"; };
+		5A9856A115213BC3003A8EB0 /* AirFacebook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirFacebook.m; sourceTree = "<group>"; };
+		5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = "../../../../../../../Applications/Adobe Flash Builder 4.6/sdks/4.6.0/include/FlashRuntimeExtensions.h"; sourceTree = "<group>"; };
+		5A9856AC15213DAE003A8EB0 /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
+		5A9856AD15213DAE003A8EB0 /* FBConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBConnect.h; sourceTree = "<group>"; };
+		5A9856AE15213DAE003A8EB0 /* FBDialog.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBDialog.bundle; sourceTree = "<group>"; };
+		5A9856AF15213DAE003A8EB0 /* FBDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBDialog.h; sourceTree = "<group>"; };
+		5A9856B015213DAE003A8EB0 /* FBFrictionlessRequestSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBFrictionlessRequestSettings.h; sourceTree = "<group>"; };
+		5A9856B115213DAE003A8EB0 /* FBLoginDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBLoginDialog.h; sourceTree = "<group>"; };
+		5A9856B215213DAE003A8EB0 /* FBRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBRequest.h; sourceTree = "<group>"; };
+		5A9856B315213DAE003A8EB0 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		5A9856B415213DAE003A8EB0 /* libfacebook_ios_sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libfacebook_ios_sdk.a; sourceTree = "<group>"; };
+		5A9856B515213DAE003A8EB0 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
+		5A9856B615213DAE003A8EB0 /* NSString+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SBJSON.h"; sourceTree = "<group>"; };
+		5A9856B715213DAE003A8EB0 /* SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJSON.h; sourceTree = "<group>"; };
+		5A9856B815213DAE003A8EB0 /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
+		5A9856B915213DAE003A8EB0 /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
+		5A9856BA15213DAE003A8EB0 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
+		5A9856D01524D02B003A8EB0 /* AirFBRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirFBRequest.h; sourceTree = "<group>"; };
+		5A9856D11524D02B003A8EB0 /* AirFBRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AirFBRequest.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5A98569515213BC3003A8EB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */,
+				5A9856C215213DAE003A8EB0 /* libfacebook_ios_sdk.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5A98568D15213BC2003A8EB0 = {
+			isa = PBXGroup;
+			children = (
+				5A98569D15213BC3003A8EB0 /* AirFacebook */,
+				5A98569A15213BC3003A8EB0 /* Frameworks */,
+				5A98569915213BC3003A8EB0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5A98569915213BC3003A8EB0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5A98569815213BC3003A8EB0 /* libAirFacebook.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5A98569A15213BC3003A8EB0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5A98569B15213BC3003A8EB0 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5A98569D15213BC3003A8EB0 /* AirFacebook */ = {
+			isa = PBXGroup;
+			children = (
+				5A9856AB15213DAE003A8EB0 /* facebook-ios-sdk */,
+				5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */,
+				5A9856A015213BC3003A8EB0 /* AirFacebook.h */,
+				5A9856A115213BC3003A8EB0 /* AirFacebook.m */,
+				5A9856D01524D02B003A8EB0 /* AirFBRequest.h */,
+				5A9856D11524D02B003A8EB0 /* AirFBRequest.m */,
+				5A98569E15213BC3003A8EB0 /* Supporting Files */,
+			);
+			path = AirFacebook;
+			sourceTree = "<group>";
+		};
+		5A98569E15213BC3003A8EB0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5A9856AB15213DAE003A8EB0 /* facebook-ios-sdk */ = {
+			isa = PBXGroup;
+			children = (
+				5A9856AC15213DAE003A8EB0 /* Facebook.h */,
+				5A9856AD15213DAE003A8EB0 /* FBConnect.h */,
+				5A9856AE15213DAE003A8EB0 /* FBDialog.bundle */,
+				5A9856AF15213DAE003A8EB0 /* FBDialog.h */,
+				5A9856B015213DAE003A8EB0 /* FBFrictionlessRequestSettings.h */,
+				5A9856B115213DAE003A8EB0 /* FBLoginDialog.h */,
+				5A9856B215213DAE003A8EB0 /* FBRequest.h */,
+				5A9856B315213DAE003A8EB0 /* JSON.h */,
+				5A9856B415213DAE003A8EB0 /* libfacebook_ios_sdk.a */,
+				5A9856B515213DAE003A8EB0 /* NSObject+SBJSON.h */,
+				5A9856B615213DAE003A8EB0 /* NSString+SBJSON.h */,
+				5A9856B715213DAE003A8EB0 /* SBJSON.h */,
+				5A9856B815213DAE003A8EB0 /* SBJsonBase.h */,
+				5A9856B915213DAE003A8EB0 /* SBJsonParser.h */,
+				5A9856BA15213DAE003A8EB0 /* SBJsonWriter.h */,
+			);
+			name = "facebook-ios-sdk";
+			path = "../../facebook-ios-sdk/lib/facebook-ios-sdk";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		5A98569615213BC3003A8EB0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */,
+				5A9856BB15213DAE003A8EB0 /* Facebook.h in Headers */,
+				5A9856BC15213DAE003A8EB0 /* FBConnect.h in Headers */,
+				5A9856BD15213DAE003A8EB0 /* FBDialog.h in Headers */,
+				5A9856BE15213DAE003A8EB0 /* FBFrictionlessRequestSettings.h in Headers */,
+				5A9856BF15213DAE003A8EB0 /* FBLoginDialog.h in Headers */,
+				5A9856C015213DAE003A8EB0 /* FBRequest.h in Headers */,
+				5A9856C115213DAE003A8EB0 /* JSON.h in Headers */,
+				5A9856C315213DAE003A8EB0 /* NSObject+SBJSON.h in Headers */,
+				5A9856C415213DAE003A8EB0 /* NSString+SBJSON.h in Headers */,
+				5A9856C515213DAE003A8EB0 /* SBJSON.h in Headers */,
+				5A9856C615213DAE003A8EB0 /* SBJsonBase.h in Headers */,
+				5A9856C715213DAE003A8EB0 /* SBJsonParser.h in Headers */,
+				5A9856C815213DAE003A8EB0 /* SBJsonWriter.h in Headers */,
+				5A9856D21524D02B003A8EB0 /* AirFBRequest.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		5A98569715213BC3003A8EB0 /* AirFacebook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A9856A515213BC3003A8EB0 /* Build configuration list for PBXNativeTarget "AirFacebook" */;
+			buildPhases = (
+				5A98569415213BC3003A8EB0 /* Sources */,
+				5A98569515213BC3003A8EB0 /* Frameworks */,
+				5A98569615213BC3003A8EB0 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AirFacebook;
+			productName = AirFacebook;
+			productReference = 5A98569815213BC3003A8EB0 /* libAirFacebook.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5A98568F15213BC2003A8EB0 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 5A98569215213BC2003A8EB0 /* Build configuration list for PBXProject "AirFacebook" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5A98568D15213BC2003A8EB0;
+			productRefGroup = 5A98569915213BC3003A8EB0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5A98569715213BC3003A8EB0 /* AirFacebook */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5A98569415213BC3003A8EB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
+				5A9856D31524D02B003A8EB0 /* AirFBRequest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5A9856A315213BC3003A8EB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		5A9856A415213BC3003A8EB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5A9856A615213BC3003A8EB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/AirFacebook.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AirFacebook/AirFacebook-Prefix.pch";
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = ../;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../facebook-ios-sdk/lib/facebook-ios-sdk\"",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5A9856A715213BC3003A8EB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/AirFacebook.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AirFacebook/AirFacebook-Prefix.pch";
+				INSTALL_PATH = ../;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../facebook-ios-sdk/lib/facebook-ios-sdk\"",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5A98569215213BC2003A8EB0 /* Build configuration list for PBXProject "AirFacebook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A9856A315213BC3003A8EB0 /* Debug */,
+				5A9856A415213BC3003A8EB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A9856A515213BC3003A8EB0 /* Build configuration list for PBXNativeTarget "AirFacebook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A9856A615213BC3003A8EB0 /* Debug */,
+				5A9856A715213BC3003A8EB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5A98568F15213BC2003A8EB0 /* Project object */;
+}

@@ -1,0 +1,34 @@
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////	
+//	ADOBE SYSTEMS INCORPORATED																		  //
+//	Copyright 2011 Adobe Systems Incorporated														  //
+//	All Rights Reserved.																			  //
+//																									  //
+//	NOTICE:  Adobe permits you to use, modify, and distribute this file in accordance with the		  //
+//	terms of the Adobe license agreement accompanying it.  If you have received this file from a	  //
+//	source other than Adobe, then your use, modification, or distribution of it requires the prior	  //
+//	written permission of Adobe.																	  //
+/////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<extension xmlns="http://ns.adobe.com/air/extension/3.1">
+  <id>com.freshplanet.AirFacebook</id>
+  <versionNumber>1</versionNumber>
+  <platforms>
+    <platform name="iPhone-ARM">
+            <applicationDeployment>
+                <nativeLibrary>libAirFacebook.a</nativeLibrary>
+                <initializer>AirFBInitializer</initializer> 
+            </applicationDeployment>
+    </platform>
+    <platform name="Android-ARM"> 
+        <applicationDeployment> 
+            <nativeLibrary>libAirFacebook.jar</nativeLibrary> 
+            <initializer>com.freshplanet.natExt.FBExtension</initializer> 
+            <finalizer>com.freshplanet.natExt.FBExtension</finalizer> 
+        </applicationDeployment> 
+    </platform> 
+    
+    <platform name="default"> 
+        <applicationDeployment/> 
+    </platform> 
+  </platforms>
+</extension>
