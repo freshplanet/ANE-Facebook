@@ -63,12 +63,17 @@ package com.freshplanet.nativeExtensions
 		private function deleteInvites():void
 		{
 			//todo
-			
+			if (this.isFacebookSupported)
+			{
+				// call getAppRequests, removeAppRequests([request_ids])
+			}
+
 		}
 		
 		
 		private function loadTokenInfo():void
 		{
+			trace('load token info');
 			var file:File = File.applicationStorageDirectory.resolvePath(FILE_URI);
 			if (!file.exists) {
 				return;
@@ -158,8 +163,8 @@ package com.freshplanet.nativeExtensions
 			if (this.isFacebookSupported)
 			{
 				this.loadTokenInfo();
-				trace('initializing Facebook Library '+facebookId+' access '+this.accessToken+' expires '+"0");
-				extCtx.call('initFacebook', facebookId, this.accessToken, "0");
+				trace('initializing Facebook Library '+facebookId+' access '+this.accessToken+' expires '+this.expirationTimeStamp);
+				extCtx.call('initFacebook', facebookId, this.accessToken, this.expirationTimeStamp);
 			}
 		}
 		
@@ -205,6 +210,16 @@ package com.freshplanet.nativeExtensions
 			}
 		}
 
+		
+		
+		public function logout():void
+		{
+			if (this.isFacebookSupported)
+			{
+					extCtx.call('logout');
+			}
+		}
+		
 		
 		private static const REFRESH_TOKEN_BARRIER:int = 24 * 60 * 60 * 1000; // access_token has less than 24 hours to live
 		
@@ -283,6 +298,32 @@ package com.freshplanet.nativeExtensions
 			}
 		}
 		
+		
+		/**
+		 * Get Facebook SSO access token (can be used for 2 months) 
+		 * @return 
+		 * 
+		 */
+		public function getAccessToken():String
+		{
+			return this.accessToken;
+		}
+		
+		
+		
+		/**
+		 * Get Expiration timestamp (in seconds) associated with the current Facebook Access Token.
+		 * @return 
+		 * 
+		 */
+		public function getExpirationTimestamp():Number
+		{
+			return this.expirationTimeStamp != null ?  Number(this.expirationTimeStamp) : 0;
+		}
+		
+
+		
+		
 		public function inviteFriends(message:String, friendsArray:Array = null):void
 		{
 			if (this.isFacebookSupported)
@@ -350,6 +391,10 @@ package com.freshplanet.nativeExtensions
 						lastAccessTokenTimeStamp = today.time;
 						try {
 							data = JSON.parse(event.level);
+							if (this.accessToken != null)
+							{
+								data['accessToken'] = this.accessToken;
+							}
 						} catch (e:Error)
 						{
 							trace(e);

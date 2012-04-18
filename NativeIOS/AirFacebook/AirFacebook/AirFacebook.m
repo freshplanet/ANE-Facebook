@@ -67,6 +67,11 @@ FREContext AirFBCtx = nil;
 
 }
 
+- (void) logout
+{
+    [facebook logout];  
+}
+
 
 
 /**
@@ -97,6 +102,7 @@ FREContext AirFBCtx = nil;
     }
 
 }
+
 
 /**
  * Called after the access token was extended. If your application has any
@@ -270,6 +276,12 @@ FREObject extendAccessTokenIfNeeded(FREContext ctx, void* funcData, uint32_t arg
     return nil;
 }
 
+FREObject logout(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+{
+    [(AirFacebook*)refToSelf logout];
+    return nil;
+}
+
 FREObject login(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
     FREObject arr = argv[0]; // array
@@ -362,7 +374,6 @@ FREObject requestWithGraphPath(FREContext ctx, void* funcData, uint32_t argc, FR
 
 
 
-
 // method, message, to
 FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
@@ -389,6 +400,7 @@ FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
     if (toUsers != nil && [toUsers length] > 0)
     {
         [params setValue:toUsers forKey:@"to"];
+        [params setObject: @"1" forKey:@"frictionless"];
     }
     
     if (AirFBCtx != nil)
@@ -412,7 +424,7 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     
     
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 6;
+    NSInteger nbFuntionsToLink = 7;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -441,6 +453,9 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     func[5].functionData = NULL;
     func[5].function = &requestWithGraphPath;
 
+    func[6].name = (const uint8_t*) "logout";
+    func[6].functionData = NULL;
+    func[6].function = &logout;
     
     
     *functionsToSet = func;

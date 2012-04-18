@@ -26,7 +26,8 @@
 - (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andCallback:(NSString*)callbackName;
 
 - (void) dialog:(NSString *)action andParams:(NSMutableDictionary *)params;
-
+- (void) login:(NSArray*)permissions;
+- (void) logout;
 @property (nonatomic, retain) Facebook *facebook;
 
 
@@ -43,6 +44,8 @@ void AirFBInitializer(void** extDataToSet, FREContextInitializer* ctxInitializer
 FREObject initFacebook(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject extendAccessTokenIfNeeded(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+FREObject logout(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject login(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 

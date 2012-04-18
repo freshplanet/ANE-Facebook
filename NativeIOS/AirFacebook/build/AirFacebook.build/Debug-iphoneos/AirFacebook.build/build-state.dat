@@ -2,15 +2,40 @@ TAirFacebook
 v3
 r1
 cCheck dependencies
-cProcessPCH /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv6 objective-c com.apple.compilers.llvmgcc42
 cProcessPCH /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-fmsauirzfbxsecghdlbkxutilqup/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvmgcc42
+cProcessPCH /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv6 objective-c com.apple.compilers.llvmgcc42
 cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m normal armv6 objective-c com.apple.compilers.llvmgcc42
-cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42
 cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42
 cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFBRequest.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv6 objective-c com.apple.compilers.llvmgcc42
+cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42
 cLibtool /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a normal armv6
 cLibtool /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a normal armv7
 cCreateUniversalBinary /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a normal "armv6 armv7"
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk
+c000000004F453DF20000000000000110
+t1329937906
+s272
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/Foundation.framework/Foundation
+c000000004F8E3492000000000052C940
+t1334719634
+s5425472
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.h
+c000000004F8E34910000000000001534
+t1334719633
+s5428
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.h
+c000000004F8E34920000000000000BF5
+t1334719634
+s3061
+
+N/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk/usr/include/stdint.h
+c000000004F8E349500000000000018EF
+t1334719637
+s6383
 
 N/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk
 c000000004D9A119B0000000000000110
@@ -93,9 +118,9 @@ s163
 i<Foundation/Foundation.h>
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.h
-c000000004F7A1B49000000000000073E
-t1333402441
-s1854
+c000000004F83304100000000000007C8
+t1333997633
+s1992
 i<Foundation/Foundation.h>
 i"FBConnect.h"
 i"FBDialog.h"
@@ -103,9 +128,9 @@ i"FlashRuntimeExtensions.h"
 i"AirFBRequest.h"
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m
-c000000004F7CEEDB000000000000345E
-t1333587675
-s13406
+c000000004F83397700000000000035C1
+t1333999991
+s13761
 i"AirFacebook.h"
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFBRequest.o
@@ -118,16 +143,16 @@ t1333041993
 s295
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o
-t1333408204
-s63976
+t1334003477
+s65288
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a
-t1333408204
-s515896
+t1334003478
+s517224
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o
-t1333049279
-s10784
+t1334729397
+s12764
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.LinkFileList
 c000000004F749B490000000000000127
@@ -135,16 +160,16 @@ t1333041993
 s295
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o
-t1333408204
-s64600
+t1334729397
+s71400
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a
-t1333408204
-s514392
+t1334003478
+s515768
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
-t1333408204
-s1030336
+t1334729397
+s523192
 
 N/Users/titi/Projects/AirFacebook/NativeIOS/facebook-ios-sdk/lib/facebook-ios-sdk/FBDialog.h
 c000000004F7105FC00000000000012BD
@@ -208,6 +233,10 @@ s4416
 i<Foundation/Foundation.h>
 i"SBJsonBase.h"
 
+N/var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-bkbotemsfqukltdtwwdpjtgyjvmb/AirFacebook-Prefix.pch.gch
+t2
+s0
+
 N/var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch.gch
 t1332812897
 s5585672
@@ -224,7 +253,7 @@ r0
 
 CCheck dependencies
 r0
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependencies6550255d262db541^ad338a5e262db541^---0#1#0#--18"Check dependencies
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependencies24989276403fb541^f6ebaa76403fb541^---0#1#0#--18"Check dependencies
 
 CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFBRequest.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv6 objective-c com.apple.compilers.llvmgcc42
 s354742078.390599
@@ -240,8 +269,8 @@ xcom.apple.compilers.llvmgcc42
 lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection89"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.ma019643eef24b541^1a33313fef24b541^---0#0#0#-19%DVTDocumentLocation2@97"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m0000000000000000^2206"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFBRequest.o AirFacebook/AirFBRequest.m normal armv6 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv6 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv6 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFBRequest.o
 
 CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m normal armv6 objective-c com.apple.compilers.llvmgcc42
-s355280478.608161
-e355280480.515897
+s355696276.705710
+e355696277.920947
 r1
 xCompileC
 xbuild/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o
@@ -250,11 +279,11 @@ xnormal
 xarmv6
 xobjective-c
 xcom.apple.compilers.llvmgcc42
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection88"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m89ec9b5e262db541^450f8460262db541^---0#0#0#-19%DVTDocumentLocation2@96"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m0000000000000000^2202"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o AirFacebook/AirFacebook.m normal armv6 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv6 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv6 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection88"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m50c2b4947e33b541^76c2eb957e33b541^---0#0#0#-19%DVTDocumentLocation2@96"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m0000000000000000^2202"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o AirFacebook/AirFacebook.m normal armv6 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv6 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv6 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.o
 
 CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42
-s354742078.390714
-e354742079.197006
+s356466806.680564
+e356466807.310602
 r1
 xCompileC
 xbuild/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o
@@ -263,11 +292,11 @@ xnormal
 xarmv7
 xobjective-c
 xcom.apple.compilers.llvmgcc42
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection89"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m151a643eef24b541^ce6d323fef24b541^---0#0#0#-19%DVTDocumentLocation2@97"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m0000000000000000^2206"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-fmsauirzfbxsecghdlbkxutilqup/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection89"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.mc650ae76403fb541^52814f77403fb541^---0#0#0#-19%DVTDocumentLocation2@97"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m0000000000000000^2206"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-fmsauirzfbxsecghdlbkxutilqup/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o
 
 CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42
-s355280478.608167
-e355280480.516114
+s356466806.680505
+e356466807.371901
 r1
 xCompileC
 xbuild/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o
@@ -276,41 +305,52 @@ xnormal
 xarmv7
 xobjective-c
 xcom.apple.compilers.llvmgcc42
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection88"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m8eeb9b5e262db541^70248460262db541^---0#0#0#-19%DVTDocumentLocation2@96"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m0000000000000000^2202"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-fmsauirzfbxsecghdlbkxutilqup/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection88"Compile /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.mec4fae76403fb541^98335f77403fb541^---0#0#0#-19%DVTDocumentLocation2@96"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m0000000000000000^2202"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-fmsauirzfbxsecghdlbkxutilqup/AirFacebook-Prefix.pch -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o
 
 CCreateUniversalBinary /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a normal "armv6 armv7"
-s355280480.704855
-e355280481.051308
+s356466807.500179
+e356466807.549866
 r1
 xCreateUniversalBinary
 x/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
 xnormal
 xarmv6 armv7
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection116"Create universal binary /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.aec87b460262db541^f3200d61262db541^---0#0#0#-19%DVTDocumentLocation2@108"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a0000000000000000^740"CreateUniversalBinary build/Debug-iphoneos/libAirFacebook.a normal "armv6 armv7"    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool -static /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection116"Create universal binary /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.ac51c8077403fb541^2fc28c77403fb541^---0#0#0#-19%DVTDocumentLocation2@108"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a0000000000000000^740"CreateUniversalBinary build/Debug-iphoneos/libAirFacebook.a normal "armv6 armv7"    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool -static /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
 
 CLibtool /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a normal armv6
-s355280480.522581
-e355280480.696956
+s355696277.927794
+e355696278.012042
 r1
 xLibtool
 x/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a
 xnormal
 xarmv6
 o/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool: -dynamic not specified the following flags are invalid: -ObjC 
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection115"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a normal armv60de08560262db541^1e6bb260262db541^---0#0#0#--1064"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a normal armv6    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool -static -arch_only armv6 -syslibroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/../facebook-ios-sdk/lib/facebook-ios-sdk -filelist /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.LinkFileList -ObjC -framework Foundation -lfacebook_ios_sdk -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection115"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a normal armv63a94ed957e33b541^cb1403967e33b541^---0#0#0#--1064"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a normal armv6    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool -static -arch_only armv6 -syslibroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/../facebook-ios-sdk/lib/facebook-ios-sdk -filelist /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/AirFacebook.LinkFileList -ObjC -framework Foundation -lfacebook_ios_sdk -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv6/libAirFacebook.a
 
 CLibtool /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a normal armv7
-s355280480.523080
-e355280480.697396
+s356466807.378461
+e356466807.492521
 r1
 xLibtool
 x/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a
 xnormal
 xarmv7
 o/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool: -dynamic not specified the following flags are invalid: -ObjC 
-lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection115"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a normal armv783f78560262db541^0588b260262db541^---0#0#0#--1064"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a normal armv7    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool -static -arch_only armv7 -syslibroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/../facebook-ios-sdk/lib/facebook-ios-sdk -filelist /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.LinkFileList -ObjC -framework Foundation -lfacebook_ios_sdk -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a
+lSLF03#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection115"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a normal armv76ef96077403fb541^1e167e77403fb541^---0#0#0#--1064"Libtool build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a normal armv7    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3    setenv PATH "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool -static -arch_only armv7 -syslibroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/../facebook-ios-sdk/lib/facebook-ios-sdk -filelist /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.LinkFileList -ObjC -framework Foundation -lfacebook_ios_sdk -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/libAirFacebook.a
 
 CLibtool /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a normal armv7
+s356422197.924542
+e356422198.001647
+r1
+xLibtool
+x/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
+xnormal
+xarmv7
+o/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool: -dynamic not specified the following flags are invalid: -ObjC 
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection58"Libtool build/Debug-iphoneos/libAirFacebook.a normal armv7cfc0ec35923eb541^f46e0036923eb541^-159"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool: -dynamic not specified the following flags are invalid: -ObjC -0#0#0#--1076"Libtool build/Debug-iphoneos/libAirFacebook.a normal armv7    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -static -arch_only armv7 -syslibroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -L/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/../facebook-ios-sdk/lib/facebook-ios-sdk -filelist /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.LinkFileList -ObjC -framework Foundation -lfacebook_ios_sdk -o /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a36"FF6BAD5D-CE95-4CAE-A3CD-ACA272372E16-
+
+CProcessPCH /Users/titi/Library/Developer/Xcode/DerivedData/AirFacebook-frkturjjryyvnwbbsawfrrrqichy/Index/PrecompiledHeaders/AirFacebook-Prefix-cjvyqeqekxzjamamfdbmhkbynzaj_ast/AirFacebook-Prefix.pch.pth AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.astbuilder
 r0
 
 CProcessPCH /Users/titi/Library/Developer/Xcode/DerivedData/AirFacebook-frkturjjryyvnwbbsawfrrrqichy/Index/PrecompiledHeaders/AirFacebook-Prefix-flqrmmqatuxfbwhggusjhrrprfbi_ast/AirFacebook-Prefix.pch.pth AirFacebook/AirFacebook-Prefix.pch normal armv6 objective-c com.apple.compilers.llvm.clang.1_0.astbuilder
@@ -318,6 +358,19 @@ r0
 
 CProcessPCH /Users/titi/Library/Developer/Xcode/DerivedData/AirFacebook-frkturjjryyvnwbbsawfrrrqichy/Index/PrecompiledHeaders/AirFacebook-Prefix-gxxthdtlyqroxkbfnqfgtwzwfoay_ast/AirFacebook-Prefix.pch.pth AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.astbuilder
 r0
+
+CProcessPCH /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-bkbotemsfqukltdtwwdpjtgyjvmb/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvmgcc42
+s356422197.311898
+e356422197.675417
+r1
+xProcessPCH
+x/var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-bkbotemsfqukltdtwwdpjtgyjvmb/AirFacebook-Prefix.pch.gch
+xAirFacebook/AirFacebook-Prefix.pch
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.llvmgcc42
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection45"Precompile AirFacebook/AirFacebook-Prefix.pch70ee4f35923eb541^d6fcac35923eb541^---0#0#0#-19%DVTDocumentLocation2@105"file://localhost/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook-Prefix.pch0000000000000000^2282"ProcessPCH /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-bkbotemsfqukltdtwwdpjtgyjvmb/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin"    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c-header -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.1.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/build/Debug-iphoneos -c /Users/titi/Projects/AirFacebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook-Prefix.pch -o /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-bkbotemsfqukltdtwwdpjtgyjvmb/AirFacebook-Prefix.pch.gch36"B0BD22B7-B052-4CFE-A7EF-727E42787431-
 
 CProcessPCH /var/folders/5k/z80853k16hn_mm7cjjznwfjc0000gn/C/com.apple.Xcode.501/SharedPrecompiledHeaders/AirFacebook-Prefix-czivdvchncmymranhwvwjpwajpax/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv6 objective-c com.apple.compilers.llvmgcc42
 s354505696.915639
