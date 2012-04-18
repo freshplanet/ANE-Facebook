@@ -1,17 +1,12 @@
 package com.freshplanet.natExt.functions;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import android.os.Bundle;
-
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREInvalidObjectException;
 import com.adobe.fre.FREObject;
 import com.adobe.fre.FRETypeMismatchException;
 import com.adobe.fre.FREWrongThreadException;
-import com.freshplanet.natExt.FBExtensionContext;
+import com.freshplanet.natExt.FBRequestThread;
 
 public class RequestWithGraphPathFunction implements FREFunction {
 
@@ -67,37 +62,11 @@ public class RequestWithGraphPathFunction implements FREFunction {
 		}
 		
 		
+		// try it by crating a new thread.
 		
+		FBRequestThread thread = new FBRequestThread(arg0, callbackName, graphPath, params);
+		thread.start();
 		
-		String data = null;
-		try {
-			if (params != null)
-			{
-				Bundle bundle = new Bundle();
-				bundle.putString("fields", params);
-				
-				data = FBExtensionContext.facebook.request(graphPath, bundle);
-
-			} else
-			{
-				data = FBExtensionContext.facebook.request(graphPath);
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			arg0.dispatchStatusEventAsync(callbackName, e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			arg0.dispatchStatusEventAsync(callbackName, e.getMessage());
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			arg0.dispatchStatusEventAsync(callbackName, e.getMessage());
-		}
-		
-		if (data != null)
-		{
-			arg0.dispatchStatusEventAsync(callbackName, data);
-		}
 		
 		return null;
 	}

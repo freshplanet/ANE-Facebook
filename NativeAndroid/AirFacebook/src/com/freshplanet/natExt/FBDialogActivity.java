@@ -25,6 +25,7 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		
 		Bundle parameters = new Bundle();
 		parameters.putString("message", message);
+		parameters.putString("frictionless","1");
 		if (to != null && to.length() > 0)
 		{
 			parameters.putString("to", to);

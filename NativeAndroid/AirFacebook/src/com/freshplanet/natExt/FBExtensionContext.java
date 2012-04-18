@@ -13,6 +13,7 @@ import com.freshplanet.natExt.functions.ExtendAccessTokenIfNeededFunction;
 import com.freshplanet.natExt.functions.HandleOpenURLFunction;
 import com.freshplanet.natExt.functions.InitFacebookFunction;
 import com.freshplanet.natExt.functions.LoginFacebookFunction;
+import com.freshplanet.natExt.functions.LogoutFacebookFunction;
 import com.freshplanet.natExt.functions.OpenDialogFunction;
 import com.freshplanet.natExt.functions.RequestWithGraphPathFunction;
 
@@ -44,6 +45,7 @@ public class FBExtensionContext extends FREContext {
 		functionMap.put("extendAccessTokenIfNeeded", new ExtendAccessTokenIfNeededFunction());
 		functionMap.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 		functionMap.put("openDialog", new OpenDialogFunction());
+		functionMap.put("logout", new LogoutFacebookFunction());
 		return functionMap;	
 	}
 
