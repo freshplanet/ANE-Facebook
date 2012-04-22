@@ -25,6 +25,28 @@ package com.freshplanet.nativeExtensions
 		private var expirationTimeStamp:String;
 		private var lastAccessTokenTimeStamp:int;
 		
+		private var cacheDir:File;
+
+		
+		private function getCacheDirectory():File
+		{
+			if (cacheDir != null)
+			{
+				return cacheDir;
+			}
+			
+			if (Capabilities.manufacturer.indexOf("iOS") > -1)
+			{
+				var str:String = File.applicationDirectory.nativePath;
+				cacheDir= new File(str +"/\.\./Library/Caches");
+			} else
+			{
+				cacheDir = File.applicationStorageDirectory;
+			}
+			
+			return cacheDir;
+		}
+
 		
 		
 		private function storeTokenInfo(newAccessToken:String, newExpirationTime:String):void
@@ -37,7 +59,7 @@ package com.freshplanet.nativeExtensions
 			trace('store : '+object.toString());
 			
 			//create a file under the application storage folder
-			var file:File = File.applicationStorageDirectory.resolvePath(FILE_URI);
+			var file:File = getCacheDirectory().resolvePath(FILE_URI);
 			
 			var fileStream:FileStream = new FileStream(); //create a file stream
 			fileStream.open(file, FileMode.WRITE);// and open the file for write
@@ -74,7 +96,7 @@ package com.freshplanet.nativeExtensions
 		private function loadTokenInfo():void
 		{
 			trace('load token info');
-			var file:File = File.applicationStorageDirectory.resolvePath(FILE_URI);
+			var file:File = getCacheDirectory().resolvePath(FILE_URI);
 			if (!file.exists) {
 				return;
 			}
@@ -102,15 +124,12 @@ package com.freshplanet.nativeExtensions
 			this.expirationTimeStamp = null;
 			trace('delete : '+{}.toString());
 
-			var file:File = File.applicationStorageDirectory.resolvePath(FILE_URI);
+			var file:File = getCacheDirectory().resolvePath(FILE_URI);
 			if (!file.exists) {
 				return;
 			} else
 			{
-				var fileStream:FileStream = new FileStream(); //create a file stream
-				fileStream.open(file, FileMode.WRITE);// and open the file for write
-				fileStream.writeObject({});//write the object to the file
-				fileStream.close();
+				file.deleteFile();
 			}
 		}
 		
