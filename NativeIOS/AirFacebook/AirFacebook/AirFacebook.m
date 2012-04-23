@@ -196,6 +196,15 @@ FREContext AirFBCtx = nil;
 }
 
 
+- (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andHttpMethod:(NSString*)httpMethod andCallback:(NSString*)callbackName
+{
+    AirFBRequest *requestDelegate = [[AirFBRequest alloc] init];
+    [requestDelegate setName:callbackName];
+    [requestDelegate setContext:AirFBCtx];
+
+    [facebook requestWithGraphPath:path andParams:params andHttpMethod:httpMethod andDelegate:requestDelegate];
+}
+
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error
 {    
     if (AirFBCtx != nil)
@@ -414,6 +423,67 @@ FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
 }
 
 
+FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+{
+    // loop through an array.
+    
+
+        NSString *jsonString = NULL;
+        FREObject arrKey = argv[0]; // array
+        uint32_t arr_len = 0; // array length
+        if (arrKey != nil)
+        {
+
+            if (FREGetArrayLength(arrKey, &arr_len) != FRE_OK)
+            {
+                arr_len = 0;
+            }
+             
+            for(int32_t i=arr_len-1; i>=0;i--){
+                
+                // get an element at index
+                FREObject requestId;
+                if (FREGetArrayElementAt(arrKey, i, &requestId) != FRE_OK)
+                {
+                    continue;
+                }
+                                
+                // convert it to NSString
+                uint32_t stringLength;
+                const uint8_t *keyString;
+                if (FREGetObjectAsUTF8(requestId, &stringLength, &keyString) != FRE_OK)
+                {
+                    continue;
+                }
+                                
+                NSString *jsonRequest = [NSString stringWithFormat:@"{ \"method\": \"DELETE\", \"relative_url\": \"%@\" }", [NSString stringWithUTF8String:(char*) keyString]];
+                
+                if ( jsonString == NULL || [jsonString length] == 0)
+                {
+                    jsonString = @"[ ";
+                    jsonString = [jsonString stringByAppendingString:jsonRequest];
+                } else
+                {
+                    jsonString = [jsonString stringByAppendingFormat:@", %@", jsonRequest];
+                }
+            }
+            
+            if (jsonString != nil)
+            {
+                jsonString = [jsonString stringByAppendingFormat:@"]"];
+            }
+        
+            if (jsonString != nil && jsonString.length > 0)
+            {
+                NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:jsonString forKey:@"batch"];
+                [(AirFacebook*)refToSelf requestWithGraphPath:@"me" andParams:params andHttpMethod:@"POST" andCallback:@"DELETE_INVITE"];
+            }
+        }
+    
+    return nil;
+}
+
+
 
 // ContextInitializer()
 //
@@ -424,7 +494,7 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     
     
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 7;
+    NSInteger nbFuntionsToLink = 8;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -457,6 +527,10 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     func[6].functionData = NULL;
     func[6].function = &logout;
     
+    
+    func[7].name = (const uint8_t*) "deleteRequests";
+    func[7].functionData = NULL;
+    func[7].function = &deleteRequests;
     
     *functionsToSet = func;
     
