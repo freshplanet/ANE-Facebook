@@ -24,6 +24,8 @@
 - (BOOL) handleOpenURL:(NSURL *)url;
 - (void) requestWithGraphPath:(NSString*)path andCallback:(NSString*)callbackName;
 - (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andCallback:(NSString*)callbackName;
+- (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andHttpMethod:(NSString*)httpMethod andCallback:(NSString*)callbackName;
+
 
 - (void) dialog:(NSString *)action andParams:(NSMutableDictionary *)params;
 - (void) login:(NSArray*)permissions;
@@ -54,3 +56,5 @@ FREObject handleOpenURL(FREContext ctx, void* funcData, uint32_t argc, FREObject
 FREObject requestWithGraphPath(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);

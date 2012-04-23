@@ -9,6 +9,7 @@ import android.util.Log;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.facebook.android.Facebook;
+import com.freshplanet.natExt.functions.DeleteInvitesFunction;
 import com.freshplanet.natExt.functions.ExtendAccessTokenIfNeededFunction;
 import com.freshplanet.natExt.functions.HandleOpenURLFunction;
 import com.freshplanet.natExt.functions.InitFacebookFunction;
@@ -46,6 +47,7 @@ public class FBExtensionContext extends FREContext {
 		functionMap.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 		functionMap.put("openDialog", new OpenDialogFunction());
 		functionMap.put("logout", new LogoutFacebookFunction());
+		functionMap.put("deleteRequests", new DeleteInvitesFunction());
 		return functionMap;	
 	}
 

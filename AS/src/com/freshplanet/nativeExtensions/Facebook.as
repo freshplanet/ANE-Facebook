@@ -82,16 +82,42 @@ package com.freshplanet.nativeExtensions
 			return false;
 		}
 		
-		private function deleteInvites():void
+		public function deleteInvites():void
 		{
 			//todo
 			if (this.isFacebookSupported)
 			{
+				this.requestWithGraphPath("me/apprequests", null, onAppRequestReceived);
 				// call getAppRequests, removeAppRequests([request_ids])
 			}
 
 		}
 		
+		private static const MAX_BATCH_ITEM:int = 20;
+		
+		private function onAppRequestReceived(object:Object):void
+		{
+			trace(object);
+			if (object && object.hasOwnProperty('data') && object['data'] != null)
+			{
+				var requestIdsToBeDeleted:Array = [];
+				for each(var request:Object in object['data'])
+				{
+					if (request['id'] != null)
+					{
+						requestIdsToBeDeleted.push(String(request.id));
+					}
+					if (requestIdsToBeDeleted.length >= MAX_BATCH_ITEM)
+					{
+						break;
+					}
+				}
+				if (this.isFacebookSupported && requestIdsToBeDeleted.length > 0)
+				{
+					extCtx.call("deleteRequests", requestIdsToBeDeleted);
+				}
+			}
+		}
 		
 		private function loadTokenInfo():void
 		{
@@ -401,6 +427,9 @@ package com.freshplanet.nativeExtensions
 				case 'USER_LOG_IN_ERROR':
 					e = new FacebookEvent(FacebookEvent.USER_LOGGED_IN_ERROR_EVENT);
 					e.message = event.level;
+					break;
+				case 'DELETE_INVITE':
+					trace(event.level);
 					break;
 				default:
 					if (_callbacks.hasOwnProperty(event.code))
