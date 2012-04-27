@@ -1,0 +1,19 @@
+# AirFlurry
+AirFlurry is an ADOBE AIR Native Extension (ANE) to send analytics content to Flurry Server.
+It works both for iOS and Android devices.
+@see http://www.flurry.com/
+
+# Use
+Refer to the flurry documentation to see how to use it.
+This ANE is just a Wrapper of the flurry API. Everything that can be done on each language (Objective-C or JAVA), is callable from the main swc.
+
+# Installation
+The ANE is already compiled. You can find it under the folder Binaries. 
+If you want to recompile it, just run ant in the same directory, after changing the parameters (called properties) in build.xml.
+You will also have to link the libs Flurry.jar and Flurry3.1.0 to their projects (NativeAndroid/ and NativeIOS/)
+
+# IOS Compilation
+The iOS library has been compiled using the sdk iOS 4.3 and deployment target set to iOS 4.0, using GCC 4.2.
+This ANE has NOT been tested with an sdk version superior to iOS 4.3.
+
+It is distributed under Apache 2.0 license.
