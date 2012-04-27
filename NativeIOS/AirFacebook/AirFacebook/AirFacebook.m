@@ -1,9 +1,20 @@
+//////////////////////////////////////////////////////////////////////////////////////
 //
-//  AirFacebook.m
-//  AirFacebook
-//
-//  Created by Thibaut Crenn on 3/26/12.
-//  Copyright 2012 __MyCompanyName__. All rights reserved.
+//  Copyright 2012 Freshplanet (http://freshplanet.com | opensource@freshplanet.com)
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//    http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//  
+//////////////////////////////////////////////////////////////////////////////////////
 //
 
 #import "AirFacebook.h"
@@ -11,6 +22,8 @@
 void *refToSelf;
 FREContext AirFBCtx = nil;
 
+
+#define DEFINE_ANE_FUNCTION(fn) FREObject (fn)(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
 
 
 // @see https://developers.facebook.com/docs/mobile/ios/build/
@@ -234,16 +247,11 @@ FREContext AirFBCtx = nil;
     [facebook dialog:action andParams:params andDelegate:self];
 }
 
-
-
-
 @end
 
-
-FREObject initFacebook(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) 
+// init Facebook Library
+DEFINE_ANE_FUNCTION(initFacebook)
 {
-    FREDispatchStatusEventAsync(ctx, (uint8_t*)"INIT_STARTED", (uint8_t*)[@"Started" UTF8String]); 
-
     if (refToSelf == nil)
     {
         [[AirFacebook alloc] init];
@@ -251,47 +259,54 @@ FREObject initFacebook(FREContext ctx, void* funcData, uint32_t argc, FREObject 
     
     uint32_t stringLength;
     const uint8_t *string1;
-    FREGetObjectAsUTF8(argv[0], &stringLength, &string1);
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &string1) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *appId = [NSString stringWithUTF8String:(char*)string1];
 
     const uint8_t *string2;
-    FREGetObjectAsUTF8(argv[1], &stringLength, &string2);
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *accessToken = [NSString stringWithUTF8String:(char*)string2];
 
     
     const uint8_t *string3;
     
-    FREGetObjectAsUTF8(argv[2], &stringLength, &string3);
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *expirationTimestamp = [NSString stringWithUTF8String:(char*)string3];
 
-    
-    
     [(AirFacebook*)refToSelf initFacebookWithAppId:appId andAccessToken:accessToken andExpirationTimestamp:expirationTimestamp];
-    
-    
-    FREDispatchStatusEventAsync(ctx, (uint8_t*)"INIT_DONE", (uint8_t*)[@"Success" UTF8String]); 
     
     return nil;
 }
 
 
-FREObject extendAccessTokenIfNeeded(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+// extend Access Token if Needed.
+DEFINE_ANE_FUNCTION(extendAccessTokenIfNeeded)
 {
     [(AirFacebook*)refToSelf extendAccessTokenIfNeeded];
     
-    FREDispatchStatusEventAsync(ctx, (uint8_t*)"REFRESH_TOKEN_DONE", (uint8_t*)[@"Success" UTF8String]); 
+    FREDispatchStatusEventAsync(context, (uint8_t*)"REFRESH_TOKEN_DONE", (uint8_t*)[@"Success" UTF8String]); 
 
-    
     return nil;
 }
 
-FREObject logout(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+
+// log out from Facebook
+DEFINE_ANE_FUNCTION(logout)
 {
     [(AirFacebook*)refToSelf logout];
     return nil;
 }
 
-FREObject login(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+// log in
+DEFINE_ANE_FUNCTION(login)
 {
     FREObject arr = argv[0]; // array
     uint32_t arr_len; // array length
@@ -309,33 +324,32 @@ FREObject login(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
         // convert it to NSString
         uint32_t stringLength;
         const uint8_t *string;
-        FREGetObjectAsUTF8(element, &stringLength, &string);
+        if (FREGetObjectAsUTF8(element, &stringLength, &string) != FRE_OK)
+        {
+            continue;
+        }
         NSString *permission = [NSString stringWithUTF8String:(char*)string];
 
         [permissions addObject:permission];
-        if (AirFBCtx != nil)
-        {
-            FREDispatchStatusEventAsync(AirFBCtx, (uint8_t*)"ADD_OBJET", (uint8_t*)[permission UTF8String]); 
-        }
 
     }
     
     
     [(AirFacebook*)refToSelf login:[NSArray arrayWithArray:permissions]];
     
-    FREDispatchStatusEventAsync(ctx, (uint8_t*)"LOGIN_DONE", (uint8_t*)[@"Success" UTF8String]); 
-    
-    
     return nil;
 }
 
-
-FREObject handleOpenURL(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+// handle Open URL
+DEFINE_ANE_FUNCTION(handleOpenURL)
 {
     
     uint32_t stringLength;
     const uint8_t *string;
-    FREGetObjectAsUTF8(argv[0], &stringLength, &string);
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &string) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *urlString = [NSString stringWithUTF8String:(char*)string];
     NSURL* url = [NSURL URLWithString:urlString];
     
@@ -344,21 +358,32 @@ FREObject handleOpenURL(FREContext ctx, void* funcData, uint32_t argc, FREObject
     return nil;
 }
 
-FREObject requestWithGraphPath(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+// request with Graph Path.
+// makes a call to graph api.
+DEFINE_ANE_FUNCTION(requestWithGraphPath)
 {
     
     uint32_t stringLength;
     const uint8_t *string1;
-    FREGetObjectAsUTF8(argv[0], &stringLength, &string1);
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &string1) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *callback = [NSString stringWithUTF8String:(char*)string1];
 
     
     const uint8_t *string2;
-    FREGetObjectAsUTF8(argv[1], &stringLength, &string2);
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *path = [NSString stringWithUTF8String:(char*)string2];
     
     const uint8_t *string3;
-    FREGetObjectAsUTF8(argv[2], &stringLength, &string3);
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) != FRE_OK)
+    {
+        return nil;
+    }
     if (string3 != NULL)
     {
         NSString *params = [NSString stringWithUTF8String:(char*)string3];
@@ -383,23 +408,32 @@ FREObject requestWithGraphPath(FREContext ctx, void* funcData, uint32_t argc, FR
 
 
 
-// method, message, to
-FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+// open a Facebook Dialog
+DEFINE_ANE_FUNCTION(openDialog)
 {
     
     uint32_t stringLength;
     
     const uint8_t *string1;
-    FREGetObjectAsUTF8(argv[0], &stringLength, &string1);
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &string1) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *method = [NSString stringWithUTF8String:(char*)string1];
     
     const uint8_t *string2;
-    FREGetObjectAsUTF8(argv[1], &stringLength, &string2);
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) != FRE_OK)
+    {
+        return nil;
+    }
     NSString *message = [NSString stringWithUTF8String:(char*)string2];
 
 
     const uint8_t *string3;
-    FREGetObjectAsUTF8(argv[2], &stringLength, &string3);
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) != FRE_OK)
+    {
+        return nil;
+    }
     NSString* toUsers = [NSString stringWithUTF8String:(char*)string3];
     
     
@@ -412,9 +446,10 @@ FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
         [params setObject: @"1" forKey:@"frictionless"];
     }
     
-    if (AirFBCtx != nil)
+    
+    if (refToSelf == nil)
     {
-        FREDispatchStatusEventAsync(AirFBCtx, (uint8_t*)"OPEN_DIALOG", (uint8_t*)[@"call of function" UTF8String]); 
+        [[AirFacebook alloc] init];
     }
 
     
@@ -422,11 +457,10 @@ FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
     return nil;
 }
 
-
-FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
+// delete a list of request
+DEFINE_ANE_FUNCTION(deleteRequests)
 {
     // loop through an array.
-    
 
         NSString *jsonString = NULL;
         FREObject arrKey = argv[0]; // array
@@ -475,6 +509,11 @@ FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObjec
         
             if (jsonString != nil && jsonString.length > 0)
             {
+                if (refToSelf == nil)
+                {
+                    [[AirFacebook alloc] init];
+                }
+
                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:jsonString forKey:@"batch"];
                 [(AirFacebook*)refToSelf requestWithGraphPath:@"me" andParams:params andHttpMethod:@"POST" andCallback:@"DELETE_INVITE"];
             }
