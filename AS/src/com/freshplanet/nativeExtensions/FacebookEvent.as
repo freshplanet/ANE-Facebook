@@ -30,11 +30,7 @@ package com.freshplanet.nativeExtensions
 		public static const USER_LOGGED_IN_CANCEL_EVENT:String = 'userLoggedInCancelEvent';
 		public static const GRAPH_API_SUCCESS_EVENT:String = 'graphApiSuccessEvent';
 		
-		
-		public var token:String;
-		public var expirationTime:String;
 		public var message:String;
-		public var data:Object;
 		
 		public function FacebookEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

@@ -73,9 +73,7 @@ package com.freshplanet.nativeExtensions
 			this.expirationTimeStamp = newExpirationTime;
 			
 			var object:Object = {'access_token': accessToken, 'expiration_timestamp': expirationTimeStamp};
-			
-			trace('store : '+object.toString());
-			
+						
 			//create a file under the application storage folder
 			var file:File = getCacheDirectory().resolvePath(FILE_URI);
 			
@@ -83,7 +81,7 @@ package com.freshplanet.nativeExtensions
 			fileStream.open(file, FileMode.WRITE);// and open the file for write
 			fileStream.writeObject(object);//write the object to the file
 			fileStream.close();
-			trace('stored :', accessToken,', ',expirationTimeStamp);
+			trace('[Facebook] stored :', accessToken,', ',expirationTimeStamp);
 
 		}
 		
@@ -115,7 +113,7 @@ package com.freshplanet.nativeExtensions
 		
 		private function onAppRequestReceived(object:Object):void
 		{
-			trace(object);
+			trace("[Facebook] appRequestReceived - ", object);
 			if (object && object.hasOwnProperty('data') && object['data'] != null)
 			{
 				var requestIdsToBeDeleted:Array = [];
@@ -139,7 +137,7 @@ package com.freshplanet.nativeExtensions
 		
 		private function loadTokenInfo():void
 		{
-			trace('load token info');
+			trace('[Facebook] load token info');
 			var file:File = getCacheDirectory().resolvePath(FILE_URI);
 			if (!file.exists) {
 				return;
@@ -149,8 +147,7 @@ package com.freshplanet.nativeExtensions
 			var fileStream:FileStream = new FileStream();
 			fileStream.open(file, FileMode.READ);
 			var object:Object = fileStream.readObject(); //read the object
-			trace('load : '+object.toString());
-
+			
 			if (object != null && object.hasOwnProperty('access_token'))
 			{
 				this.accessToken = object['access_token'];
@@ -158,7 +155,9 @@ package com.freshplanet.nativeExtensions
 				{
 					this.expirationTimeStamp = object['expiration_timestamp'];
 				}
-				trace('loaded ', this.accessToken, this.expirationTimeStamp);
+				trace('[Facebook] loaded ', this.accessToken, this.expirationTimeStamp);
+			}else{
+				trace('[Facebook] load : '+object.toString());
 			}
 		}
 		
@@ -166,7 +165,7 @@ package com.freshplanet.nativeExtensions
 		{
 			this.accessToken = null;
 			this.expirationTimeStamp = null;
-			trace('delete : '+{}.toString());
+			trace('[Facebook]  delete : '+{}.toString());
 
 			var file:File = getCacheDirectory().resolvePath(FILE_URI);
 			if (!file.exists) {
@@ -194,7 +193,7 @@ package com.freshplanet.nativeExtensions
 						extCtx.addEventListener(StatusEvent.STATUS, onStatus);
 					} else
 					{
-						trace('extCtx is null.');
+						trace('[Facebook] extCtx is null.');
 					}
 				}
 				_instance = this;
@@ -214,7 +213,7 @@ package com.freshplanet.nativeExtensions
 		public function get isFacebookSupported():Boolean
 		{
 			var result:Boolean = Capabilities.manufacturer.indexOf('iOS') > -1 || Capabilities.manufacturer.indexOf('Android') > -1;
-			trace(result ? 'Facebook is supported' : 'Facebook is not supported');
+			trace("[Facebook] ", result ? 'Facebook is supported' : 'Facebook is not supported');
 			return result;
 		}
 		
@@ -226,7 +225,7 @@ package com.freshplanet.nativeExtensions
 			if (this.isFacebookSupported)
 			{
 				this.loadTokenInfo();
-				trace('initializing Facebook Library '+facebookId+' access '+this.accessToken+' expires '+this.expirationTimeStamp);
+				trace('[Facebook] initializing Facebook Library '+facebookId+' access '+this.accessToken+' expires '+this.expirationTimeStamp);
 				extCtx.call('initFacebook', facebookId, this.accessToken, this.expirationTimeStamp);
 			}
 		}
@@ -251,22 +250,20 @@ package com.freshplanet.nativeExtensions
 		{
 			if (this.isFacebookSupported)
 			{
-				trace('logging in to the Facebook App.');
-				
 				if (!isSessionValid)
 				{
-					trace('session invalid');
+					trace('[Facebook] session invalid, calling login');
 					extCtx.call('login', permissions);
 				} else
 				{
 					if (shouldRefreshSession) // expiration time is about to be done
 					{
-						trace('session needs to be refreshed');
+						trace('[Facebook] session needs to be refreshed');
 						this.extendAccessTokenIfNeeded();
 						
 					} else
 					{
-						trace('session valid');
+						trace('[Facebook] session valid');
 						this.dispatchEvent(new FacebookEvent(FacebookEvent.USER_LOGGED_IN_SUCCESS_EVENT));
 					}
 				}
@@ -298,18 +295,22 @@ package com.freshplanet.nativeExtensions
 		private function get isSessionValid():Boolean
 		{
 			var today:Date = new Date();
-			trace('tokenInfo : '+this.accessToken + ' - ' + this.expirationTimeStamp + ' - '+today.time);
+			trace('[Facebook] tokenInfo : '+this.accessToken + ' - ' + this.expirationTimeStamp + ' - '+today.time);
 			return this.accessToken != null && (this.expirationTimeStamp != null && Number(this.expirationTimeStamp) > today.time);
 		}
 		
 		
 		private var _callbacks:Object = {};
 		
+		/** 
+		 * @param callback Will receive Facebook decoded JSON response.
+		 * function(data:Object):void
+		 */
 		public function getUserInfo(callback:Function):void
 		{
 			if (this.isFacebookSupported)
 			{
-				trace('Get User Info');
+				trace('[Facebook] Get User Info');
 				requestWithGraphPath("me", null, callback);
 			} else
 			{
@@ -321,12 +322,16 @@ package com.freshplanet.nativeExtensions
 		{
 			if (this.isFacebookSupported)
 			{
-				trace('inviting Facebook friends');
+				trace('[Facebook] openDialog - feed');
 				extCtx.call('openDialog', "feed", message);
 			}
 
 		}
-		
+
+		/** 
+		 * @param callback Will receive Facebook decoded JSON response.
+		 * function(data:Object):void
+		 */
 		private function requestWithGraphPath(graphPath:String, params:String, callback:Function):void
 		{
 			var date:Date = new Date();
@@ -336,16 +341,19 @@ package com.freshplanet.nativeExtensions
 				delete _callbacks[callbackName]
 			}
 			_callbacks[callbackName] = callback;
-			trace('graphPath '+graphPath);
+			trace('[Facebook] graphPath '+graphPath);
 			extCtx.call('requestWithGraphPath', callbackName, graphPath, params);
 		}
 		
-		
+		/** 
+		 * @param callback Will receive Facebook decoded JSON response.
+		 * function(data:Object):void
+		 */
 		public function getFriends(callback:Function, customFields:Array = null):void
 		{
 			if (this.isFacebookSupported)
 			{
-				trace('getting Facebook friends');
+				trace('[Facebook] getting Facebook friends');
 				var url:String = 'me/friends';
 				
 				var param:String = null;
@@ -391,7 +399,7 @@ package com.freshplanet.nativeExtensions
 		{
 			if (this.isFacebookSupported)
 			{
-				trace('inviting Facebook friends');
+				trace('[Facebook] openDialog - apprequests');
 				if (friendsArray != null)
 				{
 					extCtx.call('openDialog', "apprequests", message, friendsArray.join());
@@ -417,7 +425,7 @@ package com.freshplanet.nativeExtensions
 		
 		private function onStatus(event:StatusEvent):void
 		{
-			trace('fb status '+event);
+			trace('[Facebook] status '+event);
 			var e:FacebookEvent;
 			var today:Date = new Date();
 			switch (event.code)
@@ -447,7 +455,7 @@ package com.freshplanet.nativeExtensions
 					e.message = event.level;
 					break;
 				case 'DELETE_INVITE':
-					trace(event.level);
+					trace("[Facebook] DELETE_INVITE ", event.level);
 					break;
 				default:
 					if (_callbacks.hasOwnProperty(event.code))
@@ -463,7 +471,7 @@ package com.freshplanet.nativeExtensions
 							}
 						} catch (e:Error)
 						{
-							trace(e);
+							trace("[Facebook] ERROR ", e);
 						}
 						callback(data);
 						delete _callbacks[event.code];
