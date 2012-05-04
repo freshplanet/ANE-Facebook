@@ -1,7 +1,7 @@
 # AirFacebook
 AirFacebook is an ADOBE AIR Native Extension (ANE) to use the native Facebook library.
 It works both for iOS and Android devices.
-@see http://www.flurry.com/
+@see http://developers.facebook.com/docs/guides/mobile/
 
 # Installation
 The ANE is already compiled. You can find it under the folder Binaries. 
