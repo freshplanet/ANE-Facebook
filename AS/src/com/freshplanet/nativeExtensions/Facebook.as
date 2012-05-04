@@ -100,13 +100,7 @@ package com.freshplanet.nativeExtensions
 		
 		public function deleteInvites():void
 		{
-			//todo
-			if (this.isFacebookSupported)
-			{
-				this.requestWithGraphPath("me/apprequests", null, onAppRequestReceived);
-				// call getAppRequests, removeAppRequests([request_ids])
-			}
-
+			this.requestWithGraphPath("me/apprequests", onAppRequestReceived);
 		}
 		
 		private static const MAX_BATCH_ITEM:int = 20;
@@ -306,43 +300,9 @@ package com.freshplanet.nativeExtensions
 		 * @param callback Will receive Facebook decoded JSON response.
 		 * function(data:Object):void
 		 */
-		public function getUserInfo(callback:Function):void
+		public function getUserInfo(callback:Function, customFields:Array = null):void
 		{
-			if (this.isFacebookSupported)
-			{
-				trace('[Facebook] Get User Info');
-				requestWithGraphPath("me", null, callback);
-			} else
-			{
-				callback(null);
-			}
-		}
-		
-		public function post(message:String):void
-		{
-			if (this.isFacebookSupported)
-			{
-				trace('[Facebook] openDialog - feed');
-				extCtx.call('openDialog', "feed", message);
-			}
-
-		}
-
-		/** 
-		 * @param callback Will receive Facebook decoded JSON response.
-		 * function(data:Object):void
-		 */
-		private function requestWithGraphPath(graphPath:String, params:String, callback:Function):void
-		{
-			var date:Date = new Date();
-			var callbackName:String = date.time.toString();
-			if (_callbacks.hasOwnProperty(callbackName))
-			{
-				delete _callbacks[callbackName]
-			}
-			_callbacks[callbackName] = callback;
-			trace('[Facebook] graphPath '+graphPath);
-			extCtx.call('requestWithGraphPath', callbackName, graphPath, params);
+			requestWithGraphPath("me", callback, customFields);
 		}
 		
 		/** 
@@ -351,24 +311,38 @@ package com.freshplanet.nativeExtensions
 		 */
 		public function getFriends(callback:Function, customFields:Array = null):void
 		{
-			if (this.isFacebookSupported)
+			requestWithGraphPath('me/friends', callback, customFields);
+		}
+		
+		/** 
+		 * @param graphPath Graph API object, like "me" or "me/friends"
+		 * @param callback Will receive Facebook decoded JSON response. function(data:Object):void
+		 * @param params list of fields
+		 */
+		private function requestWithGraphPath(graphPath:String, callback:Function, fields:Array=null):void
+		{
+			if(this.isFacebookSupported)
 			{
-				trace('[Facebook] getting Facebook friends');
-				var url:String = 'me/friends';
-				
-				var param:String = null;
-				
-				if (customFields != null && customFields.length > 0)
+				var date:Date = new Date();
+				var callbackName:String = date.time.toString();
+				if (_callbacks.hasOwnProperty(callbackName))
 				{
-					param = customFields.join();
+					delete _callbacks[callbackName]
 				}
-				requestWithGraphPath(url, param, callback);
-			} else
-			{
+				_callbacks[callbackName] = callback;
+				
+				var params:String;
+				if (fields != null && fields.length > 0)
+				{
+					params = fields.join();
+				}
+				
+				trace('[Facebook] requestWithGraphPath ', graphPath, params);
+				extCtx.call('requestWithGraphPath', callbackName, graphPath, params);
+			}else{
 				callback(null);
 			}
 		}
-		
 		
 		/**
 		 * Get Facebook SSO access token (can be used for 2 months) 
@@ -394,7 +368,7 @@ package com.freshplanet.nativeExtensions
 		
 
 		
-		
+		/** Send a request */
 		public function inviteFriends(message:String, friendsArray:Array = null):void
 		{
 			if (this.isFacebookSupported)
@@ -408,6 +382,17 @@ package com.freshplanet.nativeExtensions
 					extCtx.call('openDialog', "apprequests", message);
 				}
 			}
+		}
+		
+		/** Open a feed dialog to post the given message */
+		public function post(message:String):void
+		{
+			if (this.isFacebookSupported)
+			{
+				trace('[Facebook] openDialog - feed');
+				extCtx.call('openDialog', "feed", message);
+			}
+			
 		}
 		
 		private function onInvoke(event:InvokeEvent):void
