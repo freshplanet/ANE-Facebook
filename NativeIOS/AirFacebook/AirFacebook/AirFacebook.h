@@ -21,9 +21,9 @@
 #import "FBDialog.h"
 #import "FlashRuntimeExtensions.h"
 #import "AirFBRequest.h"
+#import "AirFBDialog.h"
 
-
-@interface AirFacebook : NSObject <FBSessionDelegate, FBDialogDelegate>
+@interface AirFacebook : NSObject <FBSessionDelegate>
 {
     Facebook *facebook;
     
@@ -37,7 +37,7 @@
 - (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andHttpMethod:(NSString*)httpMethod andCallback:(NSString*)callbackName;
 
 
-- (void) dialog:(NSString *)action andParams:(NSMutableDictionary *)params;
+- (void) dialog:(NSString *)action andParams:(NSMutableDictionary *)params andCallback:(NSString*)callbackName;
 - (void) login:(NSArray*)permissions;
 - (void) logout;
 @property (nonatomic, retain) Facebook *facebook;

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A6482C615587278003DA35B /* AirFBDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A6482C415587277003DA35B /* AirFBDialog.h */; };
+		5A6482C715587278003DA35B /* AirFBDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A6482C515587277003DA35B /* AirFBDialog.m */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
 		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
 		5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */; };
@@ -29,6 +31,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5A6482C415587277003DA35B /* AirFBDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirFBDialog.h; sourceTree = "<group>"; };
+		5A6482C515587277003DA35B /* AirFBDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AirFBDialog.m; sourceTree = "<group>"; };
 		5A98569815213BC3003A8EB0 /* libAirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAirFacebook.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A98569B15213BC3003A8EB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirFacebook-Prefix.pch"; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 				5A9856A115213BC3003A8EB0 /* AirFacebook.m */,
 				5A9856D01524D02B003A8EB0 /* AirFBRequest.h */,
 				5A9856D11524D02B003A8EB0 /* AirFBRequest.m */,
+				5A6482C415587277003DA35B /* AirFBDialog.h */,
+				5A6482C515587277003DA35B /* AirFBDialog.m */,
 				5A98569E15213BC3003A8EB0 /* Supporting Files */,
 			);
 			path = AirFacebook;
@@ -159,6 +165,7 @@
 				5A9856C715213DAE003A8EB0 /* SBJsonParser.h in Headers */,
 				5A9856C815213DAE003A8EB0 /* SBJsonWriter.h in Headers */,
 				5A9856D21524D02B003A8EB0 /* AirFBRequest.h in Headers */,
+				5A6482C615587278003DA35B /* AirFBDialog.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +218,7 @@
 			files = (
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
 				5A9856D31524D02B003A8EB0 /* AirFBRequest.m in Sources */,
+				5A6482C715587278003DA35B /* AirFBDialog.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
