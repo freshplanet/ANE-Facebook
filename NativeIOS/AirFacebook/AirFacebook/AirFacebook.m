@@ -75,7 +75,19 @@ FREContext AirFBCtx = nil;
 {
     //Check for a valid session
     if (![facebook isSessionValid]) {
+        if (AirFBCtx != nil)
+        {
+            FREDispatchStatusEventAsync(AirFBCtx, (uint8_t*)"LOGGING", (uint8_t*)[@"authorize" UTF8String]); 
+        }
+
         [facebook authorize:permissions];
+    } else
+    {
+        if (AirFBCtx != nil)
+        {
+            FREDispatchStatusEventAsync(AirFBCtx, (uint8_t*)"LOGGING", (uint8_t*)[@"Session valid" UTF8String]); 
+        }
+
     }
 
 }
@@ -242,10 +254,19 @@ FREContext AirFBCtx = nil;
 
 
 
-- (void)dialog:(NSString *)action andParams:(NSMutableDictionary *)params
+- (void)dialog:(NSString *)action andParams:(NSMutableDictionary *)params andCallback:(NSString*)callbackName
 {
-    [facebook dialog:action andParams:params andDelegate:self];
+    AirFBDialog *dialogDelegate = [[AirFBDialog alloc] init];
+    [dialogDelegate setName:callbackName];
+    [dialogDelegate setContext:AirFBCtx];
+    
+    [facebook dialog:action andParams:params andDelegate:dialogDelegate];
 }
+
+
+
+
+
 
 @end
 
@@ -263,24 +284,26 @@ DEFINE_ANE_FUNCTION(initFacebook)
     {
         return nil;
     }
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"AppId" UTF8String]); 
+
     NSString *appId = [NSString stringWithUTF8String:(char*)string1];
 
     const uint8_t *string2;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) != FRE_OK)
+    NSString *accessToken = nil;
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) == FRE_OK)
     {
-        return nil;
+        accessToken = [NSString stringWithUTF8String:(char*)string2];
     }
-    NSString *accessToken = [NSString stringWithUTF8String:(char*)string2];
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"accessToken" UTF8String]); 
 
     
     const uint8_t *string3;
-    
-    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) != FRE_OK)
+    NSString *expirationTimestamp = nil;
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) == FRE_OK)
     {
-        return nil;
+         expirationTimestamp = [NSString stringWithUTF8String:(char*)string3];
     }
-    NSString *expirationTimestamp = [NSString stringWithUTF8String:(char*)string3];
-
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"ExpirationToken" UTF8String]); 
     [(AirFacebook*)refToSelf initFacebookWithAppId:appId andAccessToken:accessToken andExpirationTimestamp:expirationTimestamp];
     
     return nil;
@@ -290,6 +313,11 @@ DEFINE_ANE_FUNCTION(initFacebook)
 // extend Access Token if Needed.
 DEFINE_ANE_FUNCTION(extendAccessTokenIfNeeded)
 {
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+
     [(AirFacebook*)refToSelf extendAccessTokenIfNeeded];
     
     FREDispatchStatusEventAsync(context, (uint8_t*)"REFRESH_TOKEN_DONE", (uint8_t*)[@"Success" UTF8String]); 
@@ -301,6 +329,11 @@ DEFINE_ANE_FUNCTION(extendAccessTokenIfNeeded)
 // log out from Facebook
 DEFINE_ANE_FUNCTION(logout)
 {
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+
     [(AirFacebook*)refToSelf logout];
     return nil;
 }
@@ -308,13 +341,20 @@ DEFINE_ANE_FUNCTION(logout)
 // log in
 DEFINE_ANE_FUNCTION(login)
 {
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"login" UTF8String]); 
+
     FREObject arr = argv[0]; // array
     uint32_t arr_len; // array length
     
     FREGetArrayLength(arr, &arr_len);
     
     NSMutableArray* permissions = [[NSMutableArray alloc] init];
-    
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"permissions" UTF8String]); 
     for(int32_t i=arr_len-1; i>=0;i--){
         
         // get an element at index
@@ -333,7 +373,8 @@ DEFINE_ANE_FUNCTION(login)
         [permissions addObject:permission];
 
     }
-    
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"call air facebook" UTF8String]); 
+  
     
     [(AirFacebook*)refToSelf login:[NSArray arrayWithArray:permissions]];
     
@@ -343,6 +384,11 @@ DEFINE_ANE_FUNCTION(login)
 // handle Open URL
 DEFINE_ANE_FUNCTION(handleOpenURL)
 {
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+
     
     uint32_t stringLength;
     const uint8_t *string;
@@ -362,6 +408,11 @@ DEFINE_ANE_FUNCTION(handleOpenURL)
 // makes a call to graph api.
 DEFINE_ANE_FUNCTION(requestWithGraphPath)
 {
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+
     
     uint32_t stringLength;
     const uint8_t *string1;
@@ -380,13 +431,14 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
     NSString *path = [NSString stringWithUTF8String:(char*)string2];
     
     const uint8_t *string3;
-    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) != FRE_OK)
+    NSString *params = nil;
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) == FRE_OK)
     {
-        return nil;
+        params = [NSString stringWithUTF8String:(char*)string3];
     }
-    if (string3 != NULL)
+
+    if (params != nil)
     {
-        NSString *params = [NSString stringWithUTF8String:(char*)string3];
         if ([params length] > 3)
         {
             NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
@@ -411,6 +463,11 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
 // open a Facebook Dialog
 DEFINE_ANE_FUNCTION(openDialog)
 {
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+
     
     uint32_t stringLength;
     
@@ -420,22 +477,24 @@ DEFINE_ANE_FUNCTION(openDialog)
         return nil;
     }
     NSString *method = [NSString stringWithUTF8String:(char*)string1];
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"Method" UTF8String]); 
+
     
     const uint8_t *string2;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) != FRE_OK)
+    NSString *message = @"";
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) == FRE_OK)
     {
-        return nil;
+       message = [NSString stringWithUTF8String:(char*)string2];
     }
-    NSString *message = [NSString stringWithUTF8String:(char*)string2];
-
+     
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"Message" UTF8String]); 
 
     const uint8_t *string3;
-    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) != FRE_OK)
+    NSString* toUsers = nil;
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) == FRE_OK)
     {
-        return nil;
+        toUsers = [NSString stringWithUTF8String:(char*)string3];
     }
-    NSString* toUsers = [NSString stringWithUTF8String:(char*)string3];
-    
     
     NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
     [params setValue:message forKey:@"message"];
@@ -446,14 +505,15 @@ DEFINE_ANE_FUNCTION(openDialog)
         [params setObject: @"1" forKey:@"frictionless"];
     }
     
-    
-    if (refToSelf == nil)
+    const uint8_t *string4;
+    NSString *callbackName = nil;
+    if (FREGetObjectAsUTF8(argv[3], &stringLength, &string4) == FRE_OK)
     {
-        [[AirFacebook alloc] init];
+        callbackName = [NSString stringWithUTF8String:(char*)string4];
     }
-
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[callbackName UTF8String]); 
     
-    [(AirFacebook*)refToSelf dialog:method andParams:params];    
+    [(AirFacebook*)refToSelf dialog:method andParams:params andCallback:callbackName];    
     return nil;
 }
 

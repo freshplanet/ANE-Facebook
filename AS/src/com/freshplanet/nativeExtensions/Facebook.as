@@ -317,12 +317,34 @@ package com.freshplanet.nativeExtensions
 			}
 		}
 		
-		public function post(message:String):void
+		/**
+		 * Post a message to user wall. 
+		 * @param message message used (it is currently not supported by fb)
+		 * @param callback callback should expect an object. This object has the attribute params set when the post is performed (i.e query string sent back by facebook), 
+		 * cancel set to true if the post is canceled, error set to the error description if sth went wrong.
+		 * 
+		 */
+		public function post(message:String, callback:Function = null):void
 		{
 			if (this.isFacebookSupported)
 			{
-				trace('inviting Facebook friends');
-				extCtx.call('openDialog', "feed", message);
+				trace('post message', message);
+
+				var date:Date = new Date();
+				var callbackName:String = date.time.toString();
+				if (_callbacks.hasOwnProperty(callbackName))
+				{
+					delete _callbacks[callbackName]
+				}
+				_callbacks[callbackName] = callback;
+
+				extCtx.call('openDialog', "feed", message, null, callbackName);
+			} else
+			{
+				if (callback != null)
+				{
+					callback(null);
+				}
 			}
 
 		}
@@ -387,17 +409,39 @@ package com.freshplanet.nativeExtensions
 
 		
 		
-		public function inviteFriends(message:String, friendsArray:Array = null):void
+		/**
+		 * Send invite requests to user friends.
+		 * @param message message that will appear on request
+		 * @param friendsArray array of friends.
+		 * @param callback callback should expect an object. This object has the attribute params set when the invite is performed (i.e query string sent back by facebook), 
+		 * cancel set to true if the invite is canceled, error set to the error description if sth went wrong.
+		 * 
+		 */
+		public function inviteFriends(message:String, friendsArray:Array = null, callback:Function = null):void
 		{
 			if (this.isFacebookSupported)
-			{
-				trace('inviting Facebook friends');
+			{				
+				var date:Date = new Date();
+				var callbackName:String = date.time.toString();
+				if (_callbacks.hasOwnProperty(callbackName))
+				{
+					delete _callbacks[callbackName]
+				}
+				_callbacks[callbackName] = callback;
+
+				trace('inviting Facebook friends', message);
 				if (friendsArray != null)
 				{
-					extCtx.call('openDialog', "apprequests", message, friendsArray.join());
+					extCtx.call('openDialog', "apprequests", message, friendsArray.join(), callbackName);
 				} else
 				{
-					extCtx.call('openDialog', "apprequests", message);
+					extCtx.call('openDialog', "apprequests", message, null, callbackName);
+				}
+			} else
+			{
+				if (callback != null)
+				{
+					callback(null);
 				}
 			}
 		}
@@ -446,6 +490,9 @@ package com.freshplanet.nativeExtensions
 					e = new FacebookEvent(FacebookEvent.USER_LOGGED_IN_ERROR_EVENT);
 					e.message = event.level;
 					break;
+				case 'LOGGING':
+					trace(event.level);
+					break;
 				case 'DELETE_INVITE':
 					trace(event.level);
 					break;
@@ -465,7 +512,10 @@ package com.freshplanet.nativeExtensions
 						{
 							trace(e);
 						}
-						callback(data);
+						if (callback != null)
+						{
+							callback(data);
+						}
 						delete _callbacks[event.code];
 					}
 			}
