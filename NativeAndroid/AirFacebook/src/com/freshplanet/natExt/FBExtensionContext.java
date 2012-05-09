@@ -39,14 +39,16 @@ public class FBExtensionContext extends FREContext {
 
 	public static Facebook facebook;
 	public static FBLoginActivity facebookLoginActivity;
+	private static String TAG = "as3fb";
+
 	
 	public FBExtensionContext() {
-		Log.d("as3c2dm", "Context.C2DMExtensionContext");
+		Log.d(TAG, "Context.FBExtensionContext");
 	}
 	
 	@Override
 	public void dispose() {
-		Log.d("as3c2dm", "Context.dispose");
+		Log.d(TAG, "Context.dispose");
 		FBExtension.context = null;
 	}
 
@@ -55,7 +57,7 @@ public class FBExtensionContext extends FREContext {
 	 */
 	@Override
 	public Map<String, FREFunction> getFunctions() {
-		Log.d("as3c2dm", "Context.getFunctions");
+		Log.d(TAG, "Context.getFunctions");
 		Map<String, FREFunction> functionMap = new HashMap<String, FREFunction>();
 		functionMap.put("initFacebook", new InitFacebookFunction());
 		functionMap.put("login", new LoginFacebookFunction());

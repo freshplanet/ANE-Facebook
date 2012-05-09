@@ -59,15 +59,12 @@
 	</target>
 
 
-	<target name="AndroidCompress" depends="iOSCopy">
-		 <jar destfile="${build}/Android/libAirFacebook.jar" 
-			basedir="NativeAndroid/"
-			excludes="assets res src"
-		/>
+	<target name="AndroidCopy" depends="iOSCopy">
+		<copy file="${lib.jar}" todir="${build}/Android"/>
 	</target>
 
 
-	<target name="unzipSwf" depends="AndroidCompress">
+	<target name="unzipSwf" depends="AndroidCopy">
 	        <mkdir dir="temp"/>
 		<unzip src="${lib.swc}" dest="temp"/>
 		<copy file="temp/library.swf" todir="${build}/Android"/>

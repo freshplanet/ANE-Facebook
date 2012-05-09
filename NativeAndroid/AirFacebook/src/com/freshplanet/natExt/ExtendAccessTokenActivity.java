@@ -29,12 +29,14 @@ import android.util.Log;
 
 public class ExtendAccessTokenActivity extends Activity implements ServiceListener {
 
+	private static String TAG = "as3fb";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d("as3fb", "create access activity");
+		Log.d(TAG, "create access activity");
 		super.onCreate(savedInstanceState);
 		
-		Log.d("as3fb", "extend access token if needed");
+		Log.d(TAG, "extend access token if needed");
 		
 		
 		boolean res = false;
@@ -49,56 +51,56 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 			res = FBExtensionContext.facebook.extendAccessTokenIfNeeded( this, this );
 		}
 		
-		Log.d("as3fb", "res : "+Boolean.toString(res));
+		Log.d(TAG, "res : "+Boolean.toString(res));
 		
 		if (!res)
 		{
 			this.finish();
 			FBExtension.context.dispatchStatusEventAsync("USER_LOGGED_IN", FBExtensionContext.facebook.getAccessToken()+'&'+Long.toString(FBExtensionContext.facebook.getAccessExpires()));
 		}
-		Log.d("as2fb", "doneLogin");
+		Log.d(TAG, "doneLogin");
 	}
 	
 	@Override
 	protected void onStart()
 	{
-		Log.d("as3fb", "start access activity");
+		Log.d(TAG, "start access activity");
 		super.onStart();
 	}
     
 	@Override
     protected void onRestart()
 	{
-		Log.d("as3fb", "restart access activity");
+		Log.d(TAG, "restart access activity");
 		super.onRestart();
 	}
 
 	@Override
     protected void onResume(){
-		Log.d("as3fb", "resume access activity");
+		Log.d(TAG, "resume access activity");
 		super.onResume();
 	}
 
 	@Override
     protected void onPause(){
-		Log.d("as3fb", "pause access activity");
+		Log.d(TAG, "pause access activity");
 		super.onPause();
 	}
 
 	@Override
     protected void onStop(){
-		Log.d("as3fb", "stop access activity");
+		Log.d(TAG, "stop access activity");
 		super.onStop();
 	}
 
 	@Override
     protected void onDestroy(){
-		Log.d("as3fb", "destroy access activity");
+		Log.d(TAG, "destroy access activity");
 		super.onDestroy();
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d("as3fb", "on activity result");
+		Log.d(TAG, "on activity result");
 		FBExtensionContext.facebook.authorizeCallback(requestCode, resultCode, data);
 		finish();
 	}

@@ -187,7 +187,7 @@ package com.freshplanet.nativeExtensions
 						extCtx.addEventListener(StatusEvent.STATUS, onStatus);
 					} else
 					{
-						trace('[Facebook] extCtx is null.');
+						trace('[Facebook Error] extCtx is null.');
 					}
 				}
 				_instance = this;
@@ -496,7 +496,7 @@ package com.freshplanet.nativeExtensions
 							}
 						} catch (e:Error)
 						{
-							trace("[Facebook] ERROR ", e);
+							trace("[Facebook Error] ERROR ", e);
 						}
 						if (callback != null)
 						{

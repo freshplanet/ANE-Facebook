@@ -29,9 +29,11 @@ import android.util.Log;
 
 public class FBDialogActivity extends Activity implements DialogListener {
 
+	private static String TAG = "as3fb";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d("as3fb", "create fb activity");
+		Log.d(TAG, "create fb activity");
 		super.onCreate(savedInstanceState);
 		
 		Bundle values = this.getIntent().getExtras();
@@ -56,67 +58,63 @@ public class FBDialogActivity extends Activity implements DialogListener {
 	@Override
 	protected void onStart()
 	{
-		Log.d("as3fb", "start fb activity");
+		Log.d(TAG, "start fb activity");
 		super.onStart();
 	}
     
 	@Override
     protected void onRestart()
 	{
-		Log.d("as3fb", "restart fb activity");
+		Log.d(TAG, "restart fb activity");
 		super.onRestart();
 	}
 
 	@Override
     protected void onResume(){
-		Log.d("as3fb", "resume fb activity");
+		Log.d(TAG, "resume fb activity");
 		super.onResume();
 	}
 
 	@Override
     protected void onPause(){
-		Log.d("as3fb", "pause fb activity");
+		Log.d(TAG, "pause fb activity");
 		super.onPause();
 	}
 
 	@Override
     protected void onStop(){
-		Log.d("as3fb", "stop fb activity");
+		Log.d(TAG, "stop fb activity");
 		super.onStop();
 	}
 
 	@Override
     protected void onDestroy(){
-		Log.d("as3fb", "destroy fb activity");
+		Log.d(TAG, "destroy fb activity");
 		super.onDestroy();
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d("as3fb", "on activity result");
+		Log.d(TAG, "on activity result");
 		finish();
 	}
 
 	@Override
 	public void onComplete(Bundle values) {
-		// TODO Auto-generated method stub
 		finish();
 	}
 
 	@Override
 	public void onFacebookError(FacebookError e) {
-		// TODO Auto-generated method stub
 		finish();
 	}
 
 	@Override
 	public void onError(DialogError e) {
-		// TODO Auto-generated method stub
 		finish();
 	}
 
 	@Override
 	public void onCancel() {
-		// TODO Auto-generated method stub
 		finish();
 	}
 
