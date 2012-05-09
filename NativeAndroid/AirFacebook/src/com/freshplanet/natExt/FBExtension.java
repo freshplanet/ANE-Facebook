@@ -26,12 +26,13 @@ import com.adobe.fre.FREExtension;
 public class FBExtension implements FREExtension {
 
 	public static FREContext context;
-	
+	private static String TAG = "as3fb";
+
 	/**
 	 * Create the context (AS to Java).
 	 */
 	public FREContext createContext(String extId) {
-		Log.d("as3c2dm", "createContext extId: " + extId);
+		Log.d(TAG, "createContext ");
 		return context = new FBExtensionContext();
 	}
 
@@ -39,7 +40,7 @@ public class FBExtension implements FREExtension {
 	 * Dispose the context.
 	 */
 	public void dispose() {
-		Log.d("as3c2dm", "dispose");
+		Log.d(TAG, "dispose");
 		context = null;
 	}
 	
@@ -48,6 +49,6 @@ public class FBExtension implements FREExtension {
 	 * Doesn't do anything for now.
 	 */
 	public void initialize() {
-		Log.d("as3c2dm", "initialize");
+		Log.d(TAG, "initialize");
 	}
 }
