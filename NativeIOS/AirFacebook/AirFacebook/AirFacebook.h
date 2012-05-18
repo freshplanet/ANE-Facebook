@@ -68,3 +68,5 @@ FREObject requestWithGraphPath(FREContext ctx, void* funcData, uint32_t argc, FR
 FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+FREObject postOGAction(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);

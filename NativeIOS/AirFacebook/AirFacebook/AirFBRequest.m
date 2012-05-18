@@ -49,7 +49,7 @@
 {
     NSString* dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
-    if ([self context] != nil)
+    if ([self context] != nil && [self name] != nil)
     {
         FREDispatchStatusEventAsync([self context], (uint8_t*)[[self name] UTF8String], (uint8_t*)[dataString UTF8String]); 
     } 

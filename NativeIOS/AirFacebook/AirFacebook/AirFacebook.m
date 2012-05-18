@@ -582,7 +582,86 @@ DEFINE_ANE_FUNCTION(deleteRequests)
     return nil;
 }
 
+// make a post to the 
+DEFINE_ANE_FUNCTION(postOGAction)
+{
 
+    uint32_t stringLength;
+    
+    const uint8_t *actionName;
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &actionName) != FRE_OK)
+    {
+        return nil;
+    }
+    NSString *action = [NSString stringWithUTF8String:(char*)actionName];
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[action UTF8String]); 
+    
+    
+    FREObject arrKey = argv[1]; // array
+    FREObject arrValue = argv[2];
+    uint32_t arr_len = 0; // array length
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    if (arrKey != nil)
+    {
+        
+        if (FREGetArrayLength(arrKey, &arr_len) != FRE_OK)
+        {
+            arr_len = 0;
+        }
+        
+        for(int32_t i=arr_len-1; i>=0;i--){
+            
+            // get an element at index
+            FREObject key;
+            if (FREGetArrayElementAt(arrKey, i, &key) != FRE_OK)
+            {
+                continue;
+            }
+            
+            FREObject value;
+            if (FREGetArrayElementAt(arrValue, i, &value) != FRE_OK)
+            {
+                continue;
+            }
+
+            // convert it to NSString
+            uint32_t stringLength;
+            const uint8_t *keyString;
+            if (FREGetObjectAsUTF8(key, &stringLength, &keyString) != FRE_OK)
+            {
+                continue;
+            }
+
+            NSString *keyObject = [NSString stringWithUTF8String:(char*)keyString];
+
+            FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[keyObject UTF8String]); 
+
+            
+            const uint8_t *valueString;
+            if (FREGetObjectAsUTF8(value, &stringLength, &valueString) != FRE_OK)
+            {
+                continue;
+            }
+            
+            NSString *valueObject = [NSString stringWithUTF8String:(char*)valueString];
+            
+            FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[valueObject UTF8String]); 
+
+            
+            [params setValue:valueObject forKey:keyObject];
+        }
+        
+    }
+    
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+    
+    [(AirFacebook*)refToSelf requestWithGraphPath:action andParams:params andHttpMethod:@"POST" andCallback:nil];
+        
+    return nil;
+}
 
 // ContextInitializer()
 //
@@ -593,7 +672,7 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     
     
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 8;
+    NSInteger nbFuntionsToLink = 9;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -630,6 +709,11 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     func[7].name = (const uint8_t*) "deleteRequests";
     func[7].functionData = NULL;
     func[7].function = &deleteRequests;
+    
+    func[8].name = (const uint8_t*) "postOGAction";
+    func[8].functionData = NULL;
+    func[8].function = &postOGAction;
+
     
     *functionsToSet = func;
     
