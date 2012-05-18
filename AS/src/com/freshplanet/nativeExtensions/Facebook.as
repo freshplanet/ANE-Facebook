@@ -344,6 +344,27 @@ package com.freshplanet.nativeExtensions
 			}
 		}
 		
+		
+		
+		public function postOGAction(namespace:String, action:String, params:Object):void
+		{
+			if (this.isFacebookSupported)
+			{
+				var nsAction:String = namespace+":"+action;
+				var paramsKey:Array = [];
+				var paramsValue:Array = [];
+				for (var key:String in params)
+				{
+					paramsKey.push(key);
+					paramsValue.push(params[key].toString());
+				}
+				
+				trace('[Facebook] postOGAction ', "me/"+nsAction, paramsKey, paramsValue);
+				extCtx.call('postOGAction', "me/"+nsAction, paramsKey, paramsValue);
+
+			}
+		}
+		
 		/**
 		 * Get Facebook SSO access token (can be used for 2 months) 
 		 * @return 

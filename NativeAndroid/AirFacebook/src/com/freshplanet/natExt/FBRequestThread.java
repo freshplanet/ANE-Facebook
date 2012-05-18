@@ -82,7 +82,7 @@ public class FBRequestThread extends Thread {
 			context.dispatchStatusEventAsync(callbackName, e.getMessage());
 		}
 		
-		if (data != null)
+		if (data != null && callbackName != null)
 		{
 			context.dispatchStatusEventAsync(callbackName, data);
 		}
