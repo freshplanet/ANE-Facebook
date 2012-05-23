@@ -18,12 +18,17 @@
 
 package com.freshplanet.natExt;
 
+import com.adobe.fre.FREContext;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class FBLoginActivity extends Activity {
+public class FBLoginActivity extends Activity implements DialogListener {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +46,10 @@ public class FBLoginActivity extends Activity {
 		}
 		
 		if(!FBExtensionContext.facebook.isSessionValid()) {
-			FBExtensionContext.facebook.authorize(this, permissions, new FBLoginDialogListener());
-
+			FBExtensionContext.facebook.authorize(this, permissions, this);
+		} else
+		{
+			finish();
 		}
 		Log.d("as2fb", "doneLogin");
 	}
@@ -90,6 +97,41 @@ public class FBLoginActivity extends Activity {
 		Log.d("as3fb", "on activity result");
 		//super.onActivityResult(requestCode, resultCode, data);
 		FBExtensionContext.facebook.authorizeCallback(requestCode, resultCode, data);
+		finish();
+	}
+
+	@Override
+	public void onComplete(Bundle values) {
+		String access_token = FBExtensionContext.facebook.getAccessToken();
+		long access_expires = FBExtensionContext.facebook.getAccessExpires();
+		
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOGGED_IN", access_token+"&"+Long.toString(access_expires));
+
+		finish();
+	}
+
+	@Override
+	public void onFacebookError(FacebookError e) {
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOG_IN_FB_ERROR", e.getMessage());
+		
+		finish();
+	}
+
+	@Override
+	public void onError(DialogError e) {
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOG_IN_ERROR", e.getMessage());
+		
+		finish();
+	}
+
+	@Override
+	public void onCancel() {
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
+		
 		finish();
 	}
 
