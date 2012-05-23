@@ -19,6 +19,8 @@
 package com.freshplanet.natExt;
 
 import com.adobe.fre.FREContext;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.Facebook.ServiceListener;
 import com.facebook.android.FacebookError;
 
@@ -27,7 +29,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class ExtendAccessTokenActivity extends Activity implements ServiceListener {
+public class ExtendAccessTokenActivity extends Activity implements ServiceListener, DialogListener {
 
 	private static String TAG = "as3fb";
 	
@@ -44,7 +46,7 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 		if (!FBExtensionContext.facebook.isSessionValid())
 		{
 			res = true;
-			FBExtensionContext.facebook.authorize(this, new FBLoginDialogListener());
+			FBExtensionContext.facebook.authorize(this, this);
 		}
 		else if (FBExtensionContext.facebook.shouldExtendAccessToken())
 		{
@@ -102,6 +104,7 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG, "on activity result");
 		FBExtensionContext.facebook.authorizeCallback(requestCode, resultCode, data);
+		
 		finish();
 	}
 
@@ -112,6 +115,7 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 		
 		FREContext freContext = FBExtension.context;
 		freContext.dispatchStatusEventAsync("ACCESS_TOKEN_REFRESHED", access_token+"&"+Long.toString(access_expires));
+		
 		finish();
 	}
 
@@ -119,6 +123,7 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 	public void onFacebookError(FacebookError e) {
 		FREContext freContext = FBExtension.context;
 		freContext.dispatchStatusEventAsync("ACCESS_TOKEN_FACEBOOK_ERROR", "success");
+		
 		finish();
 	}
 
@@ -126,6 +131,24 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 	public void onError(Error e) {
 		FREContext freContext = FBExtension.context;
 		freContext.dispatchStatusEventAsync("ACCESS_TOKEN_ERROR", "success");
+		
+		finish();
+	}
+
+	@Override
+	public void onError(DialogError e) {
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOG_IN_ERROR", e.getMessage());
+		
+		finish();
+
+	}
+
+	@Override
+	public void onCancel() {
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
+		
 		finish();
 	}
 

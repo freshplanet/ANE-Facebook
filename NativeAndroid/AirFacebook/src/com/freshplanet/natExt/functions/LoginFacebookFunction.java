@@ -98,7 +98,6 @@ public class LoginFacebookFunction implements FREFunction {
 			}
 		}
 				
-		Log.d("as3fb", permissions.toString());
 		
 		Log.d("as2fb", "startLogin2");
 		Intent i = new Intent(arg0.getActivity().getApplicationContext(), FBLoginActivity.class);
