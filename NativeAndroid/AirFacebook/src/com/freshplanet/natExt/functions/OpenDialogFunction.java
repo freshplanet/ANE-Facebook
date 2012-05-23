@@ -82,6 +82,7 @@ public class OpenDialogFunction implements FREFunction{
 				e.printStackTrace();
 			}
 		}
+				
 		
 		Log.d("as2fb", "creating bundle...");
 		

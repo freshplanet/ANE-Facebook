@@ -18,14 +18,14 @@
 
 package com.freshplanet.natExt;
 
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
 
 public class FBDialogActivity extends Activity implements DialogListener {
 
@@ -35,6 +35,9 @@ public class FBDialogActivity extends Activity implements DialogListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "create fb activity");
 		super.onCreate(savedInstanceState);
+			
+		setContentView(R.layout.fb_main);
+		
 		
 		Bundle values = this.getIntent().getExtras();
 		

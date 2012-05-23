@@ -18,15 +18,15 @@
 
 package com.freshplanet.natExt;
 
-import com.adobe.fre.FREContext;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.adobe.fre.FREContext;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
 
 public class FBLoginActivity extends Activity implements DialogListener {
 	
