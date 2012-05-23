@@ -496,6 +496,14 @@ DEFINE_ANE_FUNCTION(openDialog)
         toUsers = [NSString stringWithUTF8String:(char*)string3];
     }
     
+    const uint8_t *dataParam;
+    NSString* paramString = nil;
+    if (FREGetObjectAsUTF8(argv[4], &stringLength, &dataParam) == FRE_OK)
+    {
+        paramString = [NSString stringWithUTF8String:(char*)dataParam];
+    }
+
+    
     NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
     [params setValue:message forKey:@"message"];
     
@@ -504,6 +512,10 @@ DEFINE_ANE_FUNCTION(openDialog)
         [params setValue:toUsers forKey:@"to"];
         [params setObject: @"1" forKey:@"frictionless"];
     }
+    if (paramString != nil) {
+        [params setValue:paramString forKey:@"data"];
+    }
+    
     
     const uint8_t *string4;
     NSString *callbackName = nil;

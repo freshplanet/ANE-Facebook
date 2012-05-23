@@ -395,10 +395,11 @@ package com.freshplanet.nativeExtensions
 		 * @param message message that will appear on request
 		 * @param friendsArray array of friends.
 		 * @param callback callback should expect an object. This object has the attribute params set when the invite is performed (i.e query string sent back by facebook), 
+		 * @param data string sent as param
 		 * cancel set to true if the invite is canceled, error set to the error description if sth went wrong.
 		 * 
 		 */
-		public function inviteFriends(message:String, friendsArray:Array = null, callback:Function = null):void
+		public function inviteFriends(message:String, friendsArray:Array = null, callback:Function = null, data:String = null):void
 		{
 			if (this.isFacebookSupported)
 			{				
@@ -413,10 +414,10 @@ package com.freshplanet.nativeExtensions
 				trace('[Facebook] openDialog - apprequests');
 				if (friendsArray != null)
 				{
-					extCtx.call('openDialog', "apprequests", message, friendsArray.join(), callbackName);
+					extCtx.call('openDialog', "apprequests", message, friendsArray.join(), callbackName, data);
 				} else
 				{
-					extCtx.call('openDialog', "apprequests", message, null, callbackName);
+					extCtx.call('openDialog', "apprequests", message, null, callbackName, data);
 				}
 			} else
 			{
@@ -442,7 +443,7 @@ package com.freshplanet.nativeExtensions
 				}
 				_callbacks[callbackName] = callback;
 
-				extCtx.call('openDialog', "feed", message, null, callbackName);
+				extCtx.call('openDialog', "feed", message, null, callbackName, null);
 			} else
 			{
 				if (callback != null)

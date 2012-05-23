@@ -7,12 +7,12 @@
     <uses-sdk android:minSdkVersion="8" />
 
     <application
-        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         
+        
            
-        <activity android:name=".FBLoginActivity"></activity>
-        <activity android:name=".FBDialogActivity"></activity>
+        <activity android:name=".FBLoginActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+        <activity android:name=".FBDialogActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
         <activity android:name=".ExtendAccessTokenActivity"></activity>
     </application>
 

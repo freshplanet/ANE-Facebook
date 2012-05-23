@@ -28,6 +28,7 @@
 	<target name="init" depends="clean">
 		<mkdir dir="${build}"/>
 		<mkdir dir="${build}/Android"/>
+		<mkdir dir="${build}/Android/res"/>
 		<mkdir dir="${build}/Default"/>
 		<mkdir dir="${build}/iOS"/>
 	</target>	
@@ -60,6 +61,11 @@
 
 
 	<target name="AndroidCopy" depends="iOSCopy">
+		<copy todir="${build}/Android/res">
+			<fileset dir="${res.jar}">
+				<exclude name="**/*.png"/>
+			</fileset>
+  		</copy>
 		<copy file="${lib.jar}" todir="${build}/Android"/>
 	</target>
 
