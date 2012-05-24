@@ -21,9 +21,9 @@ package com.freshplanet.natExt;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import com.adobe.fre.FREContext;
-
 import android.os.Bundle;
+
+import com.adobe.fre.FREContext;
 
 public class FBRequestThread extends Thread {
 

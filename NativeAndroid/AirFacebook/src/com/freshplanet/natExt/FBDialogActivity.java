@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook.DialogListener;
@@ -35,9 +36,10 @@ public class FBDialogActivity extends Activity implements DialogListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "create fb activity");
 		super.onCreate(savedInstanceState);
-			
-		setContentView(R.layout.fb_main);
 		
+		requestWindowFeature(Window.FEATURE_LEFT_ICON);
+		setContentView(R.layout.fb_main);
+		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,R.drawable.ic_launcher2);
 		
 		Bundle values = this.getIntent().getExtras();
 		
