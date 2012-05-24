@@ -429,7 +429,7 @@ package com.freshplanet.nativeExtensions
 		}
 		
 		/** Open a feed dialog to post the given message */
-		public function post(message:String, callback:Function = null):void
+		public function post(message:String, name:String, picture:String, link:String, caption:String, description:String, callback:Function = null):void
 		{
 			if (this.isFacebookSupported)
 			{
@@ -443,7 +443,7 @@ package com.freshplanet.nativeExtensions
 				}
 				_callbacks[callbackName] = callback;
 
-				extCtx.call('openDialog', "feed", message, null, callbackName, null);
+				extCtx.call('openFeedDialog', "feed", message, name, picture, link, caption, description, callbackName);
 			} else
 			{
 				if (callback != null)
