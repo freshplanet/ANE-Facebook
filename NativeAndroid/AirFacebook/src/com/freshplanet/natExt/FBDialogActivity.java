@@ -46,7 +46,12 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		String method = values.getString("method");
 		String message = values.getString("message");
 		String to = values.getString("to");
-		
+		String name = values.getString("name");
+		String picture = values.getString("picture");
+		String link = values.getString("link");
+		String caption = values.getString("caption");
+		String description = values.getString("description");
+
 		
 		Bundle parameters = new Bundle();
 		parameters.putString("message", message);
@@ -54,6 +59,27 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		if (to != null && to.length() > 0)
 		{
 			parameters.putString("to", to);
+		}
+
+		if (name != null)
+		{
+			parameters.putString("name", name);
+		}
+		if (picture != null)
+		{
+			parameters.putString("picture", picture);
+		}
+		if (link != null)
+		{
+			parameters.putString("link", link);
+		}
+		if (caption != null)
+		{
+			parameters.putString("caption", caption);
+		}
+		if (description != null)
+		{
+			parameters.putString("description", description);
 		}
 
 		FBExtensionContext.facebook.dialog(this, method, parameters, this);

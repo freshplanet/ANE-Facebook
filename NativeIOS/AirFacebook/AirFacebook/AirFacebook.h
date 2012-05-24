@@ -70,3 +70,7 @@ FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject ar
 FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject postOGAction(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+FREObject openFeedDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+

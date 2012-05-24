@@ -529,6 +529,98 @@ DEFINE_ANE_FUNCTION(openDialog)
     return nil;
 }
 
+// open a Facebook Dialog
+DEFINE_ANE_FUNCTION(openFeedDialog)
+{
+    if (refToSelf == nil)
+    {
+        [[AirFacebook alloc] init];
+    }
+    
+    
+    uint32_t stringLength;
+    
+    const uint8_t *string1;
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &string1) != FRE_OK)
+    {
+        return nil;
+    }
+    NSString *method = [NSString stringWithUTF8String:(char*)string1];
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"Method" UTF8String]); 
+    
+    
+    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+
+    const uint8_t *string2;
+    NSString *message = @"";
+    if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) == FRE_OK)
+    {
+        message = [NSString stringWithUTF8String:(char*)string2];
+        [params setValue:message forKey:@"message"];
+
+    }
+    
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"Message" UTF8String]); 
+    
+    const uint8_t *string3;
+    NSString* name = nil;
+    if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) == FRE_OK)
+    {
+        name = [NSString stringWithUTF8String:(char*)string3];
+        [params setValue:name forKey:@"name"];
+
+    }
+    
+    const uint8_t *string4;
+    NSString* picture = nil;
+    if (FREGetObjectAsUTF8(argv[3], &stringLength, &string4) == FRE_OK)
+    {
+        picture = [NSString stringWithUTF8String:(char*)string4];
+        [params setValue:picture forKey:@"picture"];
+
+    }
+
+    const uint8_t *string5;
+    NSString* link = nil;
+    if (FREGetObjectAsUTF8(argv[4], &stringLength, &string5) == FRE_OK)
+    {
+        link = [NSString stringWithUTF8String:(char*)string5];
+        [params setValue:link forKey:@"link"];
+
+    }
+
+    const uint8_t *string6;
+    NSString* caption = nil;
+    if (FREGetObjectAsUTF8(argv[5], &stringLength, &string6) == FRE_OK)
+    {   
+        caption = [NSString stringWithUTF8String:(char*)string6];
+        [params setValue:caption forKey:@"caption"];
+
+    }
+
+    const uint8_t *string7;
+    NSString* description = nil;
+    if (FREGetObjectAsUTF8(argv[6], &stringLength, &string7) == FRE_OK)
+    {
+        description = [NSString stringWithUTF8String:(char*)string7];
+        [params setValue:description forKey:@"description"];
+
+    }
+    
+    
+    const uint8_t *string8;
+    NSString *callbackName = nil;
+    if (FREGetObjectAsUTF8(argv[7], &stringLength, &string8) == FRE_OK)
+    {
+        callbackName = [NSString stringWithUTF8String:(char*)string4];
+    }
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[callbackName UTF8String]); 
+    
+    [(AirFacebook*)refToSelf dialog:method andParams:params andCallback:callbackName];    
+    return nil;
+}
+
+
 // delete a list of request
 DEFINE_ANE_FUNCTION(deleteRequests)
 {
@@ -684,7 +776,7 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     
     
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 9;
+    NSInteger nbFuntionsToLink = 10;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -725,6 +817,10 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     func[8].name = (const uint8_t*) "postOGAction";
     func[8].functionData = NULL;
     func[8].function = &postOGAction;
+
+    func[9].name = (const uint8_t*) "openFeedDialog";
+    func[9].functionData = NULL;
+    func[9].function = &openFeedDialog;
 
     
     *functionsToSet = func;
