@@ -22,6 +22,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Window;
 
 import com.adobe.fre.FREContext;
 import com.facebook.android.DialogError;
@@ -34,6 +36,10 @@ public class FBLoginActivity extends Activity implements DialogListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d("as3fb", "create fb activity");
 		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_LEFT_ICON);
+		setContentView(R.layout.fb_main);
+		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,R.drawable.ic_launcher2);
 		
 		Bundle values = this.getIntent().getExtras();
 		
@@ -135,6 +141,24 @@ public class FBLoginActivity extends Activity implements DialogListener {
 		finish();
 	}
 
+	@Override
+	public void onBackPressed() {
+		Log.d("as3fb", "back pressed fb activity");
+
+		FREContext freContext = FBExtension.context;
+		freContext.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
+
+		// do something on back.
+		finish();
+	}
 	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    	onBackPressed();
+	        return true;
+	    }
+	    return super.onKeyUp(keyCode, event);
+	}
 	
 }
