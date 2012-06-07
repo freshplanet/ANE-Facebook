@@ -38,8 +38,9 @@ package com.freshplanet.nativeExtensions
 		private static var _instance:Facebook;
 
 		private var extCtx:ExtensionContext = null;
-		
+		/** Facebook access token*/
 		private var accessToken:String;
+		/** Timestamp in ms*/
 		private var expirationTimeStamp:String;
 		private var lastAccessTokenTimeStamp:int;
 		
@@ -429,7 +430,7 @@ package com.freshplanet.nativeExtensions
 		}
 		
 		/** Open a feed dialog to post the given message */
-		public function post(message:String, name:String, picture:String, link:String, caption:String, description:String, callback:Function = null):void
+		public function post(message:String, name:String, picture:String, link:String, caption:String, description:String, friendFacebookId:String = null, callback:Function = null):void
 		{
 			if (this.isFacebookSupported)
 			{
@@ -443,7 +444,8 @@ package com.freshplanet.nativeExtensions
 				}
 				_callbacks[callbackName] = callback;
 
-				extCtx.call('openFeedDialog', "feed", message, name, picture, link, caption, description, callbackName);
+				
+				extCtx.call('openFeedDialog', "feed", message, name, picture, link, caption, description, friendFacebookId, callbackName);
 			} else
 			{
 				if (callback != null)

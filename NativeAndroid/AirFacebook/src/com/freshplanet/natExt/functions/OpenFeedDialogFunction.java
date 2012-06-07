@@ -22,6 +22,7 @@ public class OpenFeedDialogFunction implements FREFunction {
 		String link = null;
 		String caption = null;
 		String description = null;
+		String friendsCsv = null;
 		
 		//method
 		try {
@@ -39,6 +40,11 @@ public class OpenFeedDialogFunction implements FREFunction {
 
 			description = arg1[6].getAsString();
 			
+			if (arg1.length > 8)
+			{
+				friendsCsv = arg1[7].getAsString();
+			}
+		
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 			return null;
@@ -68,7 +74,8 @@ public class OpenFeedDialogFunction implements FREFunction {
 		i.putExtra("link", link);
 		i.putExtra("caption", caption);
 		i.putExtra("description", description);
-
+		i.putExtra("to", friendsCsv);
+		i.putExtra("frictionless", false);
 		arg0.getActivity().startActivity(i);
 		
 		return null;

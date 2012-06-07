@@ -51,11 +51,15 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		String link = values.getString("link");
 		String caption = values.getString("caption");
 		String description = values.getString("description");
-
+		Boolean isFrictionless = values.getBoolean("frictionless", true);
 		
 		Bundle parameters = new Bundle();
 		parameters.putString("message", message);
-		parameters.putString("frictionless","1");
+		
+		if (isFrictionless)
+		{
+			parameters.putString("frictionless","1");
+		}
 		if (to != null && to.length() > 0)
 		{
 			parameters.putString("to", to);
@@ -82,6 +86,8 @@ public class FBDialogActivity extends Activity implements DialogListener {
 			parameters.putString("description", description);
 		}
 
+		
+		
 		FBExtensionContext.facebook.dialog(this, method, parameters, this);
 
 	}

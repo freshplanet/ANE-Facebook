@@ -56,7 +56,7 @@ FREContext AirFBCtx = nil;
     if (accessToken != nil && expirationTimestamp != nil)
     {
         facebook.accessToken = accessToken;
-        facebook.expirationDate = [NSDate dateWithTimeIntervalSince1970:[expirationTimestamp doubleValue]];
+        facebook.expirationDate = [NSDate dateWithTimeIntervalSince1970:[expirationTimestamp doubleValue]/1000];
     }
     
 }
@@ -86,6 +86,7 @@ FREContext AirFBCtx = nil;
         if (AirFBCtx != nil)
         {
             FREDispatchStatusEventAsync(AirFBCtx, (uint8_t*)"LOGGING", (uint8_t*)[@"Session valid" UTF8String]); 
+            [self fbDidLogin];
         }
 
     }
@@ -539,7 +540,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
     
     
     uint32_t stringLength;
-    
+    // method
     const uint8_t *string1;
     if (FREGetObjectAsUTF8(argv[0], &stringLength, &string1) != FRE_OK)
     {
@@ -550,7 +551,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
     
     
     NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
-
+    // message
     const uint8_t *string2;
     NSString *message = @"";
     if (FREGetObjectAsUTF8(argv[1], &stringLength, &string2) == FRE_OK)
@@ -562,6 +563,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
     
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"Message" UTF8String]); 
     
+    // name
     const uint8_t *string3;
     NSString* name = nil;
     if (FREGetObjectAsUTF8(argv[2], &stringLength, &string3) == FRE_OK)
@@ -571,6 +573,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
 
     }
     
+    // picture
     const uint8_t *string4;
     NSString* picture = nil;
     if (FREGetObjectAsUTF8(argv[3], &stringLength, &string4) == FRE_OK)
@@ -580,6 +583,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
 
     }
 
+    // link
     const uint8_t *string5;
     NSString* link = nil;
     if (FREGetObjectAsUTF8(argv[4], &stringLength, &string5) == FRE_OK)
@@ -589,6 +593,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
 
     }
 
+    // caption
     const uint8_t *string6;
     NSString* caption = nil;
     if (FREGetObjectAsUTF8(argv[5], &stringLength, &string6) == FRE_OK)
@@ -598,6 +603,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
 
     }
 
+    // description
     const uint8_t *string7;
     NSString* description = nil;
     if (FREGetObjectAsUTF8(argv[6], &stringLength, &string7) == FRE_OK)
@@ -607,12 +613,21 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
 
     }
     
-    
+    // userId
     const uint8_t *string8;
-    NSString *callbackName = nil;
+    NSString *toUsers = nil;
     if (FREGetObjectAsUTF8(argv[7], &stringLength, &string8) == FRE_OK)
     {
-        callbackName = [NSString stringWithUTF8String:(char*)string4];
+        toUsers = [NSString stringWithUTF8String:(char*)string8];
+        [params setValue:toUsers forKey:@"to"];
+    }
+    
+    // callbackName
+    const uint8_t *string9;
+    NSString *callbackName = nil;
+    if (FREGetObjectAsUTF8(argv[8], &stringLength, &string9) == FRE_OK)
+    {
+        callbackName = [NSString stringWithUTF8String:(char*)string9];
     }
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[callbackName UTF8String]); 
     
