@@ -29,8 +29,10 @@
     
 }
 
++(id) sharedInstance;
+
 - (void) extendAccessTokenIfNeeded;
-- (void) initFacebookWithAppId:(NSString*)appId andAccessToken:(NSString*)accessToken andExpirationTimestamp:(NSString*)expirationTimestamp;
+- (void) initFacebookWithAppId:(NSString*)appId andSuffix:(NSString*)suffix andAccessToken:(NSString*)accessToken andExpirationTimestamp:(NSString*)expirationTimestamp;
 - (BOOL) handleOpenURL:(NSURL *)url;
 - (void) requestWithGraphPath:(NSString*)path andCallback:(NSString*)callbackName;
 - (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andCallback:(NSString*)callbackName;
