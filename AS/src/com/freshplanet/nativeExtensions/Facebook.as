@@ -33,6 +33,9 @@ package com.freshplanet.nativeExtensions
 	public class Facebook extends EventDispatcher
 	{
 		
+		public static var URL_SUFFIX:String = "";
+		
+		
 		private static const FILE_URI:String = "com.freshplanet.facebook.token.information.file";
 
 		private static var _instance:Facebook;
@@ -221,7 +224,8 @@ package com.freshplanet.nativeExtensions
 			{
 				this.loadTokenInfo();
 				trace('[Facebook] initializing Facebook Library '+facebookId+' access '+this.accessToken+' expires '+this.expirationTimeStamp);
-				extCtx.call('initFacebook', facebookId, this.accessToken, this.expirationTimeStamp);
+				trace('[Facebook] url suffix', URL_SUFFIX)
+				extCtx.call('initFacebook', facebookId, this.accessToken, this.expirationTimeStamp, URL_SUFFIX);
 			}
 		}
 		
@@ -458,6 +462,7 @@ package com.freshplanet.nativeExtensions
 		
 		private function onInvoke(event:InvokeEvent):void
 		{
+			trace(event);
 			if (event.arguments != null && event.arguments.length > 0)
 			{
 				if (this.isFacebookSupported)

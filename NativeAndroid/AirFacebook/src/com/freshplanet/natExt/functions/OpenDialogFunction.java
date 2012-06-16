@@ -38,6 +38,7 @@ public class OpenDialogFunction implements FREFunction{
 		String method = null;
 		String message = null;
 		String to = null;
+		String callbackName = null;
 		
 		//method
 		try {
@@ -51,7 +52,10 @@ public class OpenDialogFunction implements FREFunction{
 			e.printStackTrace();
 		} catch (FREWrongThreadException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		try {
 			message = arg1[1].getAsString();
 			Log.d("as2fb", "message: "+message);
@@ -63,6 +67,8 @@ public class OpenDialogFunction implements FREFunction{
 		} catch (FREInvalidObjectException e) {
 			e.printStackTrace();
 		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -80,9 +86,29 @@ public class OpenDialogFunction implements FREFunction{
 				e.printStackTrace();
 			} catch (FREWrongThreadException e) {
 				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 				
+		
+		if (arg1.length > 3 && arg1[3] != null)
+		{
+			try {
+				callbackName = arg1[3].getAsString();
+				Log.d("as2fb", "to: "+to);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (FRETypeMismatchException e) {
+				e.printStackTrace();
+			} catch (FREInvalidObjectException e) {
+				e.printStackTrace();
+			} catch (FREWrongThreadException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 		Log.d("as2fb", "creating bundle...");
 		
@@ -97,6 +123,12 @@ public class OpenDialogFunction implements FREFunction{
 		}
 		
 		arg0.getActivity().startActivity(i);
+		
+		if (callbackName != null)
+		{
+			arg0.dispatchStatusEventAsync(callbackName, "{}");
+		}
+
 		
 		return null;
 	}

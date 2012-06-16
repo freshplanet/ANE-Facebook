@@ -57,7 +57,9 @@
     {
         data = [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", [url query]];
     }
-    FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]); 
+    FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]);
+    self = nil;
+    [self release];
 }
 
 /**
@@ -66,7 +68,9 @@
 - (void) dialogDidNotCompleteWithUrl:(NSURL *)url
 {
     NSString *data = [NSString stringWithFormat:@"{ \"cancel\" : true}"];
-    FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]); 
+    FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]);
+    self = nil;
+    [self release];
 }
 
 /**
@@ -75,7 +79,9 @@
 - (void)dialog:(FBDialog*)dialog didFailWithError:(NSError *)error
 {
     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
-    FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]); 
+    FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]);
+    self = nil;
+    [self release];
 }
 
 

@@ -53,6 +53,21 @@
     {
         FREDispatchStatusEventAsync([self context], (uint8_t*)[[self name] UTF8String], (uint8_t*)[dataString UTF8String]); 
     } 
+    [dataString release];
+}
+
+
+- (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response
+{
+    self = nil;
+    [self release];
+}
+
+
+- (void)request:(FBRequest *)request didFailWithError:(NSError *)error
+{
+    self = nil;
+    [self release];
 }
 
 

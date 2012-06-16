@@ -19,7 +19,6 @@
 
 #import "AirFacebook.h"
 
-void *refToSelf;
 FREContext AirFBCtx = nil;
 
 
@@ -31,27 +30,34 @@ FREContext AirFBCtx = nil;
 @synthesize facebook;
 
 
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        // Initialization code here.
++(id) sharedInstance {
+    static id sharedInstance = nil;
+    if (sharedInstance == nil) {
+        sharedInstance = [[self alloc] init];
     }
     
-    refToSelf = self;
-    return self;
+    return sharedInstance;
 }
+
 
 
 ///////////////////////////////////////////////////////
 // FACEBOOK LOGIN
 ///////////////////////////////////////////////////////
 
-
-- (void) initFacebookWithAppId:(NSString*)appId andAccessToken:(NSString*)accessToken andExpirationTimestamp:(NSString*)expirationTimestamp
+// @param appId facebook app id
+// @param suffix suffix used for your other apps using the same app id (i.e paid version). can be set to null
+- (void) initFacebookWithAppId:(NSString*)appId andSuffix:(NSString*)suffix andAccessToken:(NSString*)accessToken andExpirationTimestamp:(NSString*)expirationTimestamp
 {
-    facebook = [[Facebook alloc] initWithAppId:appId andDelegate:self];
+    if (suffix == nil)
+    {
+        facebook = [[Facebook alloc] initWithAppId:appId andDelegate:self];
+
+    } else
+    {
+        facebook = [[Facebook alloc] initWithAppId:appId urlSchemeSuffix:suffix andDelegate:self];
+    }
+
     
     if (accessToken != nil && expirationTimestamp != nil)
     {
@@ -60,6 +66,7 @@ FREContext AirFBCtx = nil;
     }
     
 }
+
 
 
 - (BOOL) handleOpenURL:(NSURL *)url {
@@ -207,7 +214,7 @@ FREContext AirFBCtx = nil;
     [requestDelegate setContext:AirFBCtx];
     
     
-    [facebook requestWithGraphPath:path andParams:[[NSMutableDictionary alloc] init] andHttpMethod:@"GET" andDelegate:requestDelegate];
+    [facebook requestWithGraphPath:path andParams:[[[NSMutableDictionary alloc] init] autorelease] andHttpMethod:@"GET" andDelegate:requestDelegate];
 }
 
 
@@ -247,6 +254,7 @@ FREContext AirFBCtx = nil;
     {
         FREDispatchStatusEventAsync(AirFBCtx, (uint8_t*)"GRAPH_API_SUCCESS", (uint8_t*)[dataString UTF8String]); 
     } 
+    [dataString release];
 }
 
 ///////////////////////////////////////////////////////
@@ -274,10 +282,6 @@ FREContext AirFBCtx = nil;
 // init Facebook Library
 DEFINE_ANE_FUNCTION(initFacebook)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
     
     uint32_t stringLength;
     const uint8_t *string1;
@@ -304,8 +308,26 @@ DEFINE_ANE_FUNCTION(initFacebook)
     {
          expirationTimestamp = [NSString stringWithUTF8String:(char*)string3];
     }
+    
+    NSString* suffix = nil;
+    const uint8_t *string4;
+    if (FREGetObjectAsUTF8(argv[3], &stringLength, &string4) == FRE_OK)
+    {
+        FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"suffix" UTF8String]); 
+
+        suffix = [NSString stringWithUTF8String:(char*)string4];
+        FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[suffix UTF8String]); 
+
+        if (suffix != nil && [suffix length] == 0)
+        {
+            suffix = nil;
+        }
+    }
+
+    
+    
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"ExpirationToken" UTF8String]); 
-    [(AirFacebook*)refToSelf initFacebookWithAppId:appId andAccessToken:accessToken andExpirationTimestamp:expirationTimestamp];
+    [[AirFacebook sharedInstance] initFacebookWithAppId:appId andSuffix:suffix andAccessToken:accessToken andExpirationTimestamp:expirationTimestamp];
     
     return nil;
 }
@@ -314,15 +336,8 @@ DEFINE_ANE_FUNCTION(initFacebook)
 // extend Access Token if Needed.
 DEFINE_ANE_FUNCTION(extendAccessTokenIfNeeded)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-
-    [(AirFacebook*)refToSelf extendAccessTokenIfNeeded];
-    
+    [[AirFacebook sharedInstance] extendAccessTokenIfNeeded];
     FREDispatchStatusEventAsync(context, (uint8_t*)"REFRESH_TOKEN_DONE", (uint8_t*)[@"Success" UTF8String]); 
-
     return nil;
 }
 
@@ -330,22 +345,13 @@ DEFINE_ANE_FUNCTION(extendAccessTokenIfNeeded)
 // log out from Facebook
 DEFINE_ANE_FUNCTION(logout)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-
-    [(AirFacebook*)refToSelf logout];
+    [[AirFacebook sharedInstance] logout];
     return nil;
 }
 
 // log in
 DEFINE_ANE_FUNCTION(login)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
 
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"login" UTF8String]); 
 
@@ -375,9 +381,8 @@ DEFINE_ANE_FUNCTION(login)
 
     }
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"call air facebook" UTF8String]); 
-  
     
-    [(AirFacebook*)refToSelf login:[NSArray arrayWithArray:permissions]];
+    [[AirFacebook sharedInstance] login:[NSArray arrayWithArray:permissions]];
     
     return nil;
 }
@@ -385,11 +390,6 @@ DEFINE_ANE_FUNCTION(login)
 // handle Open URL
 DEFINE_ANE_FUNCTION(handleOpenURL)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-
     
     uint32_t stringLength;
     const uint8_t *string;
@@ -400,7 +400,7 @@ DEFINE_ANE_FUNCTION(handleOpenURL)
     NSString *urlString = [NSString stringWithUTF8String:(char*)string];
     NSURL* url = [NSURL URLWithString:urlString];
     
-    [(AirFacebook*)refToSelf handleOpenURL:url];
+    [[AirFacebook sharedInstance] handleOpenURL:url];
     
     return nil;
 }
@@ -409,12 +409,6 @@ DEFINE_ANE_FUNCTION(handleOpenURL)
 // makes a call to graph api.
 DEFINE_ANE_FUNCTION(requestWithGraphPath)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-
-    
     uint32_t stringLength;
     const uint8_t *string1;
     if (FREGetObjectAsUTF8(argv[0], &stringLength, &string1) != FRE_OK)
@@ -442,16 +436,17 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
     {
         if ([params length] > 3)
         {
-            NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
+            NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
             [dict setValue:params forKey:@"fields"];
-            [(AirFacebook*)refToSelf requestWithGraphPath:path andParams:dict andCallback:callback];
+            [[AirFacebook sharedInstance] requestWithGraphPath:path andParams:dict andCallback:callback];
         } else
         {
-            [(AirFacebook*)refToSelf requestWithGraphPath:path andCallback:callback];
+            [[AirFacebook sharedInstance] requestWithGraphPath:path andCallback:callback];
         }
+        
     } else
     {
-        [(AirFacebook*)refToSelf requestWithGraphPath:path andCallback:callback];
+        [[AirFacebook sharedInstance] requestWithGraphPath:path andCallback:callback];
 
     }
     
@@ -464,11 +459,6 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
 // open a Facebook Dialog
 DEFINE_ANE_FUNCTION(openDialog)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-
     
     uint32_t stringLength;
     
@@ -505,7 +495,7 @@ DEFINE_ANE_FUNCTION(openDialog)
     }
 
     
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* params = [[[NSMutableDictionary alloc] init] autorelease];
     [params setValue:message forKey:@"message"];
     
     if (toUsers != nil && [toUsers length] > 0)
@@ -526,18 +516,13 @@ DEFINE_ANE_FUNCTION(openDialog)
     }
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[callbackName UTF8String]); 
     
-    [(AirFacebook*)refToSelf dialog:method andParams:params andCallback:callbackName];    
+    [[AirFacebook sharedInstance] dialog:method andParams:params andCallback:callbackName];    
     return nil;
 }
 
 // open a Facebook Dialog
 DEFINE_ANE_FUNCTION(openFeedDialog)
 {
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-    
     
     uint32_t stringLength;
     // method
@@ -550,7 +535,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"Method" UTF8String]); 
     
     
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* params = [[[NSMutableDictionary alloc] init] autorelease];
     // message
     const uint8_t *string2;
     NSString *message = @"";
@@ -631,7 +616,7 @@ DEFINE_ANE_FUNCTION(openFeedDialog)
     }
     FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[callbackName UTF8String]); 
     
-    [(AirFacebook*)refToSelf dialog:method andParams:params andCallback:callbackName];    
+    [[AirFacebook sharedInstance] dialog:method andParams:params andCallback:callbackName];    
     return nil;
 }
 
@@ -688,13 +673,9 @@ DEFINE_ANE_FUNCTION(deleteRequests)
         
             if (jsonString != nil && jsonString.length > 0)
             {
-                if (refToSelf == nil)
-                {
-                    [[AirFacebook alloc] init];
-                }
 
                 NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:jsonString forKey:@"batch"];
-                [(AirFacebook*)refToSelf requestWithGraphPath:@"me" andParams:params andHttpMethod:@"POST" andCallback:@"DELETE_INVITE"];
+                [[AirFacebook sharedInstance] requestWithGraphPath:@"me" andParams:params andHttpMethod:@"POST" andCallback:@"DELETE_INVITE"];
             }
         }
     
@@ -719,7 +700,7 @@ DEFINE_ANE_FUNCTION(postOGAction)
     FREObject arrKey = argv[1]; // array
     FREObject arrValue = argv[2];
     uint32_t arr_len = 0; // array length
-    NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* params = [[[NSMutableDictionary alloc] init] autorelease];
     if (arrKey != nil)
     {
         
@@ -771,13 +752,8 @@ DEFINE_ANE_FUNCTION(postOGAction)
         }
         
     }
-    
-    if (refToSelf == nil)
-    {
-        [[AirFacebook alloc] init];
-    }
-    
-    [(AirFacebook*)refToSelf requestWithGraphPath:action andParams:params andHttpMethod:@"POST" andCallback:nil];
+        
+    [[AirFacebook sharedInstance] requestWithGraphPath:action andParams:params andHttpMethod:@"POST" andCallback:nil];
         
     return nil;
 }
@@ -847,11 +823,7 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
 //
 // Set when the context extension is created.
 
-void AirFBContextFinalizer(FREContext ctx) { 
-    NSLog(@"Entering ContextFinalizer()");
-    
-    NSLog(@"Exiting ContextFinalizer()");	
-}
+void AirFBContextFinalizer(FREContext ctx) { }
 
 
 
@@ -862,12 +834,7 @@ void AirFBContextFinalizer(FREContext ctx) {
 
 void AirFBInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, FREContextFinalizer* ctxFinalizerToSet ) 
 {
-    
-    NSLog(@"Entering ExtInitializer()");                    
-    
 	*extDataToSet = NULL;
 	*ctxInitializerToSet = &AirFBContextInitializer; 
 	*ctxFinalizerToSet = &AirFBContextFinalizer;
-    
-    NSLog(@"Exiting ExtInitializer()"); 
 }

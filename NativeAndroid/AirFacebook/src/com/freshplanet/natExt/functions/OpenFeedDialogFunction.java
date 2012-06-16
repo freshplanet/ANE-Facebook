@@ -23,6 +23,7 @@ public class OpenFeedDialogFunction implements FREFunction {
 		String caption = null;
 		String description = null;
 		String friendsCsv = null;
+		String callbackName = null;
 		
 		//method
 		try {
@@ -40,9 +41,14 @@ public class OpenFeedDialogFunction implements FREFunction {
 
 			description = arg1[6].getAsString();
 			
-			if (arg1.length > 8)
+			if (arg1.length > 7 && arg1[7] != null)
 			{
 				friendsCsv = arg1[7].getAsString();
+			}
+			
+			if (arg1.length > 8 && arg1[8] != null)
+			{
+				callbackName = arg1[8].getAsString();
 			}
 		
 		} catch (IllegalStateException e) {
@@ -77,6 +83,11 @@ public class OpenFeedDialogFunction implements FREFunction {
 		i.putExtra("to", friendsCsv);
 		i.putExtra("frictionless", false);
 		arg0.getActivity().startActivity(i);
+		
+		if (callbackName != null)
+		{
+			arg0.dispatchStatusEventAsync(callbackName, "{}");
+		}
 		
 		return null;
 	}
