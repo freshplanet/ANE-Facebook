@@ -41,6 +41,7 @@
 
 - (void) dialog:(NSString *)action andParams:(NSMutableDictionary *)params andCallback:(NSString*)callbackName;
 - (void) login:(NSArray*)permissions;
+- (void) askForMorePermissions:(NSArray*)permissions;
 - (void) logout;
 @property (nonatomic, retain) Facebook *facebook;
 
@@ -74,5 +75,8 @@ FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObjec
 FREObject postOGAction(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject openFeedDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
+FREObject askForMorePermissions(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+
 
 

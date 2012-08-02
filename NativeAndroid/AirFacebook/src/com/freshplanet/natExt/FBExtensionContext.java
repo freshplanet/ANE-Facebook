@@ -26,6 +26,7 @@ import android.util.Log;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.facebook.android.Facebook;
+import com.freshplanet.natExt.functions.AskForMorePermissionsFunction;
 import com.freshplanet.natExt.functions.DeleteInvitesFunction;
 import com.freshplanet.natExt.functions.ExtendAccessTokenIfNeededFunction;
 import com.freshplanet.natExt.functions.HandleOpenURLFunction;
@@ -71,6 +72,7 @@ public class FBExtensionContext extends FREContext {
 		functionMap.put("logout", new LogoutFacebookFunction());
 		functionMap.put("deleteRequests", new DeleteInvitesFunction());
 		functionMap.put("postOGAction", new PostOGActionFunction());
+		functionMap.put("askForMorePermissions", new AskForMorePermissionsFunction());
 		return functionMap;	
 	}
 

@@ -44,14 +44,14 @@ public class FBLoginActivity extends Activity implements DialogListener {
 		Bundle values = this.getIntent().getExtras();
 		
 		String[] permissions = values.getStringArray("permissions");
-		
+		Boolean forceAuthorize = values.getBoolean("forceAuthorize", false);
 		
 		for (int i =0; i < permissions.length; i++)
 		{
 			Log.d("as3fb", permissions[i]);
 		}
 		
-		if(!FBExtensionContext.facebook.isSessionValid()) {
+		if(forceAuthorize || !FBExtensionContext.facebook.isSessionValid()) {
 			FBExtensionContext.facebook.authorize(this, permissions, this);
 		} else
 		{

@@ -49,10 +49,16 @@
 {
     NSString* dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
-    if ([self context] != nil && [self name] != nil)
+    if ([self context] != nil)
     {
-        FREDispatchStatusEventAsync([self context], (uint8_t*)[[self name] UTF8String], (uint8_t*)[dataString UTF8String]); 
-    } 
+        if ([self name] != nil)
+        {
+            FREDispatchStatusEventAsync([self context], (uint8_t*)[[self name] UTF8String], (uint8_t*)[dataString UTF8String]); 
+        }  else
+        {
+            FREDispatchStatusEventAsync([self context], (uint8_t*)[@"LOGGING" UTF8String], (uint8_t*)[dataString UTF8String]); 
+        }
+    }
     [dataString release];
 }
 

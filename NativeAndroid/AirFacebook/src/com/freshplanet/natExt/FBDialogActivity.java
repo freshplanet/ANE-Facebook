@@ -33,6 +33,8 @@ public class FBDialogActivity extends Activity implements DialogListener {
 
 	private static String TAG = "as3fb";
 
+	private String callbackName;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "create fb activity");
@@ -55,6 +57,7 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		String caption = values.getString("caption");
 		String description = values.getString("description");
 		Boolean isFrictionless = values.getBoolean("frictionless", true);
+		callbackName = values.getString("callback");
 		
 		Bundle parameters = new Bundle();
 		parameters.putString("message", message);
@@ -140,21 +143,48 @@ public class FBDialogActivity extends Activity implements DialogListener {
 
 	@Override
 	public void onComplete(Bundle values) {
+		FREContext ctx = FBExtension.context;
+		if (ctx != null && callbackName != null)
+		{
+			String postId = values.getString("post_id");
+			String postMessage = "{ \"cancel\" : true }";
+			if (postId != null)
+			{
+				postMessage = "{ \"params\" : \""+postId+"\" }";
+			}
+			ctx.dispatchStatusEventAsync(callbackName, postMessage);
+		}
 		finish();
 	}
 
 	@Override
 	public void onFacebookError(FacebookError e) {
+		FREContext ctx = FBExtension.context;
+		if (ctx != null && callbackName != null)
+		{
+			ctx.dispatchStatusEventAsync(callbackName, "{ \"error\" : \""+e.getMessage()+"\" }");
+		}
 		finish();
 	}
 
 	@Override
 	public void onError(DialogError e) {
+		FREContext ctx = FBExtension.context;
+		if (ctx != null && callbackName != null)
+		{
+			ctx.dispatchStatusEventAsync(callbackName, "{ \"error\" : \""+e.getMessage()+"\" }");
+		}
+
 		finish();
 	}
 
 	@Override
 	public void onCancel() {
+		FREContext ctx = FBExtension.context;
+		if (ctx != null && callbackName != null)
+		{
+			ctx.dispatchStatusEventAsync(callbackName, "{ \"cancel\" : true }");
+		}
 		finish();
 	}
 
