@@ -100,6 +100,12 @@ FREContext AirFBCtx = nil;
 
 }
 
+- (void) askForMorePermissions:(NSArray*)permissions
+{
+    [facebook authorize:permissions];
+}
+
+
 - (void) logout
 {
     [facebook logout];  
@@ -386,6 +392,45 @@ DEFINE_ANE_FUNCTION(login)
     
     return nil;
 }
+
+// log in
+DEFINE_ANE_FUNCTION(askForMorePermissions)
+{
+    
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"ask for more permissions" UTF8String]); 
+    
+    FREObject arr = argv[0]; // array
+    uint32_t arr_len; // array length
+    
+    FREGetArrayLength(arr, &arr_len);
+    
+    NSMutableArray* permissions = [[NSMutableArray alloc] init];
+    FREDispatchStatusEventAsync(context, (uint8_t*)"LOGGING", (uint8_t*)[@"permissions" UTF8String]); 
+    for(int32_t i=arr_len-1; i>=0;i--){
+        
+        // get an element at index
+        FREObject element;
+        FREGetArrayElementAt(arr, i, &element);
+        
+        // convert it to NSString
+        uint32_t stringLength;
+        const uint8_t *string;
+        if (FREGetObjectAsUTF8(element, &stringLength, &string) != FRE_OK)
+        {
+            continue;
+        }
+        NSString *permission = [NSString stringWithUTF8String:(char*)string];
+        
+        [permissions addObject:permission];
+        
+    }
+    
+    [[AirFacebook sharedInstance] askForMorePermissions:[NSArray arrayWithArray:permissions]];
+    
+    return nil;
+}
+
+
 
 // handle Open URL
 DEFINE_ANE_FUNCTION(handleOpenURL)
@@ -767,7 +812,7 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     
     
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 10;
+    NSInteger nbFuntionsToLink = 11;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -813,6 +858,9 @@ void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext c
     func[9].functionData = NULL;
     func[9].function = &openFeedDialog;
 
+    func[10].name = (const uint8_t*) "askForMorePermissions";
+    func[10].functionData = NULL;
+    func[10].function = &askForMorePermissions;
     
     *functionsToSet = func;
     

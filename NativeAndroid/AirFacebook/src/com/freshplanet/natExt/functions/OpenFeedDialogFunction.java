@@ -82,13 +82,14 @@ public class OpenFeedDialogFunction implements FREFunction {
 		i.putExtra("description", description);
 		i.putExtra("to", friendsCsv);
 		i.putExtra("frictionless", false);
+		i.putExtra("callback", callbackName); 
 		arg0.getActivity().startActivity(i);
 		
-		if (callbackName != null)
-		{
-			arg0.dispatchStatusEventAsync(callbackName, "{}");
-		}
-		
+//		if (callbackName != null)
+//		{
+//			arg0.dispatchStatusEventAsync(callbackName, "{}");
+//		}
+//		
 		return null;
 	}
 

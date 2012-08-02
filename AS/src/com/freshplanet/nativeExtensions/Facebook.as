@@ -270,13 +270,25 @@ package com.freshplanet.nativeExtensions
 		}
 
 		
+		public function askForMorePermissions(permissions:Array):void
+		{
+			if (this.isFacebookSupported)
+			{
+				trace('[Facebook] force login with permission', permissions);
+				extCtx.call('askForMorePermissions', permissions);
+			}
+		}
+		
 		
 		public function logout():void
 		{
 			if (this.isFacebookSupported)
 			{
-					extCtx.call('logout');
+				extCtx.call('logout');
 			}
+			deleteTokenInfo();
+			this.accessToken = null;
+			this.expirationTimeStamp = null;
 		}
 		
 		
@@ -367,6 +379,28 @@ package com.freshplanet.nativeExtensions
 				trace('[Facebook] postOGAction ', "me/"+nsAction, paramsKey, paramsValue);
 				extCtx.call('postOGAction', "me/"+nsAction, paramsKey, paramsValue);
 
+			}
+		}
+		
+		public function postWithGraphApi(params:Object, facebookId:String = null):void
+		{
+			if (this.isFacebookSupported)
+			{
+				var paramsKey:Array = [];
+				var paramsValue:Array = [];
+				for (var key:String in params)
+				{
+					paramsKey.push(key);
+					paramsValue.push(params[key].toString());
+				}
+				
+				if (facebookId == null)
+				{
+					facebookId = "me";
+				}
+				trace('[Facebook] postOGAction ', facebookId+"/feed", paramsKey, paramsValue);
+				extCtx.call('postOGAction', facebookId+"/feed", paramsKey, paramsValue);
+				
 			}
 		}
 		
