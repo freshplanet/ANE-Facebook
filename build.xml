@@ -47,7 +47,7 @@
 		<exec executable="xcodebuild" dir="NativeIOS" 
 			failonerror="true"> 
 			<arg line="-project ${iosProjectName.xcodeproj}"/>
-			<arg line="-sdk iphoneos4.3"/>
+			<arg line="-sdk iphoneos"/>
 			<arg line="-alltargets" />
 			<arg line="-configuration Release" />
 		            

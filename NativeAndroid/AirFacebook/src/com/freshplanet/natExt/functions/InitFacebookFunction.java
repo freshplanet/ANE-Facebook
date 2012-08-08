@@ -34,7 +34,6 @@ public class InitFacebookFunction implements FREFunction {
 	@Override
 	public FREObject call(FREContext arg0, FREObject[] arg1) {
 		
-		
 		arg0.dispatchStatusEventAsync("INIT_FACEBOOK", "STARTED");
 
 		
