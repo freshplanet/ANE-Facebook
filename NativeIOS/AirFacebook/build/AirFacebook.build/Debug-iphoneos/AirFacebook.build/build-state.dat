@@ -1,0 +1,266 @@
+TAirFacebook
+v5
+r1
+cCheck dependencies
+cProcessPCH /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvmgcc42
+cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42
+cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42
+cCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBDialog.o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m normal armv7 objective-c com.apple.compilers.llvmgcc42
+cLibtool /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a normal armv7
+
+N/Applications/Adobe Flash Builder 4.6/sdks/4.6.0/include/FlashRuntimeExtensions.h
+c000000004F98221D0000000000004FCB
+t1335370269
+s20427
+i<stdint.h>
+
+N/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk
+c000000004FFFEE000000000000000132
+t1342172672
+s306
+
+N/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/Foundation.framework/Foundation
+c0000000050006F5700000000003135F0
+t1342205783
+s3225072
+
+N/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.h
+c0000000050006F5700000000000015F7
+t1342205783
+s5623
+
+N/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.h
+c0000000050006F5E0000000000000E8D
+t1342205790
+s3725
+
+N/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/usr/include/stdint.h
+c0000000050006F7A00000000000018EF
+t1342205818
+s6383
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/../facebook-ios-sdk/FBConnect.h
+c000000005021307B00000000000002C2
+t1344352379
+s706
+i"Facebook.h"
+i"FBDialog.h"
+i"FBLoginDialog.h"
+i"FBRequest.h"
+i"SBJSON.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/../facebook-ios-sdk/FBDialog.h
+c000000005021307B00000000000012BD
+t1344352379
+s4797
+i<Foundation/Foundation.h>
+i<UIKit/UIKit.h>
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/../facebook-ios-sdk/libfacebook_ios_sdk.a
+c000000005021307B00000000001B382C
+t1344352379
+s1783852
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.h
+c00000000502040E80000000000000462
+t1344291048
+s1122
+i<Foundation/Foundation.h>
+i"FlashRuntimeExtensions.h"
+i"FBDialog.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m
+c00000000502040E800000000000009C3
+t1344291048
+s2499
+i"AirFBDialog.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.h
+c00000000502040E80000000000000468
+t1344291048
+s1128
+i<Foundation/Foundation.h>
+i"FlashRuntimeExtensions.h"
+i"FBRequest.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m
+c00000000502040E80000000000000836
+t1344291048
+s2102
+i"AirFBRequest.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook-Prefix.pch
+c00000000501BFF9E00000000000000A3
+t1344012190
+s163
+i<Foundation/Foundation.h>
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.h
+c00000000502040E80000000000000D28
+t1344291048
+s3368
+i<Foundation/Foundation.h>
+i"FBConnect.h"
+i"FBDialog.h"
+i"FlashRuntimeExtensions.h"
+i"AirFBRequest.h"
+i"AirFBDialog.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m
+c00000000502040E80000000000006800
+t1344291048
+s26624
+i"AirFacebook.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBDialog.o
+t2
+s0
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o
+t2
+s0
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.LinkFileList
+c0000000050227FDE00000000000001E1
+t1344438238
+s481
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o
+t2
+s0
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
+t2
+s0
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/FBLoginDialog.h
+c000000005021307B0000000000000571
+t1344352379
+s1393
+i"FBDialog.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/FBRequest.h
+c000000005021307B0000000000001016
+t1344352379
+s4118
+i<Foundation/Foundation.h>
+i<UIKit/UIKit.h>
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/Facebook.h
+c000000005021307B000000000000132D
+t1344352379
+s4909
+i"FBLoginDialog.h"
+i"FBRequest.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/SBJSON.h
+c000000005021307B0000000000000AED
+t1344352379
+s2797
+i<Foundation/Foundation.h>
+i"SBJsonParser.h"
+i"SBJsonWriter.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/SBJsonBase.h
+c000000005021307B0000000000000B82
+t1344352379
+s2946
+i<Foundation/Foundation.h>
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/SBJsonParser.h
+c000000005021307B0000000000000C0B
+t1344352379
+s3083
+i<Foundation/Foundation.h>
+i"SBJsonBase.h"
+
+N/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/facebook-ios-sdk/SBJsonWriter.h
+c000000005021307B0000000000001140
+t1344352379
+s4416
+i<Foundation/Foundation.h>
+i"SBJsonBase.h"
+
+N/var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch.gch
+t2
+s0
+
+CBuild AST from /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m
+r0
+
+CBuild AST from /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m
+r0
+
+CBuild AST from /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m
+r0
+
+CCheck dependencies
+r0
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection18"Check dependenciesf3c7d85eb7d2b541^4c38e05eb7d2b541^---0#1#0#--18"Check dependencies36"A5CACFF4-EF16-4CF3-8693-3EB25E84D72F-
+
+CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBDialog.o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m normal armv7 objective-c com.apple.compilers.llvmgcc42
+s366131039.669188
+e366131039.875321
+r1
+xCompileC
+xbuild/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBDialog.o
+x/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.llvmgcc42
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection101"Compile /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.me36fab5fb7d2b541^f415e05fb7d2b541^---0#0#0#-19%DVTDocumentLocation2@109"file://localhost/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m0000000000000000^2841"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBDialog.o AirFacebook/AirFBDialog.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode45-DP3.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin"    /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch -c /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBDialog.m -o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBDialog.o36"49B8BD1A-45EC-4CE6-ABC5-FE3A19B3C3DE-
+
+CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42
+s366131039.375298
+e366131039.667895
+r1
+xCompileC
+xbuild/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o
+x/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.llvmgcc42
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection102"Compile /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m7b2d605fb7d2b541^6efbaa5fb7d2b541^---0#0#0#-19%DVTDocumentLocation2@110"file://localhost/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m0000000000000000^2845"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o AirFacebook/AirFBRequest.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode45-DP3.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin"    /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch -c /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFBRequest.m -o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFBRequest.o36"A7E7A0AB-7AF0-463B-8AD8-5B9E8882DF21-
+
+CCompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42
+s366131039.374597
+e366131039.797728
+r1
+xCompileC
+xbuild/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o
+x/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.llvmgcc42
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection101"Compile /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.mbc07605fb7d2b541^d942cc5fb7d2b541^---0#0#0#-19%DVTDocumentLocation2@109"file://localhost/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m0000000000000000^2841"CompileC build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o AirFacebook/AirFacebook.m normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode45-DP3.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin"    /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos -include /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch -c /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook.m -o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.o36"A9823C91-F604-4478-9B07-46AB770EAF79-
+
+CLibtool /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a normal armv7
+s366131039.882832
+e366131039.897991
+r1
+xLibtool
+x/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a
+xnormal
+xarmv7
+o/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool: -dynamic not specified the following flags are invalid: -ObjC 
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection58"Libtool build/Debug-iphoneos/libAirFacebook.a normal armv7fc1de25fb7d2b541^37e2e55fb7d2b541^-165"/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool: -dynamic not specified the following flags are invalid: -ObjC -0#0#0#--1302"Libtool build/Debug-iphoneos/libAirFacebook.a normal armv7    cd /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3    setenv PATH "/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode45-DP3.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin"    /Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -static -arch_only armv7 -syslibroot /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk -L/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos -L/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/../facebook-ios-sdk/lib/facebook-ios-sdk -L/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/../facebook-ios-sdk -filelist /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/Objects-normal/armv7/AirFacebook.LinkFileList -ObjC -framework Foundation -lfacebook_ios_sdk -o /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/libAirFacebook.a36"F6F8C8FA-E462-49BC-945D-88C9506E3D0B-
+
+CProcessPCH /Users/alex/Library/Developer/Xcode/DerivedData/AirFacebook-cqregmqgejfeztbbvkyxtlrwinpb/Index/PrecompiledHeaders/AirFacebook-Prefix-afgunaokknhixwfdksakxclnidea_ast/AirFacebook-Prefix.pch.pth AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.astbuilder
+r0
+
+CProcessPCH /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvmgcc42
+s366131038.879822
+e366131039.367078
+r1
+xProcessPCH
+x/var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch.gch
+xAirFacebook/AirFacebook-Prefix.pch
+xnormal
+xarmv7
+xobjective-c
+xcom.apple.compilers.llvmgcc42
+lSLF05#21%IDEActivityLogSection1@2#32"com.apple.dt.IDE.BuildLogSection45"Precompile AirFacebook/AirFacebook-Prefix.pchf371e15eb7d2b541^7d045e5fb7d2b541^---0#0#0#-19%DVTDocumentLocation2@118"file://localhost/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook-Prefix.pch0000000000000000^2780"ProcessPCH /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch.gch AirFacebook/AirFacebook-Prefix.pch normal armv7 objective-c com.apple.compilers.llvmgcc42    cd /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook    setenv LANG en_US.US-ASCII    setenv PATH "/Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Applications/Xcode45-DP3.app/Contents/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin"    /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2 -x objective-c-header -arch armv7 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -O0 -Wmissing-prototypes -Wreturn-type -Wunused-variable -DDEBUG=1 -isysroot /Applications/Xcode45-DP3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk -gdwarf-2 -mthumb -miphoneos-version-min=4.3 -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-generated-files.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-own-target-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-all-target-headers.hmap -iquote /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/AirFacebook-project-headers.hmap -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode45-DP3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources/armv7 -I/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/AirFacebook.build/Debug-iphoneos/AirFacebook.build/DerivedSources -F/Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/build/Debug-iphoneos -c /Users/alex/Projects/Freshplanet/ANE-Facebook/NativeIOS/AirFacebook/AirFacebook/AirFacebook-Prefix.pch -o /var/folders/t9/3kw74cx14nv2xg9tgmx9m1jc0000gp/C/com.apple.Xcode.502/SharedPrecompiledHeaders/AirFacebook-Prefix-gehhhbzetgdrvhglfinzoblrpszy/AirFacebook-Prefix.pch.gch36"67C8C11B-5FE3-43EC-9411-8BD05C1068ED-
+
