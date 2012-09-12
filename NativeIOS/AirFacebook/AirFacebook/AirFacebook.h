@@ -56,6 +56,8 @@ void AirFBContextFinalizer(FREContext ctx);
 
 void AirFBInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, FREContextFinalizer* ctxFinalizerToSet );
 
+void AirFBFinalizer(void * extData);
+
 FREObject initFacebook(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
 
 FREObject extendAccessTokenIfNeeded(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
