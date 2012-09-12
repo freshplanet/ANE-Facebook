@@ -24,6 +24,7 @@
             <applicationDeployment>
                 <nativeLibrary>libAirFacebook.a</nativeLibrary>
                 <initializer>AirFBInitializer</initializer> 
+		<finalizer>AirFBFinalizer</finalizer>
             </applicationDeployment>
     </platform>
     <platform name="Android-ARM"> 

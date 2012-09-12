@@ -886,3 +886,8 @@ void AirFBInitializer(void** extDataToSet, FREContextInitializer* ctxInitializer
 	*ctxInitializerToSet = &AirFBContextInitializer; 
 	*ctxFinalizerToSet = &AirFBContextFinalizer;
 }
+
+void AirFBFinalizer(void * extData)
+{
+    return;
+}
