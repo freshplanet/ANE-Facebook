@@ -77,6 +77,8 @@ package com.freshplanet.nativeExtensions
 		/** Get Facebook SSO access token (can be used for 2 months). */
 		public function getAccessToken() : String
 		{
+			if (!isFacebookSupported) return null;
+			
 			return _extCtx.call('getAccessToken') as String;
 		}
 		
@@ -86,11 +88,15 @@ package com.freshplanet.nativeExtensions
 		 */
 		public function getExpirationTimestamp() : Number
 		{
+			if (!isFacebookSupported) return 0;
+			
 			return _extCtx.call('getExpirationTimestamp') as Number;
 		}
 		
 		public function isLogIn() : Boolean
 		{
+			if (!isFacebookSupported) return false;
+			
 			return _extCtx.call('isSessionValid');
 		}
 		
