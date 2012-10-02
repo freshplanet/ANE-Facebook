@@ -19,101 +19,72 @@
 package com.freshplanet.natExt.functions;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
-import com.adobe.fre.FREInvalidObjectException;
 import com.adobe.fre.FREObject;
-import com.adobe.fre.FRETypeMismatchException;
-import com.adobe.fre.FREWrongThreadException;
 import com.freshplanet.natExt.FBDialogActivity;
 
-public class OpenDialogFunction implements FREFunction{
-
+public class OpenDialogFunction implements FREFunction
+{
 	@Override
-	public FREObject call(FREContext arg0, FREObject[] arg1) {
-		// TODO Auto-generated method stub
-		
+	public FREObject call(FREContext arg0, FREObject[] arg1)
+	{
+		// Retrieve method name
 		String method = null;
-		String message = null;
-		String to = null;
-		String callbackName = null;
-		
-		//method
-		try {
-			method = arg1[0].getAsString();
-			Log.d("as2fb", "method: "+method);
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (FRETypeMismatchException e) {
-			e.printStackTrace();
-		} catch (FREInvalidObjectException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			message = arg1[1].getAsString();
-			Log.d("as2fb", "message: "+message);
-
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (FRETypeMismatchException e) {
-			e.printStackTrace();
-		} catch (FREInvalidObjectException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-		if (arg1[2] != null)
+		try
 		{
-			try {
+			method = arg1[0].getAsString();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", "Error - " + e.getMessage());
+		}
+		
+		// Retrieve message
+		String message = null;
+		try
+		{
+			message = arg1[1].getAsString();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", "Error - " + e.getMessage());
+		}
+		
+		// Retrieve recipient
+		String to = null;
+		if (arg1.length > 2 && arg1[2] != null)
+		{
+			try
+			{
 				to = arg1[2].getAsString();
-				Log.d("as2fb", "to: "+to);
-			} catch (IllegalStateException e) {
+			}
+			catch (Exception e)
+			{
 				e.printStackTrace();
-			} catch (FRETypeMismatchException e) {
-				e.printStackTrace();
-			} catch (FREInvalidObjectException e) {
-				e.printStackTrace();
-			} catch (FREWrongThreadException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
+				arg0.dispatchStatusEventAsync("LOGGING", "Error - " + e.getMessage());
 			}
 		}
-				
 		
+		// Retrieve callback name
+		String callbackName = null;
 		if (arg1.length > 3 && arg1[3] != null)
 		{
-			try {
+			try
+			{
 				callbackName = arg1[3].getAsString();
-				Log.d("as2fb", "to: "+to);
-			} catch (IllegalStateException e) {
+			}
+			catch (Exception e)
+			{
 				e.printStackTrace();
-			} catch (FRETypeMismatchException e) {
-				e.printStackTrace();
-			} catch (FREInvalidObjectException e) {
-				e.printStackTrace();
-			} catch (FREWrongThreadException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
+				arg0.dispatchStatusEventAsync("LOGGING", "Error - " + e.getMessage());
 			}
 		}
 		
-		Log.d("as2fb", "creating bundle...");
-		
-		Log.d("as2fb", "sending dialog");
-
+		// Start Facebook Dialog activity
 		Intent i = new Intent(arg0.getActivity().getApplicationContext(), FBDialogActivity.class);
 		i.putExtra("message", message);
 		i.putExtra("method", method);
@@ -121,16 +92,14 @@ public class OpenDialogFunction implements FREFunction{
 		{
 			i.putExtra("to", to);
 		}
-		
 		arg0.getActivity().startActivity(i);
 		
+		// Trigger the callback if necessary
 		if (callbackName != null)
 		{
 			arg0.dispatchStatusEventAsync(callbackName, "{}");
 		}
-
 		
 		return null;
 	}
-
 }

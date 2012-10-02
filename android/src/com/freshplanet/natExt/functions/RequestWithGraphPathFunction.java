@@ -20,73 +20,57 @@ package com.freshplanet.natExt.functions;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
-import com.adobe.fre.FREInvalidObjectException;
 import com.adobe.fre.FREObject;
-import com.adobe.fre.FRETypeMismatchException;
-import com.adobe.fre.FREWrongThreadException;
 import com.freshplanet.natExt.FBRequestThread;
 
-public class RequestWithGraphPathFunction implements FREFunction {
-
+public class RequestWithGraphPathFunction implements FREFunction
+{
 	@Override
-	public FREObject call(FREContext arg0, FREObject[] arg1) {
-		
+	public FREObject call(FREContext arg0, FREObject[] arg1)
+	{	
+		// Retrieve callback name
 		String callbackName = null;
-		try {
+		try
+		{
 			callbackName = arg1[0].getAsString();
-		} catch (IllegalStateException e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
-		} catch (FRETypeMismatchException e) {
-			e.printStackTrace();
-		} catch (FREInvalidObjectException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", e.getMessage());
 		}
 		
+		// Retrieve graph path
 		String graphPath = null;
-		try {
+		try
+		{
 			graphPath = arg1[1].getAsString();
-		} catch (IllegalStateException e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
-		} catch (FRETypeMismatchException e) {
-			e.printStackTrace();
-		} catch (FREInvalidObjectException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", e.getMessage());
 		}
 		
+		// Retrieve parameters
 		String params = null;
-		try {
-			if (arg1[2] != null)
+		try
+		{
+			if (arg1.length > 2 && arg1[2] != null)
 			{
 				params = arg1[2].getAsString();
 			}
-		} catch (IllegalStateException e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
-		} catch (FRETypeMismatchException e) {
-			e.printStackTrace();
-		} catch (FREInvalidObjectException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", e.getMessage());
 		}
 		
-		
-		// try it by crating a new thread.
-		
+		// Create a new thread
 		FBRequestThread thread = new FBRequestThread(arg0, callbackName, graphPath, params);
 		thread.start();
 		
-		
 		return null;
 	}
-
 }

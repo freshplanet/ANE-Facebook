@@ -21,7 +21,6 @@ package com.freshplanet.natExt;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 
 import com.adobe.fre.FREContext;
@@ -29,24 +28,24 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 
-public class FBDialogActivity extends Activity implements DialogListener {
-
-	private static String TAG = "as3fb";
-
+public class FBDialogActivity extends Activity implements DialogListener
+{
 	private String callbackName;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "create fb activity");
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		
+		// Get context
 		FREContext freContext = FBExtension.context;
 		
+		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(freContext.getResourceId("layout.fb_main"));
 		
+		// Retrieve extra values
 		Bundle values = this.getIntent().getExtras();
-		
 		String method = values.getString("method");
 		String message = values.getString("message");
 		String to = values.getString("to");
@@ -58,9 +57,9 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		Boolean isFrictionless = values.getBoolean("frictionless", true);
 		callbackName = values.getString("callback");
 		
+		// Setup parameters bundle
 		Bundle parameters = new Bundle();
 		parameters.putString("message", message);
-		
 		if (isFrictionless)
 		{
 			parameters.putString("frictionless","1");
@@ -69,7 +68,6 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		{
 			parameters.putString("to", to);
 		}
-
 		if (name != null)
 		{
 			parameters.putString("name", name);
@@ -91,57 +89,19 @@ public class FBDialogActivity extends Activity implements DialogListener {
 			parameters.putString("description", description);
 		}
 
-		
-		
+		// Create Facebook dialog
 		FBExtensionContext.facebook.dialog(this, method, parameters, this);
-
 	}
-	
-	@Override
-	protected void onStart()
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		Log.d(TAG, "start fb activity");
-		super.onStart();
-	}
-    
-	@Override
-    protected void onRestart()
-	{
-		Log.d(TAG, "restart fb activity");
-		super.onRestart();
-	}
-
-	@Override
-    protected void onResume(){
-		Log.d(TAG, "resume fb activity");
-		super.onResume();
-	}
-
-	@Override
-    protected void onPause(){
-		Log.d(TAG, "pause fb activity");
-		super.onPause();
-	}
-
-	@Override
-    protected void onStop(){
-		Log.d(TAG, "stop fb activity");
-		super.onStop();
-	}
-
-	@Override
-    protected void onDestroy(){
-		Log.d(TAG, "destroy fb activity");
-		super.onDestroy();
-	}
-
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "on activity result");
 		finish();
 	}
 
 	@Override
-	public void onComplete(Bundle values) {
+	public void onComplete(Bundle values)
+	{
+		// Trigger callback if necessary
 		FREContext ctx = FBExtension.context;
 		if (ctx != null && callbackName != null)
 		{
@@ -157,7 +117,9 @@ public class FBDialogActivity extends Activity implements DialogListener {
 	}
 
 	@Override
-	public void onFacebookError(FacebookError e) {
+	public void onFacebookError(FacebookError e)
+	{
+		// Trigger callback if necessary
 		FREContext ctx = FBExtension.context;
 		if (ctx != null && callbackName != null)
 		{
@@ -167,18 +129,21 @@ public class FBDialogActivity extends Activity implements DialogListener {
 	}
 
 	@Override
-	public void onError(DialogError e) {
+	public void onError(DialogError e)
+	{
+		// Trigger callback if necessary
 		FREContext ctx = FBExtension.context;
 		if (ctx != null && callbackName != null)
 		{
 			ctx.dispatchStatusEventAsync(callbackName, "{ \"error\" : \""+e.getMessage()+"\" }");
 		}
-
 		finish();
 	}
 
 	@Override
-	public void onCancel() {
+	public void onCancel()
+	{
+		// Trigger callback if necessary
 		FREContext ctx = FBExtension.context;
 		if (ctx != null && callbackName != null)
 		{
@@ -186,6 +151,4 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		}
 		finish();
 	}
-
-	
 }

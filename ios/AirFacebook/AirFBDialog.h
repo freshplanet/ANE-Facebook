@@ -16,18 +16,14 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////
 
-#import <Foundation/Foundation.h>
 #import "FlashRuntimeExtensions.h"
 #import "FBDialog.h"
 
-@interface AirFBDialog :  NSObject <FBDialogDelegate>
-{
-    id *context;
-    NSString* name;
+@interface AirFBDialog : NSObject <FBDialogDelegate>
 
-}
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, assign) id *context;
 
-@property (nonatomic, assign) id* context;
-@property (nonatomic, retain) NSString* name;
+- (id)initWithName:(NSString *)name context:(id *)context;
 
 @end

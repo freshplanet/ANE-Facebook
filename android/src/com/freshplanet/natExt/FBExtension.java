@@ -18,29 +18,26 @@
 
 package com.freshplanet.natExt;
 
-import android.util.Log;
-
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREExtension;
 
-public class FBExtension implements FREExtension {
-
+public class FBExtension implements FREExtension
+{
 	public static FREContext context;
-	private static String TAG = "as3fb";
 
 	/**
 	 * Create the context (AS to Java).
 	 */
-	public FREContext createContext(String extId) {
-		Log.d(TAG, "createContext ");
+	public FREContext createContext(String extId)
+	{
 		return context = new FBExtensionContext();
 	}
 
 	/**
 	 * Dispose the context.
 	 */
-	public void dispose() {
-		Log.d(TAG, "dispose");
+	public void dispose()
+	{
 		context = null;
 	}
 	
@@ -48,7 +45,7 @@ public class FBExtension implements FREExtension {
 	 * Initialize the context.
 	 * Doesn't do anything for now.
 	 */
-	public void initialize() {
-		Log.d(TAG, "initialize");
+	public void initialize()
+	{
 	}
 }
