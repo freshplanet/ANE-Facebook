@@ -18,22 +18,18 @@
 
 package com.freshplanet.natExt;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
 import android.os.Bundle;
 
 import com.adobe.fre.FREContext;
 
-public class FBRequestThread extends Thread {
-
-	private String paramsString;
-	private String graphPath;
-	private String callbackName;
+public class FBRequestThread extends Thread
+{
 	private FREContext context;
-	private String httpMethod;
-	
+	private String callbackName;
+	private String graphPath;
+	private String paramsString;
 	private Bundle params;
+	private String httpMethod;
 	
 	public FBRequestThread(FREContext context, String callbackName, String graphPath, String params)
 	{
@@ -52,43 +48,41 @@ public class FBRequestThread extends Thread {
 		this.graphPath = graphPath;
 		this.httpMethod = httpMethod;
 	}
-
 	
-    @Override public void run() {
+    @Override
+    public void run()
+    {
+    	// Perform Facebook request
 		String data = null;
-		try {
+		try
+		{
+			// Put parameters string in a bundle if necessary
 			if (paramsString != null)
 			{
 				params = new Bundle();
 				params.putString("fields", paramsString);
 			}
 			
+			// Perform Facebook request
 			if (params != null)
 			{
 				data = FBExtensionContext.facebook.request(graphPath, params, this.httpMethod);
-			} else
+			}
+			else
 			{
 				data = FBExtensionContext.facebook.request(graphPath);
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			context.dispatchStatusEventAsync(callbackName, e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			context.dispatchStatusEventAsync(callbackName, e.getMessage());
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			context.dispatchStatusEventAsync(callbackName, e.getMessage());
 		}
 		
+		// Trigger callback if necessary
 		if (data != null && callbackName != null)
 		{
 			context.dispatchStatusEventAsync(callbackName, data);
 		}
-
-    }
-
-	
-	
+    }	
 }

@@ -21,28 +21,21 @@ package com.freshplanet.natExt;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.adobe.fre.FREContext;
 import com.facebook.android.DialogError;
+import com.facebook.android.SessionStore;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.Facebook.ServiceListener;
 import com.facebook.android.FacebookError;
 
-public class ExtendAccessTokenActivity extends Activity implements ServiceListener, DialogListener {
-
-	private static String TAG = "as3fb";
-	
+public class ExtendAccessTokenActivity extends Activity implements ServiceListener, DialogListener
+{
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "create access activity");
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		
-		Log.d(TAG, "extend access token if needed");
-		
-		
 		boolean res = false;
-		
 		if (!FBExtensionContext.facebook.isSessionValid())
 		{
 			res = true;
@@ -50,106 +43,59 @@ public class ExtendAccessTokenActivity extends Activity implements ServiceListen
 		}
 		else if (FBExtensionContext.facebook.shouldExtendAccessToken())
 		{
-			res = FBExtensionContext.facebook.extendAccessTokenIfNeeded( this, this );
+			res = FBExtensionContext.facebook.extendAccessTokenIfNeeded(this, this);
 		}
-		
-		Log.d(TAG, "res : "+Boolean.toString(res));
 		
 		if (!res)
 		{
-			this.finish();
-			FBExtension.context.dispatchStatusEventAsync("USER_LOGGED_IN", FBExtensionContext.facebook.getAccessToken()+'&'+Long.toString(FBExtensionContext.facebook.getAccessExpires()));
+			String access_token = FBExtensionContext.facebook.getAccessToken();
+			long access_expires = FBExtensionContext.facebook.getAccessExpires();
+			FBExtension.context.dispatchStatusEventAsync("USER_LOGGED_IN", access_token+'&'+Long.toString(access_expires));
+			finish();
 		}
-		Log.d(TAG, "doneLogin");
 	}
 	
-	@Override
-	protected void onStart()
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		Log.d(TAG, "start access activity");
-		super.onStart();
-	}
-    
-	@Override
-    protected void onRestart()
-	{
-		Log.d(TAG, "restart access activity");
-		super.onRestart();
-	}
-
-	@Override
-    protected void onResume(){
-		Log.d(TAG, "resume access activity");
-		super.onResume();
-	}
-
-	@Override
-    protected void onPause(){
-		Log.d(TAG, "pause access activity");
-		super.onPause();
-	}
-
-	@Override
-    protected void onStop(){
-		Log.d(TAG, "stop access activity");
-		super.onStop();
-	}
-
-	@Override
-    protected void onDestroy(){
-		Log.d(TAG, "destroy access activity");
-		super.onDestroy();
-	}
-	
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "on activity result");
 		FBExtensionContext.facebook.authorizeCallback(requestCode, resultCode, data);
-		
 		finish();
 	}
 
 	@Override
-	public void onComplete(Bundle values) {
+	public void onComplete(Bundle values)
+	{
+		SessionStore.save(FBExtensionContext.facebook, FBExtension.context.getActivity().getApplicationContext());
 		String access_token = FBExtensionContext.facebook.getAccessToken();
 		long access_expires = FBExtensionContext.facebook.getAccessExpires();
-		
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("ACCESS_TOKEN_REFRESHED", access_token+"&"+Long.toString(access_expires));
-		
+		FBExtension.context.dispatchStatusEventAsync("ACCESS_TOKEN_REFRESHED", access_token+"&"+Long.toString(access_expires));
+		finish();
+	}
+	
+	@Override
+	public void onFacebookError(FacebookError e)
+	{
+		FBExtension.context.dispatchStatusEventAsync("ACCESS_TOKEN_FACEBOOK_ERROR", "success");
 		finish();
 	}
 
 	@Override
-	public void onFacebookError(FacebookError e) {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("ACCESS_TOKEN_FACEBOOK_ERROR", "success");
-		
+	public void onError(Error e)
+	{
+		FBExtension.context.dispatchStatusEventAsync("ACCESS_TOKEN_ERROR", "success");	
 		finish();
 	}
 
 	@Override
-	public void onError(Error e) {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("ACCESS_TOKEN_ERROR", "success");
-		
+	public void onError(DialogError e)
+	{
+		FBExtension.context.dispatchStatusEventAsync("USER_LOG_IN_ERROR", e.getMessage());	
 		finish();
 	}
 
 	@Override
-	public void onError(DialogError e) {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOG_IN_ERROR", e.getMessage());
-		
-		finish();
-
-	}
-
-	@Override
-	public void onCancel() {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
-		
+	public void onCancel()
+	{
+		FBExtension.context.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
 		finish();
 	}
-
 }

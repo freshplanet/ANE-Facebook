@@ -21,7 +21,6 @@ package com.freshplanet.natExt;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 
@@ -29,137 +28,91 @@ import com.adobe.fre.FREContext;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
+import com.facebook.android.SessionStore;
 
-public class FBLoginActivity extends Activity implements DialogListener {
-	
+public class FBLoginActivity extends Activity implements DialogListener
+{	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		Log.d("as3fb", "create fb activity");
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		
+		// Get context
 		FREContext freContext = FBExtension.context;
 		
+		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(freContext.getResourceId("layout.fb_main"));
 		
+		// Get extra values
 		Bundle values = this.getIntent().getExtras();
-		
 		String[] permissions = values.getStringArray("permissions");
 		Boolean forceAuthorize = values.getBoolean("forceAuthorize", false);
 		
-		for (int i =0; i < permissions.length; i++)
+		// Authorize Facebook session if necessary
+		if(forceAuthorize || !FBExtensionContext.facebook.isSessionValid())
 		{
-			Log.d("as3fb", permissions[i]);
-		}
-		
-		if(forceAuthorize || !FBExtensionContext.facebook.isSessionValid()) {
 			FBExtensionContext.facebook.authorize(this, permissions, this);
-		} else
+		}
+		else
 		{
 			finish();
 		}
-		Log.d("as2fb", "doneLogin");
 	}
 	
-	@Override
-	protected void onStart()
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		Log.d("as3fb", "start fb activity");
-		super.onStart();
-	}
-    
-	@Override
-    protected void onRestart()
-	{
-		Log.d("as3fb", "restart fb activity");
-		super.onRestart();
-	}
-
-	@Override
-    protected void onResume(){
-		Log.d("as3fb", "resume fb activity");
-		super.onResume();
-	}
-
-	@Override
-    protected void onPause(){
-		Log.d("as3fb", "pause fb activity");
-		super.onPause();
-	}
-
-	@Override
-    protected void onStop(){
-		Log.d("as3fb", "stop fb activity");
-		super.onStop();
-	}
-
-	@Override
-    protected void onDestroy(){
-		Log.d("as3fb", "destroy fb activity");
-		super.onDestroy();
-	}
-	
-	
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d("as3fb", "on activity result");
-		//super.onActivityResult(requestCode, resultCode, data);
 		FBExtensionContext.facebook.authorizeCallback(requestCode, resultCode, data);
 		finish();
 	}
 
 	@Override
-	public void onComplete(Bundle values) {
+	public void onComplete(Bundle values)
+	{
+		SessionStore.save(FBExtensionContext.facebook, FBExtension.context.getActivity().getApplicationContext());
 		String access_token = FBExtensionContext.facebook.getAccessToken();
 		long access_expires = FBExtensionContext.facebook.getAccessExpires();
-		
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOGGED_IN", access_token+"&"+Long.toString(access_expires));
-
+		FBExtension.context.dispatchStatusEventAsync("USER_LOGGED_IN", access_token+"&"+Long.toString(access_expires));
 		finish();
 	}
 
 	@Override
-	public void onFacebookError(FacebookError e) {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOG_IN_FB_ERROR", e.getMessage());
-		
+	public void onFacebookError(FacebookError e)
+	{
+		FBExtension.context.dispatchStatusEventAsync("USER_LOG_IN_FB_ERROR", e.getMessage());	
 		finish();
 	}
 
 	@Override
-	public void onError(DialogError e) {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOG_IN_ERROR", e.getMessage());
-		
+	public void onError(DialogError e) 
+	{
+		FBExtension.context.dispatchStatusEventAsync("USER_LOG_IN_ERROR", e.getMessage());	
 		finish();
 	}
 
 	@Override
-	public void onCancel() {
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
-		
+	public void onCancel()
+	{
+		FBExtension.context.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
 		finish();
 	}
 
 	@Override
-	public void onBackPressed() {
-		Log.d("as3fb", "back pressed fb activity");
-
-		FREContext freContext = FBExtension.context;
-		freContext.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
-
-		// do something on back.
+	public void onBackPressed()
+	{
+		FBExtension.context.dispatchStatusEventAsync("USER_LOG_IN_CANCEL", "null");
 		finish();
 	}
 	
 	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	public boolean onKeyUp(int keyCode, KeyEvent event)
+	{
+	    if (keyCode == KeyEvent.KEYCODE_BACK)
+	    {
 	    	onBackPressed();
 	        return true;
 	    }
+	    
 	    return super.onKeyUp(keyCode, event);
 	}
-	
 }

@@ -15,51 +15,46 @@
 //  limitations under the License.
 //  
 //////////////////////////////////////////////////////////////////////////////////////
-//
 
 #import "AirFBDialog.h"
 
 @implementation AirFBDialog
 
-@synthesize name;
-@synthesize context;
+@synthesize name = _name;
+@synthesize context = _context;
 
-
-- (id)init
+- (id)initWithName:(NSString *)name context:(id *)context
 {
     self = [super init];
-    if (self) {
-        // Initialization code here.
+    if (self)
+    {
+        self.name = name;
+        self.context = context;
     }
-    
     return self;
 }
 
-- (id)initWithName:(NSString*)newName AndContext:(id*)newContext
+- (void)dealloc
 {
-    [self init];
-    
-    [self setContext:newContext];
-    [self setName:newName];
-    
-    return self;
+    self.name = nil;
+    [super dealloc];
 }
 
 - (void)dialogCompleteWithUrl:(NSURL *)url
 {
-    NSString* queryString = [url query];
+    NSString *queryString = [url query];
     NSString *data;
-    if (queryString == NULL)
+    if (!queryString)
     {
         // assume that it's a cancel.
-        data = [NSString stringWithFormat:@"{ \"cancel\" : true}", [url query]];
-    } else
+        data = @"{ \"cancel\" : true}";
+    }
+    else
     {
         data = [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", [url query]];
     }
+    
     FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]);
-    self = nil;
-    [self release];
 }
 
 /**
@@ -68,9 +63,8 @@
 - (void) dialogDidNotCompleteWithUrl:(NSURL *)url
 {
     NSString *data = [NSString stringWithFormat:@"{ \"cancel\" : true}"];
+    
     FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]);
-    self = nil;
-    [self release];
 }
 
 /**
@@ -79,10 +73,8 @@
 - (void)dialog:(FBDialog*)dialog didFailWithError:(NSError *)error
 {
     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
+    
     FREDispatchStatusEventAsync([self context], (uint8_t*) [[self name] UTF8String], (uint8_t*)[data UTF8String]);
-    self = nil;
-    [self release];
 }
-
 
 @end

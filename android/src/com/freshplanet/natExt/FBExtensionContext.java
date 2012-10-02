@@ -21,16 +21,17 @@ package com.freshplanet.natExt;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.util.Log;
-
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.facebook.android.Facebook;
 import com.freshplanet.natExt.functions.AskForMorePermissionsFunction;
 import com.freshplanet.natExt.functions.DeleteInvitesFunction;
 import com.freshplanet.natExt.functions.ExtendAccessTokenIfNeededFunction;
+import com.freshplanet.natExt.functions.GetAccessTokenFunction;
+import com.freshplanet.natExt.functions.GetExpirationTimestampFunction;
 import com.freshplanet.natExt.functions.HandleOpenURLFunction;
 import com.freshplanet.natExt.functions.InitFacebookFunction;
+import com.freshplanet.natExt.functions.IsSessionValidFunction;
 import com.freshplanet.natExt.functions.LoginFacebookFunction;
 import com.freshplanet.natExt.functions.LogoutFacebookFunction;
 import com.freshplanet.natExt.functions.OpenDialogFunction;
@@ -38,20 +39,19 @@ import com.freshplanet.natExt.functions.OpenFeedDialogFunction;
 import com.freshplanet.natExt.functions.PostOGActionFunction;
 import com.freshplanet.natExt.functions.RequestWithGraphPathFunction;
 
-public class FBExtensionContext extends FREContext {
-
+public class FBExtensionContext extends FREContext
+{
 	public static Facebook facebook;
 	public static FBLoginActivity facebookLoginActivity;
-	private static String TAG = "as3fb";
-
 	
-	public FBExtensionContext() {
-		Log.d(TAG, "Context.FBExtensionContext");
+	public FBExtensionContext()
+	{
+		return;
 	}
 	
 	@Override
-	public void dispose() {
-		Log.d(TAG, "Context.dispose");
+	public void dispose()
+	{
 		FBExtension.context = null;
 	}
 
@@ -59,21 +59,23 @@ public class FBExtensionContext extends FREContext {
 	 * Registers AS function name to Java Function Class
 	 */
 	@Override
-	public Map<String, FREFunction> getFunctions() {
-		Log.d(TAG, "Context.getFunctions");
+	public Map<String, FREFunction> getFunctions()
+	{
 		Map<String, FREFunction> functionMap = new HashMap<String, FREFunction>();
 		functionMap.put("initFacebook", new InitFacebookFunction());
+		functionMap.put("getAccessToken", new GetAccessTokenFunction());
+		functionMap.put("getExpirationTimestamp", new GetExpirationTimestampFunction());
+		functionMap.put("isSessionValid", new IsSessionValidFunction());
 		functionMap.put("login", new LoginFacebookFunction());
-		functionMap.put("handleOpenURL", new HandleOpenURLFunction());
+		functionMap.put("logout", new LogoutFacebookFunction());
+		functionMap.put("askForMorePermissions", new AskForMorePermissionsFunction());
 		functionMap.put("extendAccessTokenIfNeeded", new ExtendAccessTokenIfNeededFunction());
-		functionMap.put("requestWithGraphPath", new RequestWithGraphPathFunction());
+		functionMap.put("postOGAction", new PostOGActionFunction());
 		functionMap.put("openDialog", new OpenDialogFunction());
 		functionMap.put("openFeedDialog", new OpenFeedDialogFunction());
-		functionMap.put("logout", new LogoutFacebookFunction());
 		functionMap.put("deleteRequests", new DeleteInvitesFunction());
-		functionMap.put("postOGAction", new PostOGActionFunction());
-		functionMap.put("askForMorePermissions", new AskForMorePermissionsFunction());
+		functionMap.put("requestWithGraphPath", new RequestWithGraphPathFunction());
+		functionMap.put("handleOpenURL", new HandleOpenURLFunction());
 		return functionMap;	
 	}
-
 }
