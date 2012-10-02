@@ -28,6 +28,7 @@ import com.adobe.fre.FREObject;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.FacebookError;
+import com.facebook.android.SessionStore;
 import com.freshplanet.natExt.FBExtensionContext;
 
 public class LogoutFacebookFunction implements FREFunction, RequestListener
@@ -39,6 +40,7 @@ public class LogoutFacebookFunction implements FREFunction, RequestListener
 	{
 		freContext = arg0;
 		
+		SessionStore.clear(arg0.getActivity().getApplicationContext());
 		AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(FBExtensionContext.facebook);
 		mAsyncRunner.logout(freContext.getActivity(), this);
 		
