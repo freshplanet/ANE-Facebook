@@ -797,8 +797,26 @@ DEFINE_ANE_FUNCTION(postOGAction)
         }
         
     }
-        
-    [[AirFacebook sharedInstance] requestWithGraphPath:action andParams:params andHttpMethod:@"POST" andCallback:nil];
+     
+    // callbackName
+    const uint8_t *string3;
+    NSString *callbackName = nil;
+    if (FREGetObjectAsUTF8(argv[3], &stringLength, &string3) == FRE_OK)
+    {
+        callbackName = [NSString stringWithUTF8String:(char*)string3];
+    }
+    
+    // callbackName
+    const uint8_t *string4;
+    NSString *method = @"POST";
+    if (FREGetObjectAsUTF8(argv[4], &stringLength, &string4) == FRE_OK)
+    {
+        method = [NSString stringWithUTF8String:(char*)string4];
+    }
+
+    
+    
+    [[AirFacebook sharedInstance] requestWithGraphPath:action andParams:params andHttpMethod:method andCallback:callbackName];
         
     return nil;
 }
