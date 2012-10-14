@@ -331,6 +331,22 @@ package com.freshplanet.nativeExtensions
 			requestWithGraphPath('me/friends', callback, customFields);
 		}
 		
+		public function likeOnFacebookAction(params:Object, callback:Function=null):void
+		{
+			postOGAction(null,"og.likes", params, callback );
+		}
+		
+		public function unlikeOnFacebookAction(actionId:String):void
+		{
+			postOGAction(null, actionId, null, null, "DELETE", null );
+		}
+		
+		public function likePageOnFacebook(pageId:String, callback:Function = null):void
+		{
+			requestWithGraphPath("me/likes/"+pageId, callback); 
+		}
+		
+		
 		/** 
 		 * @param graphPath Graph API object, like "me" or "me/friends"
 		 * @param callback Will receive Facebook decoded JSON response. function(data:Object):void
@@ -363,11 +379,24 @@ package com.freshplanet.nativeExtensions
 		
 		
 		
-		public function postOGAction(namespace:String, action:String, params:Object):void
+		public function postOGAction(namespace:String, action:String, params:Object, callback:Function = null, method:String = "POST", prefix:String = "me/"):void
 		{
 			if (this.isFacebookSupported)
 			{
-				var nsAction:String = namespace+":"+action;
+				var nsAction:String;
+				if (namespace == null || namespace == "")
+				{
+					nsAction = action;
+				} else
+				{
+					nsAction = namespace+":"+action;
+				}
+				
+				trace('[Facebook] nsAction ', nsAction);
+				
+				prefix = prefix == null ? "" : prefix;
+				trace('[Facebook] prefix ', prefix);
+				var url:String = prefix + nsAction;
 				var paramsKey:Array = [];
 				var paramsValue:Array = [];
 				for (var key:String in params)
@@ -376,9 +405,19 @@ package com.freshplanet.nativeExtensions
 					paramsValue.push(params[key].toString());
 				}
 				
-				trace('[Facebook] postOGAction ', "me/"+nsAction, paramsKey, paramsValue);
-				extCtx.call('postOGAction', "me/"+nsAction, paramsKey, paramsValue);
-
+				trace('[Facebook] postOGAction ', url, paramsKey, paramsValue);
+			
+				var date:Date = new Date();
+				var callbackName:String = date.time.toString();
+				if (_callbacks.hasOwnProperty(callbackName))
+				{
+					delete _callbacks[callbackName]
+				}
+				_callbacks[callbackName] = callback;
+				
+				
+				extCtx.call('postOGAction', url, paramsKey, paramsValue, callbackName, method);
+				
 			}
 		}
 		
@@ -551,21 +590,22 @@ package com.freshplanet.nativeExtensions
 						var callback:Function = _callbacks[event.code];
 						var data:Object;
 						lastAccessTokenTimeStamp = today.time;
-						try {
-							data = JSON.parse(event.level);
-							if (this.accessToken != null)
-							{
-								data['accessToken'] = this.accessToken;
-							}
-						} catch (e:Error)
-						{
-							trace("[Facebook Error] ERROR ", e);
-						}
 						if (callback != null)
 						{
+							try {
+								data = JSON.parse(event.level);
+								if (this.accessToken != null)
+								{
+									data['accessToken'] = this.accessToken;
+								}
+							} catch (e:Error)
+							{
+								trace("[Facebook Error] ERROR ", e);
+							}
 							callback(data);
+							delete _callbacks[event.code];
 						}
-						delete _callbacks[event.code];
+						
 					}
 			}
 			if (e != null)

@@ -64,11 +64,41 @@ public class PostOGActionFunction implements FREFunction {
 		} catch (FRETypeMismatchException e) {
 			e.printStackTrace();
 		}
+		
+		String callbackName = "";
+		try {
+			callbackName = arg1[3].getAsString();
+		} catch (IllegalStateException e1) {
+			e1.printStackTrace();
+		} catch (FRETypeMismatchException e1) {
+			e1.printStackTrace();
+		} catch (FREInvalidObjectException e1) {
+			e1.printStackTrace();
+		} catch (FREWrongThreadException e1) {
+			e1.printStackTrace();
+		}  catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		String method = "POST";
+		try {
+			method = arg1[4].getAsString();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (FRETypeMismatchException e) {
+			e.printStackTrace();
+		} catch (FREInvalidObjectException e) {
+			e.printStackTrace();
+		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+		// try it by creating a new thread.
 		
-		// try it by crating a new thread.
-		
-		FBRequestThread thread = new FBRequestThread(arg0,"", graphPath, params, "POST");
+		FBRequestThread thread = new FBRequestThread(arg0,callbackName, graphPath, params, method);
 		thread.start();
 		
 		return null;
