@@ -173,11 +173,23 @@ package com.freshplanet.nativeExtensions
 			requestWithGraphPath('me/friends', callback, customFields);
 		}
 		
-		public function postOGAction( namespace : String, action : String, params : Object ) : void
+		public function postOGAction( namespace : String, action : String, params : Object, callback : Function = null, method : String = "POST", prefix : String = "me/" ) : void
 		{
 			if (isFacebookSupported)
 			{
-				var nsAction:String = namespace+":"+action;
+				var nsAction:String;
+				if (namespace == null || namespace == "")
+				{
+					nsAction = action;
+				}
+				else
+				{
+					nsAction = namespace+":"+action;
+				}
+				
+				prefix = prefix ? prefix : "";
+				var url:String = prefix + nsAction;
+				
 				var paramsKey:Array = [];
 				var paramsValue:Array = [];
 				for (var key:String in params)
@@ -187,7 +199,16 @@ package com.freshplanet.nativeExtensions
 				}
 				
 				trace('[Facebook] postOGAction ', "me/"+nsAction, paramsKey, paramsValue);
-				_extCtx.call('postOGAction', "me/"+nsAction, paramsKey, paramsValue);
+				
+				var date:Date = new Date();
+				var callbackName:String = date.time.toString();
+				if (_callbacks.hasOwnProperty(callbackName))
+				{
+					delete _callbacks[callbackName];
+				}
+				_callbacks[callbackName] = callback;
+				
+				_extCtx.call('postOGAction', url, paramsKey, paramsValue, callbackName, method);
 			}
 		}
 		
@@ -272,6 +293,21 @@ package com.freshplanet.nativeExtensions
 					callback(null);
 				}
 			}
+		}
+		
+		public function likeOnFacebookAction( params : Object, callback : Function = null ) : void
+		{
+			postOGAction(null, "og.likes", params, callback);
+		}
+		
+		public function unlikeOnFacebookAction( actionId : String ) : void
+		{
+			postOGAction(null, actionId, null, null, "DELETE", null);
+		}
+		
+		public function likePageOnFacebook( pageId : String, callback : Function = null ) : void
+		{
+			requestWithGraphPath("me/likes/" + pageId, callback); 
 		}
 		
 		
@@ -398,24 +434,26 @@ package com.freshplanet.nativeExtensions
 					{
 						var callback:Function = _callbacks[event.code];
 						var data:Object;
-						try
-						{
-							data = JSON.parse(event.level);
-							if (getAccessToken() != null)
-							{
-								data['accessToken'] = getAccessToken();
-							}
-						}
-						catch (e:Error)
-						{
-							trace("[Facebook] Error - ", e);
-						}
 						
 						if (callback != null)
 						{
+							try
+							{
+								data = JSON.parse(event.level);
+								if (getAccessToken() != null)
+								{
+									data['accessToken'] = getAccessToken();
+								}
+							}
+							catch (e:Error)
+							{
+								trace("[Facebook] Error - ", e);
+							}
+							
 							callback(data);
+							
+							delete _callbacks[event.code];
 						}
-						delete _callbacks[event.code];
 					}
 			}
 			
