@@ -50,8 +50,34 @@ public class PostOGActionFunction implements FREFunction
 			arg0.dispatchStatusEventAsync("LOGGING", e.getMessage());
 		}
 		
+		// Retrieve the callback name
+		String callbackName = null;
+		try
+		{
+			graphPath = arg1[3].getAsString();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", e.getMessage());
+			return null;
+		}
+		
+		// Retrieve the HTTP method
+		String httpMethod = null;
+		try
+		{
+			graphPath = arg1[4].getAsString();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			arg0.dispatchStatusEventAsync("LOGGING", e.getMessage());
+			return null;
+		}
+		
 		// Create a new thread
-		FBRequestThread thread = new FBRequestThread(arg0, "", graphPath, params, "POST");
+		FBRequestThread thread = new FBRequestThread(arg0, callbackName, graphPath, params, httpMethod);
 		thread.start();
 		
 		return null;
