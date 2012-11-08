@@ -27,6 +27,7 @@ import com.adobe.fre.FREObject;
 import com.adobe.fre.FRETypeMismatchException;
 import com.adobe.fre.FREWrongThreadException;
 import com.facebook.android.Facebook;
+import com.facebook.android.FbDialog;
 import com.freshplanet.natExt.FBExtensionContext;
 
 public class InitFacebookFunction implements FREFunction {
@@ -124,6 +125,7 @@ public class InitFacebookFunction implements FREFunction {
 			FBExtensionContext.facebook.setAccessExpires(expirationTimestamp);
 		}
 		
+		FbDialog.crossResourceId = arg0.getResourceId("drawable.close");
 		
 		arg0.dispatchStatusEventAsync("INIT_FACEBOOK", "DONE");
 

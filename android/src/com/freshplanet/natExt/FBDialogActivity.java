@@ -90,8 +90,6 @@ public class FBDialogActivity extends Activity implements DialogListener {
 		{
 			parameters.putString("description", description);
 		}
-
-		
 		
 		FBExtensionContext.facebook.dialog(this, method, parameters, this);
 
