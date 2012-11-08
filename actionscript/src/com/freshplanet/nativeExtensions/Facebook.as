@@ -131,19 +131,19 @@ package com.freshplanet.nativeExtensions
 			}
 		}
 		
-		public function login( permissions : Array ) : void
+		public function login( permissions : Array, publish : Boolean = false ) : void
 		{
 			if (isFacebookSupported)
 			{
-				_extCtx.call('login', permissions);
+				_extCtx.call('login', permissions, publish);
 			}
 		}
 		
-		public function askForMorePermissions( permissions : Array ) : void
+		public function askForMorePermissions( permissions : Array, publish : Boolean = true ) : void
 		{
 			if (isFacebookSupported)
 			{
-				_extCtx.call('askForMorePermissions', permissions);
+				_extCtx.call('askForMorePermissions', permissions, publish);
 			}
 		}
 		

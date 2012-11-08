@@ -284,19 +284,33 @@ DEFINE_ANE_FUNCTION(login)
         [permissions addObject:permission];
     }
     
+    // Get the permissions type (read or publish)
+    BOOL publish = NO;
+    uint32_t publishInt;
+    if (FREGetObjectAsBool(argv[1], &publishInt))
+    {
+        publish = (publishInt != 0);
+    }
+    
     // Print debug log
-    [[AirFacebook sharedInstance] log:[NSString stringWithFormat:@"Login with permissions: %@", permissions]];
+    NSString *permissionsType = publish ? @"publish" : @"read";
+    [[AirFacebook sharedInstance] log:[NSString stringWithFormat:@"Login with %@ permissions: %@", permissionsType, permissions]];
+    
+    // Define login completion handler
+    void (^loginCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
+    loginCompletionHandler = ^(FBSession *session, FBSessionState status, NSError *error) {
+        [[AirFacebook sharedInstance] sessionStateChanged:session state:status error:error];
+    };
     
     // Start login flow
-    [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-        if (status == FBSessionStateOpen)
-        {
-            NSArray *publishPermissions = [NSArray arrayWithObject:@"publish_actions"];
-            [[FBSession activeSession] reauthorizeWithPublishPermissions:publishPermissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:^(FBSession *session, NSError *error) {
-                [[AirFacebook sharedInstance] sessionStateChanged:session state:status error:error];
-            }];
-        }
-    }];
+    if (publish)
+    {
+        [FBSession openActiveSessionWithPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:loginCompletionHandler];
+    }
+    else
+    {
+        [FBSession openActiveSessionWithReadPermissions:permissions allowLoginUI:YES completionHandler:loginCompletionHandler];
+    }
     
     [permissions release];
     
@@ -336,10 +350,39 @@ DEFINE_ANE_FUNCTION(askForMorePermissions)
         [permissions addObject:permission];
     }
     
-    FBSession *session = [FBSession activeSession];
-    [session reauthorizeWithPermissions:permissions behavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:^(FBSession *session, NSError *error) {
-        // TODO: Dispatch an event?
-    }];
+    // Get the permissions type (read or publish)
+    BOOL publish = NO;
+    uint32_t publishInt;
+    if (FREGetObjectAsBool(argv[1], &publishInt))
+    {
+        publish = (publishInt != 0);
+    }
+    
+    // Print debug log
+    NSString *permissionsType = publish ? @"publish" : @"read";
+    [[AirFacebook sharedInstance] log:[NSString stringWithFormat:@"Reauthorize with %@ permissions: %@", permissionsType, permissions]];
+    
+    // Define completion handler
+    void (^reauthorizeCompletionHandler)(FBSession *session, NSError *error);
+    reauthorizeCompletionHandler = ^(FBSession *session, NSError *error) {
+        
+        if (error)
+        {
+            [[AirFacebook sharedInstance] log:[NSString stringWithFormat:@"Reauthorize error: %@", [error localizedDescription]]];
+            FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"userLoggedInCancelEvent", (const uint8_t *)"OK");
+        }
+        
+    };
+    
+    // Start reauthorize flow
+    if (publish)
+    {
+        [[FBSession activeSession] reauthorizeWithPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:reauthorizeCompletionHandler];
+    }
+    else
+    {
+        [[FBSession activeSession] reauthorizeWithReadPermissions:permissions completionHandler:reauthorizeCompletionHandler];
+    }
     
     [permissions release];
     
