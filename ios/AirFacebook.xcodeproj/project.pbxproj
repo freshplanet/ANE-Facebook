@@ -101,8 +101,8 @@
 		39D663ED16134512002CEA7A /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39D663EC16134512002CEA7A /* Accounts.framework */; };
 		39D663EF16134517002CEA7A /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39D663EE16134516002CEA7A /* AdSupport.framework */; };
 		39D663F116134530002CEA7A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39D663F016134530002CEA7A /* Social.framework */; };
-		5A6482C615587278003DA35B /* AirFBDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A6482C415587277003DA35B /* AirFBDialog.h */; };
-		5A6482C715587278003DA35B /* AirFBDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A6482C515587277003DA35B /* AirFBDialog.m */; };
+		5A6482C615587278003DA35B /* DialogDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A6482C415587277003DA35B /* DialogDelegate.h */; };
+		5A6482C715587278003DA35B /* DialogDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A6482C515587277003DA35B /* DialogDelegate.m */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
 		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
 		5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */; };
@@ -205,8 +205,8 @@
 		39D663EC16134512002CEA7A /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		39D663EE16134516002CEA7A /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		39D663F016134530002CEA7A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		5A6482C415587277003DA35B /* AirFBDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirFBDialog.h; sourceTree = "<group>"; };
-		5A6482C515587277003DA35B /* AirFBDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AirFBDialog.m; sourceTree = "<group>"; };
+		5A6482C415587277003DA35B /* DialogDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogDelegate.h; sourceTree = "<group>"; };
+		5A6482C515587277003DA35B /* DialogDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialogDelegate.m; sourceTree = "<group>"; };
 		5A98569815213BC3003A8EB0 /* libAirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAirFacebook.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A98569B15213BC3003A8EB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirFacebook-Prefix.pch"; sourceTree = "<group>"; };
@@ -372,8 +372,8 @@
 			children = (
 				5A9856A015213BC3003A8EB0 /* AirFacebook.h */,
 				5A9856A115213BC3003A8EB0 /* AirFacebook.m */,
-				5A6482C415587277003DA35B /* AirFBDialog.h */,
-				5A6482C515587277003DA35B /* AirFBDialog.m */,
+				5A6482C415587277003DA35B /* DialogDelegate.h */,
+				5A6482C515587277003DA35B /* DialogDelegate.m */,
 				5A98569E15213BC3003A8EB0 /* Supporting Files */,
 			);
 			path = AirFacebook;
@@ -396,7 +396,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */,
-				5A6482C615587278003DA35B /* AirFBDialog.h in Headers */,
+				5A6482C615587278003DA35B /* DialogDelegate.h in Headers */,
 				39D66391161343DA002CEA7A /* Facebook.h in Headers */,
 				39D66393161343DA002CEA7A /* FacebookSDK.h in Headers */,
 				39D66394161343DA002CEA7A /* FBCacheDescriptor.h in Headers */,
@@ -504,7 +504,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
-				5A6482C715587278003DA35B /* AirFBDialog.m in Sources */,
+				5A6482C715587278003DA35B /* DialogDelegate.m in Sources */,
 				39D66392161343DA002CEA7A /* Facebook.m in Sources */,
 				39D66395161343DA002CEA7A /* FBCacheDescriptor.m in Sources */,
 				39D66397161343DA002CEA7A /* FBCacheIndex.m in Sources */,

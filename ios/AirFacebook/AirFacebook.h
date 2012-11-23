@@ -16,53 +16,51 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////
 
+#import "DialogDelegate.h"
 #import "Facebook.h"
 #import "FlashRuntimeExtensions.h"
-#import "AirFBDialog.h"
 
+typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
+typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
+typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id result, NSError *error);
 
 @interface AirFacebook : NSObject
 
-- (void)log:(NSString *)string;
-
 + (id)sharedInstance;
 
-// @param appID Facebook application ID.
-// @param urlSuffix Suffix used for your other apps using the same app id (i.e paid version). Can be set to null.
-- (id)initWithAppID:(NSString *)appID urlSuffix:(NSString *)urlSuffix;
+- (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
 
-- (void)sessionStateChanged:(FBSession *)session state:(FBSessionState)state error:(NSError *)error;
++ (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
++ (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
++ (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
++ (FBShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
+- (DialogDelegate *)dialogDelegateWithCallback:(NSString *)callback;
+- (void)dialogDelegate:(DialogDelegate *)delegate finishedWithResult:(NSString *)result;
 
-- (void)requestWithGraphPath:(NSString *)path callback:(NSString *)callbackName;
-- (void)requestWithGraphPath:(NSString *)path parameters:(NSDictionary *)params callback:(NSString *)callbackName;
-- (void)requestWithGraphPath:(NSString *)path parameters:(NSDictionary *)params httpMethod:(NSString *)httpMethod callback:(NSString *)callbackName;
++ (void)log:(NSString *)string;
 
-- (void)dialog:(NSString *)action parameters:(NSMutableDictionary *)params callback:(NSString *)callbackName;
-
+@property (nonatomic, readonly) NSString *appID;
+@property (nonatomic, readonly) NSString *urlSchemeSuffix;
 @property (nonatomic, readonly) Facebook *facebook;
 
 @end
 
 
 // C interface
-DEFINE_ANE_FUNCTION(initFacebook);
+DEFINE_ANE_FUNCTION(init);
+DEFINE_ANE_FUNCTION(handleOpenURL);
 DEFINE_ANE_FUNCTION(getAccessToken);
 DEFINE_ANE_FUNCTION(getExpirationTimestamp);
-DEFINE_ANE_FUNCTION(isSessionValid);
-DEFINE_ANE_FUNCTION(login);
-DEFINE_ANE_FUNCTION(logout);
-DEFINE_ANE_FUNCTION(askForMorePermissions);
-DEFINE_ANE_FUNCTION(extendAccessTokenIfNeeded);
-DEFINE_ANE_FUNCTION(postOGAction);
-DEFINE_ANE_FUNCTION(openDialog);
-DEFINE_ANE_FUNCTION(openFeedDialog);
-DEFINE_ANE_FUNCTION(deleteRequests);
+DEFINE_ANE_FUNCTION(isSessionOpen);
+DEFINE_ANE_FUNCTION(openSessionWithPermissions);
+DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions);
+DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
 DEFINE_ANE_FUNCTION(requestWithGraphPath);
-DEFINE_ANE_FUNCTION(handleOpenURL);
+DEFINE_ANE_FUNCTION(dialog);
 
 
 // ANE Setup
-void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
-void AirFBContextFinalizer(FREContext ctx);
-void AirFBInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, FREContextFinalizer* ctxFinalizerToSet );
-void AirFBFinalizer(void *extData);
+void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
+void AirFacebookContextFinalizer(FREContext ctx);
+void AirFacebookInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, FREContextFinalizer* ctxFinalizerToSet);
+void AirFacebookFinalizer(void *extData);
