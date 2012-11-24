@@ -5,7 +5,7 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
+    <target name="all" depends="ios,ios-x86,android,swc,package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -28,6 +28,29 @@
 
         <delete dir="../temp/ios/build/"/>
     </target>
+	
+	<!-- iOS-x86 -->
+	    <target name="ios-x86" description="Build iOS Library for x86 (iOS Simulator)">
+	        <mkdir dir="../temp/ios-x86/build/"/>
+
+	        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+	            <arg line="-project ${name}.xcodeproj"/>
+	            <arg line="-alltargets clean"/>
+	        </exec>
+
+	        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+	            <arg line="-project ${name}.xcodeproj"/>
+	        	<arg line="-arch i386"/>
+	            <arg line="-sdk ${ios.simulatorsdkversion}"/>
+	            <arg line="-alltargets"/>
+	            <arg line="-configuration Release"/>
+	            <arg line="SYMROOT=../temp/ios-x86/build/"/>
+	        </exec>
+
+	        <copy file="../temp/ios-x86/build/Release-iphonesimulator/lib${name}.a" todir="../temp/ios-x86" overwrite="true"/>
+
+	        <delete dir="../temp/ios-x86/build/"/>
+	    </target>
 
     <!-- Android -->
     <target name="android" description="Build Android Library">
@@ -76,6 +99,7 @@
 
         <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/ios" overwrite="true"/>
+    	<copy file="../temp/swc/content/library.swf" todir="../temp/ios-x86" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/android" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
         <delete dir="../temp/swc/content/"/>
@@ -92,6 +116,7 @@
             <arg line="-swc swc/${name}.swc"/>
             <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml -C ios/ ."/>
             <arg line="-platform Android-ARM -C android/ ."/>
+        	<arg line="-platform iPhone-x86 -C ios-x86/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>
 
