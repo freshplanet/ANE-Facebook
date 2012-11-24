@@ -4,6 +4,12 @@ Air Native Extension for Facebook (iOS + Android)
 This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
 
 
+Facebook SDK
+---------
+
+This ANE contains the new Facebook SDK for iOS (3.1). It still uses the old Facebook SDK for Android (the transition to 3.0 is a work in progress). The Actionscript API is based on the new Facebook SDK API.
+
+
 Installation
 ---------
 
@@ -52,9 +58,9 @@ On Android:
 
                     ...
                     
-                    <activity android:name="com.freshplanet.natExt.FBLoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    <activity android:name="com.freshplanet.natExt.FBDialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    <activity android:name="com.freshplanet.natExt.ExtendAccessTokenActivity"></activity>
+                    <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                    <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                    <activity android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"></activity>
                     
                 </application>
 
@@ -78,4 +84,4 @@ Should you need to edit the extension source code and/or recompile it, you will 
 Authors
 ------
 
-This ANE has been written by [Thibaut Crenn](https://github.com/titi-us). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+This ANE has been written by [Thibaut Crenn](https://github.com/titi-us) and [Alexis Taugeron](http://alexistaugeron.com). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
