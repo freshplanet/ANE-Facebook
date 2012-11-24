@@ -9,7 +9,7 @@
     <application android:label="AirFacebook" >
         <activity android:name=".FBLoginActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
         <activity android:name=".FBDialogActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
-        <activity android:name=".ExtendAccessTokenActivity"></activity>
+        <activity android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"></activity>
     </application>
 
 </manifest>
