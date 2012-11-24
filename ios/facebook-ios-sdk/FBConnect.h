@@ -19,4 +19,4 @@
 #include "FBDialog.h"
 #include "FBLoginDialog.h"
 #include "FBRequest.h"
-#include "FBJson.h"
+#include "FBSBJSON.h"
