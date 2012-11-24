@@ -20,18 +20,28 @@
   <id>com.freshplanet.AirFacebook</id>
   <versionNumber>1</versionNumber>
   <platforms>
+
     <platform name="iPhone-ARM">
-            <applicationDeployment>
-                <nativeLibrary>libAirFacebook.a</nativeLibrary>
-                <initializer>AirFBInitializer</initializer> 
-                <finalizer>AirFBFinalizer</finalizer>
-            </applicationDeployment>
+        <applicationDeployment>
+            <nativeLibrary>libAirFacebook.a</nativeLibrary>
+            <initializer>AirFacebookInitializer</initializer> 
+            <finalizer>AirFacebookFinalizer</finalizer>
+        </applicationDeployment>
     </platform>
+
+    <platform name="iPhone-x86">
+        <applicationDeployment>
+            <nativeLibrary>libAirFacebook.a</nativeLibrary>
+            <initializer>AirFacebookInitializer</initializer> 
+            <finalizer>AirFacebookFinalizer</finalizer>
+        </applicationDeployment>
+    </platform>
+
     <platform name="Android-ARM"> 
         <applicationDeployment> 
             <nativeLibrary>libAirFacebook.jar</nativeLibrary> 
-            <initializer>com.freshplanet.natExt.FBExtension</initializer> 
-            <finalizer>com.freshplanet.natExt.FBExtension</finalizer> 
+            <initializer>com.freshplanet.ane.AirFacebook.AirFacebookExtension</initializer> 
+            <finalizer>com.freshplanet.ane.AirFacebook.AirFacebookExtension</finalizer> 
         </applicationDeployment> 
     </platform> 
     

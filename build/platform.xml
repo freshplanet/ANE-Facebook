@@ -1,6 +1,8 @@
 <platform xmlns="http://ns.adobe.com/air/extension/3.1">
-    <sdkVersion>4.3</sdkVersion>
+    <sdkVersion>6.0</sdkVersion>
     <linkerOptions>
-        <option></option> 
+        <option>-weak_framework Accounts</option> 
+        <option>-weak_framework AdSupport</option>
+        <option>-weak_framework Social</option>
     </linkerOptions> 
 </platform>

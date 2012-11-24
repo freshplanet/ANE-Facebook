@@ -16,69 +16,51 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////
 
-#import <Foundation/Foundation.h>
-#import "FBConnect.h"
-#import "FBDialog.h"
+#import "DialogDelegate.h"
+#import "Facebook.h"
 #import "FlashRuntimeExtensions.h"
-#import "AirFBRequest.h"
-#import "AirFBDialog.h"
 
-@interface AirFacebook : NSObject <FBSessionDelegate>
-{
-    Facebook *facebook;
-    
-}
+typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
+typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
+typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id result, NSError *error);
 
-+(id) sharedInstance;
+@interface AirFacebook : NSObject
 
-- (void) extendAccessTokenIfNeeded;
-- (void) initFacebookWithAppId:(NSString*)appId andSuffix:(NSString*)suffix andAccessToken:(NSString*)accessToken andExpirationTimestamp:(NSString*)expirationTimestamp;
-- (BOOL) handleOpenURL:(NSURL *)url;
-- (void) requestWithGraphPath:(NSString*)path andCallback:(NSString*)callbackName;
-- (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andCallback:(NSString*)callbackName;
-- (void) requestWithGraphPath:(NSString*)path andParams:(NSMutableDictionary*)params andHttpMethod:(NSString*)httpMethod andCallback:(NSString*)callbackName;
++ (id)sharedInstance;
 
+- (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
 
-- (void) dialog:(NSString *)action andParams:(NSMutableDictionary *)params andCallback:(NSString*)callbackName;
-- (void) login:(NSArray*)permissions;
-- (void) askForMorePermissions:(NSArray*)permissions;
-- (void) logout;
-@property (nonatomic, retain) Facebook *facebook;
++ (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
++ (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
++ (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
++ (FBShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
+- (DialogDelegate *)dialogDelegateWithCallback:(NSString *)callback;
+- (void)dialogDelegate:(DialogDelegate *)delegate finishedWithResult:(NSString *)result;
 
++ (void)log:(NSString *)string;
 
+@property (nonatomic, readonly) NSString *appID;
+@property (nonatomic, readonly) NSString *urlSchemeSuffix;
+@property (nonatomic, readonly) Facebook *facebook;
 
 @end
 
-void AirFBContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, 
-                        uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
 
-void AirFBContextFinalizer(FREContext ctx);
-
-void AirFBInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, FREContextFinalizer* ctxFinalizerToSet );
-
-void AirFBFinalizer(void *extData);
-
-FREObject initFacebook(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject extendAccessTokenIfNeeded(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject logout(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject login(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject handleOpenURL(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject requestWithGraphPath(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject openDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject deleteRequests(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject postOGAction(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject openFeedDialog(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
-
-FREObject askForMorePermissions(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+// C interface
+DEFINE_ANE_FUNCTION(init);
+DEFINE_ANE_FUNCTION(handleOpenURL);
+DEFINE_ANE_FUNCTION(getAccessToken);
+DEFINE_ANE_FUNCTION(getExpirationTimestamp);
+DEFINE_ANE_FUNCTION(isSessionOpen);
+DEFINE_ANE_FUNCTION(openSessionWithPermissions);
+DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions);
+DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
+DEFINE_ANE_FUNCTION(requestWithGraphPath);
+DEFINE_ANE_FUNCTION(dialog);
 
 
-
+// ANE Setup
+void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
+void AirFacebookContextFinalizer(FREContext ctx);
+void AirFacebookInitializer(void** extDataToSet, FREContextInitializer* ctxInitializerToSet, FREContextFinalizer* ctxFinalizerToSet);
+void AirFacebookFinalizer(void *extData);

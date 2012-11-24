@@ -5,7 +5,7 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
+    <target name="all" depends="ios,ios-simulator,android,swc-mobile,swc-default,package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -29,21 +29,46 @@
         <delete dir="../temp/ios/build/"/>
     </target>
 
+    <!-- iOS Simulator -->
+    <target name="ios-simulator" description="Build iOS Simulator Library">
+        <mkdir dir="../temp/ios-simulator/build/"/>
+
+        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+            <arg line="-project ${name}.xcodeproj"/>
+            <arg line="-alltargets clean"/>
+        </exec>
+
+        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+            <arg line="-project ${name}.xcodeproj"/>
+            <arg line="-arch i386"/>
+            <arg line="-sdk ${ios.simulatorsdkversion}"/>
+            <arg line="-alltargets"/>
+            <arg line="-configuration Release"/>
+            <arg line="SYMROOT=../temp/ios-simulator/build/"/>
+        </exec>
+
+        <copy file="../temp/ios-simulator/build/Release-iphonesimulator/lib${name}.a" todir="../temp/ios-simulator" overwrite="true"/>
+
+        <delete dir="../temp/ios-simulator/build/"/>
+    </target>
+
     <!-- Android -->
     <target name="android" description="Build Android Library">
         <delete dir="../android/temp"/>
         <mkdir dir="../android/temp/classes"/>
 
-        <javac srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false">
+        <javac source="1.6" srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false">
             <classpath>
                 <pathelement location="${android.sdk}/android.jar"/>
                 <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
                 <pathelement location="../android/libs/facebook.jar"/>
+                <pathelement location="../android/libs/android-support-v4.jar"/>
             </classpath>
         </javac>
 
         <mkdir dir="../android/temp/zip"/>
         <unzip src="../android/libs/facebook.jar" dest="../android/temp/zip"/>
+        <unzip src="../android/libs/android-support-v4.jar" dest="../android/temp/zip"/>
         <copydir src="../android/temp/zip/com" dest="../android/temp/classes/com"/>
 
         <mkdir dir="../temp/android/"/>
@@ -54,11 +79,11 @@
         <delete dir="../android/temp"/>
     </target>
 
-    <!-- Actionscript -->
-    <target name="swc" description="Build SWC library">
+    <!-- Actionscript mobile -->
+    <target name="swc-mobile" description="Build SWC library">
         <mkdir dir="../temp/swc/content/"/>
 
-        <fileset dir="../actionscript/src" casesensitive="yes" id="classfiles">
+        <fileset dir="../actionscript/mobile/src" casesensitive="yes" id="classfiles">
             <include name="**/*.as"/>
         </fileset>
 
@@ -67,7 +92,7 @@
         </pathconvert>
 
         <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
-            <arg line='-source-path ../actionscript/src'/>
+            <arg line='-source-path ../actionscript/mobile/src'/>
             <arg line='-output ../temp/swc/${name}.swc'/>
             <arg line='-swf-version=14'/>
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
@@ -76,7 +101,32 @@
 
         <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/ios" overwrite="true"/>
+        <copy file="../temp/swc/content/library.swf" todir="../temp/ios-simulator" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/android" overwrite="true"/>
+        <delete dir="../temp/swc/content/"/>
+    </target>
+
+    <!-- Actionscript default (for AIR simulator) -->
+    <target name="swc-default" description="Build SWC library">
+        <mkdir dir="../temp/swc/content/"/>
+
+        <fileset dir="../actionscript/default/src" casesensitive="yes" id="classfiles">
+            <include name="**/*.as"/>
+        </fileset>
+
+        <pathconvert property="classlist" refid="classfiles" pathsep=" " dirsep=".">
+            <regexpmapper from=".*src.(.*)\.as" to="\1"/>
+        </pathconvert>
+
+        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
+            <arg line='-source-path ../actionscript/default/src'/>
+            <arg line='-output ../temp/swc/${name}.swc'/>
+            <arg line='-swf-version=14'/>
+            <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
+            <arg line='-include-classes ${classlist}'/>
+        </exec>
+
+        <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
         <delete dir="../temp/swc/content/"/>
     </target>
@@ -91,6 +141,7 @@
             <arg value="../build/extension.xml"/>
             <arg line="-swc swc/${name}.swc"/>
             <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml -C ios/ ."/>
+            <arg line="-platform iPhone-x86 -C ios-simulator/ ."/>
             <arg line="-platform Android-ARM -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>
