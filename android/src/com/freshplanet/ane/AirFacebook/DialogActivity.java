@@ -20,7 +20,6 @@ package com.freshplanet.ane.AirFacebook;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -34,6 +33,8 @@ import com.facebook.android.FacebookError;
 
 public class DialogActivity extends Activity implements DialogListener
 {
+	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.DialogActivity";
+	
 	private String callback;
 	private String method;
 	
@@ -50,10 +51,9 @@ public class DialogActivity extends Activity implements DialogListener
 		setContentView(context.getResourceId("layout.fb_main"));
 		
 		// Retrieve extra values
-		Bundle extras = this.getIntent().getExtras();
-		method = extras.getString("method");
-		Bundle parameters = extras.getBundle("parameters");
-		callback = extras.getString("callback");
+		method = this.getIntent().getStringExtra(extraPrefix+".method");
+		Bundle parameters = this.getIntent().getBundleExtra(extraPrefix+".parameters");
+		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
 		
 		// Create Facebook dialog
 		AirFacebookExtensionContext.facebook.dialog(this, method, parameters, this);
