@@ -78,9 +78,9 @@ public class DialogFunction implements FREFunction
 		
 		// Start dialog activity
 		Intent i = new Intent(arg0.getActivity().getApplicationContext(), DialogActivity.class);
-		i.putExtra("method", method);
-		i.putExtra("parameters", parameters);
-		i.putExtra("callback", callback);
+		i.putExtra(DialogActivity.extraPrefix+".method", method);
+		i.putExtra(DialogActivity.extraPrefix+".parameters", parameters);
+		i.putExtra(DialogActivity.extraPrefix+".callback", callback);
 		arg0.getActivity().startActivity(i);
 		
 		return null;
