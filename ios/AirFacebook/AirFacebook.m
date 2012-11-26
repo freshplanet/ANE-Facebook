@@ -79,9 +79,9 @@ static AirFacebook *sharedInstance = nil;
         
         // Open session if a token is in cache.
         FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
+        [FBSession setActiveSession:session];
         if (session.state == FBSessionStateCreatedTokenLoaded)
         {
-            [FBSession setActiveSession:session];
             [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
         }
         [session release];
