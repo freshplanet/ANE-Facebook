@@ -18,6 +18,10 @@
 
 package com.freshplanet.ane.AirFacebook;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Set;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +35,7 @@ import com.facebook.android.FacebookError;
 public class DialogActivity extends Activity implements DialogListener
 {
 	private String callback;
+	private String method;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -46,7 +51,7 @@ public class DialogActivity extends Activity implements DialogListener
 		
 		// Retrieve extra values
 		Bundle extras = this.getIntent().getExtras();
-		String method = extras.getString("method");
+		method = extras.getString("method");
 		Bundle parameters = extras.getBundle("parameters");
 		callback = extras.getString("callback");
 		
@@ -67,20 +72,59 @@ public class DialogActivity extends Activity implements DialogListener
 		// Trigger callback if necessary
 		if (context != null && callback != null)
 		{
-			String postId = values.getString("post_id");
-			String postMessage;
-			if (postId != null)
+			// Content depends on type of dialog that was invoked (method)
+			String postMessage = null;
+			if(method.equalsIgnoreCase("feed"))
 			{
-				postMessage = "{ \"params\": \""+postId+"\" }";
+				// Check if feed gave us a post_id back, if not we cancelled
+				String postId = values.getString("post_id");
+				if (postId != null)
+				{
+					postMessage = "{ \"params\": \""+postId+"\" }";
+				}
 			}
-			else
+			else if(method.equalsIgnoreCase("apprequests"))
 			{
+				// We get a request id, and a list of recepients if selected
+				String request = values.getString("request");
+				if (request != null)
+				{
+					// Give everything as URL encoded value to match iOS response
+					postMessage = "{ \"params\": \"" + bundleSetToURLEncoded(values) + "\" }";
+				}
+			}
+			
+			// If  message wasn't set by here, then we cancelled
+			if(postMessage == null)
 				postMessage = "{ \"cancel\": true }";
-			}
 			
 			context.dispatchStatusEventAsync(callback, postMessage);
 		}
+		
 		finish();
+	}
+	
+	protected String bundleSetToURLEncoded(Bundle values)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		// Go through each key
+		String[] keys = values.keySet().toArray(new String[0]);
+		for (int i = 0; i < keys.length; i++) 
+		{
+			if(i > 0)
+				sb.append("&");
+			try
+			{
+				sb.append(keys[i]).append("=").append(URLEncoder.encode(values.get(keys[i]).toString(), "utf-8"));
+			}
+			catch(UnsupportedEncodingException ex)
+			{
+				// Um. No.
+			}
+		}
+		
+		return sb.toString();
 	}
 
 	public void onFacebookError(FacebookError e)
