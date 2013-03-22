@@ -20,7 +20,6 @@ package com.freshplanet.ane.AirFacebook;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;

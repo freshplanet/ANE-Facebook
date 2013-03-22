@@ -189,6 +189,10 @@ package com.freshplanet.ane.AirFacebook
 			_context.call('dialog', method, keys, values, callbackName, allowNativeUI);
 		}
 		
+		public function publishInstall(appId:String):void
+		{
+			_context.call('publishInstall', appId);
+		}
 		
 		// --------------------------------------------------------------------------------------//
 		//																						 //

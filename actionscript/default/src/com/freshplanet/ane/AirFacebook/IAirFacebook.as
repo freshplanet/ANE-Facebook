@@ -140,5 +140,8 @@ package com.freshplanet.ane.AirFacebook
 		 * is true.
 		 */
 		function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void;
+	
+		/** Register the appId for install tracking. Works only on iOS now*/
+		function publishInstall( appId:String ):void;
 	}
 }

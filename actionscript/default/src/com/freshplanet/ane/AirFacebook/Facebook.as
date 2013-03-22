@@ -140,6 +140,11 @@ package com.freshplanet.ane.AirFacebook
 			callback(null);
 		}
 		
+		/** @inheritDoc */
+		public function publishInstall( appId:String ):void
+		{
+			return;
+		}
 		
 		// --------------------------------------------------------------------------------------//
 		//																						 //

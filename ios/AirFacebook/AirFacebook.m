@@ -660,13 +660,26 @@ DEFINE_ANE_FUNCTION(dialog)
     return nil;
 }
 
+DEFINE_ANE_FUNCTION(publishInstall)
+{
+    uint32_t stringLength;
+
+    NSString *appId = nil;
+    const uint8_t *appIdString;
+    if (FREGetObjectAsUTF8(argv[0], &stringLength, &appIdString) == FRE_OK)
+    {
+        appId = [NSString stringWithUTF8String:(char*)appIdString];
+        [FBSettings publishInstall:appId];
+    }
+    return nil;
+}
 
 
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 10;
+    NSInteger nbFuntionsToLink = 11;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -710,6 +723,10 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[9].name = (const uint8_t*) "dialog";
     func[9].functionData = NULL;
     func[9].function = &dialog;
+    
+    func[10].name = (const uint8_t*) "publishInstall";
+    func[10].functionData = NULL;
+    func[10].function = &publishInstall;
     
     *functionsToSet = func;
     
