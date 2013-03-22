@@ -32,6 +32,7 @@ import com.freshplanet.ane.AirFacebook.functions.GetExpirationTimestampFunction;
 import com.freshplanet.ane.AirFacebook.functions.InitFunction;
 import com.freshplanet.ane.AirFacebook.functions.IsSessionOpenFunction;
 import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunction;
+import com.freshplanet.ane.AirFacebook.functions.PublishInstallFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
 
@@ -61,7 +62,7 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("closeSessionAndClearTokenInformation", new CloseSessionAndClearTokenInformationFunction());
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 		functions.put("dialog", new DialogFunction());
-		
+		functions.put("publishInstall", new PublishInstallFunction());
 		return functions;	
 	}
 }
