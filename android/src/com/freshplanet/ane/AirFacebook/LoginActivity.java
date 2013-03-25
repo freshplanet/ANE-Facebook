@@ -18,9 +18,17 @@
 
 package com.freshplanet.ane.AirFacebook;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Window;
 
@@ -95,12 +103,46 @@ public class LoginActivity extends Activity implements DialogListener
 	public void onFacebookError(FacebookError e)
 	{
 		AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", e.getMessage());	
+		AirFacebookExtension.log("onFbError");
+	    // Add code to print out the key hash
+	    try {
+	        PackageInfo info = getPackageManager().getPackageInfo(
+	        		getApplicationContext().getPackageName(),
+	                PackageManager.GET_SIGNATURES);
+	        for (Signature signature : info.signatures) {
+	            MessageDigest md = MessageDigest.getInstance("SHA");
+	            md.update(signature.toByteArray());
+	            AirFacebookExtension.log("keyHash:"+Base64.encodeToString(md.digest(), Base64.DEFAULT));
+	            }
+	    } catch (NameNotFoundException ex) {
+	    	AirFacebookExtension.log("name not found");
+	    } catch (NoSuchAlgorithmException ex) {
+	    	AirFacebookExtension.log("no such algo");
+	    }
+
 		finish();
 	}
 
 	public void onError(DialogError e) 
 	{
 		AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", e.getMessage());	
+		AirFacebookExtension.log("onError");
+	    // Add code to print out the key hash
+	    try {
+	        PackageInfo info = getPackageManager().getPackageInfo(
+	                getApplicationContext().getPackageName(),
+	                PackageManager.GET_SIGNATURES);
+	        for (Signature signature : info.signatures) {
+	            MessageDigest md = MessageDigest.getInstance("SHA");
+	            md.update(signature.toByteArray());
+	            AirFacebookExtension.log("keyHash:"+Base64.encodeToString(md.digest(), Base64.DEFAULT));
+	            }
+	    } catch (NameNotFoundException ex) {
+	    	AirFacebookExtension.log("name not found");
+	    } catch (NoSuchAlgorithmException ex) {
+	    	AirFacebookExtension.log("no such algo");
+	    }
+		
 		finish();
 	}
 
