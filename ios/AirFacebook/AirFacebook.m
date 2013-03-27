@@ -97,8 +97,9 @@ static AirFacebook *sharedInstance = nil;
         {
             // Give token to old Facebook object (used for FBDialog).
             Facebook *facebook = [[AirFacebook sharedInstance] facebook];
-            facebook.accessToken = session.accessToken;
-            facebook.expirationDate = session.expirationDate;
+            FBAccessTokenData *token = session.accessTokenData;
+            facebook.accessToken = token.accessToken;
+            facebook.expirationDate = token.expirationDate;
             
             [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", session.permissions]];
             FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"OPEN_SESSION_SUCCESS", (const uint8_t *)"OK");
@@ -304,7 +305,7 @@ DEFINE_ANE_FUNCTION(handleOpenURL)
 DEFINE_ANE_FUNCTION(getAccessToken)
 {
     FBSession *session = [FBSession activeSession];
-    NSString *accessToken = [session accessToken];
+    NSString *accessToken = session.accessTokenData.accessToken;
     
     FREObject result;
     if (FRENewObjectFromUTF8(accessToken.length, (const uint8_t *)[accessToken UTF8String], &result) == FRE_OK)
@@ -317,7 +318,7 @@ DEFINE_ANE_FUNCTION(getAccessToken)
 DEFINE_ANE_FUNCTION(getExpirationTimestamp)
 {
     FBSession *session = [FBSession activeSession];
-    NSTimeInterval expirationTimestamp = [session.expirationDate timeIntervalSince1970];
+    NSTimeInterval expirationTimestamp = [session.accessTokenData.expirationDate timeIntervalSince1970];
     
     FREObject result;
     if (FRENewObjectFromUint32(expirationTimestamp, &result) == FRE_OK)
@@ -465,11 +466,11 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
     FBReauthorizeSessionCompletionHandler completionHandler = [AirFacebook reauthorizeSessionCompletionHandler];
     if ([type isEqualToString:@"read"])
     {
-        [[FBSession activeSession] reauthorizeWithReadPermissions:permissions completionHandler:completionHandler];
+        [[FBSession activeSession] requestNewReadPermissions:permissions completionHandler:completionHandler];
     }
     else if ([type isEqualToString:@"publish"])
     {
-        [[FBSession activeSession] reauthorizeWithPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:completionHandler];
+        [[FBSession activeSession] requestNewPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:completionHandler];
     }
     
     [permissions release];

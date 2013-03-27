@@ -101,6 +101,7 @@
 		39D663ED16134512002CEA7A /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39D663EC16134512002CEA7A /* Accounts.framework */; };
 		39D663EF16134517002CEA7A /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39D663EE16134516002CEA7A /* AdSupport.framework */; };
 		39D663F116134530002CEA7A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39D663F016134530002CEA7A /* Social.framework */; };
+		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
 		5A6482C615587278003DA35B /* DialogDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A6482C415587277003DA35B /* DialogDelegate.h */; };
 		5A6482C715587278003DA35B /* DialogDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A6482C515587277003DA35B /* DialogDelegate.m */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
@@ -205,6 +206,7 @@
 		39D663EC16134512002CEA7A /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		39D663EE16134516002CEA7A /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		39D663F016134530002CEA7A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = ../FlashRuntimeExtensions.h; sourceTree = "<group>"; };
 		5A6482C415587277003DA35B /* DialogDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogDelegate.h; sourceTree = "<group>"; };
 		5A6482C515587277003DA35B /* DialogDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialogDelegate.m; sourceTree = "<group>"; };
 		5A98569815213BC3003A8EB0 /* libAirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAirFacebook.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -382,6 +384,7 @@
 		5A98569E15213BC3003A8EB0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */,
 				5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */,
 				5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */,
 			);
@@ -450,6 +453,7 @@
 				39D663E6161343DA002CEA7A /* FBSBJsonBase.h in Headers */,
 				39D663E8161343DA002CEA7A /* FBSBJsonParser.h in Headers */,
 				39D663EA161343DA002CEA7A /* FBSBJsonWriter.h in Headers */,
+				4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
