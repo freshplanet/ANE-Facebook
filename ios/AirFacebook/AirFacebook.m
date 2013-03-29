@@ -26,7 +26,6 @@ FREContext AirFBCtx = nil;
 
 @interface AirFacebook ()
 {
-    NSMutableArray *_dialogDelegates;
 }
 @end
 
@@ -34,7 +33,6 @@ FREContext AirFBCtx = nil;
 
 @synthesize appID = _appID;
 @synthesize urlSchemeSuffix = _urlSchemeSuffix;
-@synthesize facebook = _facebook;
 
 static AirFacebook *sharedInstance = nil;
 
@@ -62,8 +60,6 @@ static AirFacebook *sharedInstance = nil;
 {
     [_appID release];
     [_urlSchemeSuffix release];
-    [_facebook release];
-    [_dialogDelegates release];
     [super dealloc];
 }
 
@@ -78,6 +74,7 @@ static AirFacebook *sharedInstance = nil;
         _urlSchemeSuffix = [urlSchemeSuffix retain];
         
         // Open session if a token is in cache.
+        NSLog(@"calling initWithAppId from AirFacebook.initWithAppId");
         FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
         [FBSession setActiveSession:session];
         if (session.state == FBSessionStateCreatedTokenLoaded)
@@ -93,14 +90,11 @@ static AirFacebook *sharedInstance = nil;
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler
 {
     return ^(FBSession *session, FBSessionState status, NSError *error) {
+        
+        [AirFacebook log:[NSString stringWithFormat:@"Session opened handler --------------------------"]];
+        
         if (status == FBSessionStateOpen)
         {
-            // Give token to old Facebook object (used for FBDialog).
-            Facebook *facebook = [[AirFacebook sharedInstance] facebook];
-            FBAccessTokenData *token = session.accessTokenData;
-            facebook.accessToken = token.accessToken;
-            facebook.expirationDate = token.expirationDate;
-            
             [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", session.permissions]];
             FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"OPEN_SESSION_SUCCESS", (const uint8_t *)"OK");
         }
@@ -122,11 +116,6 @@ static AirFacebook *sharedInstance = nil;
         }
         else if (status == FBSessionStateClosed)
         {
-            // Remove token from old Facebook object (used for FBDialog).
-            Facebook *facebook = [[AirFacebook sharedInstance] facebook];
-            facebook.accessToken = nil;
-            facebook.expirationDate = nil;
-            
             [AirFacebook log:@"INFO - Session closed"];
         }
     };
@@ -204,40 +193,6 @@ static AirFacebook *sharedInstance = nil;
     } copy] autorelease];
 }
 
-- (DialogDelegate *)dialogDelegateWithCallback:(NSString *)callback
-{
-    if (!_dialogDelegates)
-    {
-        _dialogDelegates = [[NSMutableArray alloc] initWithCapacity:2];
-    }
-    
-    DialogDelegate *delegate = [[DialogDelegate alloc] init];
-    delegate.callback = callback;
-    [_dialogDelegates addObject:delegate];
-    
-    return [delegate autorelease];
-}
-
-- (void)dialogDelegate:(DialogDelegate *)delegate finishedWithResult:(NSString *)result
-{
-    FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[delegate.callback UTF8String], (const uint8_t *)[result UTF8String]);
-    
-    if ([_dialogDelegates containsObject:delegate])
-    {
-        [_dialogDelegates removeObject:delegate];
-    }
-}
-
-- (Facebook *)facebook
-{
-    if (!_facebook)
-    {
-        _facebook = [[Facebook alloc] initWithAppId:_appID urlSchemeSuffix:_urlSchemeSuffix andDelegate:nil];
-    }
-    
-    return _facebook;
-}
-
 + (void)log:(NSString *)string
 {
     if (PRINT_LOG) NSLog(@"[AirFacebook] %@", string);
@@ -275,7 +230,11 @@ DEFINE_ANE_FUNCTION(init)
     }
     
     // Initialize Facebook
+    NSLog(@"calling initWithAppId from AirFacebook.init");
     [[AirFacebook sharedInstance] initWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
+    
+    // override default appID to avoid putting it in the .plist
+    [FBSession setDefaultAppID:appID];
     
     return nil;
 }
@@ -389,24 +348,26 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     // Print log
     [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, permissions]];
     
-    // Chose login behavior depending on permissions type
-    FBSessionLoginBehavior loginBehavior;
-    if ([type isEqualToString:@"readAndPublish"])
-    {
-        loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
-    }
-    else
-    {
-        loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
-    }
+//    // Chose login behavior depending on permissions type
+//    FBSessionLoginBehavior loginBehavior;
+//    if ([type isEqualToString:@"readAndPublish"])
+//    {
+//        loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
+//    }
+//    else
+//    {
+//        loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
+//    }
     
     // Start authentication flow
     NSString *appID = [[AirFacebook sharedInstance] appID];
     NSString *urlSchemeSuffix = [[AirFacebook sharedInstance] urlSchemeSuffix];
+    NSLog(@"calling initWithAppId from AirFacebook.openSessionWithPermissions");
     FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:permissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
     [FBSession setActiveSession:session];
     FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
-    [session openWithBehavior:loginBehavior completionHandler:completionHandler];
+//    [session openWithBehavior:loginBehavior completionHandler:completionHandler];
+    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:completionHandler];
     
     [permissions release];
     [session release];
@@ -629,6 +590,16 @@ DEFINE_ANE_FUNCTION(dialog)
     BOOL canPresentNativeDialog = [FBNativeDialogs canPresentShareDialogWithSession:session];
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
     BOOL hasNoRecipient = ([parameters objectForKey:@"to"] == nil || [[parameters objectForKey:@"to"] length] == 0);
+    
+    [AirFacebook log:
+        [NSString stringWithFormat:@"displaying facebook feed dialog : allowNativeUI - %@, canPresentNativeDialog - %@, isFeedingDialog - %@, hasNoRecipient - %@",
+         allowNativeUI ? @"YES" : @"NO",
+         canPresentNativeDialog ? @"YES" : @"NO",
+         isFeedDialog ? @"YES" : @"NO",
+         hasNoRecipient ? @"YES" : @"NO"
+    ]];
+    
+    
     if (allowNativeUI && canPresentNativeDialog && isFeedDialog && hasNoRecipient)
     {
         UIViewController *rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
@@ -652,8 +623,28 @@ DEFINE_ANE_FUNCTION(dialog)
     }
     else // Else, open old-style Facebook dialog
     {
-        DialogDelegate *delegate = [[AirFacebook sharedInstance] dialogDelegateWithCallback:callback];
-        [[[AirFacebook sharedInstance] facebook] dialog:method andParams:parameters andDelegate:delegate];
+        [FBWebDialogs presentFeedDialogModallyWithSession:nil
+                                               parameters:parameters
+                                                  handler:
+         ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+             
+             if (error) {
+                 // TODO handle errors on a low level using FB SDK 
+                 NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
+                 FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[data UTF8String]);
+             } else {
+                 if (result == FBWebDialogResultDialogNotCompleted) {
+                     NSLog(@"User canceled story publishing.");
+                     FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[@"{ \"cancel\" : true}" UTF8String]);
+                 } else {
+                     NSString *queryString = [resultURL query];
+                     NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
+                     FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[data UTF8String]);
+                 }
+             }
+             
+         }
+        ];
     }
     
     [parameters release];
