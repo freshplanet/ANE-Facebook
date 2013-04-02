@@ -63,6 +63,15 @@ static AirFacebook *sharedInstance = nil;
     [super dealloc];
 }
 
+// every time we have to send back information to the air application, invoque this method wich will dispatch an Event in air
++ (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message
+{
+    
+    NSString *eventName = event ? event : @"LOGGING";
+    FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[message UTF8String]);
+    
+}
+
 - (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix
 {
     self = [self init];
@@ -74,7 +83,6 @@ static AirFacebook *sharedInstance = nil;
         _urlSchemeSuffix = [urlSchemeSuffix retain];
         
         // Open session if a token is in cache.
-        NSLog(@"calling initWithAppId from AirFacebook.initWithAppId");
         FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
         [FBSession setActiveSession:session];
         if (session.state == FBSessionStateCreatedTokenLoaded)
@@ -91,28 +99,28 @@ static AirFacebook *sharedInstance = nil;
 {
     return ^(FBSession *session, FBSessionState status, NSError *error) {
         
-        [AirFacebook log:[NSString stringWithFormat:@"Session opened handler --------------------------"]];
+        if (error) {
+            if (error.fberrorShouldNotifyUser) {
+                // if the error is application turned off from ios6 settings
+                if ([[error userInfo][FBErrorLoginFailedReason] isEqualToString:FBErrorLoginFailedReasonSystemDisallowedWithoutErrorValue]) {
+                    [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:@"APPLICATION_TURNED_OFF"];
+                } else {
+                    [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:error.fberrorUserMessage];
+                }
+            } else if (error.fberrorCategory == FBErrorCategoryUserCancelled) {
+                [AirFacebook log:@"Login error : User Cancelled (Error details : %@ )", error.description];
+                [AirFacebook dispatchEvent:@"OPEN_SESSION_CANCEL" withMessage:@"OK"];
+            } else {
+                [AirFacebook log:@"Unexpected Error on login (Error details : %@ )", error.description];
+                [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[error description]];
+            }
+        }
         
         if (status == FBSessionStateOpen)
         {
             [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", session.permissions]];
-            FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"OPEN_SESSION_SUCCESS", (const uint8_t *)"OK");
-        }
-        else if (status == FBSessionStateClosedLoginFailed)
-        {
-            NSError *innerError;
-            if (error && error.userInfo) innerError = [error.userInfo objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
+            [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
             
-            if (innerError && [innerError.domain isEqualToString:@"com.apple.accounts"] && innerError.code == 7)
-            {
-                [AirFacebook log:@"User cancelled when opening session"];
-                FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"OPEN_SESSION_CANCEL", (const uint8_t *)"OK");
-            }
-            else
-            {
-                [AirFacebook log:[NSString stringWithFormat:@"Error when opening session: %@", [error description]]];
-                FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"OPEN_SESSION_ERROR", (const uint8_t *)[[error description] UTF8String]);
-            }
         }
         else if (status == FBSessionStateClosed)
         {
@@ -124,26 +132,28 @@ static AirFacebook *sharedInstance = nil;
 + (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler
 {
     return ^(FBSession *session, NSError *error) {
+        
         if (error)
         {
-            NSString *reason;
-            if (error.userInfo) reason = [error.userInfo objectForKey:@"com.facebook.sdk:ErrorLoginFailedReason"];
-            
-            if (reason && [reason isEqualToString:@"com.facebook.sdk:ErrorReauthorizeFailedReasonUserCancelled"])
-            {
-                [AirFacebook log:@"User cancelled when reauthorizing session"];
-                FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"REAUTHORIZE_SESSION_CANCEL", (const uint8_t *)"OK");
-            }
-            else
-            {
+            if (error.fberrorShouldNotifyUser) {
+                // show sdk message
                 [AirFacebook log:[NSString stringWithFormat:@"Error when reauthorizing session: %@", [error description]]];
-                FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"REAUTHORIZE_SESSION_ERROR", (const uint8_t *)[[error description] UTF8String]);
+                [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_ERROR" withMessage:[error description]];
+            } else {
+                if (error.fberrorCategory == FBErrorCategoryUserCancelled){
+                    // User Cancelled
+                    [AirFacebook log:@"User cancelled when reauthorizing session"];
+                    [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_CANCEL" withMessage:@"OK"];
+                } else {
+                    [AirFacebook log:@"Error when reauthorizing session: %@", [error description]];
+                    [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_ERROR" withMessage:[error description]];
+                }
             }
         }
         else
         {
-            [AirFacebook log:[NSString stringWithFormat:@"Session reauthorized with permissions: %@", session.permissions]];
-            FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"REAUTHORIZE_SESSION_SUCCESS", (const uint8_t *)"OK");
+            [AirFacebook log:@"Session reauthorized with permissions: %@", session.permissions];
+            [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_SUCCESS" withMessage:@"OK"];
         }
     };
 }
@@ -153,10 +163,20 @@ static AirFacebook *sharedInstance = nil;
     return [[^(FBRequestConnection *connection, id result, NSError *error) {
         if (error)
         {
+            
+            // If user doesn't have the publish permission, ask them
+            if (error.fberrorCategory == FBErrorCategoryPermissions) {
+                [AirFacebook log:@"Requesting publish permissions"];
+                [AirFacebook dispatchEvent:@"ACTION_REQUIRE_PERMISSION" withMessage:@"publish_actions"];
+                return;
+            }
+            
             [AirFacebook log:[NSString stringWithFormat:@"Request error: %@", [error description]]];
+            
         }
         else
         {
+            
             NSError *jsonError = nil;
             NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:result error:&jsonError];
             if (jsonError)
@@ -165,9 +185,9 @@ static AirFacebook *sharedInstance = nil;
             }
             else
             {
-                NSString *eventName = callback ? callback : @"LOGGING";
-                FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[resultString UTF8String]);
+                [AirFacebook dispatchEvent:callback withMessage:resultString];
             }
+            
         }
     } copy] autorelease];
 }
@@ -189,19 +209,57 @@ static AirFacebook *sharedInstance = nil;
                 resultString = @"{}";
                 break;
         }
-        FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[resultString UTF8String]);
+        [AirFacebook dispatchEvent:callback withMessage:resultString];
     } copy] autorelease];
 }
 
-+ (void)log:(NSString *)string
++ (void)log:(NSString *)format, ...
 {
+    va_list args;
+    va_start(args, format);
+    NSString *string = [[NSString alloc]initWithFormat:format arguments:args];
     if (PRINT_LOG) NSLog(@"[AirFacebook] %@", string);
-    FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)"LOGGING", (const uint8_t *)[string UTF8String]);
+    [AirFacebook dispatchEvent:@"LOGGING" withMessage:string];
 }
 
 @end
 
-
+NSArray* getFREArrayAsNSArray( FREObject array )
+{
+    
+    uint32_t stringLength;
+    uint32_t arrayLength;
+    
+    NSMutableArray *nsArray = [[NSMutableArray alloc] init];
+    if (FREGetArrayLength(array, &arrayLength) != FRE_OK)
+    {
+        arrayLength = 0;
+    }
+    
+    for (NSInteger i = arrayLength-1; i >= 0; i--)
+    {
+        // Get permission at index i. Skip this index if there's an error.
+        FREObject el;
+        if (FREGetArrayElementAt(array, i, &el) != FRE_OK)
+        {
+            continue;
+        }
+        
+        // Convert it to string. Skip this index if there's an error.
+        const uint8_t *elString;
+        if (FREGetObjectAsUTF8(el, &stringLength, &elString) != FRE_OK)
+        {
+            continue;
+        }
+        NSString *nsString = [NSString stringWithUTF8String:(char*)elString];
+        
+        // Add the element to the array
+        [nsArray addObject:nsString];
+    }
+    
+    return nsArray;
+    
+}
 
 #pragma mark - C interface
 
@@ -230,7 +288,6 @@ DEFINE_ANE_FUNCTION(init)
     }
     
     // Initialize Facebook
-    NSLog(@"calling initWithAppId from AirFacebook.init");
     [[AirFacebook sharedInstance] initWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
     
     // override default appID to avoid putting it in the .plist
@@ -302,42 +359,11 @@ DEFINE_ANE_FUNCTION(isSessionOpen)
 
 DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 {
-    uint32_t stringLength;
-    uint32_t arrayLength;
     
-    // Retrieve permissions
-    NSMutableArray *permissions = [[NSMutableArray alloc] init];
-    FREObject permissionsArray = argv[0];
-    if (permissionsArray)
-    {
-        if (FREGetArrayLength(permissionsArray, &arrayLength) != FRE_OK)
-        {
-            arrayLength = 0;
-        }
-        
-        for (NSInteger i = arrayLength-1; i >= 0; i--)
-        {
-            // Get permission at index i. Skip this index if there's an error.
-            FREObject permissionRaw;
-            if (FREGetArrayElementAt(permissionsArray, i, &permissionRaw) != FRE_OK)
-            {
-                continue;
-            }
-            
-            // Convert it to string. Skip this index if there's an error.
-            const uint8_t *permissionString;
-            if (FREGetObjectAsUTF8(permissionRaw, &stringLength, &permissionString) != FRE_OK)
-            {
-                continue;
-            }
-            NSString *permission = [NSString stringWithUTF8String:(char*)permissionString];
-            
-            // Add the permission to the array
-            [permissions addObject:permission];
-        }
-    }
+    NSArray *permissions = getFREArrayAsNSArray(argv[0]);
     
     // Get the permissions type
+    uint32_t stringLength;
     NSString *type;
     const uint8_t *typeString;
     if (FREGetObjectAsUTF8(argv[1], &stringLength, &typeString) == FRE_OK)
@@ -348,26 +374,23 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     // Print log
     [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, permissions]];
     
-//    // Chose login behavior depending on permissions type
-//    FBSessionLoginBehavior loginBehavior;
-//    if ([type isEqualToString:@"readAndPublish"])
-//    {
-//        loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
-//    }
-//    else
-//    {
-//        loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
-//    }
+    // select the right authentication flow
+    FBSessionLoginBehavior loginBehavior;
+    if ([type isEqualToString:@"read"]) {
+        // system account if no publish permissions
+        loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
+    } else {
+        // web if publish permissions
+        loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
+    }
     
     // Start authentication flow
     NSString *appID = [[AirFacebook sharedInstance] appID];
     NSString *urlSchemeSuffix = [[AirFacebook sharedInstance] urlSchemeSuffix];
-    NSLog(@"calling initWithAppId from AirFacebook.openSessionWithPermissions");
     FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:permissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
     [FBSession setActiveSession:session];
     FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
-//    [session openWithBehavior:loginBehavior completionHandler:completionHandler];
-    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:completionHandler];
+    [session openWithBehavior:loginBehavior completionHandler:completionHandler];
     
     [permissions release];
     [session release];
@@ -377,42 +400,12 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 
 DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
 {
-    uint32_t stringLength;
-    uint32_t arrayLength;
     
     // Retrieve permissions
-    NSMutableArray *permissions = [[NSMutableArray alloc] init];
-    FREObject permissionsArray = argv[0];
-    if (permissionsArray)
-    {
-        if (FREGetArrayLength(permissionsArray, &arrayLength) != FRE_OK)
-        {
-            arrayLength = 0;
-        }
+    NSArray *permissions = getFREArrayAsNSArray(argv[0]);
         
-        for (NSInteger i = arrayLength-1; i >= 0; i--)
-        {
-            // Get permission at index i. Skip this index if there's an error.
-            FREObject permissionRaw;
-            if (FREGetArrayElementAt(permissionsArray, i, &permissionRaw) != FRE_OK)
-            {
-                continue;
-            }
-            
-            // Convert it to string. Skip this index if there's an error.
-            const uint8_t *permissionString;
-            if (FREGetObjectAsUTF8(permissionRaw, &stringLength, &permissionString) != FRE_OK)
-            {
-                continue;
-            }
-            NSString *permission = [NSString stringWithUTF8String:(char*)permissionString];
-            
-            // Add permission to the array
-            [permissions addObject:permission];
-        }
-    }
-    
     // Get the permissions type
+    uint32_t stringLength;
     NSString *type;
     const uint8_t *typeString;
     if (FREGetObjectAsUTF8(argv[1], &stringLength, &typeString) == FRE_OK)
@@ -592,12 +585,12 @@ DEFINE_ANE_FUNCTION(dialog)
     BOOL hasNoRecipient = ([parameters objectForKey:@"to"] == nil || [[parameters objectForKey:@"to"] length] == 0);
     
     [AirFacebook log:
-        [NSString stringWithFormat:@"displaying facebook feed dialog : allowNativeUI - %@, canPresentNativeDialog - %@, isFeedingDialog - %@, hasNoRecipient - %@",
+         @"displaying facebook feed dialog : allowNativeUI - %@, canPresentNativeDialog - %@, isFeedingDialog - %@, hasNoRecipient - %@",
          allowNativeUI ? @"YES" : @"NO",
          canPresentNativeDialog ? @"YES" : @"NO",
          isFeedDialog ? @"YES" : @"NO",
          hasNoRecipient ? @"YES" : @"NO"
-    ]];
+    ];
     
     
     if (allowNativeUI && canPresentNativeDialog && isFeedDialog && hasNoRecipient)
@@ -631,15 +624,15 @@ DEFINE_ANE_FUNCTION(dialog)
              if (error) {
                  // TODO handle errors on a low level using FB SDK 
                  NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
-                 FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[data UTF8String]);
+                 [AirFacebook dispatchEvent:callback withMessage:data];
              } else {
                  if (result == FBWebDialogResultDialogNotCompleted) {
                      NSLog(@"User canceled story publishing.");
-                     FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[@"{ \"cancel\" : true}" UTF8String]);
+                     [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
                  } else {
                      NSString *queryString = [resultURL query];
                      NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
-                     FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[data UTF8String]);
+                     [AirFacebook dispatchEvent:callback withMessage:data];
                  }
              }
              

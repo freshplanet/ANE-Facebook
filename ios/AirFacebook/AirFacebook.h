@@ -23,6 +23,8 @@
 #import "FBWebDialogs.h"
 #import "FBSettings.h"
 #import "FlashRuntimeExtensions.h"
+#import "FBError.h"
+#import "NSError+FBError.h"
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
 typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
@@ -32,6 +34,8 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 
 + (id)sharedInstance;
 
++ (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message;
+
 - (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
 
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
@@ -39,7 +43,7 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
 + (FBShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
 
-+ (void)log:(NSString *)string;
++ (void)log:(NSString *)string, ...;
 
 @property (nonatomic, readonly) NSString *appID;
 @property (nonatomic, readonly) NSString *urlSchemeSuffix;
