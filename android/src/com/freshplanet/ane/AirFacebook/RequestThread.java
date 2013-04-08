@@ -21,6 +21,9 @@ package com.freshplanet.ane.AirFacebook;
 import android.os.Bundle;
 
 import com.adobe.fre.FREContext;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.HttpMethod;
 
 public class RequestThread extends Thread
 {
@@ -45,25 +48,38 @@ public class RequestThread extends Thread
     {
     	// Perform Facebook request
 		String data = null;
+		AirFacebookExtension.log("INFO - RequestThread.run");
+
 		try
 		{
-			if (parameters != null)
-			{
-				data = AirFacebookExtensionContext.facebook.request(graphPath, parameters, httpMethod);
+			Request request;
+			if (parameters != null)	{
+				request = new Request(AirFacebookExtensionContext.session, graphPath, parameters, HttpMethod.valueOf(httpMethod));
 			}
-			else
-			{
-				data = AirFacebookExtensionContext.facebook.request(graphPath);
+			else {
+				request = new Request(AirFacebookExtensionContext.session, graphPath);
 			}
+			Response response = request.executeAndWait();
+			if (response.getGraphObject() != null) {
+				data = response.getGraphObject().getInnerJSONObject().toString();
+			} else if (response.getGraphObjectList() != null) {
+				data = response.getGraphObjectList().getInnerJSONArray().toString();
+			} else if (response.getError() != null) {
+				data = response.getError().getRequestResult().toString();
+			}
+			AirFacebookExtension.log("INFO - RequestThread.run, data = " + data);
+
 		}
 		catch (Exception e)
 		{
+			AirFacebookExtension.log("ERROR - RequestThread.run, " + e.getMessage());
 			context.dispatchStatusEventAsync(callback, e.getMessage());
 		}
 		
 		// Trigger callback if necessary
 		if (data != null && callback != null)
 		{
+			AirFacebookExtension.log("INFO - RequestThread.run, calling callback with data " + data);
 			context.dispatchStatusEventAsync(callback, data);
 		}
     }	

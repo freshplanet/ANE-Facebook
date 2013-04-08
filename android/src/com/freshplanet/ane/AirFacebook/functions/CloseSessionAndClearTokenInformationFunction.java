@@ -25,46 +25,19 @@ import java.net.MalformedURLException;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.AsyncFacebookRunner.RequestListener;
-import com.facebook.android.FacebookError;
-import com.facebook.android.SessionStore;
+import com.facebook.Session;
+
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
-public class CloseSessionAndClearTokenInformationFunction implements FREFunction, RequestListener
+public class CloseSessionAndClearTokenInformationFunction implements FREFunction
 {	
 	public FREObject call(FREContext arg0, FREObject[] arg1)
 	{	
-		SessionStore.clear(arg0.getActivity().getApplicationContext());
-		AsyncFacebookRunner mAsyncRunner = new AsyncFacebookRunner(AirFacebookExtensionContext.facebook);
-		mAsyncRunner.logout(arg0.getActivity(), this);
-		
+		if(!AirFacebookExtensionContext.session.isClosed()) {
+			AirFacebookExtensionContext.session.closeAndClearTokenInformation();
+		}
 		return null;
 	}
 	
-	public void onComplete(String response, Object state)
-	{
-		AirFacebookExtension.log("INFO - Session closed");
-	}
-	
-	public void onIOException(IOException e, Object state)
-	{
-		AirFacebookExtension.log("ERROR - " + e.getMessage());
-	}
-	
-	public void onFileNotFoundException(FileNotFoundException e, Object state)
-	{
-		AirFacebookExtension.log("ERROR - " + e.getMessage());
-	}
-	
-	public void onMalformedURLException(MalformedURLException e, Object state)
-	{
-		AirFacebookExtension.log("ERROR - " + e.getMessage());
-	}
-	
-	public void onFacebookError(FacebookError e, Object state)
-	{
-		AirFacebookExtension.log("ERROR - " + e.getMessage());
-	}
 }
