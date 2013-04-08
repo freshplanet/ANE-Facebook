@@ -31,6 +31,7 @@ public class OpenSessionWithPermissionsFunction implements FREFunction
 {
 	public FREObject call(FREContext arg0, FREObject[] arg1)
 	{
+		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction");
 		// Retrieve permissions
 		FREArray permissionsArray = (FREArray)arg1[0];
 		
@@ -59,10 +60,14 @@ public class OpenSessionWithPermissionsFunction implements FREFunction
 			}
 		}
 		
+		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 1");
 		// Start login activity
 		Intent i = new Intent(arg0.getActivity().getApplicationContext(), LoginActivity.class);
+		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 2");
 		i.putExtra("permissions", permissions);
+		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 3");
 		arg0.getActivity().startActivity(i);
+		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 4");
 		
 		return null;
 	}

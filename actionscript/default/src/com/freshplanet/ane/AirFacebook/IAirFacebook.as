@@ -31,13 +31,6 @@ package com.freshplanet.ane.AirFacebook
 		function get expirationTimestamp() : Number;
 		
 		/**
-		 * Renew the Facebook access token if needed.<br><br>
-		 * 
-		 * Note: This method has no effect on iOS since the token is renewed automatically.
-		 */
-		function extendAccessTokenIfNeeded() : void;
-		
-		/**
 		 * Open a new session with a given set of read permissions.<br><br>
 		 * 
 		 * On iOS 6, this method triggers the native authentication flow.

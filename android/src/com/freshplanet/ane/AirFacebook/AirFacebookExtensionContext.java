@@ -26,7 +26,6 @@ import com.adobe.fre.FREFunction;
 import com.facebook.android.Facebook;
 import com.freshplanet.ane.AirFacebook.functions.CloseSessionAndClearTokenInformationFunction;
 import com.freshplanet.ane.AirFacebook.functions.DialogFunction;
-import com.freshplanet.ane.AirFacebook.functions.ExtendAccessTokenIfNeededFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetAccessTokenFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetExpirationTimestampFunction;
 import com.freshplanet.ane.AirFacebook.functions.InitFunction;
@@ -34,11 +33,14 @@ import com.freshplanet.ane.AirFacebook.functions.IsSessionOpenFunction;
 import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
+import com.facebook.Session;
 
 public class AirFacebookExtensionContext extends FREContext
 {
 	public static Facebook facebook;
 	public static LoginActivity facebookLoginActivity;
+
+	public static Session session;
 	
 	@Override
 	public void dispose()
@@ -57,7 +59,6 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("isSessionOpen", new IsSessionOpenFunction());
 		functions.put("openSessionWithPermissions", new OpenSessionWithPermissionsFunction());
 		functions.put("reauthorizeSessionWithPermissions", new ReauthorizeSessionWithPermissionsFunction());
-		functions.put("extendAccessTokenIfNeeded", new ExtendAccessTokenIfNeededFunction());
 		functions.put("closeSessionAndClearTokenInformation", new CloseSessionAndClearTokenInformationFunction());
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 		functions.put("dialog", new DialogFunction());

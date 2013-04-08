@@ -102,15 +102,6 @@ package com.freshplanet.ane.AirFacebook
 		}
 		
 		/** @inheritDoc */
-		public function extendAccessTokenIfNeeded() : void
-		{
-			if (Capabilities.manufacturer.indexOf("Android") != -1)
-			{
-				_context.call("extendAccessTokenIfNeeded");
-			}
-		}
-		
-		/** @inheritDoc */
 		public function openSessionWithReadPermissions( permissions : Array, callback : Function = null ) : void
 		{
 			openSessionWithPermissionsOfType(permissions, "read", callback);

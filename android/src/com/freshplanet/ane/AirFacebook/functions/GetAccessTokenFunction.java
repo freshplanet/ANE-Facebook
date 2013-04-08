@@ -28,9 +28,10 @@ public class GetAccessTokenFunction implements FREFunction
 {
 	public FREObject call(FREContext arg0, FREObject[] arg1)
 	{
+		AirFacebookExtension.log("INFO - GetAccessTokenFunction");
 		try
 		{
-			return FREObject.newObject(AirFacebookExtensionContext.facebook.getAccessToken());
+			return FREObject.newObject(AirFacebookExtensionContext.session.getAccessToken());
 		}
 		catch (Exception e)
 		{
