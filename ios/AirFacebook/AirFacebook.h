@@ -16,9 +16,15 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////
 
-#import "DialogDelegate.h"
-#import "Facebook.h"
+#import "FBSession.h"
+#import "FBAccessTokenData.h"
+#import "FBRequest.h"
+#import "FBNativeDialogs.h"
+#import "FBWebDialogs.h"
+#import "FBSettings.h"
 #import "FlashRuntimeExtensions.h"
+#import "FBError.h"
+#import "NSError+FBError.h"
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
 typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
@@ -28,20 +34,19 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 
 + (id)sharedInstance;
 
++ (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message;
+
 - (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
 
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
 + (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
 + (FBShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
-- (DialogDelegate *)dialogDelegateWithCallback:(NSString *)callback;
-- (void)dialogDelegate:(DialogDelegate *)delegate finishedWithResult:(NSString *)result;
 
-+ (void)log:(NSString *)string;
++ (void)log:(NSString *)string, ...;
 
 @property (nonatomic, readonly) NSString *appID;
 @property (nonatomic, readonly) NSString *urlSchemeSuffix;
-@property (nonatomic, readonly) Facebook *facebook;
 
 @end
 
