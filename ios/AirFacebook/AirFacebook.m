@@ -163,7 +163,26 @@ static AirFacebook *sharedInstance = nil;
     return [[^(FBRequestConnection *connection, id result, NSError *error) {
         if (error)
         {
-            [AirFacebook log:[NSString stringWithFormat:@"Request error: %@", [error description]]];
+            if (callback)
+            {
+                NSDictionary* parsedResponseKey = [error.userInfo objectForKey:FBErrorParsedJSONResponseKey];
+                if (parsedResponseKey && [parsedResponseKey objectForKey:@"body"])
+                {
+                    NSDictionary* body = [parsedResponseKey objectForKey:@"body"];
+                    NSError *jsonError = nil;
+                    NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:body error:&jsonError];
+                    if (jsonError)
+                    {
+                        [AirFacebook log:[NSString stringWithFormat:@"Request error -> JSON error: %@", [jsonError description]]];
+                    } else
+                    {
+                        FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[resultString UTF8String]);
+                    }
+                }
+            } else
+            {
+                [AirFacebook log:[NSString stringWithFormat:@"Request error: %@", [error description]]];
+            }
         }
         else
         {
