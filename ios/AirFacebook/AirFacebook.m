@@ -599,6 +599,7 @@ DEFINE_ANE_FUNCTION(dialog)
     FBSession *session = [FBSession activeSession];
     BOOL canPresentNativeDialog = [FBNativeDialogs canPresentShareDialogWithSession:session];
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
+    BOOL isRequestDialog = [method isEqualToString:@"apprequests"];
     BOOL hasNoRecipient = ([parameters objectForKey:@"to"] == nil || [[parameters objectForKey:@"to"] length] == 0);
     
     [AirFacebook log:
@@ -633,28 +634,74 @@ DEFINE_ANE_FUNCTION(dialog)
     }
     else // Else, open old-style Facebook dialog
     {
-        [FBWebDialogs presentFeedDialogModallyWithSession:nil
-                                               parameters:parameters
-                                                  handler:
-         ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-             
-             if (error) {
-                 // TODO handle errors on a low level using FB SDK 
-                 NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
-                 [AirFacebook dispatchEvent:callback withMessage:data];
-             } else {
-                 if (result == FBWebDialogResultDialogNotCompleted) {
-                     NSLog(@"User canceled story publishing.");
-                     [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
-                 } else {
-                     NSString *queryString = [resultURL query];
-                     NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
+        if (isFeedDialog)
+        {
+            [FBWebDialogs presentFeedDialogModallyWithSession:nil
+                                                   parameters:parameters
+                                                      handler:
+             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+
+                 if (error) {
+                     // TODO handle errors on a low level using FB SDK
+                     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
                      [AirFacebook dispatchEvent:callback withMessage:data];
+                 } else {
+                     if (result == FBWebDialogResultDialogNotCompleted) {
+                         NSLog(@"User canceled story publishing.");
+                         [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
+                     } else {
+                         NSString *queryString = [resultURL query];
+                         NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
+                         [AirFacebook dispatchEvent:callback withMessage:data];
+                     }
                  }
              }
-             
-         }
-        ];
+             ];
+        } else if (isRequestDialog)
+        {
+            [FBWebDialogs presentRequestsDialogModallyWithSession:nil message:[parameters objectForKey:@"message"] title:nil parameters:parameters handler:
+             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+
+                 if (error) {
+                     // TODO handle errors on a low level using FB SDK
+                     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
+                     [AirFacebook dispatchEvent:callback withMessage:data];
+                 } else {
+                     if (result == FBWebDialogResultDialogNotCompleted) {
+                         NSLog(@"User canceled story publishing.");
+                         [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
+                     } else {
+                         NSString *queryString = [resultURL query];
+                         NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
+                         [AirFacebook dispatchEvent:callback withMessage:data];
+                     }
+                 }
+             }
+             ];
+        } else
+        {
+            [FBWebDialogs presentDialogModallyWithSession:nil dialog:method parameters:parameters
+                                                      handler:
+             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+
+                 if (error) {
+                     // TODO handle errors on a low level using FB SDK
+                     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
+                     [AirFacebook dispatchEvent:callback withMessage:data];
+                 } else {
+                     if (result == FBWebDialogResultDialogNotCompleted) {
+                         NSLog(@"User canceled story publishing.");
+                         [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
+                     } else {
+                         NSString *queryString = [resultURL query];
+                         NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
+                         [AirFacebook dispatchEvent:callback withMessage:data];
+                     }
+                 }
+             }
+             ];
+
+        }
     }
     
     [parameters release];
