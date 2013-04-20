@@ -29,15 +29,17 @@ import com.freshplanet.ane.AirFacebook.LoginActivity;
 
 public class OpenSessionWithPermissionsFunction implements FREFunction
 {
+
 	public FREObject call(FREContext arg0, FREObject[] arg1)
 	{
-		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction");
 		// Retrieve permissions
 		FREArray permissionsArray = (FREArray)arg1[0];
-		
+		String type = null;
+
 		long arrayLength = 0;
 		try
 		{
+			type = arg1[1].getAsString();
 			arrayLength = permissionsArray.getLength();
 		}
 		catch (Exception e)
@@ -60,15 +62,13 @@ public class OpenSessionWithPermissionsFunction implements FREFunction
 			}
 		}
 		
-		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 1");
 		// Start login activity
 		Intent i = new Intent(arg0.getActivity().getApplicationContext(), LoginActivity.class);
-		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 2");
 		i.putExtra("permissions", permissions);
-		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 3");
+		i.putExtra("type", type);
 		arg0.getActivity().startActivity(i);
-		AirFacebookExtension.log("INFO - OpenSessionWithPermissionsFunction, test 4");
 		
 		return null;
 	}
+
 }
