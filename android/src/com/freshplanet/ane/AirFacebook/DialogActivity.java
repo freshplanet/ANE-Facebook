@@ -25,22 +25,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
-
+import android.view.WindowManager;
+import com.facebook.widget.WebDialog;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.FacebookRequestError;
 import com.adobe.fre.FREContext;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
-public class DialogActivity extends Activity implements DialogListener
+public class DialogActivity extends Activity implements WebDialog.OnCompleteListener
 {
 	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.DialogActivity";
 	
 	private String callback;
 	private String method;
 	
+	private WebDialog dialog = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		AirFacebookExtension.log("INFO - DialogActivity.onCreate");
 		super.onCreate(savedInstanceState);
 		
 		// Get context
@@ -56,22 +62,39 @@ public class DialogActivity extends Activity implements DialogListener
 		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
 		
 		// Create Facebook dialog
-		AirFacebookExtensionContext.facebook.dialog(this, method, parameters, this);
+		//AirFacebookExtensionContext.facebook.dialog(this, method, parameters, this);
+
+		dialog = new WebDialog.Builder(this, AirFacebookExtensionContext.session, method, parameters)
+						.setOnCompleteListener(this)
+						.build();
+		Window dialog_window = dialog.getWindow();
+    	dialog_window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    	dialog.show();
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		AirFacebookExtension.log("INFO - DialogActivity.onActivityResult");
 		finish();
 	}
 
-	public void onComplete(Bundle values)
+	public void onComplete(Bundle values, FacebookException error)
 	{
 		FREContext context = AirFacebookExtension.context;
+		AirFacebookExtension.log("INFO - DialogActivity.onComplete");
+
 		
 		// Trigger callback if necessary
 		if (context != null && callback != null)
 		{
+			if (error != null) {
+				AirFacebookExtension.log("INFO - DialogActivity.onComplete, error " + error.getMessage());
+				context.dispatchStatusEventAsync(callback, "{ \"error\": \""+error.getMessage()+"\" }");
+				finish();
+				return;
+			}
+
 			// Content depends on type of dialog that was invoked (method)
 			String postMessage = null;
 			if(method.equalsIgnoreCase("feed"))
@@ -98,6 +121,7 @@ public class DialogActivity extends Activity implements DialogListener
 			if(postMessage == null)
 				postMessage = "{ \"cancel\": true }";
 			
+			AirFacebookExtension.log("INFO - DialogActivity.onComplete, postMessage " + postMessage);
 			context.dispatchStatusEventAsync(callback, postMessage);
 		}
 		
@@ -127,39 +151,4 @@ public class DialogActivity extends Activity implements DialogListener
 		return sb.toString();
 	}
 
-	public void onFacebookError(FacebookError e)
-	{
-		FREContext context = AirFacebookExtension.context;
-		
-		// Trigger callback if necessary
-		if (context != null && callback != null)
-		{
-			context.dispatchStatusEventAsync(callback, "{ \"error\": \""+e.getMessage()+"\" }");
-		}
-		finish();
-	}
-
-	public void onError(DialogError e)
-	{
-		FREContext context = AirFacebookExtension.context;
-		
-		// Trigger callback if necessary
-		if (context != null && callback != null)
-		{
-			context.dispatchStatusEventAsync(callback, "{ \"error\": \""+e.getMessage()+"\" }");
-		}
-		finish();
-	}
-
-	public void onCancel()
-	{
-		FREContext context = AirFacebookExtension.context;
-		
-		// Trigger callback if necessary
-		if (context != null && callback != null)
-		{
-			context.dispatchStatusEventAsync(callback, "{ \"cancel\": true }");
-		}
-		finish();
-	}
 }
