@@ -25,7 +25,10 @@ import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 import com.freshplanet.ane.AirFacebook.LoginActivity;
+import com.facebook.Session;
+import com.facebook.SessionState;
 
 public class OpenSessionWithPermissionsFunction implements FREFunction
 {
@@ -35,6 +38,12 @@ public class OpenSessionWithPermissionsFunction implements FREFunction
 		// Retrieve permissions
 		FREArray permissionsArray = (FREArray)arg1[0];
 		String type = null;
+
+		Session session = AirFacebookExtensionContext.session;
+		if (session.getState() != SessionState.CREATED && session.getState() != SessionState.CREATED_TOKEN_LOADED) {
+			String appID = session.getApplicationId();
+			AirFacebookExtensionContext.session = new Session.Builder(arg0.getActivity().getApplicationContext()).setApplicationId(appID).build();
+		}
 
 		long arrayLength = 0;
 		try
