@@ -30,7 +30,7 @@ public class GetExpirationTimestampFunction implements FREFunction
 	{
 		try
 		{
-			return FREObject.newObject(Math.round(AirFacebookExtensionContext.facebook.getAccessExpires()/1000));
+			return FREObject.newObject(Math.round(AirFacebookExtensionContext.session.getExpirationDate().getTime()/1000));
 		}
 		catch (Exception e)
 		{

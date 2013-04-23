@@ -25,18 +25,30 @@ import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 import com.freshplanet.ane.AirFacebook.LoginActivity;
+import com.facebook.Session;
+import com.facebook.SessionState;
 
 public class OpenSessionWithPermissionsFunction implements FREFunction
 {
+
 	public FREObject call(FREContext arg0, FREObject[] arg1)
 	{
 		// Retrieve permissions
 		FREArray permissionsArray = (FREArray)arg1[0];
-		
+		String type = null;
+
+		Session session = AirFacebookExtensionContext.session;
+		if (session.getState() != SessionState.CREATED && session.getState() != SessionState.CREATED_TOKEN_LOADED) {
+			String appID = session.getApplicationId();
+			AirFacebookExtensionContext.session = new Session.Builder(arg0.getActivity().getApplicationContext()).setApplicationId(appID).build();
+		}
+
 		long arrayLength = 0;
 		try
 		{
+			type = arg1[1].getAsString();
 			arrayLength = permissionsArray.getLength();
 		}
 		catch (Exception e)
@@ -62,8 +74,10 @@ public class OpenSessionWithPermissionsFunction implements FREFunction
 		// Start login activity
 		Intent i = new Intent(arg0.getActivity().getApplicationContext(), LoginActivity.class);
 		i.putExtra("permissions", permissions);
+		i.putExtra("type", type);
 		arg0.getActivity().startActivity(i);
 		
 		return null;
 	}
+
 }

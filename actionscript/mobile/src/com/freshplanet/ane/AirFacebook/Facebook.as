@@ -102,15 +102,6 @@ package com.freshplanet.ane.AirFacebook
 		}
 		
 		/** @inheritDoc */
-		public function extendAccessTokenIfNeeded() : void
-		{
-			if (Capabilities.manufacturer.indexOf("Android") != -1)
-			{
-				_context.call("extendAccessTokenIfNeeded");
-			}
-		}
-		
-		/** @inheritDoc */
 		public function openSessionWithReadPermissions( permissions : Array, callback : Function = null ) : void
 		{
 			openSessionWithPermissionsOfType(permissions, "read", callback);
@@ -160,8 +151,12 @@ package com.freshplanet.ane.AirFacebook
 			var keys:Array = []; var values:Array = [];
 			for (var key:String in parameters)
 			{
-				keys.push(key);
-				values.push(parameters[key]);
+				var value:String = parameters[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
 			}
 			
 			// Register the callback
@@ -178,8 +173,12 @@ package com.freshplanet.ane.AirFacebook
 			var keys:Array = []; var values:Array = [];
 			for (var key:String in parameters)
 			{
-				keys.push(key);
-				values.push(parameters[key]);
+				var value:String = parameters[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
 			}
 			
 			// Register the callback

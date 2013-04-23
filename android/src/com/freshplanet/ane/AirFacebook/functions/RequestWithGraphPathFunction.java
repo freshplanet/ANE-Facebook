@@ -92,6 +92,8 @@ public class RequestWithGraphPathFunction implements FREFunction
 		// Create a new thread
 		RequestThread thread = new RequestThread(arg0, graphPath, parameters, httpMethod, callback);
 		thread.start();
+
+
 		
 		return null;
 	}
