@@ -31,18 +31,25 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Window;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.adobe.fre.FREContext;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
-import com.facebook.android.SessionStore;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.SessionLoginBehavior;
 
-public class LoginActivity extends Activity implements DialogListener
+public class LoginActivity extends Activity
 {	
+	private Session.StatusCallback statusCallback = new SessionStatusCallback();
+	private boolean reauthorize = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+
+		AirFacebookExtension.log("INFO - LoginActivity.onCreate");
+
 		super.onCreate(savedInstanceState);
 		
 		// Get context
@@ -54,28 +61,74 @@ public class LoginActivity extends Activity implements DialogListener
 		
 		// Get extra values
 		Bundle extras = this.getIntent().getExtras();
-		String[] permissions = extras.getStringArray("permissions");
-		Boolean forceAuthorize = extras.getBoolean("forceAuthorize", false);
+		ArrayList<String> permissions = new ArrayList(Arrays.asList(extras.getStringArray("permissions")));
+		String type = extras.getString("type", "read");
+
+		reauthorize = extras.getBoolean("reauthorize", false);
+		
+		AirFacebookExtension.log("INFO - LoginActivity.onCreate, session.isClosed " + AirFacebookExtensionContext.session.isClosed() + ", state " + AirFacebookExtensionContext.session.getState());
 		
 		// Authorize Facebook session if necessary
-		if(forceAuthorize || !AirFacebookExtensionContext.facebook.isSessionValid())
-		{
-			AirFacebookExtensionContext.facebook.authorize(this, permissions, this);
+		if (reauthorize) {
+			if ("read".equals(type)) {
+				AirFacebookExtensionContext.session.requestNewReadPermissions(
+					new Session.NewPermissionsRequest(this, permissions)
+						.setCallback(statusCallback));
+			} else {
+				AirFacebookExtensionContext.session.requestNewPublishPermissions(
+					new Session.NewPermissionsRequest(this, permissions)
+						.setCallback(statusCallback));
+			}
+		} else if (!AirFacebookExtensionContext.session.isOpened()) {
+			if ("read".equals(type)) {
+				AirFacebookExtensionContext.session.openForRead(new Session.OpenRequest(this)
+					.setPermissions(permissions)
+					.setCallback(statusCallback));
+			} else if ("publish".equals(type)) {
+				AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
+					.setPermissions(permissions)
+					.setCallback(statusCallback));
+			} else {
+				AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
+					.setPermissions(permissions)
+					.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO)
+					.setCallback(statusCallback));
+			}
 		}
 		else
 		{
 			finish();
 		}
+
 	}
-	
+
+	@Override
+    public void onStart() {
+        super.onStart();
+        AirFacebookExtensionContext.session.addCallback(statusCallback);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        AirFacebookExtensionContext.session.removeCallback(statusCallback);
+    }
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		AirFacebookExtensionContext.facebook.authorizeCallback(requestCode, resultCode, data);
-		finish();
+        super.onActivityResult(requestCode, resultCode, data);
+        AirFacebookExtensionContext.session.onActivityResult(this, requestCode, resultCode, data);
 	}
 	
-	@Override
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Session session = AirFacebookExtensionContext.session;
+        Session.saveSession(session, outState);
+    }
+
+    @Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
 	    if (keyCode == KeyEvent.KEYCODE_BACK)
@@ -83,7 +136,6 @@ public class LoginActivity extends Activity implements DialogListener
 	    	onBackPressed();
 	        return true;
 	    }
-	    
 	    return super.onKeyUp(keyCode, event);
 	}
 	
@@ -93,62 +145,37 @@ public class LoginActivity extends Activity implements DialogListener
 		onCancel();
 	}
 
-	public void onComplete(Bundle values)
-	{
-		SessionStore.save(AirFacebookExtensionContext.facebook, AirFacebookExtension.context.getActivity().getApplicationContext());
-		AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_SUCCESS", "OK");
-		finish();
-	}
-
-	public void onFacebookError(FacebookError e)
-	{
-		AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", e.getMessage());	
-		AirFacebookExtension.log("onFbError");
-	    // Add code to print out the key hash
-	    try {
-	        PackageInfo info = getPackageManager().getPackageInfo(
-	        		getApplicationContext().getPackageName(),
-	                PackageManager.GET_SIGNATURES);
-	        for (Signature signature : info.signatures) {
-	            MessageDigest md = MessageDigest.getInstance("SHA");
-	            md.update(signature.toByteArray());
-	            AirFacebookExtension.log("keyHash:"+Base64.encodeToString(md.digest(), Base64.DEFAULT));
-	            }
-	    } catch (NameNotFoundException ex) {
-	    	AirFacebookExtension.log("name not found");
-	    } catch (NoSuchAlgorithmException ex) {
-	    	AirFacebookExtension.log("no such algo");
-	    }
-
-		finish();
-	}
-
-	public void onError(DialogError e) 
-	{
-		AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", e.getMessage());	
-		AirFacebookExtension.log("onError");
-	    // Add code to print out the key hash
-	    try {
-	        PackageInfo info = getPackageManager().getPackageInfo(
-	                getApplicationContext().getPackageName(),
-	                PackageManager.GET_SIGNATURES);
-	        for (Signature signature : info.signatures) {
-	            MessageDigest md = MessageDigest.getInstance("SHA");
-	            md.update(signature.toByteArray());
-	            AirFacebookExtension.log("keyHash:"+Base64.encodeToString(md.digest(), Base64.DEFAULT));
-	            }
-	    } catch (NameNotFoundException ex) {
-	    	AirFacebookExtension.log("name not found");
-	    } catch (NoSuchAlgorithmException ex) {
-	    	AirFacebookExtension.log("no such algo");
-	    }
-		
-		finish();
-	}
-
 	public void onCancel()
 	{
-		AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_CANCEL", "OK");
+		if (reauthorize) {
+			AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_CANCEL", "OK");
+		} else {
+			AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_CANCEL", "OK");
+		}
 		finish();
 	}
+
+	private class SessionStatusCallback implements Session.StatusCallback {
+        @Override
+        public void call(Session session, SessionState state, Exception exception) {
+    		AirFacebookExtension.log("INFO - SessionStatusCallback, state = " + state);
+			if (reauthorize) {
+				if (state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
+					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_SUCCESS", "OK");
+				} else {
+					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", exception.getMessage());
+				}
+				finish();
+			} else if (session.isOpened()) {
+				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_SUCCESS", "OK");
+				finish();
+            } else if (session.isClosed()) {
+				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", exception.getMessage());	
+				finish();
+            }
+			AirFacebookExtension.log("INFO - SessionStatusCallback - ok");
+
+        }
+    }
+
 }

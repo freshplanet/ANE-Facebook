@@ -28,9 +28,15 @@ public class IsSessionOpenFunction implements FREFunction
 {
 	public FREObject call(FREContext arg0, FREObject[] arg1)
 	{
+		AirFacebookExtension.log("INFO - IsSessionOpenedFunction");
+		AirFacebookExtension.log("INFO - IsSessionOpenedFunction, AirFacebookExtensionContext=" + AirFacebookExtension.context);
+		if (AirFacebookExtensionContext.session == null) {
+			AirFacebookExtension.log("INFO - IsSessionOpenedFunction: session is null");
+		} else
+			AirFacebookExtension.log("INFO - IsSessionOpenedFunction: session.isOpened " + AirFacebookExtensionContext.session.isOpened());
 		try
 		{
-			return FREObject.newObject(AirFacebookExtensionContext.facebook.isSessionValid());
+			return FREObject.newObject(AirFacebookExtensionContext.session.isOpened());
 		}
 		catch (Exception e)
 		{

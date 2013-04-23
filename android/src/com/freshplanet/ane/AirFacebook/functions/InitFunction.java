@@ -21,11 +21,12 @@ package com.freshplanet.ane.AirFacebook.functions;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.facebook.android.Facebook;
-import com.facebook.android.FbDialog;
-import com.facebook.android.SessionStore;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
+import com.facebook.LoggingBehavior;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.Settings;
 
 public class InitFunction implements FREFunction
 {
@@ -42,14 +43,27 @@ public class InitFunction implements FREFunction
 			AirFacebookExtension.log("ERROR - " + e.getMessage());
 		}
 		
-		// Fix bug with FbDialog cross icon
-		FbDialog.crossResourceId = arg0.getResourceId("drawable.close");
+		AirFacebookExtension.log("INFO - InitFunction, appID=" + appID);
+
+		Session session = new Session.Builder(arg0.getActivity().getApplicationContext()).setApplicationId(appID).build();
 		
-		// Create Facebook object
-		AirFacebookExtensionContext.facebook = new Facebook(appID);
+		if (session == null) {
+			AirFacebookExtension.log("INFO - InitFunction, session is null");
+		} else {
+			AirFacebookExtension.log("INFO - InitFunction, session=" + session);
+		}
+
+		AirFacebookExtensionContext.session = session;
 		
-		// Restore previous token if possible
-		SessionStore.restore(AirFacebookExtensionContext.facebook, arg0.getActivity().getApplicationContext());
+		AirFacebookExtension.log("INFO - InitFunction, session=" + AirFacebookExtensionContext.session);
+
+		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState())) {
+			AirFacebookExtension.log("INFO - InitFunction, test 21");
+			Session.setActiveSession(session);
+			AirFacebookExtension.log("INFO - InitFunction, test 22");
+			AirFacebookExtension.log("INFO - cachedAccessToken=" + session.getAccessToken());
+			session.openForRead(null);
+		}
 		
 		return null;
 	}

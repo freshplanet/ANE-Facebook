@@ -87,12 +87,6 @@ package com.freshplanet.ane.AirFacebook
 		}
 		
 		/** @inheritDoc */
-		public function extendAccessTokenIfNeeded() : void
-		{
-			return;
-		}
-		
-		/** @inheritDoc */
 		public function openSessionWithReadPermissions( permissions : Array, callback : Function = null ) : void
 		{
 			callback(false, false, "Facebook is not supported on this platform");
