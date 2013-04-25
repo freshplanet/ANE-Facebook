@@ -16,22 +16,23 @@
 
 package com.facebook.widget;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import com.facebook.*;
-import com.facebook.model.GraphUser;
+
+import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Session;
 import com.facebook.android.R;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.adobe.fre.FREContext;
+import com.facebook.model.GraphUser;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**

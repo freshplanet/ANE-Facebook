@@ -18,26 +18,19 @@
 
 package com.freshplanet.ane.AirFacebook;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Bundle;
-import android.util.Base64;
-import android.view.KeyEvent;
-import android.view.Window;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.Window;
+
 import com.adobe.fre.FREContext;
 import com.facebook.Session;
-import com.facebook.SessionState;
 import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
 
 public class LoginActivity extends Activity
 {	
@@ -61,8 +54,8 @@ public class LoginActivity extends Activity
 		
 		// Get extra values
 		Bundle extras = this.getIntent().getExtras();
-		ArrayList<String> permissions = new ArrayList(Arrays.asList(extras.getStringArray("permissions")));
-		String type = extras.getString("type", "read");
+		ArrayList<String> permissions = new ArrayList<String>(Arrays.asList(extras.getStringArray("permissions")));
+		String type = extras.getString("type");
 
 		reauthorize = extras.getBoolean("reauthorize", false);
 		

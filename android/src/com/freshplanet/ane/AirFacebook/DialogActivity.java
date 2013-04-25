@@ -26,13 +26,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import com.facebook.widget.WebDialog;
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.FacebookRequestError;
+
 import com.adobe.fre.FREContext;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
+import com.facebook.FacebookException;
+import com.facebook.widget.WebDialog;
 
 public class DialogActivity extends Activity implements WebDialog.OnCompleteListener
 {

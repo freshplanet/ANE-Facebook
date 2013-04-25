@@ -21,12 +21,10 @@ package com.freshplanet.ane.AirFacebook.functions;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
-import com.facebook.LoggingBehavior;
 import com.facebook.Session;
 import com.facebook.SessionState;
-import com.facebook.Settings;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
 public class InitFunction implements FREFunction
 {
