@@ -18,16 +18,9 @@
 
 package com.freshplanet.ane.AirFacebook.functions;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.facebook.Session;
-
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
 public class CloseSessionAndClearTokenInformationFunction implements FREFunction

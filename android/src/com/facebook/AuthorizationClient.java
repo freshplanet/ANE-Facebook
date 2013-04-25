@@ -16,6 +16,10 @@
 
 package com.facebook;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -26,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.CookieSyncManager;
+
 import com.facebook.internal.ServerProtocol;
 import com.facebook.internal.Utility;
 import com.facebook.model.GraphMultiResult;
@@ -33,11 +38,6 @@ import com.facebook.model.GraphObject;
 import com.facebook.model.GraphObjectList;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.WebDialog;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import com.adobe.fre.FREContext;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 class AuthorizationClient implements Serializable {

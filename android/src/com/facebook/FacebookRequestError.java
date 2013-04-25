@@ -16,12 +16,12 @@
 
 package com.facebook;
 
-import com.facebook.internal.Utility;
+import java.net.HttpURLConnection;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
-import com.adobe.fre.FREContext;
+import com.facebook.internal.Utility;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**
