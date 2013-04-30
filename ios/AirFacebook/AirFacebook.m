@@ -18,7 +18,6 @@
 //
 
 #import "AirFacebook.h"
-#import "FBSBJSON.h"
 
 #define PRINT_LOG   YES
 
@@ -83,7 +82,7 @@ static AirFacebook *sharedInstance = nil;
         _urlSchemeSuffix = [urlSchemeSuffix retain];
         
         // Open session if a token is in cache.
-        FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
+        FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
         [FBSession setActiveSession:session];
         if (session.state == FBSessionStateCreatedTokenLoaded)
         {
@@ -209,17 +208,17 @@ static AirFacebook *sharedInstance = nil;
     } copy] autorelease];
 }
 
-+ (FBShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback
++ (FBOSIntegratedShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback
 {
-    return [[^(FBNativeDialogResult result, NSError *error) {
+    return [[^(FBOSIntegratedShareDialogResult result, NSError *error) {
         NSString *resultString = nil;
         switch (result)
         {
-            case FBNativeDialogResultCancelled:
+            case FBOSIntegratedShareDialogResultCancelled:
                 resultString = @"{ \"cancelled\": true}";
                 break;
             
-            case FBNativeDialogResultError:
+            case FBOSIntegratedShareDialogResultError:
                 resultString = [NSString stringWithFormat:@"{ \"error\": \"%@\" }", [error description]];
                 
             default:
@@ -240,6 +239,8 @@ static AirFacebook *sharedInstance = nil;
 }
 
 @end
+
+#pragma mark - Utils
 
 NSArray* getFREArrayAsNSArray( FREObject array )
 {
@@ -306,9 +307,6 @@ DEFINE_ANE_FUNCTION(init)
     
     // Initialize Facebook
     [[AirFacebook sharedInstance] initWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
-    
-    // override default appID to avoid putting it in the .plist
-    [FBSession setDefaultAppID:appID];
     
     return nil;
 }
@@ -597,7 +595,7 @@ DEFINE_ANE_FUNCTION(dialog)
     
     // If possible, open new-style Facebook sharing sheet
     FBSession *session = [FBSession activeSession];
-    BOOL canPresentNativeDialog = [FBNativeDialogs canPresentShareDialogWithSession:session];
+    BOOL canPresentNativeDialog = [FBDialogs canPresentOSIntegratedShareDialogWithSession:session];
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
     BOOL isRequestDialog = [method isEqualToString:@"apprequests"];
     BOOL hasNoRecipient = ([parameters objectForKey:@"to"] == nil || [[parameters objectForKey:@"to"] length] == 0);
@@ -617,7 +615,7 @@ DEFINE_ANE_FUNCTION(dialog)
         NSString *initialText = [parameters objectForKey:@"name"];
         UIImage *image = nil;
         NSURL *url = [NSURL URLWithString:[parameters objectForKey:@"link"]];
-        FBShareDialogHandler handler = [AirFacebook shareDialogHandlerWithCallback:callback];
+        FBOSIntegratedShareDialogHandler handler = [AirFacebook shareDialogHandlerWithCallback:callback];
         
         // If there is an image, try to download it
         NSString *picture = [parameters objectForKey:@"picture"];
@@ -630,7 +628,7 @@ DEFINE_ANE_FUNCTION(dialog)
             image = [UIImage imageWithData:pictureData];
         }
         
-        [FBNativeDialogs presentShareDialogModallyFrom:rootViewController initialText:initialText image:image url:url handler:handler];
+        [FBDialogs presentOSIntegratedShareDialogModallyFrom:rootViewController initialText:initialText image:image url:url handler:handler];
     }
     else // Else, open old-style Facebook dialog
     {

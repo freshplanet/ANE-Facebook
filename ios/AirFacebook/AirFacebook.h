@@ -17,13 +17,15 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #import "FBSession.h"
+#import "FBSessionTokenCachingStrategy.h"
 #import "FBAccessTokenData.h"
 #import "FBRequest.h"
-#import "FBNativeDialogs.h"
+#import "FBDialogs.h"
 #import "FBWebDialogs.h"
 #import "FBSettings.h"
 #import "FlashRuntimeExtensions.h"
 #import "FBError.h"
+#import "FBSBJSON.h" // used from SDK 3.2 fro portability over ios < 5.0
 #import "NSError+FBError.h"
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
@@ -41,7 +43,7 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
 + (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
-+ (FBShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
++ (FBOSIntegratedShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
 
 + (void)log:(NSString *)string, ...;
 
@@ -50,6 +52,8 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 
 @end
 
+// utils
+NSArray* getFREArrayAsNSArray( FREObject array );
 
 // C interface
 DEFINE_ANE_FUNCTION(init);
