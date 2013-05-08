@@ -81,7 +81,16 @@ Should you need to edit the extension source code and/or recompile it, you will 
     ant
 
 
+Documentation
+--------
+Documentation is embbeded in the ane to provide inline asdoc in Flash Builder and other compatible IDEs
+
+You can generate a readable html documentation from the ant build script (see Build Script above):
+
+   ant asdoc
+
+
 Authors
 ------
 
-This ANE has been written by [Thibaut Crenn](https://github.com/titi-us) and [Alexis Taugeron](http://alexistaugeron.com). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+This ANE has been written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
