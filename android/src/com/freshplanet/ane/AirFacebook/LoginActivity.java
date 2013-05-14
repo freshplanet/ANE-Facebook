@@ -156,14 +156,16 @@ public class LoginActivity extends Activity
 				if (state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
 					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_SUCCESS", "OK");
 				} else {
-					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", exception.getMessage());
+					String error = exception.getMessage() != null ? exception.getMessage() : "";
+					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", error);
 				}
 				finish();
 			} else if (session.isOpened()) {
 				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_SUCCESS", "OK");
 				finish();
             } else if (session.isClosed()) {
-				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", exception.getMessage());	
+            	String error = exception.getMessage() != null ? exception.getMessage() : "";
+				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", error);	
 				finish();
             }
 			AirFacebookExtension.log("INFO - SessionStatusCallback - ok");
