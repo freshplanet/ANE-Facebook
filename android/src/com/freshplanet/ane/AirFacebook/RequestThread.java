@@ -73,7 +73,9 @@ public class RequestThread extends Thread
 		catch (Exception e)
 		{
 			AirFacebookExtension.log("ERROR - RequestThread.run, " + e.getMessage());
-			context.dispatchStatusEventAsync(callback, e.getMessage());
+			
+			String error = e.getMessage() != null ? e.getMessage() :  "";
+			context.dispatchStatusEventAsync(callback, error);
 		}
 		
 		// Trigger callback if necessary

@@ -5,7 +5,7 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="android,ios,ios-simulator,swc-mobile,swc-default,inline-doc,package" description="Full build of extension"/>
+    <target name="all" depends="android,ios,ios-simulator,swc-mobile,swc-default,package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -164,13 +164,13 @@
             <arg line="-platform default -C default/ ."/>
         </exec>
 
-        <zip destfile="../temp/${name}.ane" update="true">
+        <!-- <zip destfile="../temp/${name}.ane" update="true">
             <zipfileset dir="../temp/doc/tempdita" prefix="docs">
                 <include name="*.*"/>
                 <exclude name="ASDoc_Config.xml"/>
                 <exclude name="overviews.xml"/>
             </zipfileset>
-        </zip>
+        </zip> -->
 
         <move file="../temp/${name}.ane" todir="../bin"/>
         <delete dir="../temp"/>
