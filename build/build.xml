@@ -93,14 +93,15 @@
             <regexpmapper from=".*src.(.*)\.as" to="\1"/>
         </pathconvert>
 
-        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
+		<echo>${basedir}</echo>
+		<java jar="${flex.sdk}/lib/compc.jar" failonerror="true" fork="true" dir="${flex.sdk}/frameworks">
             <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
-            <arg line='-source-path ../actionscript/mobile/src'/>
-            <arg line='-output ../temp/swc/${name}.swc'/>
+			<arg line='-source-path ${basedir}/../actionscript/mobile/src'/>
+			<arg line='-output ${basedir}/../temp/swc/${name}.swc'/>
             <arg line='-swf-version=14'/>
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
-        </exec>
+        </java>
 
         <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
 
@@ -122,14 +123,14 @@
             <regexpmapper from=".*src.(.*)\.as" to="\1"/>
         </pathconvert>
 
-        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
+		<java jar="${flex.sdk}/lib/compc.jar" failonerror="true" fork="true" dir="${flex.sdk}/frameworks">
             <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
-            <arg line='-source-path ../actionscript/default/src'/>
-            <arg line='-output ../temp/swc/${name}.swc'/>
+			<arg line='-source-path ${basedir}/../actionscript/default/src'/>
+			<arg line='-output ${basedir}/../temp/swc/${name}.swc'/>
             <arg line='-swf-version=14'/>
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
-        </exec>
+        </java>
 
         <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
         <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
@@ -149,9 +150,25 @@
         </exec>
     </target>
 
+	<!-- Package the extension package only for Android -->
+	<target name="package-android-only" description="Create the Android only extension package">
+        <java jar="${flex.sdk}/lib/adt.jar" failonerror="true" dir="../temp" fork="true">
+            <arg value="-package"/>
+            <arg value="-target"/>
+            <arg value="ane"/>
+            <arg value="${name}.ane"/>
+			<arg value="../build/android/extension.xml"/>
+            <arg line="-swc swc/${name}.swc"/>
+            <arg line="-platform Android-ARM -C android/ ."/>
+            <arg line="-platform default -C default/ ."/>
+        </java>
+        <move file="../temp/${name}.ane" todir="../bin"/>
+        <delete dir="../temp"/>
+	</target>
+
     <!-- Package -->
     <target name="package" description="Create the extension package">
-        <exec executable="${flex.sdk}/bin/adt${bin.ext}" failonerror="true" dir="../temp">
+        <java jar="${flex.sdk}/lib/adt.jar" failonerror="true" dir="../temp" fork="true">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
@@ -162,8 +179,7 @@
             <arg line="-platform iPhone-x86 -C ios-simulator/ ."/>
             <arg line="-platform Android-ARM -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
-        </exec>
-
+        </java>
         <zip destfile="../temp/${name}.ane" update="true">
             <zipfileset dir="../temp/doc/tempdita" prefix="docs">
                 <include name="*.*"/>
