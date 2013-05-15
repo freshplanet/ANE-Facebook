@@ -97,9 +97,10 @@ public class InitFunction implements FREFunction
 
 		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState())) {
 			AirFacebookExtension.log("INFO IN GETSTATE");
+			session.openForRead(null);
 			Session.setActiveSession(session);
 			AirFacebookExtension.log("INFO - cachedAccessToken=" + session.getAccessToken());
-			session.openForRead(null);
+			//session.openForRead(null);
 		}
 		
 		return null;
