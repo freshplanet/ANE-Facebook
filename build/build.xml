@@ -163,7 +163,9 @@
             <arg line="-platform default -C default/ ."/>
         </java>
         <move file="../temp/${name}.ane" todir="../bin"/>
+		<!--
         <delete dir="../temp"/>
+		-->
 	</target>
 
     <!-- Package -->
