@@ -33,7 +33,10 @@ public class IsSessionOpenFunction implements FREFunction
 		if (AirFacebookExtensionContext.session == null) {
 			AirFacebookExtension.log("INFO - IsSessionOpenedFunction: session is null");
 		} else
+		{
 			AirFacebookExtension.log("INFO - IsSessionOpenedFunction: session.isOpened " + AirFacebookExtensionContext.session.isOpened());
+			AirFacebookExtension.log("INFO - IsSessionOpenedFunction: session.isClosed " + AirFacebookExtensionContext.session.isClosed());
+		}
 		try
 		{
 			return FREObject.newObject(AirFacebookExtensionContext.session.isOpened());

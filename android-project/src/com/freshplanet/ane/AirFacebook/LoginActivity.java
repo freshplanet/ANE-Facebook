@@ -59,7 +59,9 @@ public class LoginActivity extends Activity
 
 		reauthorize = extras.getBoolean("reauthorize", false);
 		
-		AirFacebookExtension.log("INFO - LoginActivity.onCreate, session.isClosed " + AirFacebookExtensionContext.session.isClosed() + ", state " + AirFacebookExtensionContext.session.getState());
+		AirFacebookExtension.log("INFO - LoginActivity.onCreate, session.isClosed " + 
+				AirFacebookExtensionContext.session.isClosed() + ", state " + AirFacebookExtensionContext.session.getState() +
+				", reauthorize " + reauthorize);
 		
 		// Authorize Facebook session if necessary
 		if (reauthorize) {
