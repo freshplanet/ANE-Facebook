@@ -3,11 +3,12 @@ Air Native Extension for Facebook (iOS + Android)
 
 This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
 
+[Zrong](http://zengrong.net) modified the project and test it in Android SDK(3.0.1). You can find a sample in branch 'zrong'.
 
 Facebook SDK
 ---------
 
-This ANE contains the new Facebook SDK for iOS (3.1). It still uses the old Facebook SDK for Android (the transition to 3.0 is a work in progress). The Actionscript API is based on the new Facebook SDK API.
+This ANE contains the new Facebook SDK for iOS (3.1) and the SDK for Android(3.0.1).
 
 
 Installation
@@ -61,6 +62,8 @@ On Android:
                     <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
                     <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
                     <activity android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"></activity>
+					<!-- If you use the SDK 3.0.1, add this line. -->
+                    <activity android:name="com.facebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
                     
                 </application>
 
@@ -89,8 +92,16 @@ You can generate a readable html documentation from the ant build script (see Bu
 
    ant asdoc
 
+Sample
+------
+There is a simple sample in branch 'zrong'.
+
 
 Authors
 ------
 
 This ANE has been written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+About Zrong
+------
+[zrong](http://zengrong.net) forked the project and added a sample. The sample is in branch 'zrong'.

@@ -6,6 +6,8 @@ build.config
 actionscript/bin
 .actionScriptProperties
 .flexLibProperties
+bin-debug
+libs
 
 # Eclipse
 .settings
@@ -26,3 +28,16 @@ xcuserdata
 Icon
 Thumbs.db
 .DS_Store
+
+# FlashDevelop project files
+*.bat
+*.as3proj
+AIR_Android_readme.txt
+AIR_iOS_readme.txt
+icons
+bat
+bin
+lib
+obj
+ane
+cert

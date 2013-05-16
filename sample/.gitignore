@@ -1,0 +1,18 @@
+# Flash Builder project files
+.actionScriptProperties
+.flexProperties
+.project
+.settings
+bin-debug
+libs
+
+# FlashDevelop project files
+*.bat
+*.as3proj
+AIR_Android_readme.txt
+AIR_iOS_readme.txt
+icons
+bat
+bin
+lib
+obj

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" applicationComplete="handler_application1applicationComplete(event)">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="20" paddingBottom="20" paddingLeft="10" paddingRight="10" gap="14"/>
+	</s:layout>
+	<s:HGroup id="loginGRP" horizontalCenter="0" verticalCenter="0">
+		<s:Button id="loginBTN" click="handler_loginBTNclick(event)" label="login"/>
+		<s:Button id="loginoutBTN" click="handler_logoutBTNclick(event)" label="logout"/>
+	</s:HGroup>
+	<s:TileGroup id="infoGRP" enabled="false">
+		<s:Button id="infoBTN" label="Get My Info" click="handler_infoBTNclick(event)"/>
+	</s:TileGroup>
+	<s:VGroup width="100%" height="100%">
+		<s:Button id="clearBTN" label="Clear" click="infoTA.text=''"/>
+		<s:TextArea id="infoTA" width="100%" height="100%"/>
+	</s:VGroup>
+	<fx:Script>
+		<![CDATA[
+			import com.freshplanet.ane.AirFacebook.Facebook;
+			import flash.utils.setTimeout;
+			
+			import flash.events.StatusEvent;
+			
+			import mx.events.FlexEvent;
+			private static const APP_ID:String = "157166871107226";
+			private static const PERMISSIONS:Array = ["email", "user_about_me", "user_birthday", "user_hometown", "user_website", "offline_access", "read_stream", "publish_stream", "read_friendlists"];
+			
+			private var _facebook:Facebook;
+			
+			private function loginSuccess():void
+			{
+				loginBTN.enabled = false;
+				infoGRP.enabled = true;
+			}
+			
+			private function logoutSuccess():void
+			{
+				loginBTN.enabled = true;
+				infoGRP.enabled = false;
+			}
+			
+			protected function handler_infoBTNclick($evt:MouseEvent):void
+			{
+				_facebook.requestWithGraphPath("/me", null, "GET", handler_requesetWithGraphPath);
+			}
+			
+			protected function handler_loginBTNclick($evt:MouseEvent):void
+			{
+				if(!_facebook.isSessionOpen)
+				{
+					_facebook.openSessionWithPermissions(PERMISSIONS, handler_openSessionWithPermissions);
+					//_facebook.dialog("oauth", null, handler_dialog);
+				}
+				else
+				{
+					showInfo('isSessionOpen!');
+				}
+			}
+			
+			protected function handler_logoutBTNclick($evt:MouseEvent):void
+			{
+				_facebook.closeSessionAndClearTokenInformation();
+				logoutSuccess();
+			}
+			
+			protected function handler_application1applicationComplete($evt:FlexEvent):void
+			{
+				showInfo('facebook.isSupported:', Facebook.isSupported);
+				if(Facebook.isSupported)
+				{
+					_facebook = Facebook.getInstance();
+					if(_facebook)
+					{
+						_facebook.addEventListener(StatusEvent.STATUS, handler_status);
+						_facebook.init(APP_ID);
+						setTimeout(checkSession, 2000);
+					}
+				}
+			}
+			
+			private function checkSession():void
+			{
+				var __isSessionOpen:Boolean = _facebook.isSessionOpen;
+				showInfo("isSeesionOpen:", __isSessionOpen);
+				if(__isSessionOpen)
+				{
+					loginSuccess();
+				}
+			}
+			
+			protected function handler_status($evt:StatusEvent):void
+			{
+				showInfo("statusEvent,type:", $evt.type,",code:", $evt.code,",level:", $evt.level);
+			}
+			
+			private function handler_openSessionWithPermissions($success:Boolean, $userCancelled:Boolean, $error:String = null):void
+			{
+				if($success)
+				{
+					loginSuccess();
+				}
+				showInfo("success:", $success, ",userCancelled:", $userCancelled, ",error:", $error);
+			}
+			
+			private function handler_dialog($data:Object):void
+			{
+				showInfo('handler_dialog:', JSON.stringify($data));
+			}
+			
+			private function handler_requesetWithGraphPath($data:Object):void
+			{
+				showInfo("handler_requesetWithGraphPath:", JSON.stringify($data));
+			}
+			
+			private function showInfo(...$args):void
+			{
+				var __msg:String = "";
+				for (var i:int = 0; i < $args.length; i++) 
+				{
+					__msg += $args[i] + " ";
+				}
+				trace(__msg);
+				__msg += "\n";
+				infoTA.appendText(__msg);
+			}
+		]]>
+	</fx:Script>
+</s:Application>
