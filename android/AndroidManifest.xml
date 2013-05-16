@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.freshplanet.natExt"
+    package="com.freshplanet.ane.AirFacebook"
     android:versionCode="1"
     android:versionName="1.0" >
-
-    <uses-sdk android:minSdkVersion="8" />
-
-    <application android:label="AirFacebook" >
-        <activity android:name=".FBLoginActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
-        <activity android:name=".FBDialogActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
-        <activity android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"></activity>
+    
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="8" />
+    <application
+        android:allowBackup="true">
+        <activity
+            android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"
+            android:label="AirFacebook" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+		<activity android:name="com.freshplanet.ane.AirFacebook.FBLoginActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" /> 
+		<activity android:name="com.freshplanet.ane.AirFacebook.FBDialogActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" /> 
     </application>
 
 </manifest>
