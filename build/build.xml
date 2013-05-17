@@ -59,10 +59,7 @@
 
         <echo message="Using Java version ${ant.java.version}."/>
 
-		<!--
         <javac source="1.6" srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false" target="1.6">
-		-->
-        <javac source="1.6" srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false" compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
             <classpath>
                 <pathelement location="${android.sdk}/android.jar"/>
                 <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
@@ -81,9 +78,7 @@
         <copy todir="../temp/android/res/">
             <fileset dir="../android/res"/>
         </copy>
-		<!--
         <delete dir="../android/temp"/>
-		-->
     </target>
 
     <!-- Actionscript mobile -->
