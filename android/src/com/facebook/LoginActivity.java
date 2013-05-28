@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import com.adobe.fre.FREContext;
+
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**
