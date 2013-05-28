@@ -246,7 +246,10 @@ package com.freshplanet.ane.AirFacebook
 				if (event.arguments != null && event.arguments.length > 0)
 				{
 					var url:String = event.arguments[0] as String;
-					_context.call("handleOpenURL", url);
+					if (url.indexOf("fb") == 0) // only handle invoke that starts with fb
+					{
+						_context.call("handleOpenURL", url);
+					}
 				}
 			}
 		}
