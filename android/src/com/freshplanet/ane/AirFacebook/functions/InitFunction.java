@@ -68,24 +68,30 @@ public class InitFunction implements FREFunction
 		    AccessToken accessToken = AccessToken.createFromExistingAccessToken(sdk2Token, null, null, null, null);
 		    
 		    // statusCallback: Session.StatusCallback implementation
-		    session.open(accessToken, new Session.StatusCallback() {
-										@Override
-										public void call(Session session, SessionState state, Exception exception) {
-											if ( exception != null) {
-												AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error : " + exception.toString() );
-												// reset the session, will direct the user into the login flow again
-												//session = new Session.Builder(arg0.getActivity().getApplicationContext()).setApplicationId(appID).build();
-											}
-											else
-											{
-											    Session.setActiveSession(session);
-											    if ( state.equals(SessionState.OPENED_TOKEN_UPDATED) )
-													AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token, the token have been updated");
-												else
-													AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token");
-											}
-										}
-									} ) ;
+		    try
+		    {
+			    session.open(accessToken, new Session.StatusCallback() {
+					@Override
+					public void call(Session session, SessionState state, Exception exception) {
+						if ( exception != null) {
+							AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error : " + exception.toString() );
+							// reset the session, will direct the user into the login flow again
+							//session = new Session.Builder(arg0.getActivity().getApplicationContext()).setApplicationId(appID).build();
+						}
+						else
+						{
+						    Session.setActiveSession(session);
+						    if ( state.equals(SessionState.OPENED_TOKEN_UPDATED) )
+								AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token, the token have been updated");
+							else
+								AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token");
+						}
+					}
+				} ) ;
+		    } catch(UnsupportedOperationException exception)
+		    {
+				AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error : " + exception.toString() );
+		    }
 		    
 		}
 

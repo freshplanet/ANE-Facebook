@@ -67,7 +67,8 @@ static AirFacebook *sharedInstance = nil;
 {
     
     NSString *eventName = event ? event : @"LOGGING";
-    FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[message UTF8String]);
+    NSString *messageText = message ? message : @"";
+    FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[messageText UTF8String]);
     
 }
 
@@ -82,13 +83,27 @@ static AirFacebook *sharedInstance = nil;
         _urlSchemeSuffix = [urlSchemeSuffix retain];
         
         // Open session if a token is in cache.
-        FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
-        [FBSession setActiveSession:session];
-        if (session.state == FBSessionStateCreatedTokenLoaded)
-        {
-            [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
+        FBSession *session = nil;
+        @try {
+            session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
         }
-        [session release];
+        @catch (NSException *exception) {
+            [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
+        }
+        @finally {
+            [FBSession setActiveSession:session];
+            if (session.state == FBSessionStateCreatedTokenLoaded)
+            {
+                @try {
+                    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
+                }
+                @catch (NSException *exception) {
+                    
+                    [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
+                }
+            }
+            [session release];
+        }
     }
     
     return self;
@@ -402,13 +417,28 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     // Start authentication flow
     NSString *appID = [[AirFacebook sharedInstance] appID];
     NSString *urlSchemeSuffix = [[AirFacebook sharedInstance] urlSchemeSuffix];
-    FBSession *session = [[FBSession alloc] initWithAppID:appID permissions:permissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
-    [FBSession setActiveSession:session];
-    FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
-    [session openWithBehavior:loginBehavior completionHandler:completionHandler];
+    FBSession *session = nil;
+    @try {
+        session = [[FBSession alloc] initWithAppID:appID permissions:permissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
+
+    }
+    @catch (NSException *exception) {
+        [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[exception reason]];
+    }
+    @finally {
+        [FBSession setActiveSession:session];
+        FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
+        
+        @try {
+            [session openWithBehavior:loginBehavior completionHandler:completionHandler];
+        }
+        @catch (NSException *exception) {
+            [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[exception reason]];
+        }
+        [session release];
+    }
     
     [permissions release];
-    [session release];
     
     return nil;
 }
@@ -433,13 +463,19 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
     
     // Start authentication flow
     FBReauthorizeSessionCompletionHandler completionHandler = [AirFacebook reauthorizeSessionCompletionHandler];
-    if ([type isEqualToString:@"read"])
-    {
-        [[FBSession activeSession] requestNewReadPermissions:permissions completionHandler:completionHandler];
+    
+    @try {
+        if ([type isEqualToString:@"read"])
+        {
+            [[FBSession activeSession] requestNewReadPermissions:permissions completionHandler:completionHandler];
+        }
+        else if ([type isEqualToString:@"publish"])
+        {
+            [[FBSession activeSession] requestNewPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:completionHandler];
+        }
     }
-    else if ([type isEqualToString:@"publish"])
-    {
-        [[FBSession activeSession] requestNewPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:completionHandler];
+    @catch (NSException *exception) {
+        [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_ERROR" withMessage:[exception reason]];
     }
     
     [permissions release];
