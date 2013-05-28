@@ -28,6 +28,7 @@ import android.view.KeyEvent;
 import android.view.Window;
 
 import com.adobe.fre.FREContext;
+import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
@@ -63,29 +64,43 @@ public class LoginActivity extends Activity
 		
 		// Authorize Facebook session if necessary
 		if (reauthorize) {
-			if ("read".equals(type)) {
-				AirFacebookExtensionContext.session.requestNewReadPermissions(
-					new Session.NewPermissionsRequest(this, permissions)
-						.setCallback(statusCallback));
-			} else {
-				AirFacebookExtensionContext.session.requestNewPublishPermissions(
-					new Session.NewPermissionsRequest(this, permissions)
-						.setCallback(statusCallback));
+			try
+			{
+				if ("read".equals(type)) {
+					AirFacebookExtensionContext.session.requestNewReadPermissions(
+						new Session.NewPermissionsRequest(this, permissions)
+							.setCallback(statusCallback));
+				} else {
+					AirFacebookExtensionContext.session.requestNewPublishPermissions(
+						new Session.NewPermissionsRequest(this, permissions)
+							.setCallback(statusCallback));
+				}
+
+			} catch(FacebookException exception)
+			{
+				AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", exception != null ? exception.toString() : "null exception");
 			}
 		} else if (!AirFacebookExtensionContext.session.isOpened()) {
-			if ("read".equals(type)) {
-				AirFacebookExtensionContext.session.openForRead(new Session.OpenRequest(this)
-					.setPermissions(permissions)
-					.setCallback(statusCallback));
-			} else if ("publish".equals(type)) {
-				AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
-					.setPermissions(permissions)
-					.setCallback(statusCallback));
-			} else {
-				AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
-					.setPermissions(permissions)
-					.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO)
-					.setCallback(statusCallback));
+			try
+			{
+				if ("read".equals(type)) {
+					AirFacebookExtensionContext.session.openForRead(new Session.OpenRequest(this)
+						.setPermissions(permissions)
+						.setCallback(statusCallback));
+				} else if ("publish".equals(type)) {
+					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
+						.setPermissions(permissions)
+						.setCallback(statusCallback));
+				} else {
+					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
+						.setPermissions(permissions)
+						.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO)
+						.setCallback(statusCallback));
+				}
+
+			} catch (FacebookException exception)
+			{
+				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", exception != null ? exception.toString() : "null exception");
 			}
 		}
 		else
