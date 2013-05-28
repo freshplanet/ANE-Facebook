@@ -16,6 +16,9 @@
 
 package com.facebook.widget;
 
+import java.util.Collections;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,16 +32,19 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import com.facebook.*;
+
+import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionDefaultAudience;
+import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
 import com.facebook.android.R;
-import com.facebook.model.GraphUser;
 import com.facebook.internal.SessionAuthorizationType;
 import com.facebook.internal.SessionTracker;
 import com.facebook.internal.Utility;
-
-import java.util.Collections;
-import java.util.List;
-import com.adobe.fre.FREContext;
+import com.facebook.model.GraphUser;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**

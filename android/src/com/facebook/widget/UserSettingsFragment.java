@@ -16,6 +16,10 @@
 
 package com.facebook.widget;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -25,13 +29,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.facebook.*;
-import com.facebook.model.GraphUser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import com.adobe.fre.FREContext;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionDefaultAudience;
+import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**

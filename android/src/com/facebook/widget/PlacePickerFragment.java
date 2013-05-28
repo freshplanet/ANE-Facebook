@@ -16,6 +16,13 @@
 
 package com.facebook.widget;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -33,14 +40,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import com.facebook.*;
+
+import com.facebook.FacebookException;
+import com.facebook.LoggingBehavior;
+import com.facebook.Request;
+import com.facebook.Session;
 import com.facebook.android.R;
-import com.facebook.model.GraphPlace;
 import com.facebook.internal.Logger;
 import com.facebook.internal.Utility;
-
-import java.util.*;
-import com.adobe.fre.FREContext;
+import com.facebook.model.GraphPlace;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 public class PlacePickerFragment extends PickerFragment<GraphPlace> {

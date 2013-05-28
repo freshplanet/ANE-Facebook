@@ -16,6 +16,13 @@
 
 package com.facebook.widget;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -31,14 +38,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.animation.AlphaAnimation;
-import android.widget.*;
-import com.facebook.*;
-import com.facebook.android.R;
-import com.facebook.model.GraphObject;
-import com.facebook.internal.SessionTracker;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import java.util.*;
-import com.adobe.fre.FREContext;
+import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.android.R;
+import com.facebook.internal.SessionTracker;
+import com.facebook.model.GraphObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**
