@@ -112,6 +112,8 @@ static AirFacebook *sharedInstance = nil;
                 return nil;
             }
         }
+        
+        [FBSession renewSystemCredentials:NULL];
     
         [session release];
     }
