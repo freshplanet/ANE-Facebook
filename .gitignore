@@ -3,7 +3,8 @@ temp
 build.config
 
 # Flash Builder
-actionscript/bin
+actionscript/default/bin
+actionscript/mobile/bin
 .actionScriptProperties
 .flexLibProperties
 
