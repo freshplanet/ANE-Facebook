@@ -210,7 +210,7 @@ package com.freshplanet.ane.AirFacebook
 		private var _requestCallbacks : Object = {};
 		
 		private function openSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null ) : void
-		{
+		{	
 			_openSessionCallback = callback;
 			_context.call('openSessionWithPermissions', permissions, type);
 		}
