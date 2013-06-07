@@ -81,31 +81,41 @@ static AirFacebook *sharedInstance = nil;
         // Save parameters
         _appID = [appID retain];
         _urlSchemeSuffix = [urlSchemeSuffix retain];
+        [AirFacebook log:@"Initializing with application ID %@ and URL scheme suffix %@", _appID, _urlSchemeSuffix];
         
         // Open session if a token is in cache.
         FBSession *session = nil;
-        @try {
+        @try
+        {
             session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
         }
-        @catch (NSException *exception) {
+        @catch (NSException *exception)
+        {
             [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
-        }
-        @finally {
-            [FBSession setActiveSession:session];
-            if (session.state == FBSessionStateCreatedTokenLoaded)
-            {
-                @try {
-                    [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
-                }
-                @catch (NSException *exception) {
-                    
-                    [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
-                }
-            }
             [session release];
+            return nil;
         }
-    }
     
+        [FBSession setActiveSession:session];
+        if (session.state == FBSessionStateCreatedTokenLoaded)
+        {
+            [AirFacebook log:@"Opening session from cached token"];
+            
+            @try
+            {
+                [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
+            }
+            @catch (NSException *exception)
+            {
+                [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
+                [session release];
+                return nil;
+            }
+        }
+    
+        [session release];
+    }
+
     return self;
 }
 
@@ -246,11 +256,18 @@ static AirFacebook *sharedInstance = nil;
 
 + (void)log:(NSString *)format, ...
 {
-    va_list args;
-    va_start(args, format);
-    NSString *string = [[NSString alloc]initWithFormat:format arguments:args];
-    if (PRINT_LOG) NSLog(@"[AirFacebook] %@", string);
-    [AirFacebook dispatchEvent:@"LOGGING" withMessage:string];
+    @try
+    {
+        va_list args;
+        va_start(args, format);
+        NSString *string = [[NSString alloc] initWithFormat:format arguments:args];
+        if (PRINT_LOG) NSLog(@"[AirFacebook] %@", string);
+        [AirFacebook dispatchEvent:@"LOGGING" withMessage:string];
+    }
+    @catch (NSException *exception)
+    {
+        NSLog(@"[AirFacebook] Couldn't log message. Exception: %@", exception);
+    }
 }
 
 @end
@@ -338,9 +355,6 @@ DEFINE_ANE_FUNCTION(handleOpenURL)
     }
     NSURL *url = [NSURL URLWithString:[NSString stringWithUTF8String:(char*)urlString]];
     
-    // Print a debug log
-    [AirFacebook log:[NSString stringWithFormat:@"Handle open URL: %@", url]];
-    
     // Give the URL to the Facebook session
     FBSession *session = [FBSession activeSession];
     [session handleOpenURL:url];
@@ -406,38 +420,34 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     
     // select the right authentication flow
     FBSessionLoginBehavior loginBehavior;
-    if ([type isEqualToString:@"read"]) {
+    if ([type isEqualToString:@"read"])
+    {
         // system account if no publish permissions
         loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
-    } else {
+    } else
+    {
         // web if publish permissions
         loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
     }
     
     // Start authentication flow
+    FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
     NSString *appID = [[AirFacebook sharedInstance] appID];
     NSString *urlSchemeSuffix = [[AirFacebook sharedInstance] urlSchemeSuffix];
     FBSession *session = nil;
-    @try {
+    @try
+    {
         session = [[FBSession alloc] initWithAppID:appID permissions:permissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
-
-    }
-    @catch (NSException *exception) {
-        [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[exception reason]];
-    }
-    @finally {
         [FBSession setActiveSession:session];
-        FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
-        
-        @try {
-            [session openWithBehavior:loginBehavior completionHandler:completionHandler];
-        }
-        @catch (NSException *exception) {
-            [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[exception reason]];
-        }
-        [session release];
+        [session openWithBehavior:loginBehavior completionHandler:completionHandler];
+    }
+    @catch (NSException *exception)
+    {
+        [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[exception reason]];
+        return nil;
     }
     
+    [session release];
     [permissions release];
     
     return nil;
