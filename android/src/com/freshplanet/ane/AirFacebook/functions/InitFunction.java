@@ -54,8 +54,8 @@ public class InitFunction implements FREFunction
 		// migration from previous SDK's token if any
 		SharedPreferences sdk2SavedSession = context.getSharedPreferences("facebook-session", Context.MODE_PRIVATE);
 		String sdk2Token = sdk2SavedSession.getString("access_token", null) ;
-		if(sdk2Token != null) {
-
+		if(sdk2Token != null)
+		{
 			AirFacebookExtension.log("INFO - InitFunction, SDK 2.0 token detected");
 			
 		    // Clear the token info
@@ -71,26 +71,30 @@ public class InitFunction implements FREFunction
 		    try
 		    {
 			    session.open(accessToken, new Session.StatusCallback() {
+			    	
 					@Override
-					public void call(Session session, SessionState state, Exception exception) {
-						if ( exception != null) {
-							AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error : " + exception.toString() );
-							// reset the session, will direct the user into the login flow again
-							//session = new Session.Builder(arg0.getActivity().getApplicationContext()).setApplicationId(appID).build();
+					public void call(Session session, SessionState state, Exception exception)
+					{
+						if (exception != null)
+						{
+							AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error: " + exception.toString());
 						}
 						else
 						{
 						    Session.setActiveSession(session);
-						    if ( state.equals(SessionState.OPENED_TOKEN_UPDATED) )
+						    if (state.equals(SessionState.OPENED_TOKEN_UPDATED))
 								AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token, the token have been updated");
 							else
 								AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token");
 						}
 					}
-				} ) ;
-		    } catch(UnsupportedOperationException exception)
+					
+				});
+		    }
+		    catch (UnsupportedOperationException exception)
 		    {
-				AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error : " + exception.toString() );
+		    	String error = exception != null ? exception.toString() : "null exception";
+				AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error: " + error );
 		    }
 		    
 		}
@@ -99,10 +103,19 @@ public class InitFunction implements FREFunction
 		
 		AirFacebookExtension.log("INFO - InitFunction, session=" + AirFacebookExtensionContext.session);
 
-		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState())) {
+		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()))
+		{
 			Session.setActiveSession(session);
 			AirFacebookExtension.log("INFO - cachedAccessToken=" + session.getAccessToken());
-			session.openForRead(null);
+			try
+			{
+				session.openForRead(null);
+			}
+			catch (UnsupportedOperationException exception)
+			{
+				String error = exception != null ? exception.toString() : "null exception";
+				AirFacebookExtension.log("ERROR - Couldn't open session from cached token: " + error);
+			}
 		}
 		
 		return null;
