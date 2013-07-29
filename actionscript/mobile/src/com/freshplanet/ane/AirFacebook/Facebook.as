@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright 2012 Freshplanet (http://freshplanet.com | opensource@freshplanet.com)
 //  
@@ -245,8 +245,9 @@ package com.freshplanet.ane.AirFacebook
 			{
 				if (event.arguments != null && event.arguments.length > 0)
 				{
+					// if the invoke event arguments consist in a Referer begining with 'fb'
 					var url:String = event.arguments[0] as String;
-					if (url.indexOf("fb") == 0) // only handle invoke that starts with fb
+					if ( url != null && url.indexOf("fb") == 0)
 					{
 						_context.call("handleOpenURL", url);
 					}
