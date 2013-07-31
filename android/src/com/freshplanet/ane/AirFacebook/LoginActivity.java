@@ -29,6 +29,7 @@ import android.view.Window;
 
 import com.adobe.fre.FREContext;
 import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
@@ -195,11 +196,17 @@ public class LoginActivity extends Activity
         {
     		AirFacebookExtension.log("INFO - SessionStatusCallback, state = " + state);
     		
+    		Boolean isCancel = (exception instanceof FacebookOperationCanceledException);
+    		
 			if (reauthorize)
 			{
 				if (state.equals(SessionState.OPENED_TOKEN_UPDATED))
 				{
 					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_SUCCESS", "OK");
+				}
+				else if (isCancel)
+				{
+					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_CANCEL", "OK");
 				}
 				else
 				{
@@ -213,12 +220,19 @@ public class LoginActivity extends Activity
 				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_SUCCESS", "OK");
 				finish();
             }
-			else if (session.isClosed()) 
-            {
-            	String error = exception != null ? exception.toString() : "null exception";
-				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", error);	
-				finish();
-            }
+			else if (session.isClosed())
+			{
+				if (isCancel)
+				{
+					AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_CANCEL", "OK");
+				}
+				else
+	            {
+	            	String error = exception != null ? exception.toString() : "null exception";
+					AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", error);	
+	            }
+	            finish();
+			}
 			
 			AirFacebookExtension.log("INFO - SessionStatusCallback - ok");
         }
