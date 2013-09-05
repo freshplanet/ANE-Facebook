@@ -4,10 +4,11 @@ Air Native Extension for Facebook (iOS + Android)
 This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
 
 
-Facebook SDK
+Facebook SDK Versions
 ---------
 
-This ANE contains the new Facebook SDK for iOS (3.1). It still uses the old Facebook SDK for Android (the transition to 3.0 is a work in progress). The Actionscript API is based on the new Facebook SDK API.
+* iOS: 3.7.1 (compatible with iOS 5.0 and above)
+* Android: 3.0.1 (compatible with Android 2.2 and above)
 
 
 Installation
@@ -33,6 +34,8 @@ On iOS:
                         </array>
                 </dict>
             </array>
+            <key>FacebookAppID</key>
+            <string>{YOUR_FB_ID}</string>
 
         ]]></InfoAdditions>
 
@@ -58,9 +61,9 @@ On Android:
 
                     ...
                     
+                    <activity android:name="com.facebook.LoginActivity"/>
                     <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
                     <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    <activity android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"></activity>
                     
                 </application>
 
@@ -83,11 +86,8 @@ Should you need to edit the extension source code and/or recompile it, you will 
 
 Documentation
 --------
-Documentation is embbeded in the ane to provide inline asdoc in Flash Builder and other compatible IDEs
 
-You can generate a readable html documentation from the ant build script (see Build Script above):
-
-   ant asdoc
+Actionscript documentation is available in the *docs* folder.
 
 
 Authors
