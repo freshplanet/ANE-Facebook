@@ -16,17 +16,8 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////
 
-#import "FBSession.h"
-#import "FBSessionTokenCachingStrategy.h"
-#import "FBAccessTokenData.h"
-#import "FBRequest.h"
-#import "FBDialogs.h"
-#import "FBWebDialogs.h"
-#import "FBSettings.h"
 #import "FlashRuntimeExtensions.h"
-#import "FBError.h"
-#import "FBSBJSON.h" // used from SDK 3.2 fro portability over ios < 5.0
-#import "NSError+FBError.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
 typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
@@ -38,7 +29,7 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message;
 
-- (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
+- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
 
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
 + (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
