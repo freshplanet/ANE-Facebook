@@ -73,21 +73,32 @@ On Android:
     ```
 
 
-Build script
----------
-
-Should you need to edit the extension source code and/or recompile it, you will find an ant build script (build.xml) in the *build* folder:
-
-    cd /path/to/the/ane/build
-    mv example.build.config build.config
-    #edit the build.config file to provide your machine-specific paths
-    ant
-
-
 Documentation
 --------
 
-Actionscript documentation is available in the *docs* folder.
+Actionscript documentation is available in HTML format in the *docs* folder.
+
+
+Build from source
+---------
+
+Should you need to edit the extension source code and/or recompile it, you will find an ant build script (build.xml) in the *build* folder:
+    
+    ```bash
+    cd /path/to/the/ane
+
+    # Setup Facebook SDK
+    git submodule update --init
+    ios/facebook-ios-sdk/scripts/build_framework.sh
+
+    # Setup build configuration
+    cd build
+    mv example.build.config build.config
+    # Edit build.config file to provide your machine-specific paths
+
+    # Build the ANE
+    ant
+    ```
 
 
 Authors
