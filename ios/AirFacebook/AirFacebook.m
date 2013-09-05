@@ -55,13 +55,6 @@ static AirFacebook *sharedInstance = nil;
     return self;
 }
 
-- (void)dealloc
-{
-    [_appID release];
-    [_urlSchemeSuffix release];
-    [super dealloc];
-}
-
 // every time we have to send back information to the air application, invoque this method wich will dispatch an Event in air
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message
 {
@@ -72,53 +65,42 @@ static AirFacebook *sharedInstance = nil;
     
 }
 
-- (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix
+- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix
 {
-    self = [self init];
+    // Save parameters
+    _appID = appID;
+    _urlSchemeSuffix = urlSchemeSuffix;
+    [AirFacebook log:@"Initializing with application ID %@ and URL scheme suffix %@", _appID, _urlSchemeSuffix];
     
-    if (self)
+    // Open session if a token is in cache.
+    FBSession *session = nil;
+    @try
     {
-        // Save parameters
-        _appID = [appID retain];
-        _urlSchemeSuffix = [urlSchemeSuffix retain];
-        [AirFacebook log:@"Initializing with application ID %@ and URL scheme suffix %@", _appID, _urlSchemeSuffix];
+        session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
+    }
+    @catch (NSException *exception)
+    {
+        [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
+        return;
+    }
+    
+    [FBSession setActiveSession:session];
+    if (session.state == FBSessionStateCreatedTokenLoaded)
+    {
+        [AirFacebook log:@"Opening session from cached token"];
         
-        // Open session if a token is in cache.
-        FBSession *session = nil;
         @try
         {
-            session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
+            [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
         }
         @catch (NSException *exception)
         {
             [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
-            [session release];
-            return nil;
+            return;
         }
-    
-        [FBSession setActiveSession:session];
-        if (session.state == FBSessionStateCreatedTokenLoaded)
-        {
-            [AirFacebook log:@"Opening session from cached token"];
-            
-            @try
-            {
-                [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
-            }
-            @catch (NSException *exception)
-            {
-                [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
-                [session release];
-                return nil;
-            }
-        }
-        
-        [FBSession renewSystemCredentials:NULL];
-    
-        [session release];
     }
-
-    return self;
+    
+    [FBSession renewSystemCredentials:NULL];
 }
 
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler
@@ -186,7 +168,7 @@ static AirFacebook *sharedInstance = nil;
 
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback
 {
-    return [[^(FBRequestConnection *connection, id result, NSError *error) {
+    return [^(FBRequestConnection *connection, id result, NSError *error) {
         if (error)
         {
             
@@ -202,12 +184,13 @@ static AirFacebook *sharedInstance = nil;
                 {
                     NSDictionary* body = [parsedResponseKey objectForKey:@"body"];
                     NSError *jsonError = nil;
-                    NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:body error:&jsonError];
+                    NSData *resultData = [NSJSONSerialization dataWithJSONObject:body options:0 error:&jsonError];
                     if (jsonError)
                     {
                         [AirFacebook log:[NSString stringWithFormat:@"Request error -> JSON error: %@", [jsonError description]]];
                     } else
                     {
+                        NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
                         FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[resultString UTF8String]);
                     }
                 }
@@ -219,25 +202,25 @@ static AirFacebook *sharedInstance = nil;
         }
         else
         {
-            
             NSError *jsonError = nil;
-            NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:result error:&jsonError];
+            NSData *resultData = [NSJSONSerialization dataWithJSONObject:result options:0 error:&jsonError];
             if (jsonError)
             {
                 [AirFacebook log:[NSString stringWithFormat:@"Request JSON error: %@", [jsonError description]]];
             }
             else
             {
+                NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
                 [AirFacebook dispatchEvent:callback withMessage:resultString];
             }
             
         }
-    } copy] autorelease];
+    } copy];
 }
 
 + (FBOSIntegratedShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback
 {
-    return [[^(FBOSIntegratedShareDialogResult result, NSError *error) {
+    return [^(FBOSIntegratedShareDialogResult result, NSError *error) {
         NSString *resultString = nil;
         switch (result)
         {
@@ -253,7 +236,7 @@ static AirFacebook *sharedInstance = nil;
                 break;
         }
         [AirFacebook dispatchEvent:callback withMessage:resultString];
-    } copy] autorelease];
+    } copy];
 }
 
 + (void)log:(NSString *)format, ...
@@ -340,7 +323,7 @@ DEFINE_ANE_FUNCTION(init)
     }
     
     // Initialize Facebook
-    [[AirFacebook sharedInstance] initWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
+    [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
     
     return nil;
 }
@@ -449,9 +432,6 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
         return nil;
     }
     
-    [session release];
-    [permissions release];
-    
     return nil;
 }
 
@@ -489,8 +469,6 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
     @catch (NSException *exception) {
         [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_ERROR" withMessage:[exception reason]];
     }
-    
-    [permissions release];
     
     return nil;
 }
@@ -570,8 +548,6 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
     FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod];
     FBRequestCompletionHandler completionHandler = [AirFacebook requestCompletionHandlerWithCallback:callback];
     [request startWithCompletionHandler:completionHandler];
-    
-    [parameters release];
     
     return nil;
 }
@@ -749,8 +725,6 @@ DEFINE_ANE_FUNCTION(dialog)
 
         }
     }
-    
-    [parameters release];
     
     return nil;
 }
