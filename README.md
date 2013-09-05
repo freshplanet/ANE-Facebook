@@ -19,58 +19,58 @@ The ANE binary (AirFacebook.ane) is located in the *bin* folder. You should add 
 On iOS:
 
 * as explained [here](http://developers.facebook.com/docs/mobile/ios/build/), you will need to add some Info.plist additions in your application descriptor:
+
+```xml
+<iPhone>
     
-    ```xml
-    <iPhone>
-        
-        <InfoAdditions><![CDATA[
+    <InfoAdditions><![CDATA[
 
-            <key>CFBundleURLTypes</key>
-            <array>
-                <dict>
-                    <key>CFBundleURLSchemes</key>
-                        <array>
-                            <string>fb{YOUR_FB_ID}</string>
-                        </array>
-                </dict>
-            </array>
-            <key>FacebookAppID</key>
-            <string>{YOUR_FB_ID}</string>
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>fb{YOUR_FB_ID}</string>
+                    </array>
+            </dict>
+        </array>
+        <key>FacebookAppID</key>
+        <string>{YOUR_FB_ID}</string>
 
-        ]]></InfoAdditions>
+    ]]></InfoAdditions>
 
-    </iPhone>
-    ```
+</iPhone>
+```
 
 On Android:
 
 * you will need to add the following activities and permission in your application descriptor:
 
-    ```xml
-    <android>
-        <manifestAdditions><![CDATA[
-            <manifest android:installLocation="auto">
-                
+```xml
+<android>
+    <manifestAdditions><![CDATA[
+        <manifest android:installLocation="auto">
+            
+            ...
+
+            <uses-permission android:name="android.permission.INTERNET"/>
+            
+            ...
+
+            <application>
+
                 ...
-
-                <uses-permission android:name="android.permission.INTERNET"/>
                 
-                ...
+                <activity android:name="com.facebook.LoginActivity"/>
+                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                
+            </application>
 
-                <application>
-
-                    ...
-                    
-                    <activity android:name="com.facebook.LoginActivity"/>
-                    <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    
-                </application>
-
-            </manifest>
-        ]]></manifestAdditions>
-    </android>
-    ```
+        </manifest>
+    ]]></manifestAdditions>
+</android>
+```
 
 
 Documentation
@@ -84,21 +84,21 @@ Build from source
 
 Should you need to edit the extension source code and/or recompile it, you will find an ant build script (build.xml) in the *build* folder:
     
-    ```bash
-    cd /path/to/the/ane
+```bash
+cd /path/to/the/ane
 
-    # Setup Facebook SDK
-    git submodule update --init
-    ios/facebook-ios-sdk/scripts/build_framework.sh
+# Setup Facebook SDK
+git submodule update --init
+ios/facebook-ios-sdk/scripts/build_framework.sh
 
-    # Setup build configuration
-    cd build
-    mv example.build.config build.config
-    # Edit build.config file to provide your machine-specific paths
+# Setup build configuration
+cd build
+mv example.build.config build.config
+# Edit build.config file to provide your machine-specific paths
 
-    # Build the ANE
-    ant
-    ```
+# Build the ANE
+ant
+```
 
 
 Authors
