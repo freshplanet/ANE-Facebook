@@ -70,7 +70,12 @@ static AirFacebook *sharedInstance = nil;
     // Save parameters
     _appID = appID;
     _urlSchemeSuffix = urlSchemeSuffix;
-    [AirFacebook log:@"Initializing with application ID %@ and URL scheme suffix %@", _appID, _urlSchemeSuffix];
+    NSMutableString *logMessage = [NSMutableString stringWithFormat:@"Initializing with application ID %@", _appID];
+    if (_urlSchemeSuffix)
+    {
+        [logMessage appendFormat:@" and URL scheme suffix %@", _urlSchemeSuffix];
+    }
+    [AirFacebook log:logMessage];
     
     // Open session if a token is in cache.
     FBSession *session = nil;
@@ -126,13 +131,13 @@ static AirFacebook *sharedInstance = nil;
         
         if (status == FBSessionStateOpen)
         {
-            [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", session.permissions]];
+            [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", [session.permissions componentsJoinedByString:@", "]]];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
             
         }
         else if (status == FBSessionStateClosed)
         {
-            [AirFacebook log:@"INFO - Session closed"];
+            [AirFacebook log:@"Session closed"];
         }
     };
 }
@@ -401,7 +406,7 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     }
     
     // Print log
-    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, permissions]];
+    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
     
     // select the right authentication flow
     FBSessionLoginBehavior loginBehavior;
@@ -451,7 +456,7 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
     }
     
     // Print log
-    [AirFacebook log:[NSString stringWithFormat:@"Trying to reauthorize session with %@ permissions: %@", type, permissions]];
+    [AirFacebook log:[NSString stringWithFormat:@"Trying to reauthorize session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
     
     // Start authentication flow
     FBReauthorizeSessionCompletionHandler completionHandler = [AirFacebook reauthorizeSessionCompletionHandler];
