@@ -89,18 +89,24 @@ package com.freshplanet.ane.AirFacebook
 		 */
 		public function init( appID : String, urlSchemeSuffix : String = null ) : void
 		{
+			if (!isSupported) return;
+			
 			_context.call('init', appID, urlSchemeSuffix);
 		}
 		
 		/** True if a Facebook session is open, false otherwise. */
 		public function get isSessionOpen() : Boolean
 		{
+			if (!isSupported) return false;
+			
 			return _context.call('isSessionOpen');
 		}
 		
 		/** The current Facebook access token, or null if no session is open. */
 		public function get accessToken() : String
 		{
+			if (!isSupported) return null;
+			
 			return _context.call('getAccessToken') as String;
 		}
 		
@@ -110,6 +116,8 @@ package com.freshplanet.ane.AirFacebook
 		 */
 		public function get expirationTimestamp() : Number
 		{
+			if (!isSupported) return 0;
+			
 			return _context.call('getExpirationTimestamp') as Number;
 		}
 		
@@ -204,6 +212,8 @@ package com.freshplanet.ane.AirFacebook
 		/** Close the current Facebook session and delete the token from the cache. */
 		public function closeSessionAndClearTokenInformation() : void
 		{
+			if (!isSupported) return;
+			
 			_context.call('closeSessionAndClearTokenInformation');
 		}
 		
@@ -219,6 +229,8 @@ package com.freshplanet.ane.AirFacebook
 		 */
 		public function requestWithGraphPath( graphPath : String, parameters : Object = null, httpMethod : String = "GET", callback : Function = null ) : void
 		{
+			if (!isSupported) return;
+			
 			// Verify the HTTP method
 			if (httpMethod != "GET" && httpMethod != "POST" && httpMethod != "DELETE")
 			{
@@ -261,6 +273,8 @@ package com.freshplanet.ane.AirFacebook
 		 */
 		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
 		{
+			if (!isSupported) return;
+			
 			// Separate parameters keys and values
 			var keys:Array = []; var values:Array = [];
 			for (var key:String in parameters)
@@ -283,6 +297,8 @@ package com.freshplanet.ane.AirFacebook
 		/** Register the appId for install tracking. */
 		public function publishInstall(appId:String):void
 		{
+			if (!isSupported) return;
+			
 			_context.call('publishInstall', appId);
 		}
 		
@@ -303,13 +319,17 @@ package com.freshplanet.ane.AirFacebook
 		private var _requestCallbacks : Object = {};
 		
 		private function openSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null ) : void
-		{	
+		{
+			if (!isSupported) return;
+			
 			_openSessionCallback = callback;
 			_context.call('openSessionWithPermissions', permissions, type);
 		}
 		
 		private function reauthorizeSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null ) : void
 		{
+			if (!isSupported) return;
+			
 			_reauthorizeSessionCallback = callback;
 			_context.call('reauthorizeSessionWithPermissions', permissions, type);
 		}
