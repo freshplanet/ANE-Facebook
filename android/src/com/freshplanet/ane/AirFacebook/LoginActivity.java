@@ -116,7 +116,6 @@ public class LoginActivity extends Activity
 				{
 					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
 						.setPermissions(permissions)
-						.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO)
 						.setCallback(statusCallback));
 				}
 
