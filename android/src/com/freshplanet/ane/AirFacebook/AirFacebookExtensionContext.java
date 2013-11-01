@@ -27,6 +27,7 @@ import android.os.Bundle;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
+import com.facebook.FacebookRequestError;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.freshplanet.ane.AirFacebook.functions.CloseSessionAndClearTokenInformationFunction;
@@ -71,6 +72,12 @@ public class AirFacebookExtensionContext extends FREContext
 	
 	public void init(String appID)
 	{
+		FacebookRequestError.REQUEST_ERROR_PERMISSIONS = getResourceId("string.com_facebook_requesterror_permissions");
+		FacebookRequestError.REQUEST_ERROR_WEB_LOGIN = getResourceId("string.com_facebook_requesterror_web_login");
+		FacebookRequestError.REQUEST_ERROR_RELOGIN = getResourceId("string.com_facebook_requesterror_relogin");
+		FacebookRequestError.REQUEST_ERROR_PASSWORD_CHANGED = getResourceId("string.com_facebook_requesterror_password_changed");
+		FacebookRequestError.REQUEST_ERROR_RECONNECT = getResourceId("string.com_facebook_requesterror_reconnect");
+		
 		_appID = appID;
 		
 		Session session = getSession();
