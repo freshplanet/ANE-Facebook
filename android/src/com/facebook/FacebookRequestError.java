@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.facebook.internal.Utility;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**
  * This class represents an error that occurred during a Facebook request.
@@ -48,6 +47,13 @@ public final class FacebookRequestError {
     public static final int INVALID_HTTP_STATUS_CODE = -1;
 
     private static final int INVALID_MESSAGE_ID = 0;
+    
+    // These variables should be set by AirFacebook on the main thread
+    public static int REQUEST_ERROR_PERMISSIONS = INVALID_MESSAGE_ID;
+    public static int REQUEST_ERROR_WEB_LOGIN = INVALID_MESSAGE_ID;
+    public static int REQUEST_ERROR_RELOGIN = INVALID_MESSAGE_ID;
+    public static int REQUEST_ERROR_PASSWORD_CHANGED = INVALID_MESSAGE_ID;
+    public static int REQUEST_ERROR_RECONNECT = INVALID_MESSAGE_ID;
 
     private static final String CODE_KEY = "code";
     private static final String BODY_KEY = "body";
@@ -142,21 +148,21 @@ public final class FacebookRequestError {
                 errorCategory = Category.THROTTLING;
             } else if (errorCode == EC_PERMISSION_DENIED || EC_RANGE_PERMISSION.contains(errorCode)) {
                 errorCategory = Category.PERMISSION;
-                messageId = AirFacebookExtension.getResourceId("string.com_facebook_requesterror_permissions");
+                messageId = REQUEST_ERROR_PERMISSIONS;
             } else if (errorCode == EC_INVALID_SESSION || errorCode == EC_INVALID_TOKEN) {
                 if (subErrorCode == EC_USER_CHECKPOINTED || subErrorCode == EC_UNCONFIRMED_USER) {
                     errorCategory = Category.AUTHENTICATION_RETRY;
-                    messageId = AirFacebookExtension.getResourceId("string.com_facebook_requesterror_web_login");
+                    messageId = REQUEST_ERROR_WEB_LOGIN;
                     shouldNotify = true;
                 } else {
                     errorCategory = Category.AUTHENTICATION_REOPEN_SESSION;
 
                     if ((subErrorCode == EC_APP_NOT_INSTALLED) || (subErrorCode == EC_EXPIRED)) {
-                        messageId = AirFacebookExtension.getResourceId("string.com_facebook_requesterror_relogin");
+                        messageId = REQUEST_ERROR_RELOGIN;
                     } else if (subErrorCode == EC_PASSWORD_CHANGED) {
-                        messageId = AirFacebookExtension.getResourceId("string.com_facebook_requesterror_password_changed");
+                        messageId = REQUEST_ERROR_PASSWORD_CHANGED;
                     } else {
-                        messageId = AirFacebookExtension.getResourceId("string.com_facebook_requesterror_reconnect");
+                        messageId = REQUEST_ERROR_RECONNECT;
                         shouldNotify = true;
                     }
                 }
