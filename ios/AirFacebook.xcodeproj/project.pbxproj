@@ -10,10 +10,11 @@
 		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
 		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
-		5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */; };
 		FAA4F39417D78A12005A862A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AAA25371704F1C400ECB60C /* UIKit.framework */; };
 		FAA4F39517D78A17005A862A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AAA253A1704F1C400ECB60C /* CoreGraphics.framework */; };
 		FAA4F39B17D8E000005A862A /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAA4F39A17D8E000005A862A /* FacebookSDK.framework */; };
+		FAD87E6B1822EC3200A4D717 /* FPANEUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = FAD87E691822EC3200A4D717 /* FPANEUtils.h */; };
+		FAD87E6C1822EC3200A4D717 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD87E6A1822EC3200A4D717 /* FPANEUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,8 +26,9 @@
 		5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirFacebook-Prefix.pch"; sourceTree = "<group>"; };
 		5A9856A015213BC3003A8EB0 /* AirFacebook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirFacebook.h; sourceTree = "<group>"; };
 		5A9856A115213BC3003A8EB0 /* AirFacebook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirFacebook.m; sourceTree = "<group>"; };
-		5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = "/Applications/Adobe Flash Builder 4.6/sdks/4.6.0/include/FlashRuntimeExtensions.h"; sourceTree = "<absolute>"; };
 		FAA4F39A17D8E000005A862A /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = "facebook-ios-sdk/build/FacebookSDK.framework"; sourceTree = "<group>"; };
+		FAD87E691822EC3200A4D717 /* FPANEUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPANEUtils.h; sourceTree = "<group>"; };
+		FAD87E6A1822EC3200A4D717 /* FPANEUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPANEUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,9 +87,10 @@
 		5A98569E15213BC3003A8EB0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */,
 				5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */,
-				5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */,
+				4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */,
+				FAD87E691822EC3200A4D717 /* FPANEUtils.h */,
+				FAD87E6A1822EC3200A4D717 /* FPANEUtils.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -99,8 +102,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */,
 				4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */,
+				FAD87E6B1822EC3200A4D717 /* FPANEUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD87E6C1822EC3200A4D717 /* FPANEUtils.m in Sources */,
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

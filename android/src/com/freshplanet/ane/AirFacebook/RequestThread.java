@@ -20,69 +20,74 @@ package com.freshplanet.ane.AirFacebook;
 
 import android.os.Bundle;
 
-import com.adobe.fre.FREContext;
+import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
-import com.facebook.HttpMethod;
+import com.facebook.Session;
 
 public class RequestThread extends Thread
 {
-	private FREContext context;
+	private AirFacebookExtensionContext _context;
 	
-	private String graphPath;
-	private Bundle parameters;
-	private String httpMethod;
-	private String callback;
+	private String _graphPath;
+	private Bundle _parameters;
+	private String _httpMethod;
+	private String _callback;
 	
-	public RequestThread(FREContext context, String graphPath, Bundle parameters, String httpMethod, String callback)
+	public RequestThread(AirFacebookExtensionContext context, String graphPath, Bundle parameters, String httpMethod, String callback)
 	{
-		this.context = context;
-		this.graphPath = graphPath;
-		this.parameters = parameters;
-		this.httpMethod = httpMethod;
-		this.callback = callback;
+		_context = context;
+		_graphPath = graphPath;
+		_parameters = parameters;
+		_httpMethod = httpMethod;
+		_callback = callback;
 	}
 	
     @Override
     public void run()
     {
-    	// Perform Facebook request
-		String data = null;
-		AirFacebookExtension.log("INFO - RequestThread.run");
-
+    	Session session = _context.getSession();
+    	
+    	String data = null;
+		String error = null;
 		try
 		{
 			Request request;
-			if (parameters != null)	{
-				request = new Request(AirFacebookExtensionContext.session, graphPath, parameters, HttpMethod.valueOf(httpMethod));
+			if (_parameters != null)
+			{
+				request = new Request(session, _graphPath, _parameters, HttpMethod.valueOf(_httpMethod));
 			}
-			else {
-				request = new Request(AirFacebookExtensionContext.session, graphPath);
+			else
+			{
+				request = new Request(session, _graphPath);
 			}
+			
 			Response response = request.executeAndWait();
-			if (response.getGraphObject() != null) {
+			if (response.getGraphObject() != null)
+			{
 				data = response.getGraphObject().getInnerJSONObject().toString();
-			} else if (response.getGraphObjectList() != null) {
+			}
+			else if (response.getGraphObjectList() != null)
+			{
 				data = response.getGraphObjectList().getInnerJSONArray().toString();
-			} else if (response.getError() != null) {
+			}
+			else if (response.getError() != null)
+			{
 				data = response.getError().getRequestResult().toString();
 			}
-			AirFacebookExtension.log("INFO - RequestThread.run, data = " + data);
-
 		}
 		catch (Exception e)
 		{
-			AirFacebookExtension.log("ERROR - RequestThread.run, " + e.getMessage());
-			
-			String error = e.getMessage() != null ? e.getMessage() :  "";
-			context.dispatchStatusEventAsync(callback, error);
+			error = e.getMessage();
 		}
 		
-		// Trigger callback if necessary
-		if (data != null && callback != null)
+		String result = "";
+		if (error != null) result = error;
+		else if (data != null) result = data;
+		
+		if (_callback != null)
 		{
-			AirFacebookExtension.log("INFO - RequestThread.run, calling callback with data " + data);
-			context.dispatchStatusEventAsync(callback, data);
+			_context.dispatchStatusEventAsync(_callback, result);
 		}
     }	
 }

@@ -124,64 +124,43 @@ package com.freshplanet.ane.AirFacebook
 		/**
 		 * Open a new session with a given set of read permissions.<br><br>
 		 * 
-		 * On iOS 6, this method triggers the native authentication flow.
-		 * 
 		 * @param permissions An array of requested <strong>read</strong> permissions.
-		 * If this array contains a publish permissions, the login will fail on iOS.
 		 * @param callback (Optional) A callback function of the following form:
 		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
+		 * @param systemFlow Boolean indicating if the native system flow should be used instead of
+		 * fast-app switching on iOS 6 and above. Default: <code>true</code>.
 		 * 
 		 * @see #openSessionWithPublishPermissions()
-		 * @see #openSessionWithPermissions()
+		 * @see #reauthorizeSessionWithReadPermissions()
+		 * @see #reauthorizeSessionWithPublishPermissions()
 		 */
-		public function openSessionWithReadPermissions( permissions : Array, callback : Function = null ) : void
+		public function openSessionWithReadPermissions( permissions : Array, callback : Function = null, systemFlow:Boolean = true ) : void
 		{
-			openSessionWithPermissionsOfType(permissions, "read", callback);
+			openSessionWithPermissionsOfType(permissions, "read", callback, systemFlow);
 		}
 		
 		/**
 		 * Open a new session with a given set of publish permissions.<br><br>
 		 * 
-		 * On iOS 6, this method triggers the native authentication flow.
-		 * 
 		 * @param permissions An array of requested <strong>publish</strong> permissions.
-		 * If this array contains a read permissions, the login will fail on iOS.
 		 * @param callback (Optional) A callback function of the following form:
 		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
+		 * @param systemFlow Boolean indicating if the native system flow should be used instead of
+		 * fast-app switching on iOS 6 and above. Default: <code>true</code>.
 		 * 
 		 * @see #openSessionWithReadPermissions()
-		 * @see #openSessionWithPermissions()
+		 * @see #reauthorizeSessionWithReadPermissions()
+		 * @see #reauthorizeSessionWithPublishPermissions()
 		 */
-		public function openSessionWithPublishPermissions( permissions : Array, callback : Function = null ) : void
+		public function openSessionWithPublishPermissions( permissions : Array, callback : Function = null, systemFlow:Boolean = true ) : void
 		{
-			openSessionWithPermissionsOfType(permissions, "publish", callback);
-		}
-		
-		/**
-		 * Open a new session with a given set of permissions.<br><br>
-		 * 
-		 * On iOS, this method uses the old app-switching or web-based authentication
-		 * flow (even on iOS 6).
-		 * 
-		 * @param permissions An array of requested permissions.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
-		 * 
-		 * @see #openSessionWithReadPermissions()
-		 * @see #openSessionWithPublishPermissions()
-		 */
-		public function openSessionWithPermissions( permissions : Array, callback : Function = null ) : void
-		{
-			openSessionWithPermissionsOfType(permissions, "readAndPublish", callback);
+			openSessionWithPermissionsOfType(permissions, "publish", callback, systemFlow);
 		}
 		
 		/**
 		 * Reauthorize the current session with a given set of read permissions.<br><br>
 		 * 
-		 * On iOS 6, this method triggers the native authentication flow.
-		 * 
 		 * @param permissions An array of requested <strong>read</strong> permissions.
-		 * If this array contains a publish permissions, the app will crash on iOS.
 		 * @param callback (Optional) A callback function of the following form:
 		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
 		 * 
@@ -195,10 +174,7 @@ package com.freshplanet.ane.AirFacebook
 		/**
 		 * Reauthorize the current session with a given set of publish permissions.<br><br>
 		 * 
-		 * On iOS 6, this method triggers the native authentication flow.
-		 * 
 		 * @param permissions An array of requested <strong>publish</strong> permissions.
-		 * If this array contains a read permissions, the app will crash on iOS.
 		 * @param callback (Optional) A callback function of the following form:
 		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
 		 * 
@@ -318,17 +294,23 @@ package com.freshplanet.ane.AirFacebook
 		private var _reauthorizeSessionCallback : Function;
 		private var _requestCallbacks : Object = {};
 		
-		private function openSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null ) : void
+		private function openSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null, systemFlow : Boolean = true ) : void
 		{
 			if (!isSupported) return;
 			
 			_openSessionCallback = callback;
-			_context.call('openSessionWithPermissions', permissions, type);
+			_context.call('openSessionWithPermissions', permissions, type, systemFlow);
 		}
 		
 		private function reauthorizeSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null ) : void
 		{
 			if (!isSupported) return;
+			
+			if (!isSessionOpen)
+			{
+				callback(false, false, "No opened session");
+				return;
+			}
 			
 			_reauthorizeSessionCallback = callback;
 			_context.call('reauthorizeSessionWithPermissions', permissions, type);
