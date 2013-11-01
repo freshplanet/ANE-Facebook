@@ -19,6 +19,7 @@ package com.facebook;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
@@ -39,6 +40,7 @@ import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 public class LoginActivity extends Activity {
     static final String RESULT_KEY = "com.facebook.LoginActivity:Result";
 
+    private static final String TAG = LoginActivity.class.getName();
     private static final String NULL_CALLING_PKG_ERROR_MSG =
             "Cannot call LoginActivity with a null calling package. " +
                     "This can occur if the launchMode of the caller is singleInstance.";
@@ -53,7 +55,7 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(AirFacebookExtension.context.getResourceId("layout.com_facebook_login_activity_layout"));
+        setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
 
         if (savedInstanceState != null) {
             callingPackage = savedInstanceState.getString(SAVED_CALLING_PKG_KEY);
@@ -74,12 +76,12 @@ public class LoginActivity extends Activity {
         authorizationClient.setBackgroundProcessingListener(new AuthorizationClient.BackgroundProcessingListener() {
             @Override
             public void onBackgroundProcessingStarted() {
-                findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.VISIBLE);
+                findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onBackgroundProcessingStopped() {
-                findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
+                findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
             }
         });
     }
@@ -106,9 +108,11 @@ public class LoginActivity extends Activity {
 
         // If the calling package is null, this generally means that the callee was started
         // with a launchMode of singleInstance. Unfortunately, Android does not allow a result
-        // to be set when the callee is a singleInstance, so we throw an exception here.
+        // to be set when the callee is a singleInstance, so we log an error and return.
         if (callingPackage == null) {
-            throw new FacebookException(NULL_CALLING_PKG_ERROR_MSG);
+            Log.e(TAG, NULL_CALLING_PKG_ERROR_MSG);
+            finish();
+            return;
         }
 
         authorizationClient.startOrContinueAuth(request);
@@ -119,7 +123,7 @@ public class LoginActivity extends Activity {
         super.onPause();
 
         authorizationClient.cancelCurrentHandler();
-        findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
+        findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
     }
 
     @Override

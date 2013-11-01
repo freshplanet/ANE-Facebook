@@ -59,7 +59,7 @@ public class LoginActivity extends Activity
 		
 		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(_context.getResourceId("layout.fb_main"));
+		setContentView(_context.getResourceId("layout.com_facebook_login_activity_layout"));
 		
 		// Get extra values
 		Bundle extras = this.getIntent().getExtras();
