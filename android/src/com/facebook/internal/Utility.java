@@ -16,6 +16,31 @@
 
 package com.facebook.internal;
 
+import java.io.BufferedInputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -26,20 +51,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import com.facebook.*;
+
+import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Session;
 import com.facebook.android.BuildConfig;
 import com.facebook.model.GraphObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
 
 /**
  * com.facebook.internal is solely for the use of other packages within the Facebook SDK for Android. Use of
@@ -51,14 +68,36 @@ public final class Utility {
     private static final String HASH_ALGORITHM_MD5 = "MD5";
     private static final String URL_SCHEME = "https";
     private static final String SUPPORTS_ATTRIBUTION = "supports_attribution";
+    private static final String SUPPORTS_IMPLICIT_SDK_LOGGING = "supports_implicit_sdk_logging";
+    private static final String [] APP_SETTING_FIELDS = new String[] {
+            SUPPORTS_ATTRIBUTION,
+            SUPPORTS_IMPLICIT_SDK_LOGGING
+    };
     private static final String APPLICATION_FIELDS = "fields";
 
     // This is the default used by the buffer streams, but they trace a warning if you do not specify.
     public static final int DEFAULT_STREAM_BUFFER_SIZE = 8192;
 
-    private static final Object LOCK = new Object();
-    private static volatile boolean attributionAllowedForLastAppChecked = false;
-    private static volatile String lastAppCheckedForAttributionStatus = "";
+    private static Map<String, FetchedAppSettings> fetchedAppSettings =
+            new ConcurrentHashMap<String, FetchedAppSettings>();
+
+    public static class FetchedAppSettings {
+        private boolean supportsAttribution;
+        private boolean supportsImplicitLogging;
+
+        private FetchedAppSettings(boolean supportsAttribution, boolean supportsImplicitLogging) {
+            this.supportsAttribution = supportsAttribution;
+            this.supportsImplicitLogging = supportsImplicitLogging;
+        }
+
+        public boolean supportsAttribution() {
+            return supportsAttribution;
+        }
+
+        public boolean supportsImplicitLogging() {
+            return supportsImplicitLogging;
+        }
+    }
 
     // Returns true iff all items in subset are in superset, treating null and
     // empty collections as
@@ -158,6 +197,8 @@ public final class Utility {
     }
 
     public static String getMetadataApplicationId(Context context) {
+        Validate.notNull(context, "context");
+
         try {
             ApplicationInfo ai = context.getPackageManager().getApplicationInfo(
                     context.getPackageName(), PackageManager.GET_META_DATA);
@@ -300,36 +341,72 @@ public final class Utility {
         }
     }
 
-    public static boolean queryAppAttributionSupportAndWait(final String applicationId) {
-
-        synchronized (LOCK) {
-
-            // Cache the last app checked results.
-            if (applicationId.equals(lastAppCheckedForAttributionStatus)) {
-                return attributionAllowedForLastAppChecked;
-            }
-
-            Bundle supportsAttributionParams = new Bundle();
-            supportsAttributionParams.putString(APPLICATION_FIELDS, SUPPORTS_ATTRIBUTION);
-            Request pingRequest = Request.newGraphPathRequest(null, applicationId, null);
-            pingRequest.setParameters(supportsAttributionParams);
-
-            GraphObject supportResponse = pingRequest.executeAndWait().getGraphObject();
-
-            Object doesSupportAttribution = false;
-            if (supportResponse != null) {
-                doesSupportAttribution = supportResponse.getProperty(SUPPORTS_ATTRIBUTION);
-            }
-
-            if (!(doesSupportAttribution instanceof Boolean)) {
-                // Should never happen, but be safe in case server returns non-Boolean
-                doesSupportAttribution = false;
-            }
-
-            lastAppCheckedForAttributionStatus = applicationId;
-            attributionAllowedForLastAppChecked = ((Boolean)doesSupportAttribution == true);
-            return attributionAllowedForLastAppChecked;
+    public static <T> boolean areObjectsEqual(T a, T b) {
+        if (a == null) {
+            return b == null;
         }
+        return a.equals(b);
     }
 
+    // Note that this method makes a synchronous Graph API call, so should not be called from the main thread.
+    public static FetchedAppSettings queryAppSettings(final String applicationId, final boolean forceRequery) {
+
+        // Cache the last app checked results.
+        if (!forceRequery && fetchedAppSettings.containsKey(applicationId)) {
+            return fetchedAppSettings.get(applicationId);
+        }
+
+        Bundle appSettingsParams = new Bundle();
+        appSettingsParams.putString(APPLICATION_FIELDS, TextUtils.join(",", APP_SETTING_FIELDS));
+
+        Request request = Request.newGraphPathRequest(null, applicationId, null);
+        request.setParameters(appSettingsParams);
+
+        GraphObject supportResponse = request.executeAndWait().getGraphObject();
+        FetchedAppSettings result = new FetchedAppSettings(
+                safeGetBooleanFromResponse(supportResponse, SUPPORTS_ATTRIBUTION),
+                safeGetBooleanFromResponse(supportResponse, SUPPORTS_IMPLICIT_SDK_LOGGING));
+
+        fetchedAppSettings.put(applicationId, result);
+
+        return result;
+    }
+
+    private static boolean safeGetBooleanFromResponse(GraphObject response, String propertyName) {
+        Object result = false;
+        if (response != null) {
+            result = response.getProperty(propertyName);
+        }
+        if (!(result instanceof Boolean)) {
+            result = false;
+        }
+        return (Boolean) result;
+    }
+
+    public static void clearCaches(Context context) {
+        ImageDownloader.clearCache(context);
+    }
+
+    public static void deleteDirectory(File directoryOrFile) {
+        if (!directoryOrFile.exists()) {
+            return;
+        }
+
+        if (directoryOrFile.isDirectory()) {
+            for (File child : directoryOrFile.listFiles()) {
+                deleteDirectory(child);
+            }
+        }
+        directoryOrFile.delete();
+    }
+
+    public static <T> List<T> asListNoNulls(T... array) {
+        ArrayList<T> result = new ArrayList<T>();
+        for (T t : array) {
+            if (t != null) {
+                result.add(t);
+            }
+        }
+        return result;
+    }
 }
