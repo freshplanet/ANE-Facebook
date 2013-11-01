@@ -28,7 +28,7 @@ public class AirFacebookExtension implements FREExtension
 	public static String TAG = "AirFacebook";
 	private static Boolean PRINT_LOG = true;
 	
-	public static FREContext context;
+	public static AirFacebookExtensionContext context;
 
 	public FREContext createContext(String extId)
 	{

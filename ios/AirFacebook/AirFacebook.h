@@ -18,6 +18,7 @@
 
 #import "FlashRuntimeExtensions.h"
 #import <FacebookSDK/FacebookSDK.h>
+#import "FPANEUtils.h"
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
 typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);

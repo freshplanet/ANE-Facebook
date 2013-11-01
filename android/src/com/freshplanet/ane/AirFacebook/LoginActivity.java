@@ -20,6 +20,7 @@ package com.freshplanet.ane.AirFacebook;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,111 +28,96 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
 
-import com.adobe.fre.FREContext;
-import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
-import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
 
 public class LoginActivity extends Activity
 {	
-	private Session.StatusCallback statusCallback = new SessionStatusCallback();
-	private boolean reauthorize = false;
+	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.LoginActivity";
+	
+	private Session.StatusCallback _statusCallback = new SessionStatusCallback();
+	
+	private AirFacebookExtensionContext _context = null;
+	
+	private List<String> _permissions = null;
+	private boolean _reauthorize = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-
-		AirFacebookExtension.log("INFO - LoginActivity.onCreate");
-
 		super.onCreate(savedInstanceState);
 		
-		// Get context
-		FREContext context = AirFacebookExtension.context;
-		if (context == null)
+		// Retrieve context
+		_context = AirFacebookExtension.context;
+		if (_context == null)
 		{
+			AirFacebookExtension.log("Extension context is null");
 			finish();
 			return;
 		}
 		
 		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(context.getResourceId("layout.fb_main"));
+		setContentView(_context.getResourceId("layout.fb_main"));
 		
 		// Get extra values
 		Bundle extras = this.getIntent().getExtras();
-		ArrayList<String> permissions = new ArrayList<String>(Arrays.asList(extras.getStringArray("permissions")));
-		String type = extras.getString("type");
-
-		reauthorize = extras.getBoolean("reauthorize", false);
+		_permissions = new ArrayList<String>(Arrays.asList(extras.getStringArray(extraPrefix+".permissions")));
+		String type = extras.getString(extraPrefix+".type");
+		_reauthorize = extras.getBoolean(extraPrefix+".reauthorize", false);
 		
-		AirFacebookExtension.log("INFO - LoginActivity.onCreate, session.isClosed " + AirFacebookExtensionContext.session.isClosed() + ", state " + AirFacebookExtensionContext.session.getState());
-		
-		// Authorize Facebook session if necessary
-		if (reauthorize)
+		// Open or reauthorize session if necessary
+		Session session = _context.getSession();
+		if (_reauthorize && !session.getPermissions().containsAll(_permissions))
 		{
+			Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, _permissions).setCallback(_statusCallback);
 			try
 			{
 				if ("read".equals(type))
 				{
-					AirFacebookExtensionContext.session.requestNewReadPermissions(
-						new Session.NewPermissionsRequest(this, permissions)
-							.setCallback(statusCallback));
+					session.requestNewReadPermissions(newPermissionsRequest);
 				}
 				else
 				{
-					AirFacebookExtensionContext.session.requestNewPublishPermissions(
-						new Session.NewPermissionsRequest(this, permissions)
-							.setCallback(statusCallback));
+					session.requestNewPublishPermissions(newPermissionsRequest);
 				}
-
 			}
-			catch (FacebookException exception)
+			catch (Exception e)
 			{
-				AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", exception != null ? exception.toString() : "null exception");
-			}
-			catch (UnsupportedOperationException exception)
-			{
-				AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", exception != null ? exception.toString() : "null exception");
+				finishLogin(e);
+				return;
 			}
 		}
-		else if (!AirFacebookExtensionContext.session.isOpened())
+		else if (!session.isOpened())
 		{
+			if (!session.getState().equals(SessionState.CREATED) && !session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
+			{
+				_context.closeSessionAndClearTokenInformation();
+				session = _context.getSession();
+			}
+			
+			Session.OpenRequest openRequest = new Session.OpenRequest(this).setPermissions(_permissions).setCallback(_statusCallback);
 			try
 			{
 				if ("read".equals(type))
 				{
-					AirFacebookExtensionContext.session.openForRead(new Session.OpenRequest(this)
-						.setPermissions(permissions)
-						.setCallback(statusCallback));
-				}
-				else if ("publish".equals(type))
-				{
-					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
-						.setPermissions(permissions)
-						.setCallback(statusCallback));
+					session.openForRead(openRequest);
 				}
 				else
 				{
-					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
-						.setPermissions(permissions)
-						.setCallback(statusCallback));
+					session.openForPublish(openRequest);
 				}
-
 			}
-			catch (FacebookException exception)
+			catch (Exception e)
 			{
-				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", exception != null ? exception.toString() : "null exception");
-			}
-			catch (UnsupportedOperationException exception)
-			{
-				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", exception != null ? exception.toString() : "null exception");
+				finishLogin(e);
+				return;
 			}
 		}
 		else
 		{
-			finish();
+			finishLogin();
 		}
 	}
 
@@ -139,30 +125,34 @@ public class LoginActivity extends Activity
     public void onStart()
 	{
         super.onStart();
-        AirFacebookExtensionContext.session.addCallback(statusCallback);
+        
+        if (_context != null)
+        {
+        	_context.getSession().addCallback(_statusCallback);
+        }
     }
 
     @Override
     public void onStop()
     {
         super.onStop();
-        AirFacebookExtensionContext.session.removeCallback(statusCallback);
+        
+        if (_context != null)
+        {
+        	_context.getSession().removeCallback(_statusCallback);
+        }
     }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
         super.onActivityResult(requestCode, resultCode, data);
-        AirFacebookExtensionContext.session.onActivityResult(this, requestCode, resultCode, data);
+        
+        if (_context != null)
+        {
+        	_context.getSession().onActivityResult(this, requestCode, resultCode, data);
+        }
 	}
-	
-    @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        Session session = AirFacebookExtensionContext.session;
-        Session.saveSession(session, outState);
-    }
 
     @Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
@@ -178,14 +168,7 @@ public class LoginActivity extends Activity
 	@Override
 	public void onBackPressed()
 	{
-		onCancel();
-	}
-
-	public void onCancel()
-	{
-		String event = reauthorize ? "REAUTHORIZE_SESSION_CANCEL" : "OPEN_SESSION_CANCEL";
-		AirFacebookExtension.context.dispatchStatusEventAsync(event, "OK");
-		finish();
+		finishLogin(new FacebookOperationCanceledException());
 	}
 
 	private class SessionStatusCallback implements Session.StatusCallback
@@ -193,47 +176,83 @@ public class LoginActivity extends Activity
         @Override
         public void call(Session session, SessionState state, Exception exception)
         {
-    		AirFacebookExtension.log("INFO - SessionStatusCallback, state = " + state);
-    		
-    		Boolean isCancel = (exception instanceof FacebookOperationCanceledException);
-    		
-			if (reauthorize)
-			{
-				if (state.equals(SessionState.OPENED_TOKEN_UPDATED))
-				{
-					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_SUCCESS", "OK");
-				}
-				else if (isCancel)
-				{
-					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_CANCEL", "OK");
-				}
-				else
-				{
-					String error = exception != null ? exception.toString() : "null exception";
-					AirFacebookExtension.context.dispatchStatusEventAsync("REAUTHORIZE_SESSION_ERROR", error);
-				}
-				finish();
-			}
-			else if (session.isOpened()) 
-			{
-				AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_SUCCESS", "OK");
-				finish();
-            }
-			else if (session.isClosed())
-			{
-				if (isCancel)
-				{
-					AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_CANCEL", "OK");
-				}
-				else
-	            {
-	            	String error = exception != null ? exception.toString() : "null exception";
-					AirFacebookExtension.context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", error);	
-	            }
-	            finish();
-			}
-			
-			AirFacebookExtension.log("INFO - SessionStatusCallback - ok");
+        	if (_reauthorize || session.isOpened() || exception != null)
+        	{
+        		finishLogin(exception);
+        	}
         }
     }
+	
+	private void finishLogin(Exception exception)
+	{
+		if (exception != null)
+		{
+			exception.printStackTrace();
+		}
+		
+		if (_context == null)
+    	{
+    		AirFacebookExtension.log("Extension context is null");
+			finish();
+			return;
+    	}
+		
+		Session session = _context.getSession();
+		Boolean isCancel = (exception instanceof FacebookOperationCanceledException);
+		
+		String eventName = null;
+		if (_reauthorize)
+		{
+			if (session.getPermissions().containsAll(_permissions))
+			{
+				eventName = "REAUTHORIZE_SESSION_SUCCESS";
+			}
+			else if (exception != null && !isCancel)
+			{
+				eventName = "REAUTHORIZE_SESSION_ERROR";
+			}
+			else
+			{
+				eventName = "REAUTHORIZE_SESSION_CANCEL";
+			}
+		}
+		else
+		{
+			if (session.isOpened())
+			{
+				eventName = "OPEN_SESSION_SUCCESS";
+			}
+			else if (isCancel)
+			{
+				eventName = "OPEN_SESSION_CANCEL";
+			}
+			else if (exception != null)
+			{
+				eventName = "OPEN_SESSION_ERROR";
+			}
+		}
+		
+		String eventInfo = "OK";
+		if (exception != null)
+		{
+			exception.printStackTrace();
+			
+			if (exception.getMessage() != null)
+			{
+				eventInfo = exception.getMessage();
+			}
+		}
+		
+		if (eventName != null && eventInfo != null)
+		{
+			_context.dispatchStatusEventAsync(eventName, eventInfo);
+		}
+		
+		finish();
+	}
+	
+	private void finishLogin()
+	{
+		finishLogin(null);
+	}
 }

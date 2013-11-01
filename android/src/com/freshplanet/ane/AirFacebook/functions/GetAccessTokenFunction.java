@@ -19,25 +19,25 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
+import com.facebook.Session;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
-public class GetAccessTokenFunction implements FREFunction
+public class GetAccessTokenFunction extends BaseFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
-		AirFacebookExtension.log("INFO - GetAccessTokenFunction");
+		super.call(context, args);
+		
+		Session session = AirFacebookExtension.context.getSession();
 		try
 		{
-			return FREObject.newObject(AirFacebookExtensionContext.session.getAccessToken());
+			return FREObject.newObject(session.getAccessToken());
 		}
 		catch (Exception e)
 		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
-
 }

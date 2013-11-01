@@ -18,105 +18,21 @@
 
 package com.freshplanet.ane.AirFacebook.functions;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.facebook.AccessToken;
-import com.facebook.Session;
-import com.facebook.SessionState;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
-public class InitFunction implements FREFunction
+public class InitFunction extends BaseFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
-		// Retrieve application ID
-		String appID = null;
-		try
-		{
-			appID = arg1[0].getAsString();
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		super.call(context, args);
 		
-		AirFacebookExtension.log("INFO - InitFunction, appID=" + appID);
+		String appID = getStringFromFREObject(args[0]);
 		
-		Context context = arg0.getActivity().getApplicationContext() ;
+		AirFacebookExtension.log("Initializing with application ID " + appID);
 		
-		Session session = new Session.Builder(context).setApplicationId(appID).build();
-		
-		// migration from previous SDK's token if any
-		SharedPreferences sdk2SavedSession = context.getSharedPreferences("facebook-session", Context.MODE_PRIVATE);
-		String sdk2Token = sdk2SavedSession.getString("access_token", null) ;
-		if(sdk2Token != null)
-		{
-			AirFacebookExtension.log("INFO - InitFunction, SDK 2.0 token detected");
-			
-		    // Clear the token info
-		    SharedPreferences.Editor editor = sdk2SavedSession.edit();
-		    editor.putString("access_token", null);
-		    editor.commit();    
-		    // Create an AccessToken object for importing
-		    // just pass in the access token and take the
-		    // defaults on other values
-		    AccessToken accessToken = AccessToken.createFromExistingAccessToken(sdk2Token, null, null, null, null);
-		    
-		    // statusCallback: Session.StatusCallback implementation
-		    try
-		    {
-			    session.open(accessToken, new Session.StatusCallback() {
-			    	
-					@Override
-					public void call(Session session, SessionState state, Exception exception)
-					{
-						if (exception != null)
-						{
-							AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error: " + exception.toString());
-						}
-						else
-						{
-						    Session.setActiveSession(session);
-						    if (state.equals(SessionState.OPENED_TOKEN_UPDATED))
-								AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token, the token have been updated");
-							else
-								AirFacebookExtension.log("INFO - InitFunction, Session opened from migrated token");
-						}
-					}
-					
-				});
-		    }
-		    catch (UnsupportedOperationException exception)
-		    {
-		    	String error = exception != null ? exception.toString() : "null exception";
-				AirFacebookExtension.log("INFO - InitFunction, Session migration failed with error: " + error );
-		    }
-		    
-		}
-
-		AirFacebookExtensionContext.session = session;
-		
-		AirFacebookExtension.log("INFO - InitFunction, session=" + AirFacebookExtensionContext.session);
-
-		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()))
-		{
-			Session.setActiveSession(session);
-			AirFacebookExtension.log("INFO - cachedAccessToken=" + session.getAccessToken());
-			try
-			{
-				session.openForRead(null);
-			}
-			catch (UnsupportedOperationException exception)
-			{
-				String error = exception != null ? exception.toString() : "null exception";
-				AirFacebookExtension.log("ERROR - Couldn't open session from cached token: " + error);
-			}
-		}
+		AirFacebookExtension.context.init(appID);
 		
 		return null;
 	}

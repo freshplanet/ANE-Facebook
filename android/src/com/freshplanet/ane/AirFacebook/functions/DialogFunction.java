@@ -18,70 +18,24 @@
 
 package com.freshplanet.ane.AirFacebook.functions;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.DialogActivity;
 
-public class DialogFunction implements FREFunction
+public class DialogFunction extends BaseFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
-		// Retrieve method
-		String method = null;
-		try
-		{
-			method = arg1[0].getAsString();
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		super.call(context, args);
 		
-		// Retrieve the parameters
-		Bundle parameters = new Bundle();
-		FREArray keysArray = (FREArray)arg1[1];
-		FREArray valuesArray = (FREArray)arg1[2];
-		long arrayLength;
-		try
-		{
-			arrayLength = keysArray.getLength();
-			String key;
-			String value;
-			for (int i = 0; i < arrayLength; i++)
-			{
-				key =  keysArray.getObjectAt((long)i).getAsString();
-				value = valuesArray.getObjectAt((long)i).getAsString();
-				parameters.putString(key, value);
-			}
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		String method = getStringFromFREObject(args[0]);
+		Bundle parameters = getBundleOfStringFromFREArrays((FREArray)args[1], (FREArray)args[2]);
+		String callback = getStringFromFREObject(args[3]);
 		
-		// Retrieve callback
-		String callback = null;
-		try
-		{
-			callback = arg1[3].getAsString();
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
-		
-		// Start dialog activity
-		Intent i = new Intent(arg0.getActivity().getApplicationContext(), DialogActivity.class);
-		i.putExtra(DialogActivity.extraPrefix+".method", method);
-		i.putExtra(DialogActivity.extraPrefix+".parameters", parameters);
-		i.putExtra(DialogActivity.extraPrefix+".callback", callback);
-		arg0.getActivity().startActivity(i);
+		AirFacebookExtension.context.launchDialogActivity(method, parameters, callback);
 		
 		return null;
 	}

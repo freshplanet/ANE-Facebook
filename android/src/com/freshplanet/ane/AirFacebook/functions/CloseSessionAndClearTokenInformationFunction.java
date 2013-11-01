@@ -19,17 +19,17 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
-public class CloseSessionAndClearTokenInformationFunction implements FREFunction
+public class CloseSessionAndClearTokenInformationFunction extends BaseFunction
 {	
-	public FREObject call(FREContext arg0, FREObject[] arg1)
-	{	
-		if(!AirFacebookExtensionContext.session.isClosed()) {
-			AirFacebookExtensionContext.session.closeAndClearTokenInformation();
-		}
+	public FREObject call(FREContext context, FREObject[] args)
+	{
+		super.call(context, args);
+		
+		AirFacebookExtension.context.closeSessionAndClearTokenInformation();
+		
 		return null;
 	}
 	

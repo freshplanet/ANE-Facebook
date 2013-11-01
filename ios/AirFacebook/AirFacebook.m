@@ -262,44 +262,6 @@ static AirFacebook *sharedInstance = nil;
 
 @end
 
-#pragma mark - Utils
-
-NSArray* getFREArrayAsNSArray( FREObject array )
-{
-    
-    uint32_t stringLength;
-    uint32_t arrayLength;
-    
-    NSMutableArray *nsArray = [[NSMutableArray alloc] init];
-    if (FREGetArrayLength(array, &arrayLength) != FRE_OK)
-    {
-        arrayLength = 0;
-    }
-    
-    for (NSInteger i = arrayLength-1; i >= 0; i--)
-    {
-        // Get permission at index i. Skip this index if there's an error.
-        FREObject el;
-        if (FREGetArrayElementAt(array, i, &el) != FRE_OK)
-        {
-            continue;
-        }
-        
-        // Convert it to string. Skip this index if there's an error.
-        const uint8_t *elString;
-        if (FREGetObjectAsUTF8(el, &stringLength, &elString) != FRE_OK)
-        {
-            continue;
-        }
-        NSString *nsString = [NSString stringWithUTF8String:(char*)elString];
-        
-        // Add the element to the array
-        [nsArray addObject:nsString];
-    }
-    
-    return nsArray;
-    
-}
 
 #pragma mark - C interface
 
@@ -393,32 +355,15 @@ DEFINE_ANE_FUNCTION(isSessionOpen)
 
 DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 {
-    
-    NSArray *permissions = getFREArrayAsNSArray(argv[0]);
-    
-    // Get the permissions type
-    uint32_t stringLength;
-    NSString *type;
-    const uint8_t *typeString;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &typeString) == FRE_OK)
-    {
-        type = [NSString stringWithUTF8String:(char*)typeString];
-    }
+    NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
+    NSString *type = FPANE_FREObjectToNSString(argv[1]);
+    BOOL systemFlow = FPANE_FREObjectToBOOL(argv[2]);
     
     // Print log
     [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
     
-    // select the right authentication flow
-    FBSessionLoginBehavior loginBehavior;
-    if ([type isEqualToString:@"read"])
-    {
-        // system account if no publish permissions
-        loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
-    } else
-    {
-        // web if publish permissions
-        loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
-    }
+    // Select login behavior
+    FBSessionLoginBehavior loginBehavior = systemFlow ? FBSessionLoginBehaviorUseSystemAccountIfPresent : FBSessionLoginBehaviorWithFallbackToWebView;
     
     // Start authentication flow
     FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
@@ -442,18 +387,8 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 
 DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
 {
-    
-    // Retrieve permissions
-    NSArray *permissions = getFREArrayAsNSArray(argv[0]);
-        
-    // Get the permissions type
-    uint32_t stringLength;
-    NSString *type;
-    const uint8_t *typeString;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &typeString) == FRE_OK)
-    {
-        type = [NSString stringWithUTF8String:(char*)typeString];
-    }
+    NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
+    NSString *type = FPANE_FREObjectToNSString(argv[1]);
     
     // Print log
     [AirFacebook log:[NSString stringWithFormat:@"Trying to reauthorize session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
@@ -461,12 +396,13 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
     // Start authentication flow
     FBReauthorizeSessionCompletionHandler completionHandler = [AirFacebook reauthorizeSessionCompletionHandler];
     
-    @try {
+    @try
+    {
         if ([type isEqualToString:@"read"])
         {
             [[FBSession activeSession] requestNewReadPermissions:permissions completionHandler:completionHandler];
         }
-        else if ([type isEqualToString:@"publish"])
+        else
         {
             [[FBSession activeSession] requestNewPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:completionHandler];
         }

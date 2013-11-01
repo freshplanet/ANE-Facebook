@@ -19,11 +19,16 @@
 package com.freshplanet.ane.AirFacebook;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import android.content.Intent;
+import android.os.Bundle;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
-import com.facebook.android.Facebook;
+import com.facebook.Session;
+import com.facebook.SessionState;
 import com.freshplanet.ane.AirFacebook.functions.CloseSessionAndClearTokenInformationFunction;
 import com.freshplanet.ane.AirFacebook.functions.DialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetAccessTokenFunction;
@@ -34,15 +39,9 @@ import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunct
 import com.freshplanet.ane.AirFacebook.functions.PublishInstallFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
-import com.facebook.Session;
 
 public class AirFacebookExtensionContext extends FREContext
 {
-	public static Facebook facebook;
-	public static LoginActivity facebookLoginActivity;
-
-	public static Session session;
-	
 	@Override
 	public void dispose()
 	{
@@ -65,5 +64,70 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("dialog", new DialogFunction());
 		functions.put("publishInstall", new PublishInstallFunction());
 		return functions;	
+	}
+	
+	private String _appID;
+	private Session _session;
+	
+	public void init(String appID)
+	{
+		_appID = appID;
+		
+		Session session = getSession();
+		if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
+		{
+			Session.setActiveSession(session);
+			try
+			{
+				session.openForRead(null);
+			}
+			catch (UnsupportedOperationException exception)
+			{
+				String error = exception != null ? exception.toString() : "null exception";
+				AirFacebookExtension.log("ERROR - Couldn't open session from cached token: " + error);
+			}
+		}
+	}
+	
+	public Session getSession()
+	{
+		if (_session == null)
+		{
+			_session = new Session.Builder(getActivity().getApplicationContext()).setApplicationId(_appID).build();
+		}
+		
+		return _session;
+	}
+	
+	public void closeSessionAndClearTokenInformation()
+	{
+		if (_session != null)
+		{
+			_session.closeAndClearTokenInformation();
+			_session = null;
+		}
+	}
+	
+	public void launchLoginActivity(List<String> permissions, String type, Boolean reauthorize)
+	{
+		Intent i = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
+		i.putExtra(LoginActivity.extraPrefix+".permissions", permissions.toArray(new String[permissions.size()]));
+		i.putExtra(LoginActivity.extraPrefix+".type", type);
+		i.putExtra(LoginActivity.extraPrefix+".reauthorize", reauthorize);
+		getActivity().startActivity(i);
+	}
+	
+	public void launchDialogActivity(String method, Bundle parameters, String callback)
+	{
+		Intent i = new Intent(getActivity().getApplicationContext(), DialogActivity.class);
+		i.putExtra(DialogActivity.extraPrefix+".method", method);
+		i.putExtra(DialogActivity.extraPrefix+".parameters", parameters);
+		i.putExtra(DialogActivity.extraPrefix+".callback", callback);
+		getActivity().startActivity(i);
+	}
+	
+	public void launchRequestThread(String graphPath, Bundle parameters, String httpMethod, String callback)
+	{
+		new RequestThread(this, graphPath, parameters, httpMethod, callback).start();
 	}
 }
