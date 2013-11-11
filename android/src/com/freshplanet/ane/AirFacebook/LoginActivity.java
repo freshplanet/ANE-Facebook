@@ -24,6 +24,7 @@ import java.util.Arrays;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Window;
 
@@ -38,6 +39,7 @@ public class LoginActivity extends Activity
 {	
 	private Session.StatusCallback statusCallback = new SessionStatusCallback();
 	private boolean reauthorize = false;
+	private Handler delayHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -100,23 +102,44 @@ public class LoginActivity extends Activity
 		{
 			try
 			{
+				delayHandler = new Handler();
+				final LoginActivity me = this;
+				final ArrayList<String> perms = permissions;
+				
 				if ("read".equals(type))
 				{
-					AirFacebookExtensionContext.session.openForRead(new Session.OpenRequest(this)
-						.setPermissions(permissions)
-						.setCallback(statusCallback));
+					delayHandler.postDelayed( new Runnable() {
+						@Override
+						public void run() {
+							AirFacebookExtensionContext.session.openForRead(new Session.OpenRequest(me)
+							.setPermissions(perms)
+							.setCallback(me.statusCallback));
+						}
+					}, 1 );
+
 				}
 				else if ("publish".equals(type))
 				{
-					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
-						.setPermissions(permissions)
-						.setCallback(statusCallback));
+					delayHandler.postDelayed( new Runnable() {
+						@Override
+						public void run() {
+							AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(me)
+							.setPermissions(perms)
+							.setCallback(me.statusCallback));
+						}
+					}, 1 );
 				}
 				else
 				{
-					AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(this)
-						.setPermissions(permissions)
-						.setCallback(statusCallback));
+					delayHandler.postDelayed( new Runnable() {
+						@Override
+						public void run() {
+							AirFacebookExtensionContext.session.openForPublish(new Session.OpenRequest(me)
+							.setPermissions(perms)
+							.setCallback(me.statusCallback));
+						}
+					}, 1 );
+					
 				}
 
 			}
