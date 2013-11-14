@@ -71,7 +71,7 @@ static AirFacebook *sharedInstance = nil;
     // Save parameters
     _appID = appID;
     _urlSchemeSuffix = urlSchemeSuffix;
-	_friendCache = [[FBFrictionlessRecipientCache alloc] init];
+    _friendCache = [[FBFrictionlessRecipientCache alloc] init];
     NSMutableString *logMessage = [NSMutableString stringWithFormat:@"Initializing with application ID %@", _appID];
     if (_urlSchemeSuffix)
     {
@@ -135,7 +135,7 @@ static AirFacebook *sharedInstance = nil;
         {
             [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", [session.permissions componentsJoinedByString:@", "]]];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
-			[[[AirFacebook sharedInstance] friendCache] prefetchAndCacheForSession:nil];
+            [[[AirFacebook sharedInstance] friendCache] prefetchAndCacheForSession:nil];
             
         }
         else if (status == FBSessionStateClosed)
@@ -170,7 +170,7 @@ static AirFacebook *sharedInstance = nil;
         {
             [AirFacebook log:@"Session reauthorized with permissions: %@", session.permissions];
             [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_SUCCESS" withMessage:@"OK"];
-			[[[AirFacebook sharedInstance] friendCache] prefetchAndCacheForSession:nil];
+            [[[AirFacebook sharedInstance] friendCache] prefetchAndCacheForSession:nil];
         }
     };
 }
@@ -644,7 +644,7 @@ DEFINE_ANE_FUNCTION(dialog)
                      }
                  }
              }
-			 friendCache:[[AirFacebook sharedInstance] friendCache]];
+             friendCache:[[AirFacebook sharedInstance] friendCache]];
         } else
         {
             [FBWebDialogs presentDialogModallyWithSession:nil dialog:method parameters:parameters
