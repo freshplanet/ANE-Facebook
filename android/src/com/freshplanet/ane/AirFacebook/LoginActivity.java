@@ -25,6 +25,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Window;
 
@@ -42,6 +43,9 @@ public class LoginActivity extends Activity
 	
 	private List<String> _permissions = null;
 	private boolean _reauthorize = false;
+	
+	private Handler delayHandler;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -100,13 +104,34 @@ public class LoginActivity extends Activity
 			Session.OpenRequest openRequest = new Session.OpenRequest(this).setPermissions(_permissions).setCallback(_statusCallback);
 			try
 			{
+				delayHandler = new Handler();
+				final Session finalSession = session;
+				final Session.OpenRequest finalOpenRequest = openRequest;
 				if ("read".equals(type))
 				{
-					session.openForRead(openRequest);
+					delayHandler.postDelayed( new Runnable() {
+                        @Override
+                        public void run() {
+                        	try {
+                        		finalSession.openForRead(finalOpenRequest);
+                        	} catch (Exception e) {
+                        		finishLogin(e);
+                        	}
+                        }
+					}, 1 );
 				}
 				else
 				{
-					session.openForPublish(openRequest);
+					delayHandler.postDelayed( new Runnable() {
+                        @Override
+                        public void run() {
+                        	try {
+                        		finalSession.openForPublish(finalOpenRequest);
+                        	} catch (Exception e) {
+                        		finishLogin(e);
+                        	}
+                        }
+					}, 1 );
 				}
 			}
 			catch (Exception e)
