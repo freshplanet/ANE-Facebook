@@ -41,6 +41,7 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 
 @property (nonatomic, readonly) NSString *appID;
 @property (nonatomic, readonly) NSString *urlSchemeSuffix;
+@property (nonatomic, readonly) FBFrictionlessRecipientCache *friendCache;
 
 @end
 
