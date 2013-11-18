@@ -60,13 +60,21 @@
     </target>
 
     <!-- Android -->
-    <target name="android" description="Build Android Library">
+    <target name="android" description="Build Android Library with debugging disabled">
+        <property name="ANDROID_DEBUG" value="false"/>
+        <antcall target="android-build"/>
+    </target>
+    <target name="android-debug" description="Build Android Library with debugging enabled">
+        <property name="ANDROID_DEBUG" value="true"/>
+        <antcall target="android-build"/>
+    </target>
+    <target name="android-build" description="Build Android Library">
         <delete dir="../android/temp"/>
         <mkdir dir="../android/temp/classes"/>
 
         <echo message="Using Java version ${ant.java.version}."/>
 
-        <javac source="1.6" srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false">
+        <javac source="1.6" srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false" debug="${ANDROID_DEBUG}">
             <classpath>
                 <pathelement location="${android.sdk}/android.jar"/>
                 <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
