@@ -43,9 +43,7 @@ public class LoginActivity extends Activity
 	
 	private List<String> _permissions = null;
 	private boolean _reauthorize = false;
-	
 	private Handler delayHandler;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -95,49 +93,63 @@ public class LoginActivity extends Activity
 		}
 		else if (!session.isOpened())
 		{
+			Session.OpenRequest openRequest = new Session.OpenRequest(this).setPermissions(_permissions).setCallback(_statusCallback);
+			final Session finalSession = session;
+			final Session.OpenRequest finalOpenRequest = openRequest;
 			if (!session.getState().equals(SessionState.CREATED) && !session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
 			{
 				_context.closeSessionAndClearTokenInformation();
 				session = _context.getSession();
 			}
-			
-			Session.OpenRequest openRequest = new Session.OpenRequest(this).setPermissions(_permissions).setCallback(_statusCallback);
-			try
-			{
-				delayHandler = new Handler();
-				final Session finalSession = session;
-				final Session.OpenRequest finalOpenRequest = openRequest;
-				if ("read".equals(type))
+			if(_context.usingStage3D) {
+				try
 				{
-					delayHandler.postDelayed( new Runnable() {
-                        @Override
-                        public void run() {
-                        	try {
-                        		finalSession.openForRead(finalOpenRequest);
-                        	} catch (Exception e) {
-                        		finishLogin(e);
-                        	}
-                        }
-					}, 1 );
+					delayHandler = new Handler();
+					if ("read".equals(type))
+					{
+						delayHandler.postDelayed( new Runnable() {
+	                        @Override
+	                        public void run() {
+	                        	try {
+	                        		finalSession.openForRead(finalOpenRequest);
+	                        	} catch (Exception e) {
+	                        		finishLogin(e);
+	                        	}
+	                        }
+						}, 1 );
+					}
+					else
+					{
+						delayHandler.postDelayed( new Runnable() {
+	                        @Override
+	                        public void run() {
+	                        	try {
+	                        		finalSession.openForPublish(finalOpenRequest);
+	                        	} catch (Exception e) {
+	                        		finishLogin(e);
+	                        	}
+	                        }
+						}, 1 );
+					}
 				}
-				else
+				catch (Exception e)
 				{
-					delayHandler.postDelayed( new Runnable() {
-                        @Override
-                        public void run() {
-                        	try {
-                        		finalSession.openForPublish(finalOpenRequest);
-                        	} catch (Exception e) {
-                        		finishLogin(e);
-                        	}
-                        }
-					}, 1 );
+					finishLogin(e);
+					return;
+				} 
+			} else {
+				try {
+					if("read".equals(type)) 
+					{
+						finalSession.openForRead(finalOpenRequest);
+					}
+					else 
+					{
+						finalSession.openForPublish(finalOpenRequest);
+					}
+				} catch (Exception e) {
+					finishLogin(e);
 				}
-			}
-			catch (Exception e)
-			{
-				finishLogin(e);
-				return;
 			}
 		}
 		else

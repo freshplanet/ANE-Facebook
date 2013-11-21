@@ -75,6 +75,18 @@ package com.freshplanet.ane.AirFacebook
 			return _logEnabled;
 		}
 		
+		
+		/**
+		 * This is only important on Android - if you are using stage3D for display at the time you log in to FB,
+		 * set this to true to avoid the display freezing
+		 */
+		public function setUsingStage3D(using3d:Boolean) : void 
+		{
+			if(Capabilities.manufacturer.indexOf("Android") > -1) {
+				_context.call('setUsingStage3D', using3d);
+			}
+		}
+		
 		public function set logEnabled( value : Boolean ) : void
 		{
 			_logEnabled = value;

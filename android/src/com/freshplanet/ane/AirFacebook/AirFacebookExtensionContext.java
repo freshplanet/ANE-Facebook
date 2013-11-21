@@ -40,6 +40,7 @@ import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunct
 import com.freshplanet.ane.AirFacebook.functions.PublishInstallFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
+import com.freshplanet.ane.AirFacebook.functions.SetUsingStage3dFunction;
 
 public class AirFacebookExtensionContext extends FREContext
 {
@@ -64,11 +65,13 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 		functions.put("dialog", new DialogFunction());
 		functions.put("publishInstall", new PublishInstallFunction());
+		functions.put("setUsingStage3D", new SetUsingStage3dFunction());
 		return functions;	
 	}
 	
 	private String _appID;
 	private Session _session;
+	public boolean usingStage3D = false;
 	
 	public void init(String appID)
 	{
@@ -121,6 +124,7 @@ public class AirFacebookExtensionContext extends FREContext
 		i.putExtra(LoginActivity.extraPrefix+".permissions", permissions.toArray(new String[permissions.size()]));
 		i.putExtra(LoginActivity.extraPrefix+".type", type);
 		i.putExtra(LoginActivity.extraPrefix+".reauthorize", reauthorize);
+		
 		getActivity().startActivity(i);
 	}
 	
