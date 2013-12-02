@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////////////////////
+﻿ //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright 2012 Freshplanet (http://freshplanet.com | opensource@freshplanet.com)
 //  
@@ -165,9 +165,105 @@ package com.freshplanet.ane.AirFacebook
 			// Execute the request
 			_context.call('requestWithGraphPath', graphPath, keys, values, httpMethod, callbackName);
 		}
-		
+
+		/** */
+		public function canPresentShareDialog():Boolean
+		{
+
+			return _context.call('canPresentShareDialog') ;
+
+		}
+
+		public function shareStatusDialog( callback:Function ):void
+		{
+
+			_context.call('shareStatusDialog', getNewCallbackName(callback) );
+
+		}
+
+		public function shareLinkDialog(
+			link:String =null,
+			name:String =null,
+			caption:String =null,
+			description:String =null,
+			pictureUrl:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void
+		{
+
+			// Separate parameters keys and values
+			var keys:Array = []; var values:Array = [];
+			for (var key:String in clientState)
+			{
+				var value:String = clientState[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
+			}
+
+			_context.call('shareLinkDialog', link, name, caption, description, pictureUrl, keys, values, getNewCallbackName(callback)) ;
+
+		}
+
+		public function canPresentOpenGraphDialog( actionType:String, graphObject:Object, previewProperty:String =null):Boolean
+		{
+
+			// Separate parameters keys and values
+			var keys:Array = []; var values:Array = [];
+			for (var key:String in graphObject)
+			{
+				var value:String = graphObject[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
+			}
+
+			return _context.call('canPresentOpenGraphDialog', actionType, keys, values, previewProperty) ;
+
+		}
+
+		public function shareOpenGraphDialog(
+			actionType:String,
+			graphObject:Object,
+			previewProperty:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void
+		{
+
+			// Separate parameters keys and values
+			var keys:Array = []; var values:Array = [];
+			for (var key:String in graphObject)
+			{
+				var value:String = graphObject[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
+			}
+
+			// Separate parameters keys and valuesm for clientState
+			var cskeys:Array = []; var csvalues:Array = [];
+			for (var cskey:String in clientState)
+			{
+				value = clientState[key] as String;
+				if (value)
+				{
+					cskeys.push(key); 
+					csvalues.push(value);
+				}
+			}
+
+			_context.call('shareOpenGraphDialog', actionType, keys, values, previewProperty, cskeys, csvalues, getNewCallbackName(callback));
+
+		}
+
 		/** @inheritDoc */
-		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
+		public function webDialog( method : String, parameters : Object = null, callback : Function = null ) : void
 		{
 			// Separate parameters keys and values
 			var keys:Array = []; var values:Array = [];
@@ -185,7 +281,31 @@ package com.freshplanet.ane.AirFacebook
 			var callbackName:String = getNewCallbackName(callback);
 			
 			// Open the dialog
-			_context.call('dialog', method, keys, values, callbackName, allowNativeUI);
+			_context.call('webDialog', method, keys, values, callbackName);
+		}
+
+		/** 
+			@deprecated
+			@inheritDoc
+		*/
+		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
+		{
+			
+			const isFeedDialog:Boolean = method == "feed";
+			const hasRecipients:Boolean = parameters.hasOwnProperty("to");
+
+			var useNativeShareUI:Boolean = isFeedDialog && allowNativeUI && !hasRecipients ;
+			useNativeShareUI &&= canPresentShareDialog();
+
+			if( useNativeShareUI )
+			{
+				shareLinkDialog( parameters['link'], parameters['name'], parameters['caption'], parameters['description'], parameters['picture'], callback );
+			}
+			else
+			{
+				webDialog( method, parameters, callback );
+			}
+
 		}
 		
 		public function publishInstall(appId:String):void

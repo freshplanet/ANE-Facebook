@@ -25,8 +25,9 @@
 #import "FBSettings.h"
 #import "FlashRuntimeExtensions.h"
 #import "FBError.h"
-#import "FBSBJSON.h" // used from SDK 3.2 fro portability over ios < 5.0
+#import "FBSBJSON.h" // used from SDK 3.2 for portability over ios < 5.0
 #import "NSError+FBError.h"
+#import "FPANEUtils.h"
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
 typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
@@ -43,7 +44,7 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
 + (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
-+ (FBOSIntegratedShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
++ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback;
 
 + (void)log:(NSString *)string, ...;
 
@@ -65,7 +66,12 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions);
 DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions);
 DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
 DEFINE_ANE_FUNCTION(requestWithGraphPath);
-DEFINE_ANE_FUNCTION(dialog);
+DEFINE_ANE_FUNCTION(canPresentShareDialog);
+DEFINE_ANE_FUNCTION(shareStatusDialog);
+DEFINE_ANE_FUNCTION(shareLinkDialog);
+DEFINE_ANE_FUNCTION(canPresentOpenGraphDialog);
+DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
+DEFINE_ANE_FUNCTION(webDialog);
 DEFINE_ANE_FUNCTION(publishInstall);
 
 // ANE Setup

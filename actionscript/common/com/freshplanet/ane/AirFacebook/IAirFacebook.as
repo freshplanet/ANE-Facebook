@@ -119,23 +119,84 @@ package com.freshplanet.ane.AirFacebook
 		function requestWithGraphPath( graphPath : String, parameters : Object = null, httpMethod : String = "GET", callback : Function = null ) : void;
 		
 		/**
+		 * Determine if we can open a native share dialog with the given parameters.
+		 * Call this method to decide wether you should use <code>shareStatusDialog</code> or <code>webDialog</code>
+		 */
+		function canPresentShareDialog():Boolean;
+
+		/**
+		 * Open a native Facebook dialog for sharing a link
+		 * This requires that the Facebook app is installed on the device,
+		 * To make sure this succeeds, call canPresentShareDialog, otherwise
+		 * you can fall back to a web view with the <code>webDialog</code> method
+		 */
+		function shareStatusDialog( callback:Function ):void;
+
+		/**
+		 * Open a native Facebook dialog for sharing a link
+		 * This requires that the Facebook app is installed on the device,
+		 * To make sure this succeeds, call canPresentShareDialog, otherwise
+		 * you can fall back to a web view with the <code>webDialog</code> method
+		 *
+		 * @param link (Optional) Link to share.
+		 * @param name (Optional) Title of the publication.
+		 * @param caption (Optional) Short summary of the link content.
+		 * @param description (Optional) Description of the link content.
+		 * @param pictureUrl (Optional) Url of the attached picture.
+		 * @param callback (Optional) A callback function of the following form:
+		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+		 * object returned by Facebook.
+		 */
+		function shareLinkDialog(
+			link:String =null,
+			name:String =null,
+			caption:String =null,
+			description:String =null,
+			pictureUrl:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void;
+
+		function canPresentOpenGraphDialog( actionType:String, graphObject:Object, previewProperty:String =null):Boolean;
+
+		function shareOpenGraphDialog(
+			actionType:String,
+			graphObject:Object,
+			previewProperty:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void;
+
+		/**
+		 * Open a Facebook dialog in a WebView
+		 *
+		 * @param method A dialog method (eg. login, feed...).
+		 * @param parameters (Optional) An object (key-value pairs) containing the dialog parameters.
+		 * @param callback (Optional) A callback function of the following form:
+		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+		 * object returned by Facebook.
+		 */
+		function webDialog( method : String, parameters : Object = null, callback : Function = null ) : void;
+
+		/**
 		 * Open a Facebook dialog.
+		 * This method is kept for compatibility.
+		 * If allowNativeUI is set to false this is equivalent to the method <code>webDialog</code>, else we try
+		 * to call the correct native dialog based on given parameters and revert to <code>webDialog</code> if
+		 * a native dialog cannot be used.
 		 * 
 		 * @param method A dialog method (eg. login, feed...).
 		 * @param parameters (Optional) An object (key-value pairs) containing the dialog parameters.
 		 * @param callback (Optional) A callback function of the following form:
 		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
 		 * object returned by Facebook.
-		 * @param allowNativeUI (Optional) If true, we will try to use the native sharing sheet on iOS 6.
-		 * Native sharing sheet will only be used if <code>method</code> is <em>feed</em> and <code>
+		 * @param allowNativeUI (Optional) If true, we will try to use the native sharing dialog.
+		 * Native sharing dialog will only be used if <code>method</code> is <em>feed</em> and <code>
 		 * parameters</code> doesn't contain a non-empty <em>to</em> parameter. If the native sharing
-		 * sheet can be used, only the following parameters will be used: name, picture, link. Default
-		 * is true.
+		 * dialog can be used, only the following parameters will be used: name, picture, link, caption,
+		 * description. Default is true.
 		 */
 		function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void;
-		
+	
 		/** Register the appId for install tracking. Works only on iOS now*/
 		function publishInstall( appId:String ):void;
-		
 	}
 }
