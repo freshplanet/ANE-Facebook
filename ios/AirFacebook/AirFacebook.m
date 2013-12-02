@@ -235,26 +235,15 @@ static AirFacebook *sharedInstance = nil;
     } copy] autorelease];
 }
 
-+ (FBOSIntegratedShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback
++ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback
 {
-    return [[^(FBOSIntegratedShareDialogResult result, NSError *error) {
-        NSString *resultString = nil;
-        switch (result)
-        {
-            case FBOSIntegratedShareDialogResultCancelled:
-                resultString = @"{ \"cancelled\": true}";
-                break;
-            
-            case FBOSIntegratedShareDialogResultError:
-                resultString = [NSString stringWithFormat:@"{ \"error\": \"%@\" }", [error description]];
-                
-            default:
-                resultString = @"{}";
-                break;
-        }
+    return [[^(FBAppCall* call, NSDictionary *results, NSError *error) {
+        NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:results];
         [AirFacebook dispatchEvent:callback withMessage:resultString];
     } copy] autorelease];
 }
+
+
 
 + (void)log:(NSString *)format, ...
 {
@@ -273,45 +262,6 @@ static AirFacebook *sharedInstance = nil;
 }
 
 @end
-
-#pragma mark - Utils
-
-NSArray* getFREArrayAsNSArray( FREObject array )
-{
-    
-    uint32_t stringLength;
-    uint32_t arrayLength;
-    
-    NSMutableArray *nsArray = [[NSMutableArray alloc] init];
-    if (FREGetArrayLength(array, &arrayLength) != FRE_OK)
-    {
-        arrayLength = 0;
-    }
-    
-    for (NSInteger i = arrayLength-1; i >= 0; i--)
-    {
-        // Get permission at index i. Skip this index if there's an error.
-        FREObject el;
-        if (FREGetArrayElementAt(array, i, &el) != FRE_OK)
-        {
-            continue;
-        }
-        
-        // Convert it to string. Skip this index if there's an error.
-        const uint8_t *elString;
-        if (FREGetObjectAsUTF8(el, &stringLength, &elString) != FRE_OK)
-        {
-            continue;
-        }
-        NSString *nsString = [NSString stringWithUTF8String:(char*)elString];
-        
-        // Add the element to the array
-        [nsArray addObject:nsString];
-    }
-    
-    return nsArray;
-    
-}
 
 #pragma mark - C interface
 
@@ -347,15 +297,8 @@ DEFINE_ANE_FUNCTION(init)
 
 DEFINE_ANE_FUNCTION(handleOpenURL)
 {
-    uint32_t stringLength;
-    
     // Retrieve URL
-    const uint8_t *urlString;
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &urlString) != FRE_OK)
-    {
-        return nil;
-    }
-    NSURL *url = [NSURL URLWithString:[NSString stringWithUTF8String:(char*)urlString]];
+    NSURL *url = [NSURL URLWithString:FPANE_FREObjectToNSString(argv[0])];
     
     // Give the URL to the Facebook session
     FBSession *session = [FBSession activeSession];
@@ -406,16 +349,11 @@ DEFINE_ANE_FUNCTION(isSessionOpen)
 DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 {
     
-    NSArray *permissions = getFREArrayAsNSArray(argv[0]);
+    // Retrieve permissions
+    NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
     
     // Get the permissions type
-    uint32_t stringLength;
-    NSString *type;
-    const uint8_t *typeString;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &typeString) == FRE_OK)
-    {
-        type = [NSString stringWithUTF8String:(char*)typeString];
-    }
+    NSString *type = FPANE_FREObjectToNSString(argv[1]);
     
     // Print log
     [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, permissions]];
@@ -459,16 +397,10 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
 {
     
     // Retrieve permissions
-    NSArray *permissions = getFREArrayAsNSArray(argv[0]);
+    NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
         
     // Get the permissions type
-    uint32_t stringLength;
-    NSString *type;
-    const uint8_t *typeString;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &typeString) == FRE_OK)
-    {
-        type = [NSString stringWithUTF8String:(char*)typeString];
-    }
+    NSString *type = FPANE_FREObjectToNSString(argv[1]);
     
     // Print log
     [AirFacebook log:[NSString stringWithFormat:@"Trying to reauthorize session with %@ permissions: %@", type, permissions]];
@@ -503,68 +435,18 @@ DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation)
 
 DEFINE_ANE_FUNCTION(requestWithGraphPath)
 {
-    uint32_t stringLength;
-    uint32_t arrayLength;
     
     // Retrieve graph path
-    NSString *graphPath = nil;
-    const uint8_t *graphPathString;
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &graphPathString) == FRE_OK)
-    {
-        graphPath = [NSString stringWithUTF8String:(char*)graphPathString];
-    }
+    NSString *graphPath = FPANE_FREObjectToNSString(argv[0]);
     
     // Retrieve request parameters
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    FREObject arrayKeys = argv[1]; // array containing the keys
-    FREObject arrayValues = argv[2]; // array containing the values
-    if (arrayKeys && arrayValues)
-    {
-        if (FREGetArrayLength(arrayKeys, &arrayLength) != FRE_OK)
-        {
-            arrayLength = 0;
-        }
-        
-        for (NSInteger i = arrayLength-1; i >= 0; i--)
-        {
-            // Get the key and value at index i. Skip this index if there's an error.
-            FREObject keyRaw, valueRaw;
-            if (FREGetArrayElementAt(arrayKeys, i, &keyRaw) != FRE_OK
-                || FREGetArrayElementAt(arrayValues, i, &valueRaw) != FRE_OK)
-            {
-                continue;
-            }
-            
-            // Convert them to strings. Skip this index if there's an error.
-            const uint8_t *keyString, *valueString;
-            if (FREGetObjectAsUTF8(keyRaw, &stringLength, &keyString) != FRE_OK
-                || FREGetObjectAsUTF8(valueRaw, &stringLength, &valueString) != FRE_OK)
-            {
-                continue;
-            }
-            NSString *key = [NSString stringWithUTF8String:(char*)keyString];
-            NSString *value = [NSString stringWithUTF8String:(char*)valueString];
-            
-            // Set the entry in parameters dictionary
-            [parameters setValue:value forKey:key];
-        }
-    }
+    NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
     
     // Retrieve HTTP method
-    NSString *httpMethod = nil;
-    const uint8_t *httpMethodString;
-    if (FREGetObjectAsUTF8(argv[3], &stringLength, &httpMethodString) == FRE_OK)
-    {
-        httpMethod = [NSString stringWithUTF8String:(char*)httpMethodString];
-    }
+    NSString *httpMethod = FPANE_FREObjectToNSString(argv[3]);
     
     // Retrieve callback name
-    NSString *callback = nil;
-    const uint8_t *callbackString;
-    if (FREGetObjectAsUTF8(argv[4], &stringLength, &callbackString) == FRE_OK)
-    {
-        callback = [NSString stringWithUTF8String:(char*)callbackString];
-    }
+    NSString *callback = FPANE_FREObjectToNSString(argv[4]);
     
     // Perform Facebook request
     FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod];
@@ -576,178 +458,147 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(dialog)
+DEFINE_ANE_FUNCTION(canPresentShareDialog)
 {
-    uint32_t stringLength;
-    uint32_t arrayLength;
     
-    // Retrieve method
-    NSString *method = nil;
-    const uint8_t *methodString;
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &methodString) == FRE_OK)
-    {
-        method = [NSString stringWithUTF8String:(char*)methodString];
-    }
+    // dummy params, they don't influence the eligibility for native dialog
+    FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
     
-    // Retrieve request parameters
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    FREObject arrayKeys = argv[1]; // array containing the keys
-    FREObject arrayValues = argv[2]; // array containing the values
-    if (arrayKeys && arrayValues)
-    {
-        if (FREGetArrayLength(arrayKeys, &arrayLength) != FRE_OK)
-        {
-            arrayLength = 0;
-        }
-        
-        for (NSInteger i = arrayLength-1; i >= 0; i--)
-        {
-            // Get the key and value at index i. Skip this index if there's an error.
-            FREObject keyRaw, valueRaw;
-            if (FREGetArrayElementAt(arrayKeys, i, &keyRaw) != FRE_OK
-                || FREGetArrayElementAt(arrayValues, i, &valueRaw) != FRE_OK)
-            {
-                continue;
-            }
-            
-            // Convert them to strings. Skip this index if there's an error.
-            const uint8_t *keyString, *valueString;
-            if (FREGetObjectAsUTF8(keyRaw, &stringLength, &keyString) != FRE_OK
-                || FREGetObjectAsUTF8(valueRaw, &stringLength, &valueString) != FRE_OK)
-            {
-                continue;
-            }
-            NSString *key = [NSString stringWithUTF8String:(char*)keyString];
-            NSString *value = [NSString stringWithUTF8String:(char*)valueString];
-            
-            // Set the entry in parameters dictionary
-            [parameters setValue:value forKey:key];
-        }
-    }
+    BOOL canPresentDialog = [FBDialogs canPresentShareDialogWithParams:params];
+    
+    return FPANE_BOOLToFREObject(canPresentDialog);
+    
+}
+
+DEFINE_ANE_FUNCTION(shareStatusDialog)
+{
+    
+    NSString *callback = FPANE_FREObjectToNSString(argv[0]);
+    
+    [FBDialogs presentShareDialogWithLink:nil handler:[AirFacebook shareDialogHandlerWithCallback:callback]];
+    
+    return nil;
+    
+}
+
+DEFINE_ANE_FUNCTION(shareLinkDialog)
+{
+    
+    // Retrieve parameters
+    NSString *link = FPANE_FREObjectToNSString(argv[0]);
+    NSString *name = FPANE_FREObjectToNSString(argv[1]);
+    NSString *caption = FPANE_FREObjectToNSString(argv[2]);
+    NSString *description = FPANE_FREObjectToNSString(argv[3]);
+    NSString *pictureUrl = FPANE_FREObjectToNSString(argv[4]);
+    NSDictionary *clientState = FPANE_FREObjectsToNSDictionaryOfNSString(argv[5], argv[6]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[7]);
+    
+    [FBDialogs presentShareDialogWithLink:[NSURL URLWithString:link]
+                                     name:name
+                                  caption:caption
+                              description:description
+                                  picture:[NSURL URLWithString:pictureUrl]
+                              clientState:clientState
+                                  handler:[AirFacebook shareDialogHandlerWithCallback:callback]];
+    
+    return nil;
+    
+}
+
+DEFINE_ANE_FUNCTION(canPresentOpenGraphDialog)
+{
+    
+    NSString *actionType = FPANE_FREObjectToNSString(argv[0]);
+    NSDictionary *params = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
+    NSString *previewProperty = FPANE_FREObjectToNSString(argv[3]);
+    
+    id<FBOpenGraphAction> action = (id<FBOpenGraphAction>)[FBGraphObject graphObjectWrappingDictionary:params];
+    
+    FBOpenGraphActionShareDialogParams* dialogParams = [[FBOpenGraphActionShareDialogParams alloc] init];
+    dialogParams.action = action;
+    dialogParams.actionType = actionType;
+    dialogParams.previewPropertyName = previewProperty;
+    
+    BOOL canPresent = [FBDialogs canPresentShareDialogWithOpenGraphActionParams:dialogParams];
+    
+    return FPANE_BOOLToFREObject(canPresent);
+    
+}
+
+DEFINE_ANE_FUNCTION(shareOpenGraphDialog)
+{
+    
+    NSString *actionType = FPANE_FREObjectToNSString(argv[0]);
+    NSDictionary *params = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
+    NSString *previewProperty = FPANE_FREObjectToNSString(argv[3]);
+    NSDictionary *clientState = FPANE_FREObjectsToNSDictionaryOfNSString(argv[4], argv[5]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[6]);
+    
+    id<FBOpenGraphAction> action = (id<FBOpenGraphAction>)[FBGraphObject graphObjectWrappingDictionary:params];
+    
+    [FBDialogs presentShareDialogWithOpenGraphAction:action
+                                          actionType:actionType
+                                 previewPropertyName:previewProperty
+                                         clientState:clientState
+                                             handler:[AirFacebook shareDialogHandlerWithCallback:callback]];
+    
+    return nil;
+    
+}
+
+/* deprecated */
+DEFINE_ANE_FUNCTION(webDialog)
+{
+    
+    NSString *method = FPANE_FREObjectToNSString(argv[0]);
+    
+    NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
     
     // Retrieve callback name
-    NSString *callback = nil;
-    const uint8_t *callbackString;
-    if (FREGetObjectAsUTF8(argv[3], &stringLength, &callbackString) == FRE_OK)
-    {
-        callback = [NSString stringWithUTF8String:(char*)callbackString];
-    }
-    
-    // Retrieve native UI flag
-    BOOL allowNativeUI = YES;
-    uint32_t allowNativeUINumber;
-    if (FREGetObjectAsBool(argv[4], &allowNativeUINumber) == FRE_OK)
-    {
-        allowNativeUI = (allowNativeUINumber != 0);
-    }
+    NSString *callback = FPANE_FREObjectToNSString(argv[3]);
     
     // If possible, open new-style Facebook sharing sheet
-    FBSession *session = [FBSession activeSession];
-    BOOL canPresentNativeDialog = [FBDialogs canPresentOSIntegratedShareDialogWithSession:session];
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
     BOOL isRequestDialog = [method isEqualToString:@"apprequests"];
-    BOOL hasNoRecipient = ([parameters objectForKey:@"to"] == nil || [[parameters objectForKey:@"to"] length] == 0);
     
     [AirFacebook log:
-         @"displaying facebook feed dialog : allowNativeUI - %@, canPresentNativeDialog - %@, isFeedingDialog - %@, hasNoRecipient - %@",
-         allowNativeUI ? @"YES" : @"NO",
-         canPresentNativeDialog ? @"YES" : @"NO",
-         isFeedDialog ? @"YES" : @"NO",
-         hasNoRecipient ? @"YES" : @"NO"
+         @"displaying facebook web dialog : isFeedingDialog - %@",
+         isFeedDialog ? @"YES" : @"NO"
     ];
     
+    FBWebDialogHandler resultHandler = ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+        
+        if (error) {
+            // TODO handle errors on a low level using FB SDK
+            NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
+            [AirFacebook dispatchEvent:callback withMessage:data];
+        } else {
+            if (result == FBWebDialogResultDialogNotCompleted) {
+                NSLog(@"User canceled story publishing.");
+                [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
+            } else {
+                NSString *queryString = [resultURL query];
+                NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
+                [AirFacebook dispatchEvent:callback withMessage:data];
+            }
+        }
+    };
     
-    if (allowNativeUI && canPresentNativeDialog && isFeedDialog && hasNoRecipient)
+    if (isFeedDialog)
     {
-        UIViewController *rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-        NSString *initialText = [parameters objectForKey:@"name"];
-        UIImage *image = nil;
-        NSURL *url = [NSURL URLWithString:[parameters objectForKey:@"link"]];
-        FBOSIntegratedShareDialogHandler handler = [AirFacebook shareDialogHandlerWithCallback:callback];
-        
-        // If there is an image, try to download it
-        NSString *picture = [parameters objectForKey:@"picture"];
-        if (picture && picture.length > 0)
-        {
-            NSURL *pictureURL = [NSURL URLWithString:picture];
-            NSURLRequest *request = [NSURLRequest requestWithURL:pictureURL cachePolicy:0 timeoutInterval:2];
-            NSURLResponse *response = nil;
-            NSData *pictureData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:NULL];
-            image = [UIImage imageWithData:pictureData];
-        }
-        
-        [FBDialogs presentOSIntegratedShareDialogModallyFrom:rootViewController initialText:initialText image:image url:url handler:handler];
+        [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:parameters handler:resultHandler];
     }
-    else // Else, open old-style Facebook dialog
+    else if (isRequestDialog)
     {
-        if (isFeedDialog)
-        {
-            [FBWebDialogs presentFeedDialogModallyWithSession:nil
+        [FBWebDialogs presentRequestsDialogModallyWithSession:nil
+                                                      message:[parameters objectForKey:@"message"]
+                                                        title:nil
                                                    parameters:parameters
-                                                      handler:
-             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-
-                 if (error) {
-                     // TODO handle errors on a low level using FB SDK
-                     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
-                     [AirFacebook dispatchEvent:callback withMessage:data];
-                 } else {
-                     if (result == FBWebDialogResultDialogNotCompleted) {
-                         NSLog(@"User canceled story publishing.");
-                         [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
-                     } else {
-                         NSString *queryString = [resultURL query];
-                         NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
-                         [AirFacebook dispatchEvent:callback withMessage:data];
-                     }
-                 }
-             }
-             ];
-        } else if (isRequestDialog)
-        {
-            [FBWebDialogs presentRequestsDialogModallyWithSession:nil message:[parameters objectForKey:@"message"] title:nil parameters:parameters handler:
-             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-
-                 if (error) {
-                     // TODO handle errors on a low level using FB SDK
-                     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
-                     [AirFacebook dispatchEvent:callback withMessage:data];
-                 } else {
-                     if (result == FBWebDialogResultDialogNotCompleted) {
-                         NSLog(@"User canceled story publishing.");
-                         [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
-                     } else {
-                         NSString *queryString = [resultURL query];
-                         NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
-                         [AirFacebook dispatchEvent:callback withMessage:data];
-                     }
-                 }
-             }
-             ];
-        } else
-        {
-            [FBWebDialogs presentDialogModallyWithSession:nil dialog:method parameters:parameters
-                                                      handler:
-             ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-
-                 if (error) {
-                     // TODO handle errors on a low level using FB SDK
-                     NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
-                     [AirFacebook dispatchEvent:callback withMessage:data];
-                 } else {
-                     if (result == FBWebDialogResultDialogNotCompleted) {
-                         NSLog(@"User canceled story publishing.");
-                         [AirFacebook dispatchEvent:callback withMessage:@"{ \"cancel\" : true}"];
-                     } else {
-                         NSString *queryString = [resultURL query];
-                         NSString *data = queryString ? [NSString stringWithFormat:@"{ \"params\" : \"%@\"}", queryString] : @"{ \"cancel\" : true}";
-                         [AirFacebook dispatchEvent:callback withMessage:data];
-                     }
-                 }
-             }
-             ];
-
-        }
+                                                      handler:resultHandler ];
+    }
+    else
+    {
+        [FBWebDialogs presentDialogModallyWithSession:nil dialog:method parameters:parameters handler:resultHandler];
     }
     
     [parameters release];
@@ -774,7 +625,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 11;
+    NSInteger nbFuntionsToLink = 16;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -815,13 +666,33 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[8].functionData = NULL;
     func[8].function = &requestWithGraphPath;
     
-    func[9].name = (const uint8_t*) "dialog";
+    func[9].name = (const uint8_t*) "canPresentShareDialog";
     func[9].functionData = NULL;
-    func[9].function = &dialog;
+    func[9].function = &canPresentShareDialog;
     
-    func[10].name = (const uint8_t*) "publishInstall";
+    func[10].name = (const uint8_t*) "shareStatusDialog";
     func[10].functionData = NULL;
-    func[10].function = &publishInstall;
+    func[10].function = &shareStatusDialog;
+    
+    func[11].name = (const uint8_t*) "shareLinkDialog";
+    func[11].functionData = NULL;
+    func[11].function = &shareLinkDialog;
+    
+    func[12].name = (const uint8_t*) "canPresentOpenGraphDialog";
+    func[12].functionData = NULL;
+    func[12].function = &canPresentOpenGraphDialog;
+    
+    func[13].name = (const uint8_t*) "shareOpenGraphDialog";
+    func[13].functionData = NULL;
+    func[13].function = &shareOpenGraphDialog;
+    
+    func[14].name = (const uint8_t*) "webDialog";
+    func[14].functionData = NULL;
+    func[14].function = &webDialog;
+    
+    func[15].name = (const uint8_t*) "publishInstall";
+    func[15].functionData = NULL;
+    func[15].function = &publishInstall;
     
     *functionsToSet = func;
     

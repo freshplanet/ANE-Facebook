@@ -127,11 +127,65 @@ package com.freshplanet.ane.AirFacebook
 		{
 			callback(null);
 		}
-		
+
+		/** */
+		public function canPresentShareDialog():Boolean
+		{
+
+			return false ;
+
+		}
+
+		public function shareStatusDialog( callback:Function ):void
+		{
+
+			callback(false, false, "Facebook is not supported on this platform");
+
+		}
+
+		public function shareLinkDialog(
+			link:String =null,
+			name:String =null,
+			caption:String =null,
+			description:String =null,
+			pictureUrl:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void
+		{
+
+			if(callback)
+				callback(null);
+
+		}
+
+		public function canPresentOpenGraphDialog( actionType:String, graphObject:Object, previewProperty:String =null):Boolean
+		{
+			return false ;
+		}
+
+		public function shareOpenGraphDialog(
+			actionType:String,
+			graphObject:Object,
+			previewProperty:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void
+		{
+			if(callback)
+				callback(null);
+		}
+
+		/** @inheritDoc */
+		public function webDialog( method : String, parameters : Object = null, callback : Function = null ) : void
+		{
+			if(callback)
+				callback(null);
+		}
+
 		/** @inheritDoc */
 		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
 		{
-			callback(null);
+			if(callback)
+				callback(null);
 		}
 		
 		/** @inheritDoc */

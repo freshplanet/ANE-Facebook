@@ -96,6 +96,7 @@
         <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
             <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
             <arg line='-source-path ../actionscript/mobile/src'/>
+            <arg line='-source-path ../actionscript/common'/>
             <arg line='-output ../temp/swc/${name}.swc'/>
             <arg line='-swf-version=14'/>
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
@@ -125,6 +126,7 @@
         <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
             <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
             <arg line='-source-path ../actionscript/default/src'/>
+            <arg line='-source-path ../actionscript/common'/>
             <arg line='-output ../temp/swc/${name}.swc'/>
             <arg line='-swf-version=14'/>
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
