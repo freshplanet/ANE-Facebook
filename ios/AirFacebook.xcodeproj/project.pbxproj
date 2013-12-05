@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3064F86E184FF81C0029A500 /* NSContainer+Subscripting.h in Headers */ = {isa = PBXBuildFile; fileRef = 3064F86C184FF81C0029A500 /* NSContainer+Subscripting.h */; };
+		3064F86F184FF81C0029A500 /* NSContainer+Subscripting.m in Sources */ = {isa = PBXBuildFile; fileRef = 3064F86D184FF81C0029A500 /* NSContainer+Subscripting.m */; };
 		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
 		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
@@ -18,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3064F86C184FF81C0029A500 /* NSContainer+Subscripting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSContainer+Subscripting.h"; sourceTree = "<group>"; };
+		3064F86D184FF81C0029A500 /* NSContainer+Subscripting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSContainer+Subscripting.m"; sourceTree = "<group>"; };
 		4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = ../FlashRuntimeExtensions.h; sourceTree = "<group>"; };
 		4AAA25371704F1C400ECB60C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4AAA253A1704F1C400ECB60C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -87,6 +91,8 @@
 		5A98569E15213BC3003A8EB0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3064F86C184FF81C0029A500 /* NSContainer+Subscripting.h */,
+				3064F86D184FF81C0029A500 /* NSContainer+Subscripting.m */,
 				5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */,
 				4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */,
 				FAD87E691822EC3200A4D717 /* FPANEUtils.h */,
@@ -104,6 +110,7 @@
 			files = (
 				4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */,
 				FAD87E6B1822EC3200A4D717 /* FPANEUtils.h in Headers */,
+				3064F86E184FF81C0029A500 /* NSContainer+Subscripting.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,6 +166,7 @@
 			files = (
 				FAD87E6C1822EC3200A4D717 /* FPANEUtils.m in Sources */,
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
+				3064F86F184FF81C0029A500 /* NSContainer+Subscripting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
