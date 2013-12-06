@@ -13,7 +13,8 @@
 		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
 		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
-		5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */; };
+		E2323DF21848E6BC00B707F2 /* FPANEUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = E2323DF01848E6BC00B707F2 /* FPANEUtils.h */; };
+		E2323DF31848E6BC00B707F2 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E2323DF11848E6BC00B707F2 /* FPANEUtils.m */; };
 		FA8D10801761498D005B34C7 /* FBBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8D0FF81761498D005B34C7 /* FBBase64.h */; };
 		FA8D10811761498D005B34C7 /* FBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8D0FF91761498D005B34C7 /* FBBase64.m */; };
 		FA8D10821761498D005B34C7 /* FBCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8D0FFB1761498D005B34C7 /* FBCrypto.h */; };
@@ -167,10 +168,10 @@
 		4AAA25541704F1C400ECB60C /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		5A98569815213BC3003A8EB0 /* libAirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAirFacebook.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A98569B15213BC3003A8EB0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AirFacebook-Prefix.pch"; sourceTree = "<group>"; };
 		5A9856A015213BC3003A8EB0 /* AirFacebook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirFacebook.h; sourceTree = "<group>"; };
 		5A9856A115213BC3003A8EB0 /* AirFacebook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirFacebook.m; sourceTree = "<group>"; };
-		5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = "/Applications/Adobe Flash Builder 4.6/sdks/4.6.0/include/FlashRuntimeExtensions.h"; sourceTree = "<absolute>"; };
+		E2323DF01848E6BC00B707F2 /* FPANEUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FPANEUtils.h; path = ../FPANEUtils.h; sourceTree = "<group>"; };
+		E2323DF11848E6BC00B707F2 /* FPANEUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FPANEUtils.m; path = ../FPANEUtils.m; sourceTree = "<group>"; };
 		FA8D0FF81761498D005B34C7 /* FBBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBBase64.h; sourceTree = "<group>"; };
 		FA8D0FF91761498D005B34C7 /* FBBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBBase64.m; sourceTree = "<group>"; };
 		FA8D0FFB1761498D005B34C7 /* FBCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBCrypto.h; sourceTree = "<group>"; };
@@ -376,9 +377,9 @@
 		5A98569E15213BC3003A8EB0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E2323DF01848E6BC00B707F2 /* FPANEUtils.h */,
+				E2323DF11848E6BC00B707F2 /* FPANEUtils.m */,
 				4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */,
-				5A98569F15213BC3003A8EB0 /* AirFacebook-Prefix.pch */,
-				5A9856A815213CB7003A8EB0 /* FlashRuntimeExtensions.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -564,7 +565,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A9856A915213CB7003A8EB0 /* FlashRuntimeExtensions.h in Headers */,
 				4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */,
 				FA8D10801761498D005B34C7 /* FBBase64.h in Headers */,
 				FA8D10821761498D005B34C7 /* FBCrypto.h in Headers */,
@@ -649,6 +649,7 @@
 				FA8D111417614B35005B34C7 /* FBSBJsonBase.h in Headers */,
 				FA8D111617614B35005B34C7 /* FBSBJsonParser.h in Headers */,
 				FA8D111817614B35005B34C7 /* FBSBJsonWriter.h in Headers */,
+				E2323DF21848E6BC00B707F2 /* FPANEUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -756,6 +757,7 @@
 				FA8D10FD1761498D005B34C7 /* FBUtility.m in Sources */,
 				FA8D11001761498D005B34C7 /* FBViewController.m in Sources */,
 				FA8D11021761498D005B34C7 /* FBWebDialogs.m in Sources */,
+				E2323DF31848E6BC00B707F2 /* FPANEUtils.m in Sources */,
 				FA8D11041761498D005B34C7 /* NSError+FBError.m in Sources */,
 				FA8D111317614B35005B34C7 /* FBSBJSON.m in Sources */,
 				FA8D111517614B35005B34C7 /* FBSBJsonBase.m in Sources */,

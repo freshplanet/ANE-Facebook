@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>D2B7EF18-1E68-4765-B7AE-6308914F31BC</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AirFacebook</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>A172745A-7B82-4555-AAB2-17DE865CB1F3</key>
+		<string>ssh://github.com/freshplanet/ANE-Facebook.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ios/AirFacebook.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>A172745A-7B82-4555-AAB2-17DE865CB1F3</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/freshplanet/ANE-Facebook.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>A172745A-7B82-4555-AAB2-17DE865CB1F3</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A172745A-7B82-4555-AAB2-17DE865CB1F3</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ANE-Facebook</string>
+		</dict>
+	</array>
+</dict>
+</plist>
