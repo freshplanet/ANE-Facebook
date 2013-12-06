@@ -47,51 +47,35 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 		AirFacebookExtension.log("INFO - WebDialogActivity.onCreate");
 		super.onCreate(savedInstanceState);
 		
-		AirFacebookExtension.log("1");
-		// Get context
-		FREContext context = AirFacebookExtension.context;
-		
-		AirFacebookExtension.log("2");
-		// Setup views
-		//requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		
-		AirFacebookExtension.log("3");
 		// Retrieve extra values
 		method = this.getIntent().getStringExtra(extraPrefix+".method");
 		Bundle parameters = this.getIntent().getBundleExtra(extraPrefix+".parameters");
 		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
 		
-		AirFacebookExtension.log("4");
 		Session session = AirFacebookExtensionContext.session;
 		if ( session == null )
 		{
-			AirFacebookExtension.log("INFO - WebDialogActivity.onCreate");
 			AirFacebookExtension.log("ERROR - AirFacebook is not initialized");
 			finish();
 			return;
 		}
 		
-		AirFacebookExtension.log("5");
 		if ( session.isOpened() )
 		{
-			AirFacebookExtension.log("6");
 			dialog = new WebDialog.Builder(this, AirFacebookExtensionContext.session, method, parameters)
 				.setOnCompleteListener(this)
 				.build();
 		}
 		else
 		{
-			AirFacebookExtension.log("7");
 			dialog = new WebDialog.Builder(this, session.getApplicationId(), method, parameters)
 				.setOnCompleteListener(this)
 				.build();
 		}
 		
-		AirFacebookExtension.log("8");
 		Window dialog_window = dialog.getWindow();
     	dialog_window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     	dialog.show();
-    	AirFacebookExtension.log("9");
 	}
 	
 	@Override

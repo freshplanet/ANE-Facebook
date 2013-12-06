@@ -22,18 +22,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.adobe.fre.FREContext;
 import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
+import com.facebook.widget.FacebookDialog.Callback;
+import com.facebook.widget.FacebookDialog.PendingCall;
 
-public class ShareDialogActivity extends Activity
+public class ShareDialogActivity extends Activity implements DialogFactory, Callback
 {
 	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.ShareDialogActivity";
 	
 	private String callback;
-	private UiLifecycleHelper uiHelper;
+	private DialogLifecycleHelper dialogHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -41,14 +40,16 @@ public class ShareDialogActivity extends Activity
 		
 		super.onCreate(savedInstanceState);
 		
-		uiHelper = new UiLifecycleHelper(
-				this,
-				new Session.StatusCallback() {
-					public void call(Session session, SessionState state, Exception exception){
-						
-					}
-				});
-	    uiHelper.onCreate(savedInstanceState);
+		dialogHelper = new DialogLifecycleHelper(this, this, this);
+		
+		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
+		
+		dialogHelper.onCreate(savedInstanceState);
+		
+	}
+	
+	@Override
+	public PendingCall createDialog() {
 		
 		// Retrieve extra values
 		String link = this.getIntent().getStringExtra(extraPrefix+".link");
@@ -56,38 +57,55 @@ public class ShareDialogActivity extends Activity
 		String caption = this.getIntent().getStringExtra(extraPrefix+".caption");
 		String description = this.getIntent().getStringExtra(extraPrefix+".description");
 		String pictureUrl = this.getIntent().getStringExtra(extraPrefix+".pictureUrl");
-		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
 		
-		FacebookDialog.ShareDialogBuilder dialogBuilder = new FacebookDialog.ShareDialogBuilder( this );
+		String appId;
+		Session session = AirFacebookExtensionContext.session;
+		if ( session == null )
+		{
+			AirFacebookExtension.log("ERROR - AirFacebook is not initialized");
+			finish();
+			return null;
+		}
+		appId = session.getApplicationId();
+		
+		// This constructor has been modified from the original SDK
+		FacebookDialog.ShareDialogBuilder dialogBuilder = new FacebookDialog.ShareDialogBuilder( this, appId );
 		if(link!=null) dialogBuilder.setLink(link);
 		if(name!=null) dialogBuilder.setName(name);
 		if(caption!=null) dialogBuilder.setCaption(caption);
 		if(description!=null) dialogBuilder.setDescription(description);
 		if(pictureUrl!=null) dialogBuilder.setPicture(pictureUrl);
 		
-		uiHelper.trackPendingDialogCall( dialogBuilder.build().present() );
-		
+		try{
+			return dialogBuilder.build().present();
+		} catch(Exception e) {
+			AirFacebookExtension.log(e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		dialogHelper.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		
-		super.onActivityResult(requestCode, resultCode, data);
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		dialogHelper.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	public void onComplete(PendingCall pendingCall, Bundle data) {
+		AirFacebookExtension.context.dispatchStatusEventAsync(callback, "{ \"success\": \"true\" }" );
+		finish();
+	}
 
-	    uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
-	        @Override
-	        public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
-	    		FREContext context = AirFacebookExtension.context;
-	        	context.dispatchStatusEventAsync(callback, "{ \"error\": \""+error.getMessage()+"\" }");
-	        }
-
-	        @Override
-	        public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
-	        	FREContext context = AirFacebookExtension.context;
-	        	context.dispatchStatusEventAsync(callback, "{ \"success\": \"true\" }" );
-	        }
-	    });
+	@Override
+	public void onError(PendingCall pendingCall, Exception error, Bundle data) {
+		AirFacebookExtension.context.dispatchStatusEventAsync(callback, "{ \"error\": \"error\" }");
+		finish();
 	}
 
 }

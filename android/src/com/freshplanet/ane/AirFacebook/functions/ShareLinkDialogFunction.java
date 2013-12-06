@@ -24,7 +24,6 @@ import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
 
 public class ShareLinkDialogFunction implements FREFunction
@@ -39,12 +38,12 @@ public class ShareLinkDialogFunction implements FREFunction
 		String description = null;
 		String pictureUrl = null;
 		try {
-			link = arg1[0].getAsString();
-			name = arg1[1].getAsString();
-			caption = arg1[2].getAsString();
-			description = arg1[3].getAsString();
-			pictureUrl = arg1[4].getAsString();
-			callback = arg1[7].getAsString();
+			link		= arg1[0] == null ? null : arg1[0].getAsString();
+			name		= arg1[1] == null ? null : arg1[1].getAsString();
+			caption		= arg1[2] == null ? null : arg1[2].getAsString();
+			description	= arg1[3] == null ? null : arg1[3].getAsString();
+			pictureUrl	= arg1[4] == null ? null : arg1[4].getAsString();
+			callback	= arg1[7] == null ? null : arg1[7].getAsString();
 		} catch (Exception e) {
 			AirFacebookExtension.log("ERROR - " + e.getMessage());
 		}
