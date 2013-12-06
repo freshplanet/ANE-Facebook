@@ -51,7 +51,6 @@ import com.facebook.FacebookException;
 import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.SessionState;
-import com.facebook.android.R;
 import com.facebook.internal.SessionTracker;
 import com.facebook.model.GraphObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
@@ -119,6 +118,7 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
     private Button doneButton;
     private Drawable titleBarBackground;
     private Drawable doneButtonBackground;
+    private boolean appEventsLogged;
 
     PickerFragment(Class<T> graphObjectClass, int layout, Bundle args) {
         this.graphObjectClass = graphObjectClass;
@@ -143,20 +143,20 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
     @Override
     public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(activity, attrs, savedInstanceState);
-        TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.com_facebook_picker_fragment);
+        TypedArray a = activity.obtainStyledAttributes(attrs, getResources().getIntArray(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment")));
 
-        setShowPictures(a.getBoolean(R.styleable.com_facebook_picker_fragment_show_pictures, showPictures));
-        String extraFieldsString = a.getString(R.styleable.com_facebook_picker_fragment_extra_fields);
+        setShowPictures(a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_show_pictures"), showPictures));
+        String extraFieldsString = a.getString(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_extra_fields"));
         if (extraFieldsString != null) {
             String[] strings = extraFieldsString.split(",");
             setExtraFields(Arrays.asList(strings));
         }
 
-        showTitleBar = a.getBoolean(R.styleable.com_facebook_picker_fragment_show_title_bar, showTitleBar);
-        titleText = a.getString(R.styleable.com_facebook_picker_fragment_title_text);
-        doneButtonText = a.getString(R.styleable.com_facebook_picker_fragment_done_button_text);
-        titleBarBackground = a.getDrawable(R.styleable.com_facebook_picker_fragment_title_bar_background);
-        doneButtonBackground = a.getDrawable(R.styleable.com_facebook_picker_fragment_done_button_background);
+        showTitleBar = a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_show_title_bar"), showTitleBar);
+        titleText = a.getString(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_title_text"));
+        doneButtonText = a.getString(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_done_button_text"));
+        titleBarBackground = a.getDrawable(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_title_bar_background"));
+        doneButtonBackground = a.getDrawable(AirFacebookExtension.context.getResourceId("styleable.com_facebook_picker_fragment_done_button_background"));
 
         a.recycle();
     }
@@ -182,9 +182,12 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
             }
         });
         listView.setOnScrollListener(onScrollListener);
-        listView.setAdapter(adapter);
 
         activityCircle = (ProgressBar) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_activity_circle"));
+
+        setupViews(view);
+
+        listView.setAdapter(adapter);
 
         return view;
     }
@@ -247,6 +250,14 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
         if (activityCircle != null) {
             outState.putBoolean(ACTIVITY_CIRCLE_SHOW_KEY, activityCircle.getVisibility() == View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onStop() {
+        if (!appEventsLogged) {
+            logAppEvents(false);
+        }
+        super.onStop();
     }
 
     @Override
@@ -506,6 +517,9 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
         setPickerFragmentSettingsFromBundle(inState);
     }
 
+    void setupViews(ViewGroup view) {
+    }
+
     boolean filterIncludesItem(T graphObject) {
         if (filter != null) {
             return filter.includeItem(graphObject);
@@ -578,6 +592,9 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
         }
     }
 
+    void logAppEvents(boolean doneButtonClicked) {
+    }
+
     private static void setAlpha(View view, float alpha) {
         // Set the alpha appropriately (setAlpha is API >= 11, this technique works on all API levels).
         AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
@@ -620,8 +637,8 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
             View titleBar = stub.inflate();
 
             final RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.FILL_PARENT,
-                    RelativeLayout.LayoutParams.FILL_PARENT);
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT);
             layoutParams.addRule(RelativeLayout.BELOW, AirFacebookExtension.context.getResourceId("id.com_facebook_picker_title_bar"));
             listView.setLayoutParams(layoutParams);
 
@@ -634,6 +651,9 @@ public abstract class PickerFragment<T extends GraphObject> extends Fragment {
                 doneButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        logAppEvents(true);
+                        appEventsLogged = true;
+
                         if (onDoneButtonClickedListener != null) {
                             onDoneButtonClickedListener.onDoneButtonClicked(PickerFragment.this);
                         }

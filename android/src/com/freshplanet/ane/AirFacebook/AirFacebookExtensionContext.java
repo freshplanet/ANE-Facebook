@@ -23,9 +23,11 @@ import java.util.Map;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
+import com.facebook.Session;
 import com.facebook.android.Facebook;
+import com.freshplanet.ane.AirFacebook.functions.CanPresentOpenGraphDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.CanPresentShareDialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.CloseSessionAndClearTokenInformationFunction;
-import com.freshplanet.ane.AirFacebook.functions.DialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetAccessTokenFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetExpirationTimestampFunction;
 import com.freshplanet.ane.AirFacebook.functions.InitFunction;
@@ -33,8 +35,10 @@ import com.freshplanet.ane.AirFacebook.functions.IsSessionOpenFunction;
 import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.PublishInstallFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
-import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
-import com.facebook.Session;
+import com.freshplanet.ane.AirFacebook.functions.ShareLinkDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.ShareOpenGraphDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.ShareStatusDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.WebDialogFunction;
 
 public class AirFacebookExtensionContext extends FREContext
 {
@@ -61,8 +65,12 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("openSessionWithPermissions", new OpenSessionWithPermissionsFunction());
 		functions.put("reauthorizeSessionWithPermissions", new ReauthorizeSessionWithPermissionsFunction());
 		functions.put("closeSessionAndClearTokenInformation", new CloseSessionAndClearTokenInformationFunction());
-		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
-		functions.put("dialog", new DialogFunction());
+		functions.put("canPresentShareDialog", new CanPresentShareDialogFunction());
+		functions.put("shareStatusDialog", new ShareStatusDialogFunction());
+		functions.put("shareLinkDialog", new ShareLinkDialogFunction());
+		functions.put("canPresentOpenGraphDialog", new CanPresentOpenGraphDialogFunction());
+		functions.put("shareOpenGraphDialog", new ShareOpenGraphDialogFunction());
+		functions.put("webDialog", new WebDialogFunction());
 		functions.put("publishInstall", new PublishInstallFunction());
 		return functions;	
 	}
