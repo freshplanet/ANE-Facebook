@@ -2,53 +2,36 @@ package
 {
 	import com.freshplanet.ane.AirFacebook.Facebook;
 	
-	import flash.display.BitmapData;
-	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.filters.DropShadowFilter;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
 	
 	public class AirFacebookSample extends Sprite
 	{
 		
-		private var btnConnect:SimpleButton;
-		private var btnShareStatus:SimpleButton;
-		private var btnShareLink:SimpleButton;
+		private var btns:Vector.<AFSButton>;
 		
 		public function AirFacebookSample()
 		{
 			super();
 			
-			// support autoOrients
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			const w:Number = stage.fullScreenWidth;
+			// init the ANE
+			Facebook.getInstance().init( FacebookConfig.appID );
 			
-			btnConnect = createSkinnedButton( "Connect", new Rectangle(0,0,w - 40, 40) );
-			btnConnect.addEventListener( MouseEvent.CLICK, onBtnConnect );
-			btnConnect.x = w/2;
-			btnConnect.y = btnConnect.height/2 + 10;
-			addChild( btnConnect ) ;
-			
-			btnShareStatus = createSkinnedButton("Share a status", new Rectangle(0,0,w - 40, 40));
-			btnShareStatus.addEventListener( MouseEvent.CLICK, onBtnShareStatus );
-			btnShareStatus.x = w/2;
-			btnShareStatus.y = btnConnect.y + btnConnect.height/2 + 10 + btnShareStatus.height/2;
-			addChild( btnShareStatus );
-			
-			btnShareLink = createSkinnedButton("Share a link", new Rectangle(0,0,w - 40, 40));
-			btnShareLink.addEventListener( MouseEvent.CLICK, onBtnShareLink );
-			btnShareLink.x = w/2;
-			btnShareLink.y = btnShareStatus.y + btnShareStatus.height/2 + 10 + btnShareLink.height/2;
-			addChild( btnShareLink );
+			createUI(
+				{label: "Connect", 					handler: onBtnConnect},
+				
+				// You don't need to be connected to use those functionalities
+				// it will call the native app or mFacebook in a webview
+				// your user will have to be connected (or otherwise to login) in the app or in a browser
+				{label: "Share a status", 			handler: onBtnShareStatus},
+				{label: "Share a link", 			handler: onBtnShareLink},
+				{label: "Share an OpenGraph object",handler: onBtnShareOG},
+				{label: "Web Share Dialog", 		handler: onBtnWebShare}
+			);
 			
 		}
 		
@@ -85,6 +68,25 @@ package
 				Facebook.getInstance().webDialog( "feed", { 'link':"http://freshplanet.com" }, errorHandler );
 		}
 		
+		private function onBtnShareOG(e:Event):void
+		{
+			
+			var ogObject:Object = {
+				object:"http://freshplanet.com"
+			};
+			
+			var canPresentDialog:Boolean = Facebook.getInstance().canPresentOpenGraphDialog( "og.like", ogObject );
+			
+			if(canPresentDialog)
+				Facebook.getInstance().shareOpenGraphDialog( "og.like", ogObject, null, null, errorHandler );
+			
+		}
+		
+		private function onBtnWebShare(e:Event):void
+		{
+			Facebook.getInstance().webDialog( "feed", { 'link':"http://freshplanet.com" }, errorHandler );
+		}
+		
 		
 		private function errorHandler(data:String):void{
 			
@@ -92,50 +94,119 @@ package
 			
 		}
 		
+		
 		// ------------------
-		// UI util
-		private static function createSkinnedButton(text:String, size:Rectangle = null):SimpleButton{
+		// UI stuff, nothing to see here
+		
+		private function createUI( ...btnsDef ):void
+		{
 			
-			text = text.toUpperCase();
+			stage.align = StageAlign.TOP_LEFT;
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.color = 0xBBBBBB;
+			const w:Number = stage.fullScreenWidth;
 			
-			var tf:TextField = new TextField();
-			tf.defaultTextFormat = new TextFormat( "Arial", 16, 0xFFFFFF, false, false, false, null, null, TextFormatAlign.CENTER );
-			tf.filters = [new DropShadowFilter(2,45,0,.3,1,1,1,1)];
-			tf.text = text;
+			btns = new Vector.<AFSButton>();
 			
-			const margins:Number=10;
+			for each( var def:Object in btnsDef )
+			{
+				var btn:AFSButton = new AFSButton( def.label );
+				btn.addEventListener( MouseEvent.CLICK, def.handler );
+				addChild( btn ) ;
+				btns.push( btn ) ;
+			}
 			
-			if(size == null)
-				size = new Rectangle(0,0, tf.textWidth + margins*2, tf.textHeight + margins*2);
+			layout();
+			stage.addEventListener(Event.RESIZE, layout);
 			
-			while( tf.textWidth + margins*2 > size.width )
-				tf.text = text.substr(0, int(Math.min(tf.text.length -1, text.length -4))) + "...";
-			tf.width = tf.textWidth+10;
-			tf.height = tf.textHeight+2;
-			var mText:Matrix = new Matrix();
-			mText.translate(-tf.width/2,-tf.height/2);
+		}
+		
+		private function layout(e:Event=null):void
+		{
+			const w:Number = stage.fullScreenWidth;
 			
-			var up:Sprite = new Sprite();
-			up.graphics.beginFill( 0x6666AA ) ;
-			up.graphics.drawRect( -size.width/2, -size.height/2, size.width, size.height );
-			up.graphics.endFill();
-			var upText:BitmapData = new BitmapData( Math.ceil(tf.width), Math.ceil(tf.height), true, 0 );
-			upText.draw(tf);
-			up.graphics.beginBitmapFill(upText, mText, false, false);
-			up.graphics.drawRect(0-tf.width/2,-tf.height/2,tf.width,tf.height);
+			var prevY:Number = 10;
 			
-			var down:Sprite = new Sprite();
-			down.graphics.beginFill( 0x9999FF ) ;
-			down.graphics.drawRect( -size.width/2, -size.height/2, size.width, size.height );
-			down.graphics.endFill();
-			var downText:BitmapData = new BitmapData( Math.ceil(tf.width), Math.ceil(tf.height), true, 0 );
-			downText.draw(tf);
-			down.graphics.beginBitmapFill(downText, mText, false, false);
-			down.graphics.drawRect(-tf.width/2,-tf.height/2,tf.width,tf.height);
-			
-			return new SimpleButton(up,up,down,down);// left right left right B A Start
+			for each ( var btn:AFSButton in btns )
+			{
+				btn.size = new Rectangle(0,0,w - 40, 40);
+				btn.x = w/2;
+				btn.y = prevY + btn.height/2;
+				prevY = btn.y + btn.height/2 + 10;
+			}
 			
 		}
 		
 	}
+	
+}
+
+import flash.display.BitmapData;
+import flash.display.SimpleButton;
+import flash.display.Sprite;
+import flash.filters.DropShadowFilter;
+import flash.geom.Matrix;
+import flash.geom.Rectangle;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
+
+class AFSButton extends SimpleButton
+{
+	
+	private const margins:Number=10;
+	
+	private var text:String;
+	
+	public function AFSButton(text:String)
+	{
+		
+		this.text = text.toUpperCase();
+		size = null;
+		
+	}
+	
+	public function set size( _size:Rectangle ):void
+	{
+		
+		var tf:TextField = new TextField();
+		tf.defaultTextFormat = new TextFormat( "Arial", 16, 0xFFFFFF, false, false, false, null, null, TextFormatAlign.CENTER );
+		tf.filters = [new DropShadowFilter(2,45,0,.3,1,1,1,1)];
+		tf.text = text;
+		
+		if(_size == null)
+			_size = new Rectangle(0,0, tf.textWidth + margins*2, tf.textHeight + margins*2);
+		
+		while( tf.textWidth + margins*2 > _size.width )
+			tf.text = text.substr(0, int(Math.min(tf.text.length -1, text.length -4))) + "...";
+		tf.width = tf.textWidth+10;
+		tf.height = tf.textHeight+2;
+		var mText:Matrix = new Matrix();
+		mText.translate(-tf.width/2,-tf.height/2);
+		
+		var up:Sprite = new Sprite();
+		up.graphics.beginFill( 0x6666AA ) ;
+		up.graphics.drawRect( -_size.width/2, -_size.height/2, _size.width, _size.height );
+		up.graphics.endFill();
+		var upText:BitmapData = new BitmapData( Math.ceil(tf.width), Math.ceil(tf.height), true, 0 );
+		upText.draw(tf);
+		up.graphics.beginBitmapFill(upText, mText, false, false);
+		up.graphics.drawRect(0-tf.width/2,-tf.height/2,tf.width,tf.height);
+		
+		var down:Sprite = new Sprite();
+		down.graphics.beginFill( 0x369FE5 ) ;
+		down.graphics.drawRect( -_size.width/2, -_size.height/2, _size.width, _size.height );
+		down.graphics.endFill();
+		var downText:BitmapData = new BitmapData( Math.ceil(tf.width), Math.ceil(tf.height), true, 0 );
+		downText.draw(tf);
+		down.graphics.beginBitmapFill(downText, mText, false, false);
+		down.graphics.drawRect(-tf.width/2,-tf.height/2,tf.width,tf.height);
+		
+		this.upState = up;
+		this.overState = up;
+		this.downState = down;
+		this.hitTestState = up;
+		
+	}
+	
 }
