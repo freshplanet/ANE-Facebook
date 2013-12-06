@@ -561,13 +561,19 @@ DEFINE_ANE_FUNCTION(webDialog)
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
     BOOL isRequestDialog = [method isEqualToString:@"apprequests"];
     
+    if( [parameters objectForKey:@"app_id"] == nil )
+    {
+        NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:parameters];
+        [temp setObject:[[AirFacebook sharedInstance] appID] forKey:@"app_id"];
+        parameters = temp;
+    }
+    
     [AirFacebook log:
          @"displaying facebook web dialog : isFeedingDialog - %@",
          isFeedDialog ? @"YES" : @"NO"
     ];
     
     FBWebDialogHandler resultHandler = ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-        
         if (error) {
             // TODO handle errors on a low level using FB SDK
             NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
@@ -582,6 +588,7 @@ DEFINE_ANE_FUNCTION(webDialog)
                 [AirFacebook dispatchEvent:callback withMessage:data];
             }
         }
+        NSLog(@"end");
     };
     
     if (isFeedDialog)
@@ -600,8 +607,6 @@ DEFINE_ANE_FUNCTION(webDialog)
     {
         [FBWebDialogs presentDialogModallyWithSession:nil dialog:method parameters:parameters handler:resultHandler];
     }
-    
-    [parameters release];
     
     return nil;
 }
