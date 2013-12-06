@@ -19,18 +19,12 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import android.content.Intent;
-import android.os.Bundle;
 
-import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.FacebookDialog.ShareDialogBuilder;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
-import com.freshplanet.ane.AirFacebook.WebDialogActivity;
 
 public class ShareStatusDialogFunction implements FREFunction
 {

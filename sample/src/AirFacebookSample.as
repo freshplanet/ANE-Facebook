@@ -20,6 +20,7 @@ package
 			
 			// init the ANE
 			Facebook.getInstance().init( FacebookConfig.appID );
+			Facebook.getInstance().logEnabled = true;
 			
 			createUI(
 				{label: "Connect", 					handler: onBtnConnect},
@@ -78,7 +79,7 @@ package
 			var canPresentDialog:Boolean = Facebook.getInstance().canPresentOpenGraphDialog( "og.like", ogObject );
 			
 			if(canPresentDialog)
-				Facebook.getInstance().shareOpenGraphDialog( "og.like", ogObject, null, null, errorHandler );
+				Facebook.getInstance().shareOpenGraphDialog( "og.like", ogObject, "object", null, errorHandler );
 			
 		}
 		

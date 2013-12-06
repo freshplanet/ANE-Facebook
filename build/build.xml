@@ -68,10 +68,10 @@
             </classpath>
         </javac>
 
-        <!-- <mkdir dir="../android/temp/zip"/>
+        <mkdir dir="../android/temp/zip"/>
         <unzip src="../android/libs/android-support-v4.jar" dest="../android/temp/zip"/>
         <unzip src="../android/libs/annotations.jar" dest="../android/temp/zip"/>
-        <copydir src="../android/temp/zip/android" dest="../android/temp/classes/android"/> -->
+        <copydir src="../android/temp/zip/android" dest="../android/temp/classes/android"/>
 
         <mkdir dir="../temp/android/"/>
         <jar basedir="../android/temp/classes" destfile="../temp/android/lib${name}.jar"/>

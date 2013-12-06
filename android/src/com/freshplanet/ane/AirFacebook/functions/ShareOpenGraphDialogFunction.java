@@ -38,7 +38,7 @@ public class ShareOpenGraphDialogFunction implements FREFunction
 		Bundle actionParams = new Bundle();
 		String previewProperty = null;
 		try {
-			actionType = arg1[0].getAsString();
+			actionType		= arg1[0] == null ? null : arg1[0].getAsString();
 			
 			FREArray keysArray = (FREArray)arg1[1];
 			FREArray valuesArray = (FREArray)arg1[2];
@@ -53,8 +53,8 @@ public class ShareOpenGraphDialogFunction implements FREFunction
 				actionParams.putString(key, value);
 			}
 			
-			previewProperty = arg1[6].getAsString();
-			callback = arg1[7].getAsString();
+			previewProperty	= arg1[3] == null ? null : arg1[3].getAsString();
+			callback		= arg1[6] == null ? null : arg1[6].getAsString();
 		} catch (Exception e) {
 			AirFacebookExtension.log("ERROR - " + e.getMessage());
 		}

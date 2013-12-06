@@ -18,9 +18,6 @@
 
 package com.freshplanet.ane.AirFacebook.functions;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -28,8 +25,6 @@ import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.facebook.FacebookException;
-import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.WebDialogActivity;
 
@@ -49,7 +44,7 @@ public class WebDialogFunction implements FREFunction
 		
 		try {
 			
-			method = arg1[0].getAsString();
+			method = arg1[0] == null ? null : arg1[0].getAsString();
 			
 			arrayLength = keysArray.getLength();
 			String key;
@@ -61,7 +56,7 @@ public class WebDialogFunction implements FREFunction
 				parameters.putString(key, value);
 			}
 			
-			callback = arg1[3].getAsString();
+			callback = arg1[3] == null ? null : arg1[3].getAsString();
 			
 		} catch (Exception e) {
 			AirFacebookExtension.log("ERROR - " + e.getMessage());
