@@ -341,7 +341,7 @@ public final class FacebookRequestError {
                 .append(", errorType: ")
                 .append(errorType)
                 .append(", errorMessage: ")
-                .append(errorMessage)
+                .append(getErrorMessage())
                 .append("}")
                 .toString();
     }

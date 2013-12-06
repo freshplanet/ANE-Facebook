@@ -16,7 +16,7 @@
 
 package com.facebook.widget;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -32,7 +32,9 @@ import android.widget.ImageView;
 
 import com.facebook.FacebookException;
 import com.facebook.LoggingBehavior;
-import com.facebook.android.R;
+import com.facebook.internal.ImageDownloader;
+import com.facebook.internal.ImageRequest;
+import com.facebook.internal.ImageResponse;
 import com.facebook.internal.Logger;
 import com.facebook.internal.Utility;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
@@ -113,6 +115,7 @@ public class ProfilePictureView extends FrameLayout {
     private int presetSizeType = CUSTOM;
     private ImageRequest lastRequest;
     private OnErrorListener onErrorListener;
+    private Bitmap customizedDefaultProfilePicture = null;
 
     /**
      * Constructor
@@ -242,10 +245,20 @@ public class ProfilePictureView extends FrameLayout {
      * Sets an OnErrorListener for this instance of ProfilePictureView to call into when
      * certain exceptions occur.
      *
-     * @param onErrorListener The listener object to set
+     * @param onErrorListener The Listener object to set
      */
     public final void setOnErrorListener(OnErrorListener onErrorListener) {
-        this.onErrorListener = onErrorListener;
+      this.onErrorListener = onErrorListener;
+    }
+
+    /**
+     * The ProfilePictureView will display the provided image while the specified
+     * profile is being loaded, or if the specified profile is not available.
+     *
+     * @param inputBitmap The bitmap to render until the actual profile is loaded.
+     */
+    public final void setDefaultProfilePicture(Bitmap inputBitmap) {
+        customizedDefaultProfilePicture = inputBitmap;
     }
 
     /**
@@ -374,9 +387,9 @@ public class ProfilePictureView extends FrameLayout {
     }
 
     private void parseAttributes(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.com_facebook_profile_picture_view);
-        setPresetSize(a.getInt(R.styleable.com_facebook_profile_picture_view_preset_size, CUSTOM));
-        isCropped = a.getBoolean(R.styleable.com_facebook_profile_picture_view_is_cropped, IS_CROPPED_DEFAULT_VALUE);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, getResources().getIntArray(AirFacebookExtension.context.getResourceId("styleable.com_facebook_profile_picture_view")));
+        setPresetSize(a.getInt(AirFacebookExtension.context.getResourceId("styleable.com_facebook_profile_picture_view_preset_size"), CUSTOM));
+        isCropped = a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_profile_picture_view_is_cropped"), IS_CROPPED_DEFAULT_VALUE);
         a.recycle();
     }
 
@@ -394,10 +407,18 @@ public class ProfilePictureView extends FrameLayout {
     }
 
     private void setBlankProfilePicture() {
-        int blankImageResource = isCropped() ?
-                AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_picture_blank_square") :
-                AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_picture_blank_portrait");
-        setImageBitmap( BitmapFactory.decodeResource(getResources(), blankImageResource));
+        if (customizedDefaultProfilePicture == null) {
+          int blankImageResource = isCropped() ?
+                  AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_picture_blank_square") :
+                  AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_picture_blank_portrait");
+          setImageBitmap( BitmapFactory.decodeResource(getResources(), blankImageResource));
+	} else {
+          // Update profile image dimensions.
+          updateImageQueryParameters();
+          // Resize inputBitmap to new dimensions of queryWidth and queryHeight.
+          Bitmap scaledBitmap = Bitmap.createScaledBitmap(customizedDefaultProfilePicture, queryWidth, queryHeight, false);
+          setImageBitmap(scaledBitmap);
+	}
     }
 
     private void setImageBitmap(Bitmap imageBitmap) {
@@ -433,7 +454,7 @@ public class ProfilePictureView extends FrameLayout {
             lastRequest = request;
 
             ImageDownloader.downloadAsync(request);
-        } catch (MalformedURLException e) {
+        } catch (URISyntaxException e) {
             Logger.log(LoggingBehavior.REQUESTS, Log.ERROR, TAG, e.toString());
         }
     }

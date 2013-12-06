@@ -16,8 +16,8 @@
 
 package com.facebook.widget;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +45,9 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.facebook.FacebookException;
+import com.facebook.internal.ImageDownloader;
+import com.facebook.internal.ImageRequest;
+import com.facebook.internal.ImageResponse;
 import com.facebook.model.GraphObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
@@ -191,7 +194,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     }
 
     public void prioritizeViewRange(int firstVisibleItem, int lastVisibleItem, int prefetchBuffer) {
-        if (lastVisibleItem < firstVisibleItem) {
+        if ((lastVisibleItem < firstVisibleItem) || (sectionKeys.size() == 0)) {
             return;
         }
 
@@ -235,7 +238,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             }
         }
         for (T graphObject : graphObjectsToPrefetchPicturesFor) {
-            URL url = getPictureUrlOfGraphObject(graphObject);
+            URI uri = getPictureUriOfGraphObject(graphObject);
             final String id = getIdOfGraphObject(graphObject);
 
             // This URL already have been requested for pre-fetching, but we want to act in an LRU manner, so move
@@ -245,7 +248,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
 
             // If we've already requested it for pre-fetching, no need to do so again.
             if (!alreadyPrefetching) {
-                downloadProfilePicture(id, url, null);
+                downloadProfilePicture(id, uri, null);
             }
         }
     }
@@ -271,23 +274,23 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return null;
     }
 
-    protected URL getPictureUrlOfGraphObject(T graphObject) {
-        String url = null;
+    protected URI getPictureUriOfGraphObject(T graphObject) {
+        String uri = null;
         Object o = graphObject.getProperty(PICTURE);
         if (o instanceof String) {
-            url = (String) o;
+            uri = (String) o;
         } else if (o instanceof JSONObject) {
             ItemPicture itemPicture = GraphObject.Factory.create((JSONObject) o).cast(ItemPicture.class);
             ItemPictureData data = itemPicture.getData();
             if (data != null) {
-                url = data.getUrl();
+                uri = data.getUrl();
             }
         }
 
-        if (url != null) {
+        if (uri != null) {
             try {
-                return new URL(url);
-            } catch (MalformedURLException e) {
+                return new URI(uri);
+            } catch (URISyntaxException e) {
             }
         }
         return null;
@@ -309,7 +312,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         View result = convertView;
 
         if (result == null) {
-            result = createGraphObjectView(graphObject, convertView);
+            result = createGraphObjectView(graphObject);
         }
 
         populateGraphObjectView(result, graphObject);
@@ -336,7 +339,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_default_icon");
     }
 
-    protected View createGraphObjectView(T graphObject, View convertView) {
+    protected View createGraphObjectView(T graphObject) {
         View result = inflater.inflate(getGraphObjectRowLayoutId(graphObject), null);
 
         ViewStub checkboxStub = (ViewStub) result.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_checkbox_stub"));
@@ -387,18 +390,18 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         }
 
         if (getShowPicture()) {
-            URL pictureURL = getPictureUrlOfGraphObject(graphObject);
+            URI pictureURI = getPictureUriOfGraphObject(graphObject);
 
-            if (pictureURL != null) {
+            if (pictureURI != null) {
                 ImageView profilePic = (ImageView) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_image"));
 
                 // See if we have already pre-fetched this; if not, download it.
                 if (prefetchedPictureCache.containsKey(id)) {
                     ImageResponse response = prefetchedPictureCache.get(id);
                     profilePic.setImageBitmap(response.getBitmap());
-                    profilePic.setTag(response.getRequest().getImageUrl());
+                    profilePic.setTag(response.getRequest().getImageUri());
                 } else {
-                    downloadProfilePicture(id, pictureURL, profilePic);
+                    downloadProfilePicture(id, pictureURI, profilePic);
                 }
             }
         }
@@ -439,7 +442,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
 
     String getPictureFieldSpecifier() {
         // How big is our image?
-        View view = createGraphObjectView(null, null);
+        View view = createGraphObjectView(null);
         ImageView picture = (ImageView) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_image"));
         if (picture == null) {
             return null;
@@ -737,8 +740,8 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         return result;
     }
 
-    private void downloadProfilePicture(final String profileId, URL pictureURL, final ImageView imageView) {
-        if (pictureURL == null) {
+    private void downloadProfilePicture(final String profileId, URI pictureURI, final ImageView imageView) {
+        if (pictureURI == null) {
             return;
         }
 
@@ -747,7 +750,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         // only want to queue a download if the view's tag isn't already set to the URL (which would mean
         // it's already got the correct picture).
         boolean prefetching = imageView == null;
-        if (prefetching || !pictureURL.equals(imageView.getTag())) {
+        if (prefetching || !pictureURI.equals(imageView.getTag())) {
             if (!prefetching) {
                 // Setting the tag to the profile ID indicates that we're currently downloading the
                 // picture for this profile; we'll set it to the actual picture URL when complete.
@@ -755,7 +758,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 imageView.setImageResource(getDefaultPicture());
             }
 
-            ImageRequest.Builder builder = new ImageRequest.Builder(context.getApplicationContext(), pictureURL)
+            ImageRequest.Builder builder = new ImageRequest.Builder(context.getApplicationContext(), pictureURI)
                     .setCallerTag(this)
                     .setCallback(
                             new ImageRequest.Callback() {
@@ -798,12 +801,12 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
                 }
                 prefetchedPictureCache.put(graphObjectId, response);
             }
-        } else if (imageView != null && graphObjectId.equals(imageView.getTag())) {
+        } else if (graphObjectId.equals(imageView.getTag())) {
             Exception error = response.getError();
             Bitmap bitmap = response.getBitmap();
             if (error == null && bitmap != null) {
                 imageView.setImageBitmap(bitmap);
-                imageView.setTag(response.getRequest().getImageUrl());
+                imageView.setTag(response.getRequest().getImageUri());
             }
         }
     }

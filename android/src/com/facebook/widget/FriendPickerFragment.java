@@ -16,6 +16,7 @@
 
 package com.facebook.widget;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -28,10 +29,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import com.facebook.AppEventsLogger;
 import com.facebook.FacebookException;
 import com.facebook.Request;
 import com.facebook.Session;
-import com.facebook.android.R;
+import com.facebook.internal.AnalyticsEvents;
 import com.facebook.model.GraphUser;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
@@ -124,10 +126,10 @@ public class FriendPickerFragment extends PickerFragment<GraphUser> {
     @Override
     public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(activity, attrs, savedInstanceState);
-        TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.com_facebook_friend_picker_fragment);
-
-        setMultiSelect(a.getBoolean(R.styleable.com_facebook_friend_picker_fragment_multi_select, multiSelect));
-
+        TypedArray a = activity.obtainStyledAttributes(attrs, getResources().getIntArray(AirFacebookExtension.context.getResourceId("styleable.com_facebook_friend_picker_fragment")));
+        
+        setMultiSelect(a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_friend_picker_fragment_multi_select"), multiSelect));
+        
         a.recycle();
     }
 
@@ -190,6 +192,22 @@ public class FriendPickerFragment extends PickerFragment<GraphUser> {
     @Override
     String getDefaultTitleText() {
         return getString(AirFacebookExtension.context.getResourceId("string.com_facebook_choose_friends"));
+    }
+
+    @Override
+    void logAppEvents(boolean doneButtonClicked) {
+        AppEventsLogger logger = AppEventsLogger.newLogger(this.getActivity(), getSession());
+        Bundle parameters = new Bundle();
+
+        // If Done was clicked, we know this completed successfully. If not, we don't know (caller might have
+        // dismissed us in response to selection changing, or user might have hit back button). Either way
+        // we'll log the number of selections.
+        String outcome = doneButtonClicked ? AnalyticsEvents.PARAMETER_DIALOG_OUTCOME_VALUE_COMPLETED :
+                AnalyticsEvents.PARAMETER_DIALOG_OUTCOME_VALUE_UNKNOWN;
+        parameters.putString(AnalyticsEvents.PARAMETER_DIALOG_OUTCOME, outcome);
+        parameters.putInt("num_friends_picked", getSelection().size());
+
+        logger.logSdkEvent(AnalyticsEvents.EVENT_FRIEND_PICKER_USAGE, null, parameters);
     }
 
     private Request createRequest(String userID, Set<String> extraFields, Session session) {
