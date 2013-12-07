@@ -10,6 +10,8 @@
 	<string>AirFacebook</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>1F654B42-519F-4CC6-8207-61A36B5FFA60</key>
+		<string>https://github.com/facebook/facebook-ios-sdk.git</string>
 		<key>A172745A-7B82-4555-AAB2-17DE865CB1F3</key>
 		<string>ssh://github.com/freshplanet/ANE-Facebook.git</string>
 	</dict>
@@ -17,6 +19,8 @@
 	<string>ios/AirFacebook.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>1F654B42-519F-4CC6-8207-61A36B5FFA60</key>
+		<string>../../facebook-ios-sdk</string>
 		<key>A172745A-7B82-4555-AAB2-17DE865CB1F3</key>
 		<string>../../..</string>
 	</dict>
@@ -35,6 +39,14 @@
 			<string>A172745A-7B82-4555-AAB2-17DE865CB1F3</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ANE-Facebook</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1F654B42-519F-4CC6-8207-61A36B5FFA60</string>
+			<key>IDESourceControlWCCName</key>
+			<string>facebook-ios-sdk</string>
 		</dict>
 	</array>
 </dict>
