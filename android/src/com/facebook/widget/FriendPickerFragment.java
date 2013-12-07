@@ -16,7 +16,6 @@
 
 package com.facebook.widget;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +73,7 @@ public class FriendPickerFragment extends PickerFragment<GraphUser> {
      */
     @SuppressLint("ValidFragment")
     public FriendPickerFragment(Bundle args) {
-        super(GraphUser.class, AirFacebookExtension.context.getResourceId("layout.com_facebook_friendpickerfragment"), args);
+        super(GraphUser.class, AirFacebookExtension.getResourceId("layout.com_facebook_friendpickerfragment"), args);
         setFriendPickerSettingsFromBundle(args);
     }
 
@@ -126,10 +125,10 @@ public class FriendPickerFragment extends PickerFragment<GraphUser> {
     @Override
     public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(activity, attrs, savedInstanceState);
-        TypedArray a = activity.obtainStyledAttributes(attrs, getResources().getIntArray(AirFacebookExtension.context.getResourceId("styleable.com_facebook_friend_picker_fragment")));
-        
-        setMultiSelect(a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_friend_picker_fragment_multi_select"), multiSelect));
-        
+        TypedArray a = activity.obtainStyledAttributes(attrs, AirFacebookExtension.getResourceIds("styleable.com_facebook_friend_picker_fragment"));
+
+        setMultiSelect(a.getBoolean(AirFacebookExtension.getResourceId("styleable.com_facebook_friend_picker_fragment_multi_select"), multiSelect));
+
         a.recycle();
     }
 
@@ -152,12 +151,12 @@ public class FriendPickerFragment extends PickerFragment<GraphUser> {
 
             @Override
             protected int getGraphObjectRowLayoutId(GraphUser graphObject) {
-                return AirFacebookExtension.context.getResourceId("layout.com_facebook_picker_list_row");
+                return AirFacebookExtension.getResourceId("layout.com_facebook_picker_list_row");
             }
 
             @Override
             protected int getDefaultPicture() {
-                return AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_default_icon");
+                return AirFacebookExtension.getResourceId("drawable.com_facebook_profile_default_icon");
             }
 
         };
@@ -191,7 +190,7 @@ public class FriendPickerFragment extends PickerFragment<GraphUser> {
 
     @Override
     String getDefaultTitleText() {
-        return getString(AirFacebookExtension.context.getResourceId("string.com_facebook_choose_friends"));
+        return getString(AirFacebookExtension.getResourceId("string.com_facebook_choose_friends"));
     }
 
     @Override

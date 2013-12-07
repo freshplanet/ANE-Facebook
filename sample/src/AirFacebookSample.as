@@ -8,6 +8,7 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
 	
 	public class AirFacebookSample extends Sprite
 	{
@@ -89,9 +90,9 @@ package
 		}
 		
 		
-		private function errorHandler(data:String):void{
+		private function errorHandler(data:Object):void{
 			
-			trace(data);
+			trace(JSON.stringify(data));
 			
 		}
 		
@@ -124,16 +125,19 @@ package
 		
 		private function layout(e:Event=null):void
 		{
-			const w:Number = stage.fullScreenWidth;
+			const dpi:Number = Capabilities.screenDPI;
+			const contentScale:Number = dpi/163;
+			const cs:Number = contentScale;
+			const w:Number = stage.fullScreenWidth/contentScale;
 			
-			var prevY:Number = 10;
+			var prevY:Number = 10*cs;
 			
 			for each ( var btn:AFSButton in btns )
 			{
-				btn.size = new Rectangle(0,0,w - 40, 40);
-				btn.x = w/2;
+				btn.size = new Rectangle(0,0,(w-40)*cs, 40*cs);
+				btn.x = (w/2)*cs;
 				btn.y = prevY + btn.height/2;
-				prevY = btn.y + btn.height/2 + 10;
+				prevY = btn.y + btn.height/2 + 10*cs;
 			}
 			
 		}

@@ -1,5 +1,5 @@
 package com.facebook.android;
 
 public class BuildConfig {
-	static public final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 }

@@ -4,10 +4,11 @@ Air Native Extension for Facebook (iOS + Android)
 This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
 
 
-Facebook SDK
+Facebook SDK Versions
 ---------
 
-This ANE contains the new Facebook SDK for iOS (3.1). It still uses the old Facebook SDK for Android (the transition to 3.0 is a work in progress). The Actionscript API is based on the new Facebook SDK API.
+* iOS: 3.10 (compatible with iOS 5.0 and above)
+* Android: 3.5.2 (compatible with Android 2.2 and above)
 
 
 Installation
@@ -18,76 +19,93 @@ The ANE binary (AirFacebook.ane) is located in the *bin* folder. You should add 
 On iOS:
 
 * as explained [here](http://developers.facebook.com/docs/mobile/ios/build/), you will need to add some Info.plist additions in your application descriptor:
+
+```xml
+<iPhone>
     
-    ```xml
-    <iPhone>
-        
-        <InfoAdditions><![CDATA[
+    <InfoAdditions><![CDATA[
 
-            <key>CFBundleURLTypes</key>
-            <array>
-                <dict>
-                    <key>CFBundleURLSchemes</key>
-                        <array>
-                            <string>fb{YOUR_FB_ID}</string>
-                        </array>
-                </dict>
-            </array>
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>fb{YOUR_FB_ID}</string>
+                    </array>
+            </dict>
+        </array>
+        <key>FacebookAppID</key>
+        <string>{YOUR_FB_ID}</string>
 
-        ]]></InfoAdditions>
+    ]]></InfoAdditions>
 
-    </iPhone>
-    ```
+</iPhone>
+```
 
 On Android:
 
 * you will need to add the following activities and permission in your application descriptor:
 
-    ```xml
-    <android>
-        <manifestAdditions><![CDATA[
-            <manifest android:installLocation="auto">
-                
+```xml
+<android>
+    <manifestAdditions><![CDATA[
+        <manifest android:installLocation="auto">
+            
+            ...
+
+            <uses-permission android:name="android.permission.INTERNET"/>
+            
+            ...
+
+            <application>
+
                 ...
-
-                <uses-permission android:name="android.permission.INTERNET"/>
                 
-                ...
+                <activity android:name="com.facebook.LoginActivity"/>
+                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+                
+            </application>
 
-                <application>
-
-                    ...
-                    
-                    <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                    <activity android:name="com.freshplanet.ane.AirFacebook.ExtendAccessTokenActivity"></activity>
-                    
-                </application>
-
-            </manifest>
-        ]]></manifestAdditions>
-    </android>
-    ```
-
-
-Build script
----------
-
-Should you need to edit the extension source code and/or recompile it, you will find an ant build script (build.xml) in the *build* folder:
-
-    cd /path/to/the/ane/build
-    mv example.build.config build.config
-    #edit the build.config file to provide your machine-specific paths
-    ant
+        </manifest>
+    ]]></manifestAdditions>
+</android>
+```
 
 
 Documentation
 --------
-Documentation is embbeded in the ane to provide inline asdoc in Flash Builder and other compatible IDEs
 
-You can generate a readable html documentation from the ant build script (see Build Script above):
+Actionscript documentation is available in HTML format in the *docs* folder.
 
-   ant asdoc
+
+Samples
+--------
+
+A sample project is available in the *sample* folder.
+Read HOW-TO.txt walkthrought to set-up and run the sample application.
+
+
+Build from source
+---------
+
+Should you need to edit the extension source code and/or recompile it, you will find an ant build script (build.xml) in the *build* folder:
+    
+```bash
+cd /path/to/the/ane
+
+# Setup Facebook SDK
+git submodule update --init
+ios/facebook-ios-sdk/scripts/build_framework.sh
+
+# Setup build configuration
+cd build
+mv example.build.config build.config
+# Edit build.config file to provide your machine-specific paths
+
+# Build the ANE
+ant
+```
 
 
 Authors

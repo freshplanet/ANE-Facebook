@@ -19,22 +19,24 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
+import com.facebook.Session;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
-public class GetExpirationTimestampFunction implements FREFunction
+public class GetExpirationTimestampFunction extends BaseFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
+		super.call(context, args);
+		
+		Session session = AirFacebookExtension.context.getSession();
 		try
 		{
-			return FREObject.newObject(Math.round(AirFacebookExtensionContext.session.getExpirationDate().getTime()/1000));
+			return FREObject.newObject(Math.round(session.getExpirationDate().getTime()/1000));
 		}
 		catch (Exception e)
 		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}

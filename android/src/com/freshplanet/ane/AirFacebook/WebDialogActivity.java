@@ -44,7 +44,7 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		AirFacebookExtension.log("INFO - WebDialogActivity.onCreate");
+		AirFacebookExtension.log("WebDialogActivity.onCreate");
 		super.onCreate(savedInstanceState);
 		
 		// Retrieve extra values
@@ -52,17 +52,22 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 		Bundle parameters = this.getIntent().getBundleExtra(extraPrefix+".parameters");
 		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
 		
-		Session session = AirFacebookExtensionContext.session;
+		Session session = AirFacebookExtension.context.getSession();
 		if ( session == null )
 		{
+			AirFacebookExtension.context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(AirFacebookError.NOT_INITIALIZED));
 			AirFacebookExtension.log("ERROR - AirFacebook is not initialized");
 			finish();
 			return;
 		}
 		
+		// Setup views
+		requestWindowFeature(Window.FEATURE_LEFT_ICON);
+		setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
+		
 		if ( session.isOpened() )
 		{
-			dialog = new WebDialog.Builder(this, AirFacebookExtensionContext.session, method, parameters)
+			dialog = new WebDialog.Builder(this, AirFacebookExtension.context.getSession(), method, parameters)
 				.setOnCompleteListener(this)
 				.build();
 		}
@@ -81,7 +86,7 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		AirFacebookExtension.log("INFO - DialogActivity.onActivityResult");
+		AirFacebookExtension.log("DialogActivity.onActivityResult");
 		finish();
 	}
 
@@ -95,8 +100,8 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 		if (context != null && callback != null)
 		{
 			if (error != null) {
-				AirFacebookExtension.log("INFO - DialogActivity.onComplete, error " + error.getMessage());
-				context.dispatchStatusEventAsync(callback, "{ \"error\": \""+error.getMessage()+"\" }");
+				AirFacebookExtension.log("DialogActivity.onComplete, error " + error.getMessage());
+				context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(error.getMessage()));
 				finish();
 				return;
 			}
@@ -127,7 +132,7 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 			if(postMessage == null)
 				postMessage = "{ \"cancel\": true }";
 			
-			AirFacebookExtension.log("INFO - DialogActivity.onComplete, postMessage " + postMessage);
+			AirFacebookExtension.log("DialogActivity.onComplete, postMessage " + postMessage);
 			context.dispatchStatusEventAsync(callback, postMessage);
 		}
 		
@@ -150,7 +155,7 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 			}
 			catch(UnsupportedEncodingException ex)
 			{
-				// Um. No.
+				ex.printStackTrace();
 			}
 		}
 		

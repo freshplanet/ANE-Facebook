@@ -23,41 +23,34 @@ import android.content.Intent;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
 
-public class ShareLinkDialogFunction implements FREFunction
+public class ShareLinkDialogFunction extends BaseFunction implements FREFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
+		
+		super.call(context, args);
+		
 		// Retrieve callback
-		String callback = null;
-		String link = null;
-		String name = null;
-		String caption = null;
-		String description = null;
-		String pictureUrl = null;
-		try {
-			link		= arg1[0] == null ? null : arg1[0].getAsString();
-			name		= arg1[1] == null ? null : arg1[1].getAsString();
-			caption		= arg1[2] == null ? null : arg1[2].getAsString();
-			description	= arg1[3] == null ? null : arg1[3].getAsString();
-			pictureUrl	= arg1[4] == null ? null : arg1[4].getAsString();
-			callback	= arg1[7] == null ? null : arg1[7].getAsString();
-		} catch (Exception e) {
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		String callback = getStringFromFREObject(args[7]);
+		String link = getStringFromFREObject(args[0]);
+		String name = getStringFromFREObject(args[1]);
+		String caption = getStringFromFREObject(args[2]);
+		String description = getStringFromFREObject(args[3]);
+		String pictureUrl = getStringFromFREObject(args[4]);
 		
 		// Start dialog activity
-		Intent i = new Intent(arg0.getActivity().getApplicationContext(), ShareDialogActivity.class);
+		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareDialogActivity.class);
 		i.putExtra(ShareDialogActivity.extraPrefix+".link", link);
 		i.putExtra(ShareDialogActivity.extraPrefix+".name", name);
 		i.putExtra(ShareDialogActivity.extraPrefix+".caption", caption);
 		i.putExtra(ShareDialogActivity.extraPrefix+".description", description);
 		i.putExtra(ShareDialogActivity.extraPrefix+".pictureUrl", pictureUrl);
 		i.putExtra(ShareDialogActivity.extraPrefix+".callback", callback);
-		arg0.getActivity().startActivity(i);
+		context.getActivity().startActivity(i);
 		
 		return null;
+		
 	}
 }

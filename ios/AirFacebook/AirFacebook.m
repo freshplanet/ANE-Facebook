@@ -55,13 +55,6 @@ static AirFacebook *sharedInstance = nil;
     return self;
 }
 
-- (void)dealloc
-{
-    [_appID release];
-    [_urlSchemeSuffix release];
-    [super dealloc];
-}
-
 // every time we have to send back information to the air application, invoque this method wich will dispatch an Event in air
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message
 {
@@ -72,53 +65,47 @@ static AirFacebook *sharedInstance = nil;
     
 }
 
-- (id)initWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix
+- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix
 {
-    self = [self init];
-    
-    if (self)
+    // Save parameters
+    _appID = appID;
+    _urlSchemeSuffix = urlSchemeSuffix;
+    NSMutableString *logMessage = [NSMutableString stringWithFormat:@"Initializing with application ID %@", _appID];
+    if (_urlSchemeSuffix)
     {
-        // Save parameters
-        _appID = [appID retain];
-        _urlSchemeSuffix = [urlSchemeSuffix retain];
-        [AirFacebook log:@"Initializing with application ID %@ and URL scheme suffix %@", _appID, _urlSchemeSuffix];
+        [logMessage appendFormat:@" and URL scheme suffix %@", _urlSchemeSuffix];
+    }
+    [AirFacebook log:logMessage];
+    
+    // Open session if a token is in cache.
+    FBSession *session = nil;
+    @try
+    {
+        session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
+    }
+    @catch (NSException *exception)
+    {
+        [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
+        return;
+    }
+    
+    [FBSession setActiveSession:session];
+    if (session.state == FBSessionStateCreatedTokenLoaded)
+    {
+        [AirFacebook log:@"Opening session from cached token"];
         
-        // Open session if a token is in cache.
-        FBSession *session = nil;
         @try
         {
-            session = [[FBSession alloc] initWithAppID:appID permissions:nil urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:[FBSessionTokenCachingStrategy defaultInstance]];
+            [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
         }
         @catch (NSException *exception)
         {
             [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
-            [session release];
-            return nil;
+            return;
         }
-    
-        [FBSession setActiveSession:session];
-        if (session.state == FBSessionStateCreatedTokenLoaded)
-        {
-            [AirFacebook log:@"Opening session from cached token"];
-            
-            @try
-            {
-                [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
-            }
-            @catch (NSException *exception)
-            {
-                [AirFacebook dispatchEvent:@"LOGGING" withMessage:[exception reason]];
-                [session release];
-                return nil;
-            }
-        }
-        
-        [FBSession renewSystemCredentials:NULL];
-    
-        [session release];
     }
-
-    return self;
+    
+    [FBSession renewSystemCredentials:NULL];
 }
 
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler
@@ -144,13 +131,13 @@ static AirFacebook *sharedInstance = nil;
         
         if (status == FBSessionStateOpen)
         {
-            [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", session.permissions]];
+            [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", [session.permissions componentsJoinedByString:@", "]]];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
             
         }
         else if (status == FBSessionStateClosed)
         {
-            [AirFacebook log:@"INFO - Session closed"];
+            [AirFacebook log:@"Session closed"];
         }
     };
 }
@@ -186,7 +173,7 @@ static AirFacebook *sharedInstance = nil;
 
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback
 {
-    return [[^(FBRequestConnection *connection, id result, NSError *error) {
+    return [^(FBRequestConnection *connection, id result, NSError *error) {
         if (error)
         {
             
@@ -202,12 +189,13 @@ static AirFacebook *sharedInstance = nil;
                 {
                     NSDictionary* body = [parsedResponseKey objectForKey:@"body"];
                     NSError *jsonError = nil;
-                    NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:body error:&jsonError];
+                    NSData *resultData = [NSJSONSerialization dataWithJSONObject:body options:0 error:&jsonError];
                     if (jsonError)
                     {
                         [AirFacebook log:[NSString stringWithFormat:@"Request error -> JSON error: %@", [jsonError description]]];
                     } else
                     {
+                        NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
                         FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[resultString UTF8String]);
                     }
                 }
@@ -219,28 +207,36 @@ static AirFacebook *sharedInstance = nil;
         }
         else
         {
-            
             NSError *jsonError = nil;
-            NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:result error:&jsonError];
+            NSData *resultData = [NSJSONSerialization dataWithJSONObject:result options:0 error:&jsonError];
             if (jsonError)
             {
                 [AirFacebook log:[NSString stringWithFormat:@"Request JSON error: %@", [jsonError description]]];
             }
             else
             {
+                NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
                 [AirFacebook dispatchEvent:callback withMessage:resultString];
             }
             
         }
-    } copy] autorelease];
+    } copy];
 }
 
 + (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback
 {
-    return [[^(FBAppCall* call, NSDictionary *results, NSError *error) {
-        NSString *resultString = [[[FBSBJSON alloc] init] stringWithObject:results];
-        [AirFacebook dispatchEvent:callback withMessage:resultString];
-    } copy] autorelease];
+    return [^(FBAppCall* call, NSDictionary *results, NSError *error) {
+        NSError *jsonError = nil;
+        NSData *resultData = [NSJSONSerialization dataWithJSONObject:results options:0 error:&jsonError];
+        if (jsonError)
+        {
+            [AirFacebook log:[NSString stringWithFormat:@"Request error -> JSON error: %@", [jsonError description]]];
+        } else
+        {
+            NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
+            FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[resultString UTF8String]);
+        }
+    } copy];
 }
 
 
@@ -290,7 +286,7 @@ DEFINE_ANE_FUNCTION(init)
     }
     
     // Initialize Facebook
-    [[AirFacebook sharedInstance] initWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
+    [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
     
     return nil;
 }
@@ -348,27 +344,15 @@ DEFINE_ANE_FUNCTION(isSessionOpen)
 
 DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 {
-    
-    // Retrieve permissions
     NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
-    
-    // Get the permissions type
     NSString *type = FPANE_FREObjectToNSString(argv[1]);
+    BOOL systemFlow = FPANE_FREObjectToBOOL(argv[2]);
     
     // Print log
-    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, permissions]];
+    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
     
-    // select the right authentication flow
-    FBSessionLoginBehavior loginBehavior;
-    if ([type isEqualToString:@"read"])
-    {
-        // system account if no publish permissions
-        loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
-    } else
-    {
-        // web if publish permissions
-        loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
-    }
+    // Select login behavior
+    FBSessionLoginBehavior loginBehavior = systemFlow ? FBSessionLoginBehaviorUseSystemAccountIfPresent : FBSessionLoginBehaviorWithFallbackToWebView;
     
     // Start authentication flow
     FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
@@ -387,33 +371,27 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
         return nil;
     }
     
-    [session release];
-    [permissions release];
-    
     return nil;
 }
 
 DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
 {
-    
-    // Retrieve permissions
     NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
-        
-    // Get the permissions type
     NSString *type = FPANE_FREObjectToNSString(argv[1]);
     
     // Print log
-    [AirFacebook log:[NSString stringWithFormat:@"Trying to reauthorize session with %@ permissions: %@", type, permissions]];
+    [AirFacebook log:[NSString stringWithFormat:@"Trying to reauthorize session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
     
     // Start authentication flow
     FBReauthorizeSessionCompletionHandler completionHandler = [AirFacebook reauthorizeSessionCompletionHandler];
     
-    @try {
+    @try
+    {
         if ([type isEqualToString:@"read"])
         {
             [[FBSession activeSession] requestNewReadPermissions:permissions completionHandler:completionHandler];
         }
-        else if ([type isEqualToString:@"publish"])
+        else
         {
             [[FBSession activeSession] requestNewPublishPermissions:permissions defaultAudience:FBSessionDefaultAudienceFriends completionHandler:completionHandler];
         }
@@ -421,8 +399,6 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
     @catch (NSException *exception) {
         [AirFacebook dispatchEvent:@"REAUTHORIZE_SESSION_ERROR" withMessage:[exception reason]];
     }
-    
-    [permissions release];
     
     return nil;
 }
@@ -452,8 +428,6 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath)
     FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod];
     FBRequestCompletionHandler completionHandler = [AirFacebook requestCompletionHandlerWithCallback:callback];
     [request startWithCompletionHandler:completionHandler];
-    
-    [parameters release];
     
     return nil;
 }
@@ -556,8 +530,7 @@ DEFINE_ANE_FUNCTION(webDialog)
     
     // Retrieve callback name
     NSString *callback = FPANE_FREObjectToNSString(argv[3]);
-    
-    // If possible, open new-style Facebook sharing sheet
+
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
     BOOL isRequestDialog = [method isEqualToString:@"apprequests"];
     

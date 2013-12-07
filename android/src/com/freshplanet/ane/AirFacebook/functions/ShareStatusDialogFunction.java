@@ -23,26 +23,22 @@ import android.content.Intent;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
 
-public class ShareStatusDialogFunction implements FREFunction
+public class ShareStatusDialogFunction extends BaseFunction implements FREFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
 		
+		super.call(context, args);
+		
 		// Retrieve callback
-		String callback = null;
-		try {
-			callback = arg1[0].getAsString();
-		} catch (Exception e) {
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		String callback = getStringFromFREObject(args[0]);
 		
 		// Start dialog activity
-		Intent i = new Intent(arg0.getActivity().getApplicationContext(), ShareDialogActivity.class);
+		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareDialogActivity.class);
 		i.putExtra(ShareDialogActivity.extraPrefix+".callback", callback);
-		arg0.getActivity().startActivity(i);
+		context.getActivity().startActivity(i);
 		
 		return null;
 		

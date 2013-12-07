@@ -309,11 +309,11 @@ public class FacebookDialog {
         protected Fragment fragment;
         protected String applicationName;
 
-        Builder(Activity activity, String applicationId) {
+        Builder(Activity activity, String appId) {
             Validate.notNull(activity, "activity");
 
             this.activity = activity;
-            this.applicationId = applicationId;
+            applicationId = appId;
             appCall = new PendingCall(NativeProtocol.DIALOG_REQUEST_CODE);
         }
 
@@ -431,8 +431,8 @@ public class FacebookDialog {
          * Constructor.
          * @param activity the Activity which is presenting the native Share dialog; must not be null
          */
-        public ShareDialogBuilder(Activity activity, String applicationId) {
-            super(activity, applicationId);
+        public ShareDialogBuilder(Activity activity, String appId) {
+            super(activity, appId);
         }
 
         /**
@@ -587,9 +587,9 @@ public class FacebookDialog {
          *                            Open Graph object which will be displayed as a preview to the user
          */
         @Deprecated
-        public OpenGraphActionDialogBuilder(Activity activity, String applicationId, OpenGraphAction action, String actionType,
+        public OpenGraphActionDialogBuilder(Activity activity, String appId, OpenGraphAction action, String actionType,
                 String previewPropertyName) {
-            super(activity, applicationId);
+            super(activity, appId);
 
             Validate.notNull(action, "action");
             Validate.notNullOrEmpty(actionType, "actionType");
@@ -620,8 +620,8 @@ public class FacebookDialog {
          * @param previewPropertyName the name of a property on the Open Graph action that contains the
          *                            Open Graph object which will be displayed as a preview to the user
          */
-        public OpenGraphActionDialogBuilder(Activity activity, String applicationId, OpenGraphAction action, String previewPropertyName) {
-            super(activity, applicationId);
+        public OpenGraphActionDialogBuilder(Activity activity, String appId, OpenGraphAction action, String previewPropertyName) {
+            super(activity, appId);
 
             Validate.notNull(action, "action");
             Validate.notNullOrEmpty(action.getType(), "action.getType()");

@@ -387,9 +387,9 @@ public class ProfilePictureView extends FrameLayout {
     }
 
     private void parseAttributes(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, getResources().getIntArray(AirFacebookExtension.context.getResourceId("styleable.com_facebook_profile_picture_view")));
-        setPresetSize(a.getInt(AirFacebookExtension.context.getResourceId("styleable.com_facebook_profile_picture_view_preset_size"), CUSTOM));
-        isCropped = a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_profile_picture_view_is_cropped"), IS_CROPPED_DEFAULT_VALUE);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, AirFacebookExtension.getResourceIds("styleable.com_facebook_profile_picture_view"));
+        setPresetSize(a.getInt(AirFacebookExtension.getResourceId("styleable.com_facebook_profile_picture_view_preset_size"), CUSTOM));
+        isCropped = a.getBoolean(AirFacebookExtension.getResourceId("styleable.com_facebook_profile_picture_view_is_cropped"), IS_CROPPED_DEFAULT_VALUE);
         a.recycle();
     }
 
@@ -409,8 +409,8 @@ public class ProfilePictureView extends FrameLayout {
     private void setBlankProfilePicture() {
         if (customizedDefaultProfilePicture == null) {
           int blankImageResource = isCropped() ?
-                  AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_picture_blank_square") :
-                  AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_picture_blank_portrait");
+                  AirFacebookExtension.getResourceId("drawable.com_facebook_profile_picture_blank_square") :
+                  AirFacebookExtension.getResourceId("drawable.com_facebook_profile_picture_blank_portrait");
           setImageBitmap( BitmapFactory.decodeResource(getResources(), blankImageResource));
 	} else {
           // Update profile image dimensions.
@@ -519,19 +519,19 @@ public class ProfilePictureView extends FrameLayout {
         int dimensionId;
         switch (presetSizeType) {
             case SMALL:
-                dimensionId = AirFacebookExtension.context.getResourceId("dimen.com_facebook_profilepictureview_preset_size_small");
+                dimensionId = AirFacebookExtension.getResourceId("dimen.com_facebook_profilepictureview_preset_size_small");
                 break;
             case NORMAL:
-                dimensionId = AirFacebookExtension.context.getResourceId("dimen.com_facebook_profilepictureview_preset_size_normal");
+                dimensionId = AirFacebookExtension.getResourceId("dimen.com_facebook_profilepictureview_preset_size_normal");
                 break;
             case LARGE:
-                dimensionId = AirFacebookExtension.context.getResourceId("dimen.com_facebook_profilepictureview_preset_size_large");
+                dimensionId = AirFacebookExtension.getResourceId("dimen.com_facebook_profilepictureview_preset_size_large");
                 break;
             case CUSTOM:
                 if (!forcePreset) {
                     return ImageRequest.UNSPECIFIED_DIMENSION;
                 } else {
-                    dimensionId = AirFacebookExtension.context.getResourceId("dimen.com_facebook_profilepictureview_preset_size_normal");
+                    dimensionId = AirFacebookExtension.getResourceId("dimen.com_facebook_profilepictureview_preset_size_normal");
                     break;
                 }
             default:

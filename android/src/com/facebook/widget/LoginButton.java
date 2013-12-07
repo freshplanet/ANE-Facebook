@@ -215,25 +215,25 @@ public class LoginButton extends Button {
             // so in case the users do not explicitly specify a style, we need
             // to use sensible defaults.
             this.setGravity(Gravity.CENTER);
-            this.setTextColor(getResources().getColor(AirFacebookExtension.context.getResourceId("color.com_facebook_loginview_text_color")));
+            this.setTextColor(getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_loginview_text_color")));
             this.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimension(AirFacebookExtension.context.getResourceId("dimen.com_facebook_loginview_text_size")));
+                    getResources().getDimension(AirFacebookExtension.getResourceId("dimen.com_facebook_loginview_text_size")));
             this.setTypeface(Typeface.DEFAULT_BOLD);
             if (isInEditMode()) {
                 // cannot use a drawable in edit mode, so setting the background color instead
                 // of a background resource.
-                this.setBackgroundColor(getResources().getColor(AirFacebookExtension.context.getResourceId("color.com_facebook_blue")));
+                this.setBackgroundColor(getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_blue")));
                 // hardcoding in edit mode as getResources().getString() doesn't seem to work in IntelliJ
                 loginText = "Log in with Facebook";
             } else {
-                this.setBackgroundResource(AirFacebookExtension.context.getResourceId("drawable.com_facebook_button_blue"));
-                this.setCompoundDrawablesWithIntrinsicBounds(AirFacebookExtension.context.getResourceId("drawable.com_facebook_inverse_icon"), 0, 0, 0);
+                this.setBackgroundResource(AirFacebookExtension.getResourceId("drawable.com_facebook_button_blue"));
+                this.setCompoundDrawablesWithIntrinsicBounds(AirFacebookExtension.getResourceId("drawable.com_facebook_inverse_icon"), 0, 0, 0);
                 this.setCompoundDrawablePadding(
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_loginview_compound_drawable_padding")));
-                this.setPadding(getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_loginview_padding_left")),
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_loginview_padding_top")),
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_loginview_padding_right")),
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_loginview_padding_bottom")));
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_loginview_compound_drawable_padding")));
+                this.setPadding(getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_loginview_padding_left")),
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_loginview_padding_top")),
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_loginview_padding_right")),
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_loginview_padding_bottom")));
             }
         }
         parseAttributes(attrs);
@@ -587,21 +587,21 @@ public class LoginButton extends Button {
     }
 
     private void parseAttributes(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, getResources().getIntArray(AirFacebookExtension.context.getResourceId("styleable.com_facebook_login_view")));
-        confirmLogout = a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_login_view_confirm_logout"), true);
-        fetchUserInfo = a.getBoolean(AirFacebookExtension.context.getResourceId("styleable.com_facebook_login_view_fetch_user_info"), true);
-        loginText = a.getString(AirFacebookExtension.context.getResourceId("styleable.com_facebook_login_view_login_text"));
-        logoutText = a.getString(AirFacebookExtension.context.getResourceId("styleable.com_facebook_login_view_logout_text"));
+        TypedArray a = getContext().obtainStyledAttributes(attrs, AirFacebookExtension.getResourceIds("styleable.com_facebook_login_view"));
+        confirmLogout = a.getBoolean(AirFacebookExtension.getResourceId("styleable.com_facebook_login_view_confirm_logout"), true);
+        fetchUserInfo = a.getBoolean(AirFacebookExtension.getResourceId("styleable.com_facebook_login_view_fetch_user_info"), true);
+        loginText = a.getString(AirFacebookExtension.getResourceId("styleable.com_facebook_login_view_login_text"));
+        logoutText = a.getString(AirFacebookExtension.getResourceId("styleable.com_facebook_login_view_logout_text"));
         a.recycle();
     }
 
     private void setButtonText() {
         if (sessionTracker != null && sessionTracker.getOpenSession() != null) {
             setText((logoutText != null) ? logoutText :
-                    getResources().getString(AirFacebookExtension.context.getResourceId("string.com_facebook_loginview_log_out_button")));
+                    getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_loginview_log_out_button")));
         } else {
             setText((loginText != null) ? loginText :
-                    getResources().getString(AirFacebookExtension.context.getResourceId("string.com_facebook_loginview_log_in_button")));
+                    getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_loginview_log_in_button")));
         }
     }
 
@@ -665,13 +665,13 @@ public class LoginButton extends Button {
                 // If the Session is currently open, it must mean we need to log out
                 if (confirmLogout) {
                     // Create a confirmation dialog
-                    String logout = getResources().getString(AirFacebookExtension.context.getResourceId("string.com_facebook_loginview_log_out_action"));
-                    String cancel = getResources().getString(AirFacebookExtension.context.getResourceId("string.com_facebook_loginview_cancel_action"));
+                    String logout = getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_loginview_log_out_action"));
+                    String cancel = getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_loginview_cancel_action"));
                     String message;
                     if (user != null && user.getName() != null) {
-                        message = String.format(getResources().getString(AirFacebookExtension.context.getResourceId("string.com_facebook_loginview_logged_in_as")), user.getName());
+                        message = String.format(getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_loginview_logged_in_as")), user.getName());
                     } else {
-                        message = getResources().getString(AirFacebookExtension.context.getResourceId("string.com_facebook_loginview_logged_in_using_facebook"));
+                        message = getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_loginview_logged_in_using_facebook"));
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage(message)

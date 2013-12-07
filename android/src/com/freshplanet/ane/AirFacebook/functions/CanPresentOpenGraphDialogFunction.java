@@ -19,19 +19,23 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.adobe.fre.FREWrongThreadException;
 import com.facebook.widget.FacebookDialog;
 
-public class CanPresentOpenGraphDialogFunction implements FREFunction
+public class CanPresentOpenGraphDialogFunction extends BaseFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
+		
+		super.call(context, args);
 		
 		try {
 			return FREObject.newObject(
-						FacebookDialog.canPresentOpenGraphActionDialog(arg0.getActivity(), FacebookDialog.OpenGraphActionDialogFeature.OG_ACTION_DIALOG)
+						FacebookDialog.canPresentOpenGraphActionDialog(
+								context.getActivity(),
+								FacebookDialog.OpenGraphActionDialogFeature.OG_ACTION_DIALOG
+							)
 					);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
