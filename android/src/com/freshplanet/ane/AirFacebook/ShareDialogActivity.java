@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.Session;
+import com.facebook.android.BuildConfig;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.FacebookDialog.Callback;
 import com.facebook.widget.FacebookDialog.PendingCall;
@@ -59,7 +60,7 @@ public class ShareDialogActivity extends Activity implements DialogFactory, Call
 		String pictureUrl = this.getIntent().getStringExtra(extraPrefix+".pictureUrl");
 		
 		String appId;
-		Session session = AirFacebookExtensionContext.session;
+		Session session = AirFacebookExtension.context.getSession();
 		if ( session == null )
 		{
 			AirFacebookExtension.log("ERROR - AirFacebook is not initialized");
@@ -79,7 +80,9 @@ public class ShareDialogActivity extends Activity implements DialogFactory, Call
 		try{
 			return dialogBuilder.build().present();
 		} catch(Exception e) {
-			AirFacebookExtension.log(e.getMessage());
+			if(BuildConfig.DEBUG) e.printStackTrace();
+			AirFacebookExtension.context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(e));
+			finish();
 			return null;
 		}
 	}
@@ -104,7 +107,8 @@ public class ShareDialogActivity extends Activity implements DialogFactory, Call
 
 	@Override
 	public void onError(PendingCall pendingCall, Exception error, Bundle data) {
-		AirFacebookExtension.context.dispatchStatusEventAsync(callback, "{ \"error\": \"error\" }");
+		if(BuildConfig.DEBUG) error.printStackTrace();
+		AirFacebookExtension.context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(error));
 		finish();
 	}
 

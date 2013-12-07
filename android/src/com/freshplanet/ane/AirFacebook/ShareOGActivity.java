@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.Session;
+import com.facebook.android.BuildConfig;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.FacebookDialog.Callback;
@@ -62,7 +63,7 @@ public class ShareOGActivity extends Activity implements DialogFactory, Callback
 			action.setProperty(key, ogObjectProperties.get(key));
 		
 		String appId;
-		Session session = AirFacebookExtensionContext.session;
+		Session session = AirFacebookExtension.context.getSession();
 		if ( session == null )
 		{
 			AirFacebookExtension.log("ERROR - AirFacebook is not initialized");
@@ -78,7 +79,8 @@ public class ShareOGActivity extends Activity implements DialogFactory, Callback
 			
 			return dialogBuilder.build().present();
 		} catch(Exception e) {
-			AirFacebookExtension.log(e.getMessage());
+			if(BuildConfig.DEBUG) e.printStackTrace();
+			AirFacebookExtension.context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(e));
 			finish();
 			return null;
 		}
@@ -104,7 +106,8 @@ public class ShareOGActivity extends Activity implements DialogFactory, Callback
 
 	@Override
 	public void onError(PendingCall pendingCall, Exception error, Bundle data) {
-		AirFacebookExtension.context.dispatchStatusEventAsync(callback, "{ \"error\": \""+error.getMessage()+"\" }");
+		if(BuildConfig.DEBUG) error.printStackTrace();
+		AirFacebookExtension.context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(error));
 		finish();
 	}
 

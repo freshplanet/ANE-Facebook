@@ -75,8 +75,8 @@ public class UserSettingsFragment extends FacebookFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(AirFacebookExtension.context.getResourceId("layout.com_facebook_usersettingsfragment"), container, false);
-        loginButton = (LoginButton) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_usersettingsfragment_login_button"));
+        View view = inflater.inflate(AirFacebookExtension.getResourceId("layout.com_facebook_usersettingsfragment"), container, false);
+        loginButton = (LoginButton) view.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_usersettingsfragment_login_button"));
         loginButton.setProperties(loginButtonProperties);
         loginButton.setFragment(this);
         loginButton.setLoginLogoutEventName(AnalyticsEvents.EVENT_USER_SETTINGS_USAGE);
@@ -85,11 +85,11 @@ public class UserSettingsFragment extends FacebookFragment {
         if (session != null && !session.equals(Session.getActiveSession())) {
             loginButton.setSession(session);
         }
-        connectedStateLabel = (TextView) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_usersettingsfragment_profile_name"));
+        connectedStateLabel = (TextView) view.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_usersettingsfragment_profile_name"));
         
         // if no background is set for some reason, then default to Facebook blue
         if (view.getBackground() == null) {
-            view.setBackgroundColor(getResources().getColor(AirFacebookExtension.context.getResourceId("color.com_facebook_blue")));
+            view.setBackgroundColor(getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_blue")));
         } else {
             view.getBackground().setDither(true);
         }
@@ -377,9 +377,9 @@ public class UserSettingsFragment extends FacebookFragment {
             return;
         }
         if (isSessionOpen()) {
-            connectedStateLabel.setTextColor(getResources().getColor(AirFacebookExtension.context.getResourceId("color.com_facebook_usersettingsfragment_connected_text_color")));
+            connectedStateLabel.setTextColor(getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_usersettingsfragment_connected_text_color")));
             connectedStateLabel.setShadowLayer(1f, 0f, -1f,
-                    getResources().getColor(AirFacebookExtension.context.getResourceId("color.com_facebook_usersettingsfragment_connected_shadow_color")));
+                    getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_usersettingsfragment_connected_shadow_color")));
             
             if (user != null) {
                 ImageRequest request = getImageRequest();
@@ -398,19 +398,19 @@ public class UserSettingsFragment extends FacebookFragment {
                 connectedStateLabel.setText(user.getName());
             } else {
                 connectedStateLabel.setText(getResources().getString(
-                        AirFacebookExtension.context.getResourceId("string.com_facebook_usersettingsfragment_logged_in")));
-                Drawable noProfilePic = getResources().getDrawable(AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_default_icon"));
+                        AirFacebookExtension.getResourceId("string.com_facebook_usersettingsfragment_logged_in")));
+                Drawable noProfilePic = getResources().getDrawable(AirFacebookExtension.getResourceId("drawable.com_facebook_profile_default_icon"));
                 noProfilePic.setBounds(0, 0,
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_width")),
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_height")));
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_width")),
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_height")));
                 connectedStateLabel.setCompoundDrawables(null, noProfilePic, null, null);
             }
         } else {
-            int textColor = getResources().getColor(AirFacebookExtension.context.getResourceId("color.com_facebook_usersettingsfragment_not_connected_text_color"));
+            int textColor = getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_usersettingsfragment_not_connected_text_color"));
             connectedStateLabel.setTextColor(textColor);
             connectedStateLabel.setShadowLayer(0f, 0f, 0f, textColor);
             connectedStateLabel.setText(getResources().getString(
-                    AirFacebookExtension.context.getResourceId("string.com_facebook_usersettingsfragment_not_logged_in")));
+                    AirFacebookExtension.getResourceId("string.com_facebook_usersettingsfragment_not_logged_in")));
             connectedStateLabel.setCompoundDrawables(null, null, null, null);
             connectedStateLabel.setTag(null);
         }
@@ -423,8 +423,8 @@ public class UserSettingsFragment extends FacebookFragment {
                     getActivity(),
                     ImageRequest.getProfilePictureUrl(
                             user.getId(),
-                            getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_width")),
-                            getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_height"))));
+                            getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_width")),
+                            getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_height"))));
 
             request = requestBuilder.setCallerTag(this)
                     .setCallback(
@@ -446,8 +446,8 @@ public class UserSettingsFragment extends FacebookFragment {
             if (bitmap != null) {
                 BitmapDrawable drawable = new BitmapDrawable(UserSettingsFragment.this.getResources(), bitmap);
                 drawable.setBounds(0, 0,
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_width")),
-                        getResources().getDimensionPixelSize(AirFacebookExtension.context.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_height")));
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_width")),
+                        getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_usersettingsfragment_profile_picture_height")));
                 userProfilePic = drawable;
                 userProfilePicID = id;
                 connectedStateLabel.setCompoundDrawables(null, drawable, null, null);

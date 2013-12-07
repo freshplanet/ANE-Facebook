@@ -18,7 +18,6 @@
 
 package com.freshplanet.ane.AirFacebook.functions;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.adobe.fre.FREArray;
@@ -26,50 +25,27 @@ import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.WebDialogActivity;
 
-public class WebDialogFunction implements FREFunction 
+public class WebDialogFunction extends BaseFunction implements FREFunction 
 {
 	
 	private String method;
 	private String callback;
 	
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
 		
-		Bundle parameters = new Bundle();
-		FREArray keysArray = (FREArray)arg1[1];
-		FREArray valuesArray = (FREArray)arg1[2];
-		long arrayLength;
-		
-		try {
-			
-			method = arg1[0] == null ? null : arg1[0].getAsString();
-			
-			arrayLength = keysArray.getLength();
-			String key;
-			String value;
-			for (int i = 0; i < arrayLength; i++)
-			{
-				key =  keysArray.getObjectAt((long)i).getAsString();
-				value = valuesArray.getObjectAt((long)i).getAsString();
-				parameters.putString(key, value);
-			}
-			
-			callback = arg1[3] == null ? null : arg1[3].getAsString();
-			
-		} catch (Exception e) {
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		super.call(context, args);
+
+		method = getStringFromFREObject(args[0]);
+		Bundle parameters = getBundleOfStringFromFREArrays((FREArray)args[1], (FREArray)args[2]);
+		callback = getStringFromFREObject(args[3]);
 		
 		// Start dialog activity
-		Intent i = new Intent(arg0.getActivity().getApplicationContext(), WebDialogActivity.class);
-		i.putExtra(WebDialogActivity.extraPrefix+".method", method);
-		i.putExtra(WebDialogActivity.extraPrefix+".parameters", parameters);
-		i.putExtra(WebDialogActivity.extraPrefix+".callback", callback);
-		arg0.getActivity().startActivity(i);
+		AirFacebookExtension.context.launchDialogActivity(method, parameters, callback);
 		
 		return null;
+		
 	}
 	
 }

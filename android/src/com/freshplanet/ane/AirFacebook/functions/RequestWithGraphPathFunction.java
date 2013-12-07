@@ -22,78 +22,22 @@ import android.os.Bundle;
 
 import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
-import com.freshplanet.ane.AirFacebook.RequestThread;
 
-public class RequestWithGraphPathFunction implements FREFunction
+public class RequestWithGraphPathFunction extends BaseFunction
 {
 	@Override
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{	
-		// Retrieve graph path
-		String graphPath = null;
-		try
-		{
-			graphPath = arg1[0].getAsString();
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		super.call(context, args);
 		
-		// Retrieve the parameters
-		Bundle parameters = new Bundle();
-		FREArray keysArray = (FREArray)arg1[1];
-		FREArray valuesArray = (FREArray)arg1[2];
-		long arrayLength;
-		try
-		{
-			arrayLength = keysArray.getLength();
-			String key;
-			String value;
-			for (int i = 0; i < arrayLength; i++)
-			{
-				key =  keysArray.getObjectAt((long)i).getAsString();
-				value = valuesArray.getObjectAt((long)i).getAsString();
-				parameters.putString(key, value);
-			}
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		String graphPath = getStringFromFREObject(args[0]);
+		Bundle parameters = getBundleOfStringFromFREArrays((FREArray)args[1], (FREArray)args[2]);
+		String httpMethod = getStringFromFREObject(args[3]);
+		String callback = getStringFromFREObject(args[4]);
 		
-		// Retrieve HTTP method
-		String httpMethod = null;
-		try
-		{
-			httpMethod = arg1[3].getAsString();
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
-		
-		// Retrieve callback
-		String callback = null;
-		try
-		{
-			callback = arg1[4].getAsString();
-		}
-		catch (Exception e)
-		{
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
-		
-		
-		
-		// Create a new thread
-		RequestThread thread = new RequestThread(arg0, graphPath, parameters, httpMethod, callback);
-		thread.start();
-
-
+		AirFacebookExtension.context.launchRequestThread(graphPath, parameters, httpMethod, callback);
 		
 		return null;
 	}

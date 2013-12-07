@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(AirFacebookExtension.context.getResourceId("layout.com_facebook_login_activity_layout"));
+        setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
 
         if (savedInstanceState != null) {
             callingPackage = savedInstanceState.getString(SAVED_CALLING_PKG_KEY);
@@ -76,12 +76,12 @@ public class LoginActivity extends Activity {
         authorizationClient.setBackgroundProcessingListener(new AuthorizationClient.BackgroundProcessingListener() {
             @Override
             public void onBackgroundProcessingStarted() {
-                findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.VISIBLE);
+                findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onBackgroundProcessingStopped() {
-                findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
+                findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
             }
         });
     }
@@ -123,7 +123,7 @@ public class LoginActivity extends Activity {
         super.onPause();
 
         authorizationClient.cancelCurrentHandler();
-        findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
+        findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
     }
 
     @Override

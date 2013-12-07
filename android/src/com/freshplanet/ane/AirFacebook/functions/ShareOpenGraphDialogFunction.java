@@ -25,48 +25,30 @@ import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.ShareOGActivity;
 
-public class ShareOpenGraphDialogFunction implements FREFunction
+public class ShareOpenGraphDialogFunction extends BaseFunction implements FREFunction
 {
-	public FREObject call(FREContext arg0, FREObject[] arg1)
+	public FREObject call(FREContext context, FREObject[] args)
 	{
+		
+		super.call(context, args);
+		
 		// Retrieve callback
-		String callback = null;
-		String actionType = null;
-		Bundle actionParams = new Bundle();
-		String previewProperty = null;
-		try {
-			actionType		= arg1[0] == null ? null : arg1[0].getAsString();
-			
-			FREArray keysArray = (FREArray)arg1[1];
-			FREArray valuesArray = (FREArray)arg1[2];
-			long arrayLength;
-			arrayLength = keysArray.getLength();
-			String key;
-			String value;
-			for (int i = 0; i < arrayLength; i++)
-			{
-				key =  keysArray.getObjectAt((long)i).getAsString();
-				value = valuesArray.getObjectAt((long)i).getAsString();
-				actionParams.putString(key, value);
-			}
-			
-			previewProperty	= arg1[3] == null ? null : arg1[3].getAsString();
-			callback		= arg1[6] == null ? null : arg1[6].getAsString();
-		} catch (Exception e) {
-			AirFacebookExtension.log("ERROR - " + e.getMessage());
-		}
+		String callback = getStringFromFREObject(args[6]);
+		String actionType = getStringFromFREObject(args[0]);
+		Bundle actionParams = getBundleOfStringFromFREArrays((FREArray)args[1], (FREArray)args[2]);
+		String previewProperty = getStringFromFREObject(args[3]);
 		
 		// Start dialog activity
-		Intent i = new Intent(arg0.getActivity().getApplicationContext(), ShareOGActivity.class);
+		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareOGActivity.class);
 		i.putExtra(ShareOGActivity.extraPrefix+".actionType", actionType);
 		i.putExtra(ShareOGActivity.extraPrefix+".actionParams", actionParams);
 		i.putExtra(ShareOGActivity.extraPrefix+".previewProperty", previewProperty);
 		i.putExtra(ShareOGActivity.extraPrefix+".callback", callback);
-		arg0.getActivity().startActivity(i);
+		context.getActivity().startActivity(i);
 		
 		return null;
+		
 	}
 }

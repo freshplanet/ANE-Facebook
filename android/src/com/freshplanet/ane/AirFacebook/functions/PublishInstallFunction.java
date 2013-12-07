@@ -1,41 +1,18 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
-import com.adobe.fre.FREInvalidObjectException;
 import com.adobe.fre.FREObject;
-import com.adobe.fre.FRETypeMismatchException;
-import com.adobe.fre.FREWrongThreadException;
 import com.facebook.Settings;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
-public class PublishInstallFunction implements FREFunction {
-
+public class PublishInstallFunction extends BaseFunction
+{
 	@Override
-	public FREObject call(FREContext arg0, FREObject[] arg1) {
+	public FREObject call(FREContext context, FREObject[] args)
+	{
+		super.call(context, args);
 		
-		
-		String applicationId = null;
-		
-		try {
-			applicationId = arg1[0].getAsString();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (FRETypeMismatchException e) {
-			e.printStackTrace();
-		} catch (FREInvalidObjectException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		}
-		
-		if (applicationId != null)
-		{
-			Settings.publishInstallAsync(arg0.getActivity(), applicationId);
-		} else
-		{
-			AirFacebookExtension.log("cannot start publish install, applicationId is null");
-		}
+		String appID = getStringFromFREObject(args[0]);
+		Settings.publishInstallAsync(context.getActivity(), appID);
 		
 		return null;
 	}

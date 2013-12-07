@@ -300,7 +300,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         TextView result = (TextView) convertView;
 
         if (result == null) {
-            result = (TextView) inflater.inflate(AirFacebookExtension.context.getResourceId("layout.com_facebook_picker_list_section_header"), null);
+            result = (TextView) inflater.inflate(AirFacebookExtension.getResourceId("layout.com_facebook_picker_list_section_header"), null);
         }
 
         result.setText(sectionHeader);
@@ -323,26 +323,26 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         View result = convertView;
 
         if (result == null) {
-            result = inflater.inflate(AirFacebookExtension.context.getResourceId("layout.com_facebook_picker_activity_circle_row"), null);
+            result = inflater.inflate(AirFacebookExtension.getResourceId("layout.com_facebook_picker_activity_circle_row"), null);
         }
-        ProgressBar activityCircle = (ProgressBar) result.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_row_activity_circle"));
+        ProgressBar activityCircle = (ProgressBar) result.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_row_activity_circle"));
         activityCircle.setVisibility(View.VISIBLE);
 
         return result;
     }
 
     protected int getGraphObjectRowLayoutId(T graphObject) {
-        return AirFacebookExtension.context.getResourceId("layout.com_facebook_picker_list_row");
+        return AirFacebookExtension.getResourceId("layout.com_facebook_picker_list_row");
     }
 
     protected int getDefaultPicture() {
-        return AirFacebookExtension.context.getResourceId("drawable.com_facebook_profile_default_icon");
+        return AirFacebookExtension.getResourceId("drawable.com_facebook_profile_default_icon");
     }
 
     protected View createGraphObjectView(T graphObject) {
         View result = inflater.inflate(getGraphObjectRowLayoutId(graphObject), null);
 
-        ViewStub checkboxStub = (ViewStub) result.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_checkbox_stub"));
+        ViewStub checkboxStub = (ViewStub) result.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_checkbox_stub"));
         if (checkboxStub != null) {
             if (!getShowCheckbox()) {
                 checkboxStub.setVisibility(View.GONE);
@@ -352,7 +352,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             }
         }
 
-        ViewStub profilePicStub = (ViewStub) result.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_profile_pic_stub"));
+        ViewStub profilePicStub = (ViewStub) result.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_profile_pic_stub"));
         if (!getShowPicture()) {
             profilePicStub.setVisibility(View.GONE);
         } else {
@@ -368,13 +368,13 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         view.setTag(id);
 
         CharSequence title = getTitleOfGraphObject(graphObject);
-        TextView titleView = (TextView) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_title"));
+        TextView titleView = (TextView) view.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_title"));
         if (titleView != null) {
             titleView.setText(title, TextView.BufferType.SPANNABLE);
         }
 
         CharSequence subtitle = getSubTitleOfGraphObject(graphObject);
-        TextView subtitleView = (TextView) view.findViewById(AirFacebookExtension.context.getResourceId("id.picker_subtitle"));
+        TextView subtitleView = (TextView) view.findViewById(AirFacebookExtension.getResourceId("id.picker_subtitle"));
         if (subtitleView != null) {
             if (subtitle != null) {
                 subtitleView.setText(subtitle, TextView.BufferType.SPANNABLE);
@@ -385,7 +385,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         }
 
         if (getShowCheckbox()) {
-            CheckBox checkBox = (CheckBox) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_checkbox"));
+            CheckBox checkBox = (CheckBox) view.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_checkbox"));
             updateCheckboxState(checkBox, isGraphObjectSelected(id));
         }
 
@@ -393,7 +393,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
             URI pictureURI = getPictureUriOfGraphObject(graphObject);
 
             if (pictureURI != null) {
-                ImageView profilePic = (ImageView) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_image"));
+                ImageView profilePic = (ImageView) view.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_image"));
 
                 // See if we have already pre-fetched this; if not, download it.
                 if (prefetchedPictureCache.containsKey(id)) {
@@ -443,7 +443,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
     String getPictureFieldSpecifier() {
         // How big is our image?
         View view = createGraphObjectView(null);
-        ImageView picture = (ImageView) view.findViewById(AirFacebookExtension.context.getResourceId("id.com_facebook_picker_image"));
+        ImageView picture = (ImageView) view.findViewById(AirFacebookExtension.getResourceId("id.com_facebook_picker_image"));
         if (picture == null) {
             return null;
         }
