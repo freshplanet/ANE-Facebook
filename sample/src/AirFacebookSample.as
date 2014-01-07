@@ -26,6 +26,11 @@ package
 			createUI(
 				{label: "Connect", 					handler: onBtnConnect},
 				
+				{label: "Disconnect",				handler: onBtnDisconnect},
+				
+				// you need to be connected to call this one
+				{label: "Share opengraph object (old version)", handler: onBtnShareOGAction},
+				
 				// You don't need to be connected to use those functionalities
 				// it will call the native app or mFacebook in a webview
 				// your user will have to be connected (or otherwise to login) in the app or in a browser
@@ -51,6 +56,11 @@ package
 				trace(error);
 			
 		}
+		
+		private function onBtnDisconnect(e:Event):void
+		{
+			Facebook.getInstance().closeSessionAndClearTokenInformation();
+		} 
 		
 		// ------------------
 		// showing dialogs
@@ -94,6 +104,15 @@ package
 			
 			trace(JSON.stringify(data));
 			
+		}
+		
+		private function onBtnShareOGAction(e:Event):void
+		{
+			var ogObject:Object = {
+				object:"http://freshplanet.com"
+			};
+			
+			Facebook.getInstance().requestWithGraphPath("me/books.reads", ogObject, 'POST');
 		}
 		
 		
