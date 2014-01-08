@@ -24,6 +24,7 @@ package com.freshplanet.ane.AirFacebook
 	import flash.events.StatusEvent;
 	import flash.external.ExtensionContext;
 	import flash.system.Capabilities;
+	import com.freshplanet.ane.AirFacebook.FacebookPermissionEvent;
 
 	public class Facebook extends EventDispatcher
 	{
@@ -549,6 +550,10 @@ package com.freshplanet.ane.AirFacebook
 				_reauthorizeSessionCallback = null;
 				
 				if (callback != null) callback(success, userCancelled, error);
+			}
+			else if (event.code == "ACTION_REQUIRE_PERMISSION")
+			{
+				dispatchEvent(new FacebookPermissionEvent(FacebookPermissionEvent.PERMISSION_NEEDED, event.level.split(',')));
 			}
 			else if (event.code == "LOGGING") // Simple log message
 			{
