@@ -17,6 +17,9 @@ package
 	public class AirFacebookSample extends Sprite
 	{
 		
+		// set this to true to be able to click on disbled buttons and test bad usecases (e.g. requesting while not connected) 
+		public static var ALLOW_DISABLED_BUTTON_CLICK:Boolean = false;
+		
 		private var btnsList:Vector.<AFSButton>;
 		private var btns:Object;
 		
@@ -37,11 +40,6 @@ package
 				
 				// those need connection
 				{id:"graph_og_like",	label: "like freshplanet.com",		deco:"[OG]",		handler: onBtnGraphOG,		scheme:AFSButton.BLUE, cond:isSessionOpened },
-				
-				{label: "Disconnect",				handler: onBtnDisconnect},
-				
-				// you need to be connected to call this one
-				{label: "Share opengraph object (old version)", handler: onBtnShareOGAction},
 				
 				// You don't need to be connected to use those functionalities
 				// it will call the native app or mFacebook in a webview
@@ -83,7 +81,7 @@ package
 			
 			if (!success && error)
 			{
-				trace("error:", error);
+				trace("Session opening error:", error);
 				return;
 			}
 			
@@ -146,11 +144,6 @@ package
 			
 		}
 		
-		private function onBtnDisconnect(e:Event):void
-		{
-			Facebook.getInstance().closeSessionAndClearTokenInformation();
-		} 
-		
 		// ------------------
 		// showing dialogs
 		private function onBtnShareStatus(e:Event):void
@@ -192,15 +185,6 @@ package
 			
 			trace(JSON.stringify(data));
 			
-		}
-		
-		private function onBtnShareOGAction(e:Event):void
-		{
-			var ogObject:Object = {
-				object:"http://freshplanet.com"
-			};
-			
-			Facebook.getInstance().requestWithGraphPath("me/books.reads", ogObject, 'POST');
 		}
 		
 		
@@ -434,6 +418,8 @@ class AFSButton extends SimpleButton
 		
 		if(!enabled) this.alpha = .7;
 		else this.alpha = 1;
+		
+		this.mouseEnabled = enabled || AirFacebookSample.ALLOW_DISABLED_BUTTON_CLICK;
 		
 	}
 	
