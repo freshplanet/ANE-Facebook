@@ -8,7 +8,7 @@ Facebook SDK Versions
 ---------
 
 * iOS: 3.10 (compatible with iOS 5.0 and above)
-* Android: 3.5.2 (compatible with Android 2.2 and above)
+* Android: 3.6 (compatible with Android 2.2 and above)
 
 
 Installation
