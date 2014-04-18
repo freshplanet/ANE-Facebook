@@ -7,7 +7,7 @@ This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensi
 Facebook SDK Versions
 ---------
 
-* iOS: 3.10 (compatible with iOS 5.0 and above)
+* iOS: 3.13.1 (compatible with iOS 5.0 and above)
 * Android: 3.6 (compatible with Android 2.2 and above)
 
 
