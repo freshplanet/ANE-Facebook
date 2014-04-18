@@ -72,9 +72,7 @@ static AirFacebook *sharedInstance = nil;
     _urlSchemeSuffix = urlSchemeSuffix;
     NSMutableString *logMessage = [NSMutableString stringWithFormat:@"Initializing with application ID %@", _appID];
     if (_urlSchemeSuffix)
-    {
         [logMessage appendFormat:@" and URL scheme suffix %@", _urlSchemeSuffix];
-    }
     [AirFacebook log:logMessage];
     
     // Open session if a token is in cache.
@@ -263,27 +261,12 @@ static AirFacebook *sharedInstance = nil;
 
 DEFINE_ANE_FUNCTION(init)
 {
-    uint32_t stringLength;
     
-    // Retrieve application ID
-    NSString *appID = nil;
-    const uint8_t *appIDString;
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &appIDString) == FRE_OK)
-    {
-        appID = [NSString stringWithUTF8String:(char*)appIDString];
-    }
-    
-    NSString *urlSchemeSuffix = nil;
-    const uint8_t *urlSchemeSuffixString;
-    if (FREGetObjectAsUTF8(argv[1], &stringLength, &urlSchemeSuffixString) == FRE_OK)
-    {
-        urlSchemeSuffix = [NSString stringWithUTF8String:(char*)urlSchemeSuffixString];
-        
-        if (urlSchemeSuffix.length == 0)
-        {
-            urlSchemeSuffix = nil;
-        }
-    }
+    // Retrieve application ID and urlschemesuffix
+    NSString *appID = FPANE_FREObjectToNSString(argv[0]);
+    NSString *urlSchemeSuffix = FPANE_FREObjectToNSString(argv[1]);
+    if (urlSchemeSuffix.length == 0)
+        urlSchemeSuffix = nil;
     
     // Initialize Facebook
     [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
