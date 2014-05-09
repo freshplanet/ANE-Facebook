@@ -34,6 +34,8 @@ FREContext AirFBCtx = nil;
 @synthesize urlSchemeSuffix = _urlSchemeSuffix;
 
 static AirFacebook *sharedInstance = nil;
+static FBFrictionlessRecipientCache *frictionlessFriendCache;
+
 
 + (AirFacebook *)sharedInstance
 {
@@ -389,6 +391,7 @@ DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions)
 DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation)
 {
     [[FBSession activeSession] closeAndClearTokenInformation];
+    frictionlessFriendCache = nil;
     return nil;
 }
 
@@ -553,11 +556,16 @@ DEFINE_ANE_FUNCTION(webDialog)
     }
     else if (isRequestDialog)
     {
+        if (frictionlessFriendCache == NULL) {
+            frictionlessFriendCache = [[FBFrictionlessRecipientCache alloc] init];
+        }
+        [frictionlessFriendCache prefetchAndCacheForSession:nil];
         [FBWebDialogs presentRequestsDialogModallyWithSession:nil
                                                       message:[parameters objectForKey:@"message"]
                                                         title:nil
                                                    parameters:parameters
-                                                      handler:resultHandler ];
+                                                      handler:resultHandler
+                                                  friendCache:frictionlessFriendCache];
     }
     else
     {
