@@ -133,7 +133,10 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
         {
             [AirFacebook log:[NSString stringWithFormat:@"Session opened with permissions: %@", [session.permissions componentsJoinedByString:@", "]]];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
-            
+            if (frictionlessFriendCache == NULL) {
+                frictionlessFriendCache = [[FBFrictionlessRecipientCache alloc] init];
+            }
+            [frictionlessFriendCache prefetchAndCacheForSession:nil];
         }
         else if (status == FBSessionStateClosed)
         {
@@ -556,10 +559,12 @@ DEFINE_ANE_FUNCTION(webDialog)
     }
     else if (isRequestDialog)
     {
+        
         if (frictionlessFriendCache == NULL) {
             frictionlessFriendCache = [[FBFrictionlessRecipientCache alloc] init];
+            [frictionlessFriendCache prefetchAndCacheForSession:nil];
         }
-        [frictionlessFriendCache prefetchAndCacheForSession:nil];
+        
         [FBWebDialogs presentRequestsDialogModallyWithSession:nil
                                                       message:[parameters objectForKey:@"message"]
                                                         title:nil
