@@ -214,8 +214,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\\\\\"$(SRCROOT)/facebook-ios-sdk/build\\\\\\\"",
-					"/Users/renaud/projects/freshplanet/ANE-Facebook/ios",
-					"/Users/renaud/projects/freshplanet/ANE-Facebook/ios/facebook-ios-sdk/build",
+					"$(PROJECT_DIR)/facebook-ios-sdk/build",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AirFacebook/AirFacebook-Prefix.pch";
@@ -243,8 +242,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\\\\\"$(SRCROOT)/facebook-ios-sdk/build\\\\\\\"",
-					"/Users/renaud/projects/freshplanet/ANE-Facebook/ios",
-					"/Users/renaud/projects/freshplanet/ANE-Facebook/ios/facebook-ios-sdk/build",
+					"$(PROJECT_DIR)/facebook-ios-sdk/build",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AirFacebook/AirFacebook-Prefix.pch";
