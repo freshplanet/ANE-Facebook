@@ -589,7 +589,8 @@ DEFINE_ANE_FUNCTION(publishInstall)
     if (FREGetObjectAsUTF8(argv[0], &stringLength, &appIdString) == FRE_OK)
     {
         appId = [NSString stringWithUTF8String:(char*)appIdString];
-        [FBSettings publishInstall:appId];
+
+        //[FBSettings publishInstall:appId];
     }
     return nil;
 }
