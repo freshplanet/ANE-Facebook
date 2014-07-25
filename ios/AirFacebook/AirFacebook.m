@@ -540,24 +540,31 @@ DEFINE_ANE_FUNCTION(webDialog)
             // TODO handle errors on a low level using FB SDK
 			NSString *description = [error localizedDescription];
 			NSInteger errorCode = [error code];
+			NSInteger errorSubcode = 0;
+			
+			// try and get subcode
 			NSDictionary *errorInformation = [[[[error userInfo] objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"]
 											   objectForKey:@"body"]
 											  objectForKey:@"error"];
-			NSInteger errorSubcode = 0;
-			if ([errorInformation objectForKey:@"code"]){
+
+			if (errorInformation && [errorInformation objectForKey:@"code"]){
 				errorSubcode = [[errorInformation objectForKey:@"code"] integerValue];
 			}
 
-			NSDictionary *errorDictionary = @{ @"code": errorCode,
-											   @"subCode": errorSubcode,
+			NSDictionary *errorDictionary = @{ @"code": [NSString stringWithFormat:@"%ld", (long)errorCode],
+											   @"subCode": [NSString stringWithFormat:@"%ld", (long)errorSubcode],
 											   @"description" : description };
 			
 			NSError *jsonError;
-			NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dictionaryOrArrayToOutput
-															   options:0
-																 error:&jsonError];
+			NSData *jsonData;
 			
-			NSString *jsonString = nil;
+			if ([NSJSONSerialization isValidJSONObject:errorDictionary]) {
+				jsonData = [NSJSONSerialization dataWithJSONObject:errorDictionary
+														   options:0
+															 error:&jsonError];
+			}
+			
+			NSString *jsonString = @"unknown";
 			
 			if (!jsonData) {
 				NSLog(@"Got an error: %@", error);
@@ -565,7 +572,10 @@ DEFINE_ANE_FUNCTION(webDialog)
 				jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 			}
 			
-            [AirFacebook dispatchEvent:callback withMessage:jsonString];
+			NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", jsonString];
+			
+            [AirFacebook dispatchEvent:callback withMessage:data];
+			
         } else {
             if (result == FBWebDialogResultDialogNotCompleted) {
                 NSLog(@"User canceled story publishing.");
