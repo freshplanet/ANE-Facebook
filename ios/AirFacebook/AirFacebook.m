@@ -105,6 +105,8 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
         }
     }
     
+	[FBSettings setDefaultAppID:appID];
+	
     [FBSession renewSystemCredentials:NULL];
 }
 
@@ -276,6 +278,7 @@ DEFINE_ANE_FUNCTION(init)
     // Initialize Facebook
     [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
     
+	
     return nil;
 }
 
@@ -616,18 +619,9 @@ DEFINE_ANE_FUNCTION(webDialog)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(publishInstall)
+DEFINE_ANE_FUNCTION(activateApp)
 {
-    uint32_t stringLength;
-
-    NSString *appId = nil;
-    const uint8_t *appIdString;
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &appIdString) == FRE_OK)
-    {
-        appId = [NSString stringWithUTF8String:(char*)appIdString];
-
-        //[FBSettings publishInstall:appId];
-    }
+	[FBAppEvents activateApp];
     return nil;
 }
 
@@ -701,9 +695,9 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[14].functionData = NULL;
     func[14].function = &webDialog;
     
-    func[15].name = (const uint8_t*) "publishInstall";
+    func[15].name = (const uint8_t*) "activateApp";
     func[15].functionData = NULL;
-    func[15].function = &publishInstall;
+    func[15].function = &activateApp;
     
     *functionsToSet = func;
     
