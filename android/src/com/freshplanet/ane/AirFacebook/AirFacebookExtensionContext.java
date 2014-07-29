@@ -74,6 +74,7 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("shareOpenGraphDialog", new ShareOpenGraphDialogFunction());
 		functions.put("webDialog", new WebDialogFunction());
 		functions.put("publishInstall", new PublishInstallFunction());
+		functions.put("activateApp", new PublishInstallFunction());
 		functions.put("setUsingStage3D", new SetUsingStage3dFunction());
 		return functions;	
 	}
