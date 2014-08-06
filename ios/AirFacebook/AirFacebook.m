@@ -512,6 +512,80 @@ DEFINE_ANE_FUNCTION(shareOpenGraphDialog)
     
 }
 
+DEFINE_ANE_FUNCTION(canPresentMessageDialog)
+{
+	BOOL canPresent = [FBDialogs canPresentMessageDialog];
+    return FPANE_BOOLToFREObject(canPresent);
+}
+
+
+DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams)
+{
+	NSLog(@"1");
+	NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[0], argv[1]);
+	NSLog(@"2");
+	// Retrieve callback name
+    NSString *callback = FPANE_FREObjectToNSString(argv[3]);
+	NSLog(@"3");
+	[FBDialogs presentMessageDialogWithLink:[NSURL URLWithString:[parameters valueForKey:@"link"]]
+									   name:[parameters valueForKey:@"name"]
+									caption:[parameters valueForKey:@"caption"]
+								description:[parameters valueForKey:@"description"]
+									picture:[NSURL URLWithString:[parameters valueForKey:@"picture"]]
+								clientState:nil
+									handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+										if(error) {
+											
+											// An error occurred, we need to handle the error
+											// See: https://developers.facebook.com/docs/ios/errors
+											
+											NSString *description = [error localizedDescription];
+											NSInteger errorCode = [error code];
+											NSInteger errorSubcode = 0;
+											
+											// try and get subcode
+											NSDictionary *errorInformation = [[[[error userInfo] objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"]
+																			   objectForKey:@"body"]
+																			  objectForKey:@"error"];
+											
+											if (errorInformation && [errorInformation objectForKey:@"code"]){
+												errorSubcode = [[errorInformation objectForKey:@"code"] integerValue];
+											}
+											
+											NSDictionary *errorDictionary = @{ @"code": [NSString stringWithFormat:@"%ld", (long)errorCode],
+																			   @"subCode": [NSString stringWithFormat:@"%ld", (long)errorSubcode],
+																			   @"description" : description };
+											
+											NSError *jsonError;
+											NSData *jsonData;
+											
+											if ([NSJSONSerialization isValidJSONObject:errorDictionary]) {
+												jsonData = [NSJSONSerialization dataWithJSONObject:errorDictionary
+																						   options:0
+																							 error:&jsonError];
+											}
+											
+											NSString *jsonString = @"unknown";
+											
+											if (!jsonData) {
+												NSLog(@"Got an error: %@", error);
+											} else {
+												jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+											}
+											
+											NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", jsonString];
+											
+											[AirFacebook dispatchEvent:callback withMessage:data];
+											
+										} else {
+											// Success
+											NSLog(@"result %@", results);
+										}
+									}];
+	NSLog(@"4");
+	return nil;
+}
+
 /* deprecated */
 DEFINE_ANE_FUNCTION(webDialog)
 {
@@ -630,7 +704,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 16;
+    NSInteger nbFuntionsToLink = 18;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -690,14 +764,22 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[13].name = (const uint8_t*) "shareOpenGraphDialog";
     func[13].functionData = NULL;
     func[13].function = &shareOpenGraphDialog;
-    
-    func[14].name = (const uint8_t*) "webDialog";
+
+	func[14].name = (const uint8_t*) "canPresentMessageDialog";
     func[14].functionData = NULL;
-    func[14].function = &webDialog;
+    func[14].function = &canPresentMessageDialog;
     
-    func[15].name = (const uint8_t*) "activateApp";
+	func[15].name = (const uint8_t*) "presentMessageDialogWithLinkAndParams";
     func[15].functionData = NULL;
-    func[15].function = &activateApp;
+    func[15].function = &presentMessageDialogWithLinkAndParams;
+
+    func[16].name = (const uint8_t*) "webDialog";
+    func[16].functionData = NULL;
+    func[16].function = &webDialog;
+    
+    func[17].name = (const uint8_t*) "activateApp";
+    func[17].functionData = NULL;
+    func[17].function = &activateApp;
     
     *functionsToSet = func;
     

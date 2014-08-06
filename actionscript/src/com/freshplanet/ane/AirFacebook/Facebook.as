@@ -395,6 +395,35 @@ package com.freshplanet.ane.AirFacebook
 
 		}
 
+		
+		/**
+		 * Determine if we can open a native Message Dialog.
+		 * Call this method to know if you can use <code>presentMessageDialogWithLinkWithParams</code>
+		 */
+		public function canPresentMessageDialog():Boolean
+		{
+			var result:Boolean =  _context.call('canPresentMessageDialog');
+			return result;
+		}
+		
+		
+		public function presentMessageDialogWithLinkAndParams(
+			linkUrl:String,
+			name:String,
+			caption:String,
+			description:String,
+			pictureUrl:String,
+			callback:Function ):void
+		{
+			var keys:Array = ["link", "name", "caption", "description", "picture"];
+			var values:Array = [linkUrl, name, caption, description, pictureUrl];
+			
+			// Register the callback
+			var callbackName:String = getNewCallbackName(callback);
+			
+			_context.call('presentMessageDialogWithLinkAndParams', keys, values, callbackName);
+		}
+		
 		/**
 		 * Open a Facebook dialog in a WebView
 		 *
