@@ -16,47 +16,32 @@
 
 package com.facebook.internal;
 
-import java.io.BufferedInputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-
-import com.facebook.FacebookException;
-import com.facebook.Request;
-import com.facebook.Session;
+import com.facebook.*;
 import com.facebook.android.BuildConfig;
 import com.facebook.model.GraphObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * com.facebook.internal is solely for the use of other packages within the Facebook SDK for Android. Use of
@@ -66,6 +51,7 @@ import com.facebook.model.GraphObject;
 public final class Utility {
     static final String LOG_TAG = "FacebookSDK";
     private static final String HASH_ALGORITHM_MD5 = "MD5";
+    private static final String HASH_ALGORITHM_SHA1 = "SHA-1";
     private static final String URL_SCHEME = "https";
     private static final String SUPPORTS_ATTRIBUTION = "supports_attribution";
     private static final String SUPPORTS_IMPLICIT_SDK_LOGGING = "supports_implicit_sdk_logging";
@@ -137,9 +123,17 @@ public final class Utility {
     }
 
     static String md5hash(String key) {
+        return hashWithAlgorithm(HASH_ALGORITHM_MD5, key);
+    }
+
+    private static String sha1hash(String key) {
+        return hashWithAlgorithm(HASH_ALGORITHM_SHA1, key);
+    }
+
+    private static String hashWithAlgorithm(String algorithm, String key) {
         MessageDigest hash = null;
         try {
-            hash = MessageDigest.getInstance(HASH_ALGORITHM_MD5);
+            hash = MessageDigest.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
@@ -408,5 +402,31 @@ public final class Utility {
             }
         }
         return result;
+    }
+
+    // Return a hash of the android_id combined with the appid.  Intended to dedupe requests on the server side
+    // in order to do counting of users unknown to Facebook.  Because we put the appid into the key prior to hashing,
+    // we cannot do correlation of the same user across multiple apps -- this is intentional.  When we transition to
+    // the Google advertising ID, we'll get rid of this and always send that up.
+    public static String getHashedDeviceAndAppID(Context context, String applicationId) {
+        String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
+
+        if (androidId == null) {
+            return null;
+        } else {
+            return sha1hash(androidId + applicationId);
+        }
+    }
+
+    public static void setAppEventAttributionParameters(GraphObject params,
+            String attributionId, String hashedDeviceAndAppId, boolean limitEventUsage) {
+        // Send attributionID if it exists, otherwise send a hashed device+appid specific value as the advertiser_id.
+        if (attributionId != null) {
+            params.setProperty("attribution", attributionId);
+        } else if (hashedDeviceAndAppId != null) {
+            params.setProperty("advertiser_id", hashedDeviceAndAppId);
+        }
+
+        params.setProperty("application_tracking_enabled", !limitEventUsage);
     }
 }

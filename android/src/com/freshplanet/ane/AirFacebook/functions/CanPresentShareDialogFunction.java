@@ -18,25 +18,29 @@
 
 package com.freshplanet.ane.AirFacebook.functions;
 
-import android.os.Bundle;
-
-import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.adobe.fre.FREWrongThreadException;
+import com.facebook.widget.FacebookDialog;
 
-public class DialogFunction extends BaseFunction
+public class CanPresentShareDialogFunction extends BaseFunction
 {
 	public FREObject call(FREContext context, FREObject[] args)
 	{
+		
 		super.call(context, args);
 		
-		String method = getStringFromFREObject(args[0]);
-		Bundle parameters = getBundleOfStringFromFREArrays((FREArray)args[1], (FREArray)args[2]);
-		String callback = getStringFromFREObject(args[3]);
-		
-		AirFacebookExtension.context.launchDialogActivity(method, parameters, callback);
+		try {
+			return FREObject.newObject(
+						FacebookDialog.canPresentShareDialog(context.getActivity(), FacebookDialog.ShareDialogFeature.SHARE_DIALOG)
+					);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (FREWrongThreadException e) {
+			e.printStackTrace();
+		}
 		
 		return null;
+		
 	}
 }

@@ -135,7 +135,6 @@
             <arg value="../build/extension.xml"/>
             <arg line="-swc swc/${name}.swc"/>
             <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml FacebookSDK.framework -C ios/ ."/>
-            <arg line="-platform iPhone-x86 -platformoptions ../build/platform.xml FacebookSDK.framework -C ios-simulator/ ."/>
             <arg line="-platform Android-ARM -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>

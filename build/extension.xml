@@ -29,14 +29,6 @@
         </applicationDeployment>
     </platform>
 
-    <platform name="iPhone-x86">
-        <applicationDeployment>
-            <nativeLibrary>libAirFacebook.a</nativeLibrary>
-            <initializer>AirFacebookInitializer</initializer> 
-            <finalizer>AirFacebookFinalizer</finalizer>
-        </applicationDeployment>
-    </platform>
-
     <platform name="Android-ARM"> 
         <applicationDeployment> 
             <nativeLibrary>libAirFacebook.jar</nativeLibrary> 

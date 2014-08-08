@@ -18,8 +18,13 @@
 
 package com.freshplanet.ane.AirFacebook;
 
-import android.os.Bundle;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.os.Bundle;
+import android.util.Log;
+
+import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -73,18 +78,27 @@ public class RequestThread extends Thread
 			}
 			else if (response.getError() != null)
 			{
-				data = response.getError().getRequestResult().toString();
+				// error result
+				if(response.getError().getRequestResult() != null)
+				{
+					error = response.getError().getRequestResult().toString();
+				}
+				// error on sending
+				else
+				{
+					error = "{\"error\":\""+response.getError().toString()+"\"}";
+				}
 			}
 		}
 		catch (Exception e)
 		{
-			error = e.getMessage();
+			error = "{\"error\":\""+e.toString()+"\"}";
 		}
 		
 		String result = "";
 		if (error != null) result = error;
 		else if (data != null) result = data;
-		
+			
 		if (_callback != null)
 		{
 			_context.dispatchStatusEventAsync(_callback, result);

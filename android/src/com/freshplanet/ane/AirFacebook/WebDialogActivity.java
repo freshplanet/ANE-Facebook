@@ -22,77 +22,93 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.adobe.fre.FREContext;
 import com.facebook.FacebookException;
+import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 
-public class DialogActivity extends Activity implements WebDialog.OnCompleteListener
+public class WebDialogActivity extends Activity implements WebDialog.OnCompleteListener
 {
-	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.DialogActivity";
+	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.WebDialogActivity";
 	
-	private AirFacebookExtensionContext _context;
+	private String callback;
+	private String method;
 	
-	private String _callback;
-	private String _method;
-	
-	private WebDialog _dialog = null;
+	private WebDialog dialog = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		AirFacebookExtension.log("WebDialogActivity.onCreate");
 		super.onCreate(savedInstanceState);
 		
-		// Retrieve context
-		_context = AirFacebookExtension.context;
-		if (_context == null)
+		// Retrieve extra values
+		method = this.getIntent().getStringExtra(extraPrefix+".method");
+		Bundle parameters = this.getIntent().getBundleExtra(extraPrefix+".parameters");
+		callback = this.getIntent().getStringExtra(extraPrefix+".callback");
+		
+		Session session = AirFacebookExtension.context.getSession();
+		if ( session == null )
 		{
-			AirFacebookExtension.log("Extension context is null");
+			AirFacebookExtension.context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(AirFacebookError.NOT_INITIALIZED));
+			AirFacebookExtension.log("ERROR - AirFacebook is not initialized");
 			finish();
 			return;
 		}
 		
 		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(_context.getResourceId("layout.com_facebook_login_activity_layout"));
+		setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
 		
-		// Retrieve extra values
-		Bundle extras = this.getIntent().getExtras();
-		_method = extras.getString(extraPrefix+".method");
-		Bundle parameters = extras.getBundle(extraPrefix+".parameters");
-		_callback = extras.getString(extraPrefix+".callback");
+		if ( session.isOpened() )
+		{
+			dialog = new WebDialog.Builder(this, AirFacebookExtension.context.getSession(), method, parameters)
+				.setOnCompleteListener(this)
+				.build();
+		}
+		else
+		{
+			dialog = new WebDialog.Builder(this, session.getApplicationId(), method, parameters)
+				.setOnCompleteListener(this)
+				.build();
+		}
 		
-		// Create WebDialog
-		_dialog = new WebDialog.Builder(this, _context.getSession(), _method, parameters).setOnCompleteListener(this).build();
-		Window dialog_window = _dialog.getWindow();
+		Window dialog_window = dialog.getWindow();
     	dialog_window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    	_dialog.show();
+    	dialog.show();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		AirFacebookExtension.log("DialogActivity.onActivityResult");
+		finish();
 	}
 
 	public void onComplete(Bundle values, FacebookException error)
 	{
-		if (_context == null)
-    	{
-    		AirFacebookExtension.log("Extension context is null");
-			finish();
-			return;
-    	}
+		FREContext context = AirFacebookExtension.context;
+		AirFacebookExtension.log("INFO - DialogActivity.onComplete");
+
 		
 		// Trigger callback if necessary
-		if (_callback != null)
+		if (context != null && callback != null)
 		{
-			if (error != null)
-			{
-				_context.dispatchStatusEventAsync(_callback, "{ \"error\": \""+error.getMessage()+"\" }");
+			if (error != null) {
+				AirFacebookExtension.log("DialogActivity.onComplete, error " + error.getMessage());
+				context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(error.getMessage()));
 				finish();
 				return;
 			}
 
 			// Content depends on type of dialog that was invoked (method)
 			String postMessage = null;
-			if (_method.equalsIgnoreCase("feed"))
+			if(method.equalsIgnoreCase("feed"))
 			{
 				// Check if feed gave us a post_id back, if not we cancelled
 				String postId = values.getString("post_id");
@@ -101,7 +117,7 @@ public class DialogActivity extends Activity implements WebDialog.OnCompleteList
 					postMessage = "{ \"params\": \""+postId+"\" }";
 				}
 			}
-			else if (_method.equalsIgnoreCase("apprequests"))
+			else if(method.equalsIgnoreCase("apprequests"))
 			{
 				// We get a request id, and a list of recepients if selected
 				String request = values.getString("request");
@@ -113,12 +129,11 @@ public class DialogActivity extends Activity implements WebDialog.OnCompleteList
 			}
 			
 			// If  message wasn't set by here, then we cancelled
-			if (postMessage == null)
-			{
+			if(postMessage == null)
 				postMessage = "{ \"cancel\": true }";
-			}
 			
-			_context.dispatchStatusEventAsync(_callback, postMessage);
+			AirFacebookExtension.log("DialogActivity.onComplete, postMessage " + postMessage);
+			context.dispatchStatusEventAsync(callback, postMessage);
 		}
 		
 		finish();
@@ -132,18 +147,19 @@ public class DialogActivity extends Activity implements WebDialog.OnCompleteList
 		String[] keys = values.keySet().toArray(new String[0]);
 		for (int i = 0; i < keys.length; i++) 
 		{
-			if (i > 0)
+			if(i > 0)
 				sb.append("&");
 			try
 			{
 				sb.append(keys[i]).append("=").append(URLEncoder.encode(values.get(keys[i]).toString(), "utf-8"));
 			}
-			catch (UnsupportedEncodingException e)
+			catch(UnsupportedEncodingException ex)
 			{
-				e.printStackTrace();
+				ex.printStackTrace();
 			}
 		}
 		
 		return sb.toString();
 	}
+
 }

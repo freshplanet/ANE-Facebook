@@ -35,7 +35,7 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
 + (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
 + (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
-+ (FBOSIntegratedShareDialogHandler)shareDialogHandlerWithCallback:(NSString *)callback;
++ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback;
 
 + (void)log:(NSString *)string, ...;
 
@@ -57,8 +57,13 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions);
 DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions);
 DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
 DEFINE_ANE_FUNCTION(requestWithGraphPath);
-DEFINE_ANE_FUNCTION(dialog);
-DEFINE_ANE_FUNCTION(publishInstall);
+DEFINE_ANE_FUNCTION(canPresentShareDialog);
+DEFINE_ANE_FUNCTION(shareStatusDialog);
+DEFINE_ANE_FUNCTION(shareLinkDialog);
+DEFINE_ANE_FUNCTION(canPresentOpenGraphDialog);
+DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
+DEFINE_ANE_FUNCTION(webDialog);
+DEFINE_ANE_FUNCTION(activateApp);
 
 // ANE Setup
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
