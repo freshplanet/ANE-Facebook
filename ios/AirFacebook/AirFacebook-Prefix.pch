@@ -1,8 +1,0 @@
-//
-// Prefix header for all source files of the 'AirFacebook' target in the 'AirFacebook' project
-//
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import "NSContainer+Subscripting.h"
-#endif

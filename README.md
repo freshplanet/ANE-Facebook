@@ -7,8 +7,8 @@ This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensi
 Facebook SDK Versions
 ---------
 
-* iOS: 3.7.1 (compatible with iOS 5.0 and above)
-* Android: 3.5.2 (compatible with Android 2.2 and above)
+* iOS: 3.16.2 (compatible with iOS 5.0 and above)
+* Android: 3.6 (compatible with Android 2.2 and above)
 
 
 Installation
@@ -77,6 +77,13 @@ Documentation
 --------
 
 Actionscript documentation is available in HTML format in the *docs* folder.
+
+
+Samples
+--------
+
+A sample project is available in the *sample* folder.
+Read HOW-TO.txt walkthrought to set-up and run the sample application.
 
 
 Build from source

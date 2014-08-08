@@ -1,0 +1,9 @@
+package
+{
+	public class FacebookConfig
+	{
+		
+		static public const appID:String = "YOUR_APP_ID";
+		
+	}
+}

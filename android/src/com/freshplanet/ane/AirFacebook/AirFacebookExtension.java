@@ -25,6 +25,7 @@ import com.adobe.fre.FREExtension;
 
 public class AirFacebookExtension implements FREExtension
 {
+	
 	public static String TAG = "AirFacebook";
 	private static Boolean PRINT_LOG = true;
 	
@@ -51,5 +52,11 @@ public class AirFacebookExtension implements FREExtension
 	public static int getResourceId(String name)
 	{
 		return context != null ? context.getResourceId(name) : 0;
+	}
+	
+	public static int[] getResourceIds(String name)
+	{
+		// TODO
+		return new int[0];
 	}
 }

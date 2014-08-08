@@ -16,8 +16,6 @@
 
 package com.facebook;
 
-import java.util.UUID;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,9 +24,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
 import com.facebook.internal.NativeProtocol;
 import com.facebook.widget.FacebookDialog;
+
+import java.util.UUID;
 
 /**
  * This class helps to create, automatically open (if applicable), save, and

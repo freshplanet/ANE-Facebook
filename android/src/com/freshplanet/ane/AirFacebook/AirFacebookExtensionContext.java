@@ -27,20 +27,24 @@ import android.os.Bundle;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
-import com.facebook.FacebookRequestError;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.freshplanet.ane.AirFacebook.functions.CanPresentOpenGraphDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.CanPresentShareDialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.CloseSessionAndClearTokenInformationFunction;
-import com.freshplanet.ane.AirFacebook.functions.DialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetAccessTokenFunction;
 import com.freshplanet.ane.AirFacebook.functions.GetExpirationTimestampFunction;
 import com.freshplanet.ane.AirFacebook.functions.InitFunction;
 import com.freshplanet.ane.AirFacebook.functions.IsSessionOpenFunction;
 import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunction;
-import com.freshplanet.ane.AirFacebook.functions.PublishInstallFunction;
+import com.freshplanet.ane.AirFacebook.functions.ActivateAppFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
 import com.freshplanet.ane.AirFacebook.functions.SetUsingStage3dFunction;
+import com.freshplanet.ane.AirFacebook.functions.ShareLinkDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.ShareOpenGraphDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.ShareStatusDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.WebDialogFunction;
 
 public class AirFacebookExtensionContext extends FREContext
 {
@@ -63,8 +67,13 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("reauthorizeSessionWithPermissions", new ReauthorizeSessionWithPermissionsFunction());
 		functions.put("closeSessionAndClearTokenInformation", new CloseSessionAndClearTokenInformationFunction());
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
-		functions.put("dialog", new DialogFunction());
-		functions.put("publishInstall", new PublishInstallFunction());
+		functions.put("canPresentShareDialog", new CanPresentShareDialogFunction());
+		functions.put("shareStatusDialog", new ShareStatusDialogFunction());
+		functions.put("shareLinkDialog", new ShareLinkDialogFunction());
+		functions.put("canPresentOpenGraphDialog", new CanPresentOpenGraphDialogFunction());
+		functions.put("shareOpenGraphDialog", new ShareOpenGraphDialogFunction());
+		functions.put("webDialog", new WebDialogFunction());
+		functions.put("activateApp", new ActivateAppFunction());
 		functions.put("setUsingStage3D", new SetUsingStage3dFunction());
 		return functions;	
 	}
@@ -75,12 +84,6 @@ public class AirFacebookExtensionContext extends FREContext
 	
 	public void init(String appID)
 	{
-		FacebookRequestError.REQUEST_ERROR_PERMISSIONS = getResourceId("string.com_facebook_requesterror_permissions");
-		FacebookRequestError.REQUEST_ERROR_WEB_LOGIN = getResourceId("string.com_facebook_requesterror_web_login");
-		FacebookRequestError.REQUEST_ERROR_RELOGIN = getResourceId("string.com_facebook_requesterror_relogin");
-		FacebookRequestError.REQUEST_ERROR_PASSWORD_CHANGED = getResourceId("string.com_facebook_requesterror_password_changed");
-		FacebookRequestError.REQUEST_ERROR_RECONNECT = getResourceId("string.com_facebook_requesterror_reconnect");
-		
 		_appID = appID;
 		
 		Session session = getSession();
@@ -124,16 +127,15 @@ public class AirFacebookExtensionContext extends FREContext
 		i.putExtra(LoginActivity.extraPrefix+".permissions", permissions.toArray(new String[permissions.size()]));
 		i.putExtra(LoginActivity.extraPrefix+".type", type);
 		i.putExtra(LoginActivity.extraPrefix+".reauthorize", reauthorize);
-		
 		getActivity().startActivity(i);
 	}
 	
 	public void launchDialogActivity(String method, Bundle parameters, String callback)
 	{
-		Intent i = new Intent(getActivity().getApplicationContext(), DialogActivity.class);
-		i.putExtra(DialogActivity.extraPrefix+".method", method);
-		i.putExtra(DialogActivity.extraPrefix+".parameters", parameters);
-		i.putExtra(DialogActivity.extraPrefix+".callback", callback);
+		Intent i = new Intent(getActivity().getApplicationContext(), WebDialogActivity.class);
+		i.putExtra(WebDialogActivity.extraPrefix+".method", method);
+		i.putExtra(WebDialogActivity.extraPrefix+".parameters", parameters);
+		i.putExtra(WebDialogActivity.extraPrefix+".callback", callback);
 		getActivity().startActivity(i);
 	}
 	

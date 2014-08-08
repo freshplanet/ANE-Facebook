@@ -16,22 +16,6 @@
 
 package com.facebook;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -41,11 +25,17 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
 import com.facebook.android.BuildConfig;
 import com.facebook.internal.Utility;
-import com.facebook.internal.Validate;
 import com.facebook.model.GraphObject;
+import com.facebook.internal.Validate;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Allows some customization of sdk behavior.
@@ -73,8 +63,9 @@ public final class Settings {
     private static final String PUBLISH_ACTIVITY_PATH = "%s/activities";
     private static final String MOBILE_INSTALL_EVENT = "MOBILE_APP_INSTALL";
     private static final String ANALYTICS_EVENT = "event";
-    private static final String ATTRIBUTION_KEY = "attribution";
     private static final String AUTO_PUBLISH = "auto_publish";
+
+    private static final String APP_EVENT_PREFERENCES = "com.facebook.sdk.appEventPreferences";
 
     private static final BlockingQueue<Runnable> DEFAULT_WORK_QUEUE = new LinkedBlockingQueue<Runnable>(10);
 
@@ -365,9 +356,12 @@ public final class Settings {
 
             GraphObject publishParams = GraphObject.Factory.create();
             publishParams.setProperty(ANALYTICS_EVENT, MOBILE_INSTALL_EVENT);
-            publishParams.setProperty(ATTRIBUTION_KEY, attributionId);
+
+            Utility.setAppEventAttributionParameters(publishParams,
+                    attributionId,
+                    Utility.getHashedDeviceAndAppID(context, applicationId),
+                    !getLimitEventAndDataUsage(context));
             publishParams.setProperty(AUTO_PUBLISH, isAutoPublish);
-            publishParams.setProperty("application_tracking_enabled", !AppEventsLogger.getLimitEventUsage(context));
             publishParams.setProperty("application_package_name", context.getPackageName());
 
             String publishUrl = String.format(PUBLISH_ACTIVITY_PATH, applicationId);
@@ -476,5 +470,32 @@ public final class Settings {
      */
     public static String getMigrationBundle() {
         return FacebookSdkVersion.MIGRATION_BUNDLE;
+    }
+
+    /**
+     * Gets whether data such as that generated through AppEventsLogger and sent to Facebook should be restricted from
+     * being used for purposes other than analytics and conversions, such as for targeting ads to this user.  Defaults
+     * to false.  This value is stored on the device and persists across app launches.
+     *
+     * @param context   Used to read the value.
+     */
+    public static boolean getLimitEventAndDataUsage(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(APP_EVENT_PREFERENCES, Context.MODE_PRIVATE);
+        return preferences.getBoolean("limitEventUsage", false);
+    }
+
+    /**
+     * Sets whether data such as that generated through AppEventsLogger and sent to Facebook should be restricted from
+     * being used for purposes other than analytics and conversions, such as for targeting ads to this user.  Defaults
+     * to false.  This value is stored on the device and persists across app launches.  Changes to this setting will
+     * apply to app events currently queued to be flushed.
+     *
+     * @param context   Used to persist this value across app runs.
+     */
+    public static void setLimitEventAndDataUsage(Context context, boolean limitEventUsage) {
+        SharedPreferences preferences = context.getSharedPreferences(APP_EVENT_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("limitEventUsage", limitEventUsage);
+        editor.commit();
     }
 }

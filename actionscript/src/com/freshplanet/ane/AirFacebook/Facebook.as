@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////////////////////////////////////////////
+﻿ //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright 2012 Freshplanet (http://freshplanet.com | opensource@freshplanet.com)
 //  
@@ -24,6 +24,7 @@ package com.freshplanet.ane.AirFacebook
 	import flash.events.StatusEvent;
 	import flash.external.ExtensionContext;
 	import flash.system.Capabilities;
+	import com.freshplanet.ane.AirFacebook.FacebookPermissionEvent;
 
 	public class Facebook extends EventDispatcher
 	{
@@ -105,6 +106,17 @@ package com.freshplanet.ane.AirFacebook
 			
 			_context.call('init', appID, urlSchemeSuffix);
 		}
+		
+		/**
+		 * Track an activation of the app
+		 */
+		public function activateApp() : void
+		{
+			if (!isSupported) return;
+			
+			_context.call('activateApp');
+		}
+		
 		
 		/** True if a Facebook session is open, false otherwise. */
 		public function get isSessionOpen() : Boolean
@@ -244,25 +256,156 @@ package com.freshplanet.ane.AirFacebook
 			// Execute the request
 			_context.call('requestWithGraphPath', graphPath, keys, values, httpMethod, callbackName);
 		}
-		
+
 		/**
-		 * Open a Facebook dialog.
-		 * 
+		 * Determine if we can open a native share dialog with the given parameters.
+		 * Call this method to decide wether you should use <code>shareStatusDialog</code> or <code>webDialog</code>
+		 */
+		public function canPresentShareDialog():Boolean
+		{
+
+			return _context.call('canPresentShareDialog') ;
+
+		}
+
+		/**
+		 * Open a native Facebook dialog for sharing a link
+		 * This requires that the Facebook app is installed on the device,
+		 * To make sure this succeeds, call canPresentShareDialog, otherwise
+		 * you can fall back to a web view with the <code>webDialog</code> method
+		 */
+		public function shareStatusDialog( callback:Function ):void
+		{
+
+			_context.call('shareStatusDialog', getNewCallbackName(callback) );
+
+		}
+
+		/**
+		 * Open a native Facebook dialog for sharing a link
+		 * This requires that the Facebook app is installed on the device,
+		 * To make sure this succeeds, call canPresentShareDialog, otherwise
+		 * you can fall back to a web view with the <code>webDialog</code> method
+		 *
+		 * @param link (Optional) Link to share.
+		 * @param name (Optional) Title of the publication.
+		 * @param caption (Optional) Short summary of the link content.
+		 * @param description (Optional) Description of the link content.
+		 * @param pictureUrl (Optional) Url of the attached picture.
+		 * @param callback (Optional) A callback function of the following form:
+		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+		 * object returned by Facebook.
+		 */
+		public function shareLinkDialog(
+			link:String =null,
+			name:String =null,
+			caption:String =null,
+			description:String =null,
+			pictureUrl:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void
+		{
+
+			// Separate parameters keys and values
+			var keys:Array = []; var values:Array = [];
+			for (var key:String in clientState)
+			{
+				var value:String = clientState[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
+			}
+
+			_context.call('shareLinkDialog', link, name, caption, description, pictureUrl, keys, values, getNewCallbackName(callback)) ;
+
+		}
+
+		/**
+		 * Determine if we can open a native share dialog for OpenGraph with the given parameters.
+		 * Call this method to know if you can use <code>shareOpenGraphDialog</code>
+		 */
+		public function canPresentOpenGraphDialog( actionType:String, graphObject:Object, previewProperty:String =null):Boolean
+		{
+
+			// Separate parameters keys and values
+			var keys:Array = []; var values:Array = [];
+			for (var key:String in graphObject)
+			{
+				var value:String = graphObject[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
+			}
+
+			return _context.call('canPresentOpenGraphDialog', actionType, keys, values, previewProperty) ;
+
+		}
+
+		/**
+		 * Open a native Facebook dialog for sharing an OpenGraph action
+		 * This requires that the Facebook app is installed on the device,
+		 * To make sure this succeeds, call canPresentOpenGraphDialog
+		 *
+		 * @param actionType the OpenGraph action you want to share (e.g. books.read)
+		 * @param graphObject the OpenGraph object you want to share, set properties accordingly with
+		 * the definition you created on developers.facebook.com (e.g. { book:"http://freshplanet.com/books/how-to-make-anes.html" })
+		 * @param previewProperty defines the property over wich the story should emphasis (e.g. 'book')
+		 * @param clientState (Optional) deprecated
+		 * @param callback (Optional) A callback function of the following form:
+		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+		 * object returned by Facebook.
+		 */
+		public function shareOpenGraphDialog(
+			actionType:String,
+			graphObject:Object,
+			previewProperty:String =null,
+			clientState:Object =null,
+			callback:Function =null ):void
+		{
+
+			// Separate parameters keys and values
+			var keys:Array = []; var values:Array = [];
+			for (var key:String in graphObject)
+			{
+				var value:String = graphObject[key] as String;
+				if (value)
+				{
+					keys.push(key); 
+					values.push(value);
+				}
+			}
+
+			// Separate parameters keys and valuesm for clientState
+			var cskeys:Array = []; var csvalues:Array = [];
+			for (var cskey:String in clientState)
+			{
+				value = clientState[key] as String;
+				if (value)
+				{
+					cskeys.push(key); 
+					csvalues.push(value);
+				}
+			}
+
+			_context.call('shareOpenGraphDialog', actionType, keys, values, previewProperty, cskeys, csvalues, getNewCallbackName(callback));
+
+		}
+
+		/**
+		 * Open a Facebook dialog in a WebView
+		 *
 		 * @param method A dialog method (eg. login, feed...).
 		 * @param parameters (Optional) An object (key-value pairs) containing the dialog parameters.
 		 * @param callback (Optional) A callback function of the following form:
 		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
 		 * object returned by Facebook.
-		 * @param allowNativeUI (Optional) If true, we will try to use the native sharing sheet on iOS 6.
-		 * Native sharing sheet will only be used if <code>method</code> is <em>feed</em> and <code>
-		 * parameters</code> doesn't contain a non-empty <em>to</em> parameter. If the native sharing
-		 * sheet can be used, only the following parameters will be used: name, picture, link. Default
-		 * is true.
 		 */
-		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
+		public function webDialog( method : String, parameters : Object = null, callback : Function = null ) : void
 		{
-			if (!isSupported) return;
-			
 			// Separate parameters keys and values
 			var keys:Array = []; var values:Array = [];
 			for (var key:String in parameters)
@@ -279,7 +422,45 @@ package com.freshplanet.ane.AirFacebook
 			var callbackName:String = getNewCallbackName(callback);
 			
 			// Open the dialog
-			_context.call('dialog', method, keys, values, callbackName, allowNativeUI);
+			_context.call('webDialog', method, keys, values, callbackName);
+		}
+
+		/**
+		 * Open a Facebook dialog.
+		 * This method is kept for compatibility.
+		 * If allowNativeUI is set to false this is equivalent to the method <code>webDialog</code>, else we try
+		 * to call the correct native dialog based on given parameters and revert to <code>webDialog</code> if
+		 * a native dialog cannot be used.
+		 * 
+		 * @param method A dialog method (eg. login, feed...).
+		 * @param parameters (Optional) An object (key-value pairs) containing the dialog parameters.
+		 * @param callback (Optional) A callback function of the following form:
+		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+		 * object returned by Facebook.
+		 * @param allowNativeUI (Optional) If true, we will try to use the native sharing dialog.
+		 * Native sharing dialog will only be used if <code>method</code> is <em>feed</em> and <code>
+		 * parameters</code> doesn't contain a non-empty <em>to</em> parameter. If the native sharing
+		 * dialog can be used, only the following parameters will be used: name, picture, link, caption,
+		 * description. Default is true.
+		 */
+		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
+		{
+			
+			const isFeedDialog:Boolean = method == "feed";
+			const hasRecipients:Boolean = parameters.hasOwnProperty("to");
+
+			var useNativeShareUI:Boolean = isFeedDialog && allowNativeUI && !hasRecipients ;
+			useNativeShareUI &&= canPresentShareDialog();
+
+			if( useNativeShareUI )
+			{
+				shareLinkDialog( parameters['link'], parameters['name'], parameters['caption'], parameters['description'], parameters['picture'], callback );
+			}
+			else
+			{
+				webDialog( method, parameters, callback );
+			}
+
 		}
 		
 		/** Register the appId for install tracking. */
@@ -381,6 +562,10 @@ package com.freshplanet.ane.AirFacebook
 				
 				if (callback != null) callback(success, userCancelled, error);
 			}
+			else if (event.code == "ACTION_REQUIRE_PERMISSION")
+			{
+				dispatchEvent(new FacebookPermissionEvent(FacebookPermissionEvent.PERMISSION_NEEDED, event.level.split(',')));
+			}
 			else if (event.code == "LOGGING") // Simple log message
 			{
 				log(event.level);
@@ -397,7 +582,7 @@ package com.freshplanet.ane.AirFacebook
 						try
 						{
 							data = JSON.parse(event.level);
-							if (accessToken != null)
+							if (accessToken != null && accessToken != '')
 							{
 								data["accessToken"] = accessToken;
 							}
