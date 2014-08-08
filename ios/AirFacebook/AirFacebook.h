@@ -62,6 +62,9 @@ DEFINE_ANE_FUNCTION(shareStatusDialog);
 DEFINE_ANE_FUNCTION(shareLinkDialog);
 DEFINE_ANE_FUNCTION(canPresentOpenGraphDialog);
 DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
+DEFINE_ANE_FUNCTION(canPresentMessageDialog);
+DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams);
+DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
 DEFINE_ANE_FUNCTION(webDialog);
 DEFINE_ANE_FUNCTION(activateApp);
 
