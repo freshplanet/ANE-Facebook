@@ -37,7 +37,7 @@ import com.freshplanet.ane.AirFacebook.functions.GetExpirationTimestampFunction;
 import com.freshplanet.ane.AirFacebook.functions.InitFunction;
 import com.freshplanet.ane.AirFacebook.functions.IsSessionOpenFunction;
 import com.freshplanet.ane.AirFacebook.functions.OpenSessionWithPermissionsFunction;
-import com.freshplanet.ane.AirFacebook.functions.PublishInstallFunction;
+import com.freshplanet.ane.AirFacebook.functions.ActivateAppFunction;
 import com.freshplanet.ane.AirFacebook.functions.ReauthorizeSessionWithPermissionsFunction;
 import com.freshplanet.ane.AirFacebook.functions.RequestWithGraphPathFunction;
 import com.freshplanet.ane.AirFacebook.functions.SetUsingStage3dFunction;
@@ -73,7 +73,7 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("canPresentOpenGraphDialog", new CanPresentOpenGraphDialogFunction());
 		functions.put("shareOpenGraphDialog", new ShareOpenGraphDialogFunction());
 		functions.put("webDialog", new WebDialogFunction());
-		functions.put("publishInstall", new PublishInstallFunction());
+		functions.put("activateApp", new ActivateAppFunction());
 		functions.put("setUsingStage3D", new SetUsingStage3dFunction());
 		return functions;	
 	}

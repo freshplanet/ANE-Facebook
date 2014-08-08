@@ -107,6 +107,17 @@ package com.freshplanet.ane.AirFacebook
 			_context.call('init', appID, urlSchemeSuffix);
 		}
 		
+		/**
+		 * Track an activation of the app
+		 */
+		public function activateApp() : void
+		{
+			if (!isSupported) return;
+			
+			_context.call('activateApp');
+		}
+		
+		
 		/** True if a Facebook session is open, false otherwise. */
 		public function get isSessionOpen() : Boolean
 		{

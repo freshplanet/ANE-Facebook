@@ -105,6 +105,8 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
         }
     }
     
+	[FBSettings setDefaultAppID:appID];
+	
     [FBSession renewSystemCredentials:NULL];
 }
 
@@ -276,6 +278,7 @@ DEFINE_ANE_FUNCTION(init)
     // Initialize Facebook
     [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
     
+	
     return nil;
 }
 
@@ -538,8 +541,44 @@ DEFINE_ANE_FUNCTION(webDialog)
     FBWebDialogHandler resultHandler = ^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
         if (error) {
             // TODO handle errors on a low level using FB SDK
-            NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", [error description]];
+			NSString *description = [error localizedDescription];
+			NSInteger errorCode = [error code];
+			NSInteger errorSubcode = 0;
+			
+			// try and get subcode
+			NSDictionary *errorInformation = [[[[error userInfo] objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"]
+											   objectForKey:@"body"]
+											  objectForKey:@"error"];
+
+			if (errorInformation && [errorInformation objectForKey:@"code"]){
+				errorSubcode = [[errorInformation objectForKey:@"code"] integerValue];
+			}
+
+			NSDictionary *errorDictionary = @{ @"code": [NSString stringWithFormat:@"%ld", (long)errorCode],
+											   @"subCode": [NSString stringWithFormat:@"%ld", (long)errorSubcode],
+											   @"description" : description };
+			
+			NSError *jsonError;
+			NSData *jsonData;
+			
+			if ([NSJSONSerialization isValidJSONObject:errorDictionary]) {
+				jsonData = [NSJSONSerialization dataWithJSONObject:errorDictionary
+														   options:0
+															 error:&jsonError];
+			}
+			
+			NSString *jsonString = @"unknown";
+			
+			if (!jsonData) {
+				NSLog(@"Got an error: %@", error);
+			} else {
+				jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+			}
+			
+			NSString *data = [NSString stringWithFormat:@"{ \"error\" : \"%@\"}", jsonString];
+			
             [AirFacebook dispatchEvent:callback withMessage:data];
+			
         } else {
             if (result == FBWebDialogResultDialogNotCompleted) {
                 NSLog(@"User canceled story publishing.");
@@ -580,17 +619,9 @@ DEFINE_ANE_FUNCTION(webDialog)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(publishInstall)
+DEFINE_ANE_FUNCTION(activateApp)
 {
-    uint32_t stringLength;
-
-    NSString *appId = nil;
-    const uint8_t *appIdString;
-    if (FREGetObjectAsUTF8(argv[0], &stringLength, &appIdString) == FRE_OK)
-    {
-        appId = [NSString stringWithUTF8String:(char*)appIdString];
-        [FBSettings publishInstall:appId];
-    }
+	[FBAppEvents activateApp];
     return nil;
 }
 
@@ -664,9 +695,9 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[14].functionData = NULL;
     func[14].function = &webDialog;
     
-    func[15].name = (const uint8_t*) "publishInstall";
+    func[15].name = (const uint8_t*) "activateApp";
     func[15].functionData = NULL;
-    func[15].function = &publishInstall;
+    func[15].function = &activateApp;
     
     *functionsToSet = func;
     
