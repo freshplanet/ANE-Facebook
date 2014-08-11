@@ -106,7 +106,7 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
     }
     
 	[FBSettings setDefaultAppID:appID];
-	
+	[FBSettings enablePlatformCompatibility:true];
     [FBSession renewSystemCredentials:NULL];
 }
 
@@ -521,12 +521,9 @@ DEFINE_ANE_FUNCTION(canPresentMessageDialog)
 
 DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams)
 {
-	NSLog(@"1");
 	NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[0], argv[1]);
-	NSLog(@"2");
 	// Retrieve callback name
     NSString *callback = FPANE_FREObjectToNSString(argv[3]);
-	NSLog(@"3");
 	[FBDialogs presentMessageDialogWithLink:[NSURL URLWithString:[parameters valueForKey:@"link"]]
 									   name:[parameters valueForKey:@"name"]
 									caption:[parameters valueForKey:@"caption"]
@@ -582,7 +579,6 @@ DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams)
 											NSLog(@"result %@", results);
 										}
 									}];
-	NSLog(@"4");
 	return nil;
 }
 
