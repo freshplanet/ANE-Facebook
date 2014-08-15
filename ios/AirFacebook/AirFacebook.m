@@ -523,7 +523,7 @@ DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams)
 {
 	NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[0], argv[1]);
 	// Retrieve callback name
-    NSString *callback = FPANE_FREObjectToNSString(argv[3]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[2]);
 	[FBDialogs presentMessageDialogWithLink:[NSURL URLWithString:[parameters valueForKey:@"link"]]
 									   name:[parameters valueForKey:@"name"]
 									caption:[parameters valueForKey:@"caption"]
