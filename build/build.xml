@@ -55,7 +55,7 @@
     <!-- iOS Dependencies -->
     <target name="ios-dependencies" description="Copy iOS dependencies for packaging">
         <copy todir="../temp/FacebookSDK.framework" overwrite="true">
-            <fileset dir="../ios/facebook-ios-sdk/build/FacebookSDK.framework"/>
+            <fileset dir="../ios/frameworks/FacebookSDK.framework"/>
         </copy>
     </target>
 
