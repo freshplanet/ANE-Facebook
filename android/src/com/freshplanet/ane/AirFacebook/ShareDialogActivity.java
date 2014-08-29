@@ -70,7 +70,7 @@ public class ShareDialogActivity extends Activity implements DialogFactory, Call
 		appId = session.getApplicationId();
 		
 		// This constructor has been modified from the original SDK
-		FacebookDialog.ShareDialogBuilder dialogBuilder = new FacebookDialog.ShareDialogBuilder( this, appId );
+		FacebookDialog.ShareDialogBuilder dialogBuilder = new FacebookDialog.ShareDialogBuilder( this );
 		if(link!=null) dialogBuilder.setLink(link);
 		if(name!=null) dialogBuilder.setName(name);
 		if(caption!=null) dialogBuilder.setCaption(caption);
