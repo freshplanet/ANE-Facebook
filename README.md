@@ -104,6 +104,16 @@ ant
 ```
 
 
+Facebook android sdk use
+---------
+
+This sdk is using staticaly linked elements. We had to modify all the calls to the com.facebook.android.R package by a custom function that is doing the linking at runtime:
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension
+and use AirFacebookExtension.getResourceId("nameOfTheRessource") or AirFacebookExtension.getResourceIds("nameOfTheRessource")
+
+Also an error when linking the ressources into the app, I had to rename the res/values/styles.xml to res/values/style.xml
+
+
 Authors
 ------
 
