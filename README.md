@@ -95,7 +95,7 @@ Should you need to edit the extension source code and/or recompile it, you will 
 cd /path/to/the/ane
 
 # Setup Facebook SDK
-git submodule update --init
+git submodule update --init --recursive
 ios/facebook-ios-sdk/scripts/build_framework.sh
 
 # Setup build configuration
