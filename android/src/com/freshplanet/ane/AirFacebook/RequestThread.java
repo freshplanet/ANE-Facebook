@@ -18,13 +18,8 @@
 
 package com.freshplanet.ane.AirFacebook;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.os.Bundle;
-import android.util.Log;
 
-import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -48,7 +43,7 @@ public class RequestThread extends Thread
 		_callback = callback;
 	}
 	
-    @Override
+    @Override 
     public void run()
     {
     	Session session = _context.getSession();
@@ -67,7 +62,14 @@ public class RequestThread extends Thread
 				request = new Request(session, _graphPath);
 			}
 			
+			// If you remove the log statements before and after request.executeAndWait(), and if the request
+			// results in an error (such as lack of permissions), the app will CRASH and DIE. (libcore)
+			// ( Possibly, something non-thread-safe is happening during executeAndWait() when there's an error )
+			AirFacebookExtension.log("Before executing request (don't remove this log statement)");
 			Response response = request.executeAndWait();
+			AirFacebookExtension.log("After executing request  (don't remove this log statement)");
+			
+			
 			if (response.getGraphObject() != null)
 			{
 				data = response.getGraphObject().getInnerJSONObject().toString();
