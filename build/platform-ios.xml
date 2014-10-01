@@ -1,4 +1,4 @@
-<platform xmlns="http://ns.adobe.com/air/extension/3.8">
+<platform xmlns="http://ns.adobe.com/air/extension/4.0">
     <sdkVersion>7.0</sdkVersion>
     <linkerOptions>
         <option>-weak_framework Accounts</option> 
