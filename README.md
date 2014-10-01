@@ -99,6 +99,10 @@ cd build
 mv example.build.config build.config
 # Edit build.config file to provide your machine-specific paths
 
+# Add Facebook iOS SDK
+Download Facebook.framework
+Copy it to ios/frameworks
+
 # Build the ANE
 ant
 ```
