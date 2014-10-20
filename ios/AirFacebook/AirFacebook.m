@@ -591,7 +591,7 @@ DEFINE_ANE_FUNCTION(webDialog)
     NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
     
     // Retrieve callback name
-    NSString *callback = FPANE_FREObjectToNSString(argv[3]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[2]);
 
     BOOL isFeedDialog = [method isEqualToString:@"feed"];
     BOOL isRequestDialog = [method isEqualToString:@"apprequests"];
