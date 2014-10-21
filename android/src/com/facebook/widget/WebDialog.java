@@ -70,7 +70,7 @@ public class WebDialog extends Dialog {
     // translucent border around the webview
     private static final int BACKGROUND_GRAY = 0xCC000000;
 
-    public static final int DEFAULT_THEME = AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar");
+    public static final int DEFAULT_THEME = android.R.style.Theme_Translucent_NoTitleBar;
 
     private String url;
     private OnCompleteListener onCompleteListener;
