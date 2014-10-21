@@ -29,7 +29,9 @@ public class CanPresentMessageDialogFunction extends BaseFunction
 	{
 		super.call(context, args);
 		
-		FacebookDialog.MessageDialogBuilder builder = new FacebookDialog.MessageDialogBuilder(context.getActivity());
+		// TODO: Uncomment the above code when PresentMessageDialogWithLinkAndParamsFunction works
+		
+		/*FacebookDialog.MessageDialogBuilder builder = new FacebookDialog.MessageDialogBuilder(context.getActivity());
 		
 		try {
 			return FREObject.newObject( builder.canPresent() );
@@ -37,7 +39,7 @@ public class CanPresentMessageDialogFunction extends BaseFunction
 			e.printStackTrace();
 		} catch (FREWrongThreadException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		return null;
 	}
