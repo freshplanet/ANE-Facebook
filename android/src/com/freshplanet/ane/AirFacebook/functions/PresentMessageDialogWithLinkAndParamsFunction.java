@@ -27,12 +27,28 @@ public class PresentMessageDialogWithLinkAndParamsFunction extends BaseFunction
 {
 	public FREObject call(FREContext context, FREObject[] args)
 	{
-		
 		super.call(context, args);
 		
-		// TODO: Implement -- may require an update to SDK
+		String url = getStringFromFREObject(args[0]);
+		String name = getStringFromFREObject(args[1]);
+		String caption = getStringFromFREObject(args[2]);
+		String description = getStringFromFREObject(args[3]);
+		String pictureUrl = getStringFromFREObject(args[4]);
+
+		FacebookDialog.MessageDialogBuilder builder = new FacebookDialog.MessageDialogBuilder(context.getActivity())
+		    .setLink(url)
+		    .setName(name)
+		    .setCaption(caption)
+		    .setDescription(description)
+		    .setPicture(pictureUrl);
+
+		if (builder.canPresent()) 
+		{
+			FacebookDialog dialog = builder.build();
+			dialog.present();
+			// TODO: Investigate why Messenger does not get triggered
+		}
 		
 		return null;
-		
 	}
 }
