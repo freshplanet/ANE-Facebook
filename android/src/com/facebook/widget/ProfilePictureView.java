@@ -16,8 +16,6 @@
 
 package com.facebook.widget;
 
-import java.net.URISyntaxException;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -29,15 +27,12 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import com.facebook.FacebookException;
 import com.facebook.LoggingBehavior;
-import com.facebook.internal.ImageDownloader;
-import com.facebook.internal.ImageRequest;
-import com.facebook.internal.ImageResponse;
-import com.facebook.internal.Logger;
-import com.facebook.internal.Utility;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.facebook.internal.*;
+
+import java.net.URISyntaxException;
 
 /**
  * View that displays the profile photo of a supplied profile ID, while conforming

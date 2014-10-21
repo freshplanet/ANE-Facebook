@@ -55,7 +55,7 @@
     <!-- iOS Dependencies -->
     <target name="ios-dependencies" description="Copy iOS dependencies for packaging">
         <copy todir="../temp/FacebookSDK.framework" overwrite="true">
-            <fileset dir="../ios/facebook-ios-sdk/build/FacebookSDK.framework"/>
+            <fileset dir="../ios/frameworks/FacebookSDK.framework"/>
         </copy>
     </target>
 
@@ -79,12 +79,14 @@
                 <pathelement location="${android.sdk}/android.jar"/>
                 <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
                 <pathelement location="../android/libs/android-support-v4.jar"/>
+                <pathelement location="../android/libs/bolts-android-1.1.2.jar"/>
                 <pathelement location="../android/libs/annotations.jar"/><!-- needed since Facebook SDK 3.0 on api < 16 -->
             </classpath>
         </javac>
 
         <mkdir dir="../android/temp/zip"/>
         <unzip src="../android/libs/android-support-v4.jar" dest="../android/temp/zip"/>
+        <unzip src="../android/libs/bolts-android-1.1.2.jar" dest="../android/temp/zip"/>
         <unzip src="../android/libs/annotations.jar" dest="../android/temp/zip"/>
         <copydir src="../android/temp/zip/android" dest="../android/temp/classes/android"/>
 
