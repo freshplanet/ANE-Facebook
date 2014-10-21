@@ -27,19 +27,18 @@ public class CanPresentMessageDialogFunction extends BaseFunction
 {
 	public FREObject call(FREContext context, FREObject[] args)
 	{
-		
 		super.call(context, args);
 		
-		// TODO: Implement -- may require an update to SDK
+		FacebookDialog.MessageDialogBuilder builder = new FacebookDialog.MessageDialogBuilder(context.getActivity());
 		
 		try {
-			return FREObject.newObject( false );
+			return FREObject.newObject( builder.canPresent() );
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		} catch (FREWrongThreadException e) {
 			e.printStackTrace();
 		}
-		
-		return null;		
+
+		return null;
 	}
 }
