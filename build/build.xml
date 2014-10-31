@@ -79,16 +79,21 @@
                 <pathelement location="${android.sdk}/android.jar"/>
                 <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
                 <pathelement location="../android/libs/android-support-v4.jar"/>
+                <pathelement location="../android/libs/bolts-android-1.1.2.jar"/>
                 <pathelement location="../android/libs/annotations.jar"/><!-- needed since Facebook SDK 3.0 on api < 16 -->
             </classpath>
         </javac>
 
-        <mkdir dir="../android/temp/zip"/>
+        <!-- <mkdir dir="../android/temp/zip"/>
         <unzip src="../android/libs/android-support-v4.jar" dest="../android/temp/zip"/>
+        <unzip src="../android/libs/bolts-android-1.1.2.jar" dest="../android/temp/zip"/>
         <unzip src="../android/libs/annotations.jar" dest="../android/temp/zip"/>
-        <copydir src="../android/temp/zip/android" dest="../android/temp/classes/android"/>
+        <copydir src="../android/temp/zip/android" dest="../android/temp/classes/android"/>-->
 
         <mkdir dir="../temp/android/"/>
+        <copy file="../android/libs/android-support-v4.jar" todir="../temp/android/"/>
+        <copy file="../android/libs/annotations.jar" todir="../temp/android/"/>
+        
         <jar basedir="../android/temp/classes" destfile="../temp/android/lib${name}.jar"/>
         <copy todir="../temp/android/res/">
             <fileset dir="../android/res"/>
@@ -134,8 +139,8 @@
             <arg value="${name}.ane"/>
             <arg value="../build/extension.xml"/>
             <arg line="-swc swc/${name}.swc"/>
-            <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml FacebookSDK.framework -C ios/ ."/>
-            <arg line="-platform Android-ARM -C android/ ."/>
+            <arg line="-platform iPhone-ARM -platformoptions ../build/platform-ios.xml FacebookSDK.framework -C ios/ ."/>
+            <arg line="-platform Android-ARM -platformoptions ../build/platform-android.xml  -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>
 

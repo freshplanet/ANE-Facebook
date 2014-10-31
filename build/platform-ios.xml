@@ -1,0 +1,11 @@
+<platform xmlns="http://ns.adobe.com/air/extension/4.0">
+    <sdkVersion>7.0</sdkVersion>
+    <linkerOptions>
+        <option>-weak_framework Accounts</option> 
+        <option>-weak_framework AdSupport</option>
+        <option>-weak_framework Social</option>
+    </linkerOptions>
+    <packagedDependencies>
+        <packagedDependency>FacebookSDK.framework</packagedDependency>
+    </packagedDependencies>
+</platform>

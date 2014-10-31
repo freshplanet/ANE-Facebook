@@ -16,40 +16,25 @@
 
 package com.facebook.widget;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.SectionIndexer;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.facebook.FacebookException;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.facebook.internal.ImageDownloader;
 import com.facebook.internal.ImageRequest;
 import com.facebook.internal.ImageResponse;
 import com.facebook.model.GraphObject;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.Collator;
+import java.util.*;
 
 class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements SectionIndexer {
     private static final int DISPLAY_SECTIONS_THRESHOLD = 1;
@@ -450,7 +435,7 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
 
         // Note: these dimensions are in pixels, not dips
         ViewGroup.LayoutParams layoutParams = picture.getLayoutParams();
-        return String.format("picture.height(%d).width(%d)", layoutParams.height, layoutParams.width);
+        return String.format(Locale.US, "picture.height(%d).width(%d)", layoutParams.height, layoutParams.width);
     }
 
 
@@ -650,7 +635,11 @@ class GraphObjectAdapter<T extends GraphObject> extends BaseAdapter implements S
         if (sectionAndItem != null && sectionAndItem.graphObject != null) {
             String id = getIdOfGraphObject(sectionAndItem.graphObject);
             if (id != null) {
-                return Long.parseLong(id);
+                try {
+                    return Long.parseLong(id);
+                } catch (NumberFormatException e) {
+                    // NOOP
+                }
             }
         }
         return 0;

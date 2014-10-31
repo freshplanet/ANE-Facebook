@@ -75,7 +75,7 @@ public class ShareOGActivity extends Activity implements DialogFactory, Callback
 		// This constructor has been modified from the original SDK
 		try{
 			FacebookDialog.OpenGraphActionDialogBuilder dialogBuilder = 
-					new FacebookDialog.OpenGraphActionDialogBuilder( this, appId, action, previewProperty );
+					new FacebookDialog.OpenGraphActionDialogBuilder( this, action, actionType, previewProperty );
 			
 			return dialogBuilder.build().present();
 		} catch(Exception e) {
