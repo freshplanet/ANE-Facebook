@@ -29,6 +29,7 @@ import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.Settings;
 import com.freshplanet.ane.AirFacebook.functions.ActivateAppFunction;
 import com.freshplanet.ane.AirFacebook.functions.CanPresentOpenGraphDialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.CanPresentMessageDialogFunction;
@@ -94,6 +95,7 @@ public class AirFacebookExtensionContext extends FREContext
 		if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
 		{
 			Session.setActiveSession(session);
+            Settings.setPlatformCompatibilityEnabled(true);
 			try
 			{
 				session.openForRead(null);

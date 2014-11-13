@@ -27,3 +27,6 @@ xcuserdata
 Icon
 Thumbs.db
 .DS_Store
+
+*.idea
+*.iml
