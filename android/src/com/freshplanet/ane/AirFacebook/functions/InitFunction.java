@@ -27,12 +27,13 @@ public class InitFunction extends BaseFunction
 	public FREObject call(FREContext context, FREObject[] args)
 	{
 		super.call(context, args);
-		
-		String appID = getStringFromFREObject(args[0]);
+
+        String appID = getStringFromFREObject(args[0]);
+        Boolean legacyMode = getBooleanFromFREObject(args[2]);
 		
 		AirFacebookExtension.log("Initializing with application ID " + appID);
 		
-		AirFacebookExtension.context.init(appID);
+		AirFacebookExtension.context.init(appID, legacyMode);
 		
 		return null;
 	}
