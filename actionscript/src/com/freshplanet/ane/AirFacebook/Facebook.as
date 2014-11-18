@@ -96,15 +96,16 @@ package com.freshplanet.ane.AirFacebook
 		/**
 		 * Initialize the Facebook extension.
 		 * 
-		 * @param appID A Facebook application ID.
-		 * @param urlSchemeSuffix (Optional) The URL Scheme Suffix to be used in scenarios where multiple iOS apps
-		 * use one Facebook App ID. Must contain only lowercase letters.
+		 * @param appID             A Facebook application ID.
+         * @param legacyMode        TRUE enables Graph 1.0, FALSE uses current Graph API.
+		 * @param urlSchemeSuffix   (Optional) The URL Scheme Suffix to be used in scenarios where multiple iOS apps
+		 *                          use one Facebook App ID. Must contain only lowercase letters.
 		 */
-		public function init( appID : String, urlSchemeSuffix : String = null ) : void
+		public function init( appID : String, legacyMode : Boolean, urlSchemeSuffix : String = null ) : void
 		{
 			if (!isSupported) return;
 			
-			_context.call('init', appID, urlSchemeSuffix);
+			_context.call('init', appID, urlSchemeSuffix, legacyMode);
 		}
 		
 		/**
