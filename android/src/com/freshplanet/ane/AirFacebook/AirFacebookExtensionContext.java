@@ -87,7 +87,7 @@ public class AirFacebookExtensionContext extends FREContext
 	private Session _session;
 	public boolean usingStage3D = false;
 	
-	public void init(String appID)
+	public void init(String appID, Boolean legacyMode)
 	{
 		_appID = appID;
 		
@@ -95,7 +95,7 @@ public class AirFacebookExtensionContext extends FREContext
 		if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
 		{
 			Session.setActiveSession(session);
-            Settings.setPlatformCompatibilityEnabled(true);
+            Settings.setPlatformCompatibilityEnabled(legacyMode);
 			try
 			{
 				session.openForRead(null);
