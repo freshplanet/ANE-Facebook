@@ -67,7 +67,7 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
     
 }
 
-- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix
+- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix legacyMode:(BOOL)legacyMode
 {
     // Save parameters
     _appID = appID;
@@ -106,7 +106,7 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
     }
     
 	[FBSettings setDefaultAppID:appID];
-	[FBSettings enablePlatformCompatibility:true];
+	[FBSettings enablePlatformCompatibility:legacyMode]; // legacy mode switch
     [FBSession renewSystemCredentials:NULL];
 }
 
@@ -269,14 +269,16 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
 DEFINE_ANE_FUNCTION(init)
 {
     
-    // Retrieve application ID and urlschemesuffix
+    // Retrieve application ID, urlschemesuffix, and legacyMode switch
     NSString *appID = FPANE_FREObjectToNSString(argv[0]);
     NSString *urlSchemeSuffix = FPANE_FREObjectToNSString(argv[1]);
+    BOOL legacyMode = FPANE_FREObjectToBOOL(argv[2]);
+    
     if (urlSchemeSuffix.length == 0)
         urlSchemeSuffix = nil;
     
     // Initialize Facebook
-    [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
+    [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix legacyMode:legacyMode];
     
 	
     return nil;
