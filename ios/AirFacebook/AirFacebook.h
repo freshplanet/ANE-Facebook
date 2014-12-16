@@ -67,6 +67,7 @@ DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams);
 DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
 DEFINE_ANE_FUNCTION(webDialog);
 DEFINE_ANE_FUNCTION(activateApp);
+DEFINE_ANE_FUNCTION(openDeferredAppLink);
 
 // ANE Setup
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);

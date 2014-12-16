@@ -48,6 +48,7 @@ import com.freshplanet.ane.AirFacebook.functions.ShareLinkDialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.ShareOpenGraphDialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.ShareStatusDialogFunction;
 import com.freshplanet.ane.AirFacebook.functions.WebDialogFunction;
+import com.freshplanet.ane.AirFacebook.functions.OpenDeferredAppLinkFunction;
 
 public class AirFacebookExtensionContext extends FREContext
 {
@@ -80,6 +81,7 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("webDialog", new WebDialogFunction());
 		functions.put("activateApp", new ActivateAppFunction());
 		functions.put("setUsingStage3D", new SetUsingStage3dFunction());
+		functions.put("openDeferredAppLink", new OpenDeferredAppLinkFunction());
 		return functions;	
 	}
 	
