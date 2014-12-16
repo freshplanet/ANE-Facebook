@@ -697,12 +697,28 @@ DEFINE_ANE_FUNCTION(activateApp)
     return nil;
 }
 
+DEFINE_ANE_FUNCTION(openDeferredAppLink)
+{
+	[FBAppCall openDeferredAppLink:^(NSError *error) {
+		if (error) {
+			NSLog(@"unexpected error opening deferred link:%@", error);
+			[AirFacebook log:@"fallback with error, check device console"];
+			[AirFacebook dispatchEvent:@"AppLink" withMessage:@"fallback with error, check device console"];
+		}
+		else {
+			[AirFacebook log:@"fallback but no error"];
+			[AirFacebook dispatchEvent:@"AppLink" withMessage:@"fallback but no error"];
+		}
+			
+	}];
+	return nil;
+}
 
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 18;
+    NSInteger nbFuntionsToLink = 19;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -778,7 +794,11 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[17].name = (const uint8_t*) "activateApp";
     func[17].functionData = NULL;
     func[17].function = &activateApp;
-    
+	
+	func[18].name = (const uint8_t*) "openDeferredAppLink";
+	func[18].functionData = NULL;
+	func[18].function = &openDeferredAppLink;
+	
     *functionsToSet = func;
     
     AirFBCtx = ctx;
