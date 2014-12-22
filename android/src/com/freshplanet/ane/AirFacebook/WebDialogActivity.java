@@ -29,6 +29,7 @@ import android.view.WindowManager;
 
 import com.adobe.fre.FREContext;
 import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 
@@ -99,32 +100,37 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 		// Trigger callback if necessary
 		if (context != null && callback != null)
 		{
-			if (error != null) {
-				AirFacebookExtension.log("DialogActivity.onComplete, error " + error.getMessage());
-				context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(error.getMessage()));
-				finish();
-				return;
+			// error and not cancelled error
+			if (error != null && !(error.getMessage() == null || error instanceof FacebookOperationCanceledException)) {
+					AirFacebookExtension.log("DialogActivity.onComplete, error " + error.getMessage());
+					context.dispatchStatusEventAsync(callback, AirFacebookError.makeJsonError(error.getMessage()));
+					finish();
+					return;
+
 			}
 
-			// Content depends on type of dialog that was invoked (method)
 			String postMessage = null;
-			if(method.equalsIgnoreCase("feed"))
+			if (error == null)
 			{
-				// Check if feed gave us a post_id back, if not we cancelled
-				String postId = values.getString("post_id");
-				if (postId != null)
+				// Content depends on type of dialog that was invoked (method)
+				if(method.equalsIgnoreCase("feed"))
 				{
-					postMessage = "{ \"params\": \""+postId+"\" }";
+					// Check if feed gave us a post_id back, if not we cancelled
+					String postId = values.getString("post_id");
+					if (postId != null)
+					{
+						postMessage = "{ \"params\": \""+postId+"\" }";
+					}
 				}
-			}
-			else if(method.equalsIgnoreCase("apprequests"))
-			{
-				// We get a request id, and a list of recepients if selected
-				String request = values.getString("request");
-				if (request != null)
+				else if(method.equalsIgnoreCase("apprequests"))
 				{
-					// Give everything as URL encoded value to match iOS response
-					postMessage = "{ \"params\": \"" + bundleSetToURLEncoded(values) + "\" }";
+					// We get a request id, and a list of recepients if selected
+					String request = values.getString("request");
+					if (request != null)
+					{
+						// Give everything as URL encoded value to match iOS response
+						postMessage = "{ \"params\": \"" + bundleSetToURLEncoded(values) + "\" }";
+					}
 				}
 			}
 			
