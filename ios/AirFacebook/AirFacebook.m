@@ -314,8 +314,10 @@ DEFINE_ANE_FUNCTION(getExpirationTimestamp)
     FBSession *session = [FBSession activeSession];
     NSTimeInterval expirationTimestamp = [session.accessTokenData.expirationDate timeIntervalSince1970];
     
+    
     FREObject result;
-    if (FRENewObjectFromUint32(expirationTimestamp, &result) == FRE_OK)
+
+    if (FRENewObjectFromDouble(expirationTimestamp, &result) == FRE_OK)
     {
         return result;
     }
