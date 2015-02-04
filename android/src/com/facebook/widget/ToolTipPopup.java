@@ -26,7 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.facebook.android.R;
 
 import java.lang.ref.WeakReference;
 
@@ -101,24 +101,24 @@ public class ToolTipPopup {
         if (mAnchorViewRef.get() != null) {
             mPopupContent = new PopupContentView(mContext);
             TextView body = (TextView) mPopupContent.findViewById(
-                    AirFacebookExtension.getResourceId("id.com_facebook_tooltip_bubble_view_text_body"));
+                    R.id.com_facebook_tooltip_bubble_view_text_body);
             body.setText(mText);
             if (mStyle == Style.BLUE) {
                 mPopupContent.bodyFrame.setBackgroundResource(
-                        AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_blue_background"));
+                        R.drawable.com_facebook_tooltip_blue_background);
                 mPopupContent.bottomArrow.setImageResource(
-                        AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_blue_bottomnub"));
+                        R.drawable.com_facebook_tooltip_blue_bottomnub);
                 mPopupContent.topArrow.setImageResource(
-                        AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_blue_topnub"));
-                mPopupContent.xOut.setImageResource(AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_blue_xout"));
+                        R.drawable.com_facebook_tooltip_blue_topnub);
+                mPopupContent.xOut.setImageResource(R.drawable.com_facebook_tooltip_blue_xout);
             } else {
                 mPopupContent.bodyFrame.setBackgroundResource(
-                        AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_black_background"));
+                        R.drawable.com_facebook_tooltip_black_background);
                 mPopupContent.bottomArrow.setImageResource(
-                        AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_black_bottomnub"));
+                        R.drawable.com_facebook_tooltip_black_bottomnub);
                 mPopupContent.topArrow.setImageResource(
-                        AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_black_topnub"));
-                mPopupContent.xOut.setImageResource(AirFacebookExtension.getResourceId("drawable.com_facebook_tooltip_black_xout"));
+                        R.drawable.com_facebook_tooltip_black_topnub);
+                mPopupContent.xOut.setImageResource(R.drawable.com_facebook_tooltip_black_xout);
             }
             
             final Window window = ((Activity) mContext).getWindow();
@@ -208,12 +208,12 @@ public class ToolTipPopup {
         
         private void init() {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            inflater.inflate(AirFacebookExtension.getResourceId("layout.com_facebook_tooltip_bubble"), this);
-            topArrow = (ImageView) findViewById(AirFacebookExtension.getResourceId("id.com_facebook_tooltip_bubble_view_top_pointer"));
+            inflater.inflate(R.layout.com_facebook_tooltip_bubble, this);
+            topArrow = (ImageView) findViewById(R.id.com_facebook_tooltip_bubble_view_top_pointer);
             bottomArrow = (ImageView) findViewById(
-                    AirFacebookExtension.getResourceId("id.com_facebook_tooltip_bubble_view_bottom_pointer"));
-            bodyFrame = findViewById(AirFacebookExtension.getResourceId("id.com_facebook_body_frame"));
-            xOut = (ImageView) findViewById(AirFacebookExtension.getResourceId("id.com_facebook_button_xout"));
+                    R.id.com_facebook_tooltip_bubble_view_bottom_pointer);
+            bodyFrame = findViewById(R.id.com_facebook_body_frame);
+            xOut = (ImageView) findViewById(R.id.com_facebook_button_xout);
         }
         
         public void showTopArrow() {
