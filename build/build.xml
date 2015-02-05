@@ -74,7 +74,9 @@
 
         <echo message="Using Java version ${ant.java.version}."/>
 
-        <javac source="1.6" srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false" debug="${ANDROID_DEBUG}">
+        <javac source="1.6" destdir="../android/temp/classes" includeantruntime="false" debug="${ANDROID_DEBUG}">
+            <src path="../android/gen"/>
+            <src path="../android/src"/>
             <classpath>
                 <pathelement location="${android.sdk}/android.jar"/>
                 <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
