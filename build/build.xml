@@ -73,7 +73,7 @@
         <mkdir dir="../android/temp/classes"/>
 
         <mkdir dir="../android/gen"/>
-        <exec executable="${aapt}/aapt">
+        <exec executable="${flex.sdk}/lib/android/bin/aapt">
             <arg value="package"/>
             <arg value="-f"/>
             <arg value="-m"/>
