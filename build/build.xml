@@ -72,6 +72,17 @@
         <delete dir="../android/temp"/>
         <mkdir dir="../android/temp/classes"/>
 
+        <mkdir dir="../android/gen"/>
+        <exec executable="${aapt}/aapt">
+            <arg value="package"/>
+            <arg value="-f"/>
+            <arg value="-m"/>
+            <arg line=" -S ../android/res"/>
+            <arg line=" -J ../android/gen"/>
+            <arg line=" -M ../android/AndroidManifest.xml"/>
+            <arg line=" -I ${android.sdk}/android.jar"/>
+        </exec>
+
         <echo message="Using Java version ${ant.java.version}."/>
 
         <javac source="1.6" destdir="../android/temp/classes" includeantruntime="false" debug="${ANDROID_DEBUG}">
@@ -98,6 +109,7 @@
             <fileset dir="../android/res"/>
         </copy>
         <delete dir="../android/temp"/>
+        <delete dir="../android/gen"/>
     </target>
 
     <!-- Actionscript -->
