@@ -1,0 +1,17 @@
+<platform xmlns="http://ns.adobe.com/air/extension/15.0"> 
+    <packagedDependencies>
+        <packagedDependency>bolts-android-1.1.2.jar</packagedDependency>
+        <packagedDependency>annotations.jar</packagedDependency>
+        <!-- <packagedDependency>google-play-services.jar</packagedDependency> -->
+    </packagedDependencies> 
+    <packagedResources>
+        <packagedResource>
+            <packageName>com.freshplanet.AirFacebook</packageName> 
+            <folderName>res</folderName> 
+        </packagedResource>
+     <!--<packagedResource> 
+            <packageName>com.google.android.gms</packageName> 
+            <folderName>google-play-services-res</folderName> 
+        </packagedResource>-->
+    </packagedResources>
+</platform>

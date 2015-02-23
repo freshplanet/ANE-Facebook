@@ -5,58 +5,39 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="ios,ios-simulator,ios-dependencies,android,swc,package" description="Full build of extension"/>
+    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
-        <mkdir dir="../temp/ios/build/"/>
 
+        <!-- make the build directory for the objc code -->
+        <mkdir dir="temp/ios/build/"/>
+
+        <!-- clean the build -->
         <exec executable="xcodebuild" failonerror="true" dir="../ios/">
             <arg line="-project ${name}.xcodeproj"/>
             <arg line="-alltargets clean"/>
         </exec>
 
+        <!-- compile the ios lib -->
         <exec executable="xcodebuild" failonerror="true" dir="../ios/">
             <arg line="-project ${name}.xcodeproj"/>
             <arg line="-sdk ${ios.sdkversion}"/>
             <arg line="-alltargets"/>
             <arg line="-configuration Release"/>
-            <arg line="SYMROOT=../temp/ios/build/"/>
+            <arg line="SYMROOT=../build/temp/ios/build/"/>
         </exec>
 
-        <copy file="../temp/ios/build/Release-iphoneos/lib${name}.a" todir="../temp/ios" overwrite="true"/>
+        <!-- copy the ios lib to the base temp ios directory -->
+        <copy file="temp/ios/build/Release-iphoneos/lib${name}.a" todir="temp/ios" overwrite="true"/>
 
-        <delete dir="../temp/ios/build/"/>
-    </target>
-
-    <!-- iOS Simulator -->
-    <target name="ios-simulator" description="Build iOS Simulator Library">
-        <mkdir dir="../temp/ios-simulator/build/"/>
-
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-alltargets clean"/>
-        </exec>
-
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-arch i386"/>
-            <arg line="-sdk ${ios.simulatorsdkversion}"/>
-            <arg line="-alltargets"/>
-            <arg line="-configuration Release"/>
-            <arg line="SYMROOT=../temp/ios-simulator/build/"/>
-        </exec>
-
-        <copy file="../temp/ios-simulator/build/Release-iphonesimulator/lib${name}.a" todir="../temp/ios-simulator" overwrite="true"/>
-
-        <delete dir="../temp/ios-simulator/build/"/>
-    </target>
-
-    <!-- iOS Dependencies -->
-    <target name="ios-dependencies" description="Copy iOS dependencies for packaging">
-        <copy todir="../temp/FacebookSDK.framework" overwrite="true">
+        <!-- Copy over required frameworks and libs -->
+        <copy todir="temp/ios/FacebookSDK.framework" overwrite="true">
             <fileset dir="../ios/frameworks/FacebookSDK.framework"/>
         </copy>
+
+        <!-- remove the build directory -->
+        <delete dir="temp/ios/build/"/>
     </target>
 
     <!-- Android -->
@@ -69,9 +50,11 @@
         <antcall target="android-build"/>
     </target>
     <target name="android-build" description="Build Android Library">
-        <delete dir="../android/temp"/>
-        <mkdir dir="../android/temp/classes"/>
 
+        <!-- make the build directory for the java code -->
+        <mkdir dir="temp/android/build/"/>
+
+        <!-- make the R file -->
         <mkdir dir="../android/gen"/>
         <exec executable="${flex.sdk}/lib/android/bin/aapt">
             <arg value="package"/>
@@ -85,7 +68,8 @@
 
         <echo message="Using Java version ${ant.java.version}."/>
 
-        <javac source="1.6" destdir="../android/temp/classes" includeantruntime="false" debug="${ANDROID_DEBUG}">
+        <!-- compile the java code -->
+        <javac source="1.6" destdir="temp/android/build/" includeantruntime="false" debug="${ANDROID_DEBUG}">
             <src path="../android/gen"/>
             <src path="../android/src"/>
             <classpath>
@@ -97,24 +81,26 @@
             </classpath>
         </javac>
 
-        <mkdir dir="../android/temp/zip"/>
-        <unzip src="../android/libs/android-support-v4.jar" dest="../android/temp/zip"/>
-        <unzip src="../android/libs/bolts-android-1.1.2.jar" dest="../android/temp/zip"/>
-        <unzip src="../android/libs/annotations.jar" dest="../android/temp/zip"/>
-        <copydir src="../android/temp/zip/android" dest="../android/temp/classes/android"/>
-
-        <mkdir dir="../temp/android/"/>
-        <jar basedir="../android/temp/classes" destfile="../temp/android/lib${name}.jar"/>
-        <copy todir="../temp/android/res/">
-            <fileset dir="../android/res"/>
+        <!-- Copy over the required libs -->
+        <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
+        <copy file="../android/libs/annotations.jar" todir="temp/android/"/>
+        
+        <!-- Copy over required resources -->
+        <copy todir="temp/android/res/">
+            <fileset dir="../android/res/"/>
         </copy>
-        <delete dir="../android/temp"/>
+
+        <!-- make the jar -->
+        <jar basedir="temp/android/build/" destfile="temp/android/lib${name}.jar"/>
+
+        <!-- remove the build classes -->
+        <delete dir="temp/android/build/"/>
         <delete dir="../android/gen"/>
     </target>
 
     <!-- Actionscript -->
     <target name="swc" description="Build SWC library">
-        <mkdir dir="../temp/swc/content/"/>
+        <mkdir dir="temp/swc/content/"/>
 
         <fileset dir="../actionscript/src" casesensitive="yes" id="classfiles">
             <include name="**/*.as"/>
@@ -127,36 +113,36 @@
         <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
             <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
             <arg line='-source-path ../actionscript/src'/>
-            <arg line='-output ../temp/swc/${name}.swc'/>
-            <arg line='-swf-version=26'/>
+            <arg line='-output temp/swc/${name}.swc'/>
+            <arg line='-swf-version=25'/>
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
         </exec>
 
-        <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
+        <unzip src="temp/swc/${name}.swc" dest="temp/swc/content" overwrite="true"/>
 
-        <copy file="../temp/swc/content/library.swf" todir="../temp/ios" overwrite="true"/>
-        <copy file="../temp/swc/content/library.swf" todir="../temp/ios-simulator" overwrite="true"/>
-        <copy file="../temp/swc/content/library.swf" todir="../temp/android" overwrite="true"/>
-        <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
+        <copy file="temp/swc/content/library.swf" todir="temp/ios" overwrite="true"/>
+        <copy file="temp/swc/content/library.swf" todir="temp/ios-simulator" overwrite="true"/>
+        <copy file="temp/swc/content/library.swf" todir="temp/android" overwrite="true"/>
+        <copy file="temp/swc/content/library.swf" todir="temp/default" overwrite="true"/>
     </target>
 
     <!-- Package -->
     <target name="package" description="Create the extension package">
-        <exec executable="${flex.sdk}/bin/adt${bin.ext}" failonerror="true" dir="../temp">
+        <exec executable="${flex.sdk}/bin/adt${bin.ext}" failonerror="true" dir="temp/">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
             <arg value="${name}.ane"/>
-            <arg value="../build/extension.xml"/>
+            <arg value="../extension.xml"/>
             <arg line="-swc swc/${name}.swc"/>
-            <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml FacebookSDK.framework -C ios/ ."/>
-            <arg line="-platform Android-ARM -C android/ ."/>
+            <arg line="-platform iPhone-ARM -platformoptions ../platform-ios.xml -C ios/ ."/>
+            <arg line="-platform Android-ARM -platformoptions ../platform-android.xml -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>
 
-        <move file="../temp/${name}.ane" todir="../bin"/>
-        <delete dir="../temp"/>
+        <move file="temp/${name}.ane" todir="../bin"/>
+        <delete dir="temp/"/>
     </target>
 
     <!-- HTML Documentation (must be run manually) -->
