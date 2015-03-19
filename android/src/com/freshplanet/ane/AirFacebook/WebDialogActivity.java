@@ -64,7 +64,7 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 		
 		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
+		setContentView(com.facebook.android.R.layout.com_facebook_login_activity_layout);
 		
 		if ( session.isOpened() )
 		{
