@@ -1,6 +1,7 @@
 # General
 temp
 build.config
+build.bat
 
 # Flash Builder
 actionscript/bin

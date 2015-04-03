@@ -23,6 +23,9 @@ import android.util.Log;
 import android.view.View;
 import com.facebook.android.R;
 
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+
 /**
  * This Activity is a necessary part of the overall Facebook login process
  * but is not meant to be used directly. Add this activity to your
@@ -54,7 +57,7 @@ public class LoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.com_facebook_login_activity_layout);
+        setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
 
         if (savedInstanceState != null) {
             callingPackage = savedInstanceState.getString(SAVED_CALLING_PKG_KEY);
@@ -75,12 +78,12 @@ public class LoginActivity extends Activity {
         authorizationClient.setBackgroundProcessingListener(new AuthorizationClient.BackgroundProcessingListener() {
             @Override
             public void onBackgroundProcessingStarted() {
-                findViewById(R.id.com_facebook_login_activity_progress_bar).setVisibility(View.VISIBLE);
+                findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onBackgroundProcessingStopped() {
-                findViewById(R.id.com_facebook_login_activity_progress_bar).setVisibility(View.GONE);
+                findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
             }
         });
     }
@@ -122,7 +125,7 @@ public class LoginActivity extends Activity {
         super.onPause();
 
         authorizationClient.cancelCurrentHandler();
-        findViewById(R.id.com_facebook_login_activity_progress_bar).setVisibility(View.GONE);
+        findViewById(AirFacebookExtension.getResourceId("id.com_facebook_login_activity_progress_bar")).setVisibility(View.GONE);
     }
 
     @Override

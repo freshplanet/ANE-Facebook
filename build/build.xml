@@ -5,7 +5,8 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
+    <!-- <target name="all" depends="ios,android,swc,package" description="Full build of extension"/> -->
+    <target name="all" depends="android,swc,package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -82,6 +83,7 @@
         </javac>
 
         <!-- Copy over the required libs -->
+        <copy file="../android/libs/android-support-v4.jar" todir="temp/android/"/>
         <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
         <copy file="../android/libs/annotations.jar" todir="temp/android/"/>
         
@@ -136,7 +138,7 @@
             <arg value="${name}.ane"/>
             <arg value="../extension.xml"/>
             <arg line="-swc swc/${name}.swc"/>
-            <arg line="-platform iPhone-ARM -platformoptions ../platform-ios.xml -C ios/ ."/>
+            <!--<arg line="-platform iPhone-ARM -platformoptions ../platform-ios.xml -C ios/ ."/>-->
             <arg line="-platform Android-ARM -platformoptions ../platform-android.xml -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>

@@ -23,6 +23,8 @@ import android.view.Gravity;
 import android.widget.Button;
 import com.facebook.android.R;
 
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+
 /**
  * com.facebook.internal is solely for the use of other packages within the Facebook SDK for Android. Use of
  * any of the classes in this package is unsupported, and they may be modified or removed without warning at
@@ -57,31 +59,31 @@ public class LikeButton extends Button {
         // so in case the users do not explicitly specify a style, we need
         // to use sensible defaults.
         this.setGravity(Gravity.CENTER_VERTICAL);
-        this.setTextColor(getResources().getColor(R.color.com_facebook_likebutton_text_color));
+        this.setTextColor(getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_likebutton_text_color")));
         this.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimension(R.dimen.com_facebook_likebutton_text_size));
+                getResources().getDimension(AirFacebookExtension.getResourceId("dimen.com_facebook_likebutton_text_size")));
         this.setTypeface(Typeface.DEFAULT_BOLD);
 
         this.setCompoundDrawablePadding(
-                getResources().getDimensionPixelSize(R.dimen.com_facebook_likebutton_compound_drawable_padding));
+                getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likebutton_compound_drawable_padding")));
         this.setPadding(
-                getResources().getDimensionPixelSize(R.dimen.com_facebook_likebutton_padding_left),
-                getResources().getDimensionPixelSize(R.dimen.com_facebook_likebutton_padding_top),
-                getResources().getDimensionPixelSize(R.dimen.com_facebook_likebutton_padding_right),
-                getResources().getDimensionPixelSize(R.dimen.com_facebook_likebutton_padding_bottom));
+                getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likebutton_padding_left")),
+                getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likebutton_padding_top")),
+                getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likebutton_padding_right")),
+                getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likebutton_padding_bottom")));
 
         updateForLikeStatus();
     }
 
     private void updateForLikeStatus() {
         if (isLiked) {
-            this.setBackgroundResource(R.drawable.com_facebook_button_like_selected);
-            this.setCompoundDrawablesWithIntrinsicBounds(R.drawable.com_facebook_button_like_icon_selected, 0, 0, 0);
-            this.setText(getResources().getString(R.string.com_facebook_like_button_liked));
+            this.setBackgroundResource(AirFacebookExtension.getResourceId("drawable.com_facebook_button_like_selected"));
+            this.setCompoundDrawablesWithIntrinsicBounds(AirFacebookExtension.getResourceId("drawable.com_facebook_button_like_icon_selected"), 0, 0, 0);
+            this.setText(getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_like_button_liked")));
         } else {
-            this.setBackgroundResource(R.drawable.com_facebook_button_like);
-            this.setCompoundDrawablesWithIntrinsicBounds(R.drawable.com_facebook_button_like_icon, 0, 0, 0);
-            this.setText(getResources().getString(R.string.com_facebook_like_button_not_liked));
+            this.setBackgroundResource(AirFacebookExtension.getResourceId("drawable.com_facebook_button_like"));
+            this.setCompoundDrawablesWithIntrinsicBounds(AirFacebookExtension.getResourceId("drawable.com_facebook_button_like_icon"), 0, 0, 0);
+            this.setText(getResources().getString(AirFacebookExtension.getResourceId("string.com_facebook_like_button_not_liked")));
         }
     }
 }

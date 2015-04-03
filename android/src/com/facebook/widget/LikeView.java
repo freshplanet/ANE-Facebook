@@ -33,6 +33,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.facebook.android.R;
+
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.facebook.internal.*;
 
 /**
@@ -358,44 +360,44 @@ public class LikeView extends FrameLayout {
             return;
         }
 
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.com_facebook_like_view);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, AirFacebookExtension.getResourceIds("styleable.com_facebook_like_view"));
         if (a == null) {
             return;
         }
 
-        objectId = Utility.coerceValueIfNullOrEmpty(a.getString(R.styleable.com_facebook_like_view_object_id), null);
+        objectId = Utility.coerceValueIfNullOrEmpty(a.getString(AirFacebookExtension.getResourceId("styleable.com_facebook_like_view_object_id")), null);
         likeViewStyle = Style.fromInt(
-                a.getInt(R.styleable.com_facebook_like_view_style,
+                a.getInt(AirFacebookExtension.getResourceId("styleable.com_facebook_like_view_style"),
                         Style.DEFAULT.getValue()));
         if (likeViewStyle == null) {
             throw new IllegalArgumentException("Unsupported value for LikeView 'style'");
         }
 
         auxiliaryViewPosition = AuxiliaryViewPosition.fromInt(
-                a.getInt(R.styleable.com_facebook_like_view_auxiliary_view_position,
+                a.getInt(AirFacebookExtension.getResourceId("styleable.com_facebook_like_view_auxiliary_view_position"),
                         AuxiliaryViewPosition.DEFAULT.getValue()));
         if (auxiliaryViewPosition == null) {
             throw new IllegalArgumentException("Unsupported value for LikeView 'auxiliary_view_position'");
         }
 
         horizontalAlignment = HorizontalAlignment.fromInt(
-                a.getInt(R.styleable.com_facebook_like_view_horizontal_alignment,
+                a.getInt(AirFacebookExtension.getResourceId("styleable.com_facebook_like_view_horizontal_alignment"),
                         HorizontalAlignment.DEFAULT.getValue()));
         if (horizontalAlignment == null) {
             throw new IllegalArgumentException("Unsupported value for LikeView 'horizontal_alignment'");
         }
 
-        foregroundColor = a.getColor(R.styleable.com_facebook_like_view_foreground_color, NO_FOREGROUND_COLOR);
+        foregroundColor = a.getColor(AirFacebookExtension.getResourceId("styleable.com_facebook_like_view_foreground_color"), NO_FOREGROUND_COLOR);
 
         a.recycle();
     }
 
     // If attributes were present, parseAttributes MUST be called before initialize() to ensure proper behavior
     private void initialize(Context context) {
-        edgePadding = getResources().getDimensionPixelSize(R.dimen.com_facebook_likeview_edge_padding);
-        internalPadding = getResources().getDimensionPixelSize(R.dimen.com_facebook_likeview_internal_padding);
+        edgePadding = getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likeview_edge_padding"));
+        internalPadding = getResources().getDimensionPixelSize(AirFacebookExtension.getResourceId("dimen.com_facebook_likeview_internal_padding"));
         if (foregroundColor == NO_FOREGROUND_COLOR) {
-            foregroundColor = getResources().getColor(R.color.com_facebook_likeview_text_color);
+            foregroundColor = getResources().getColor(AirFacebookExtension.getResourceId("color.com_facebook_likeview_text_color"));
         }
 
         setBackgroundColor(Color.TRANSPARENT);
@@ -442,7 +444,7 @@ public class LikeView extends FrameLayout {
         socialSentenceView = new TextView(context);
         socialSentenceView.setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimension(R.dimen.com_facebook_likeview_text_size));
+                getResources().getDimension(AirFacebookExtension.getResourceId("dimen.com_facebook_likeview_text_size")));
         socialSentenceView.setMaxLines(2);
         socialSentenceView.setTextColor(foregroundColor);
         socialSentenceView.setGravity(Gravity.CENTER);

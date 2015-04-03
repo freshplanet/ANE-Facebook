@@ -23,6 +23,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.widget.WebDialog;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**
  * This class is deprecated. See {@link com.facebook.widget.WebDialog}.
@@ -32,7 +33,7 @@ public class FbDialog extends WebDialog {
     private DialogListener mListener;
 
     public FbDialog(Context context, String url, DialogListener listener) {
-        this(context, url, listener, DEFAULT_THEME);
+        this(context, url, listener, AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar"));
     }
 
     public FbDialog(Context context, String url, DialogListener listener, int theme) {
@@ -41,7 +42,7 @@ public class FbDialog extends WebDialog {
     }
 
     public FbDialog(Context context, String action, Bundle parameters, DialogListener listener) {
-        super(context, action, parameters, DEFAULT_THEME, null);
+        super(context, action, parameters, AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar"), null);
         setDialogListener(listener);
     }
 

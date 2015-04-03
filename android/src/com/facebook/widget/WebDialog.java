@@ -38,6 +38,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.facebook.*;
 import com.facebook.android.R;
+
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.facebook.internal.Logger;
 import com.facebook.internal.ServerProtocol;
 import com.facebook.internal.Utility;
@@ -70,7 +72,7 @@ public class WebDialog extends Dialog {
     // translucent border around the webview
     private static final int BACKGROUND_GRAY = 0xCC000000;
 
-    public static final int DEFAULT_THEME = android.R.style.Theme_Translucent_NoTitleBar;
+    // public static final int DEFAULT_THEME = android.R.style.Theme_Translucent_NoTitleBar;
 
     private String url;
     private String expectedRedirectUrl = REDIRECT_URI;
@@ -106,7 +108,7 @@ public class WebDialog extends Dialog {
      *                be a valid URL pointing to a Facebook Web Dialog
      */
     public WebDialog(Context context, String url) {
-        this(context, url, DEFAULT_THEME);
+        this(context, url, AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar"));
     }
 
     /**
@@ -213,7 +215,7 @@ public class WebDialog extends Dialog {
 
         spinner = new ProgressDialog(getContext());
         spinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        spinner.setMessage(getContext().getString(R.string.com_facebook_loading));
+        spinner.setMessage(getContext().getString(AirFacebookExtension.getResourceId("string.com_facebook_loading")));
         spinner.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
@@ -357,7 +359,7 @@ public class WebDialog extends Dialog {
                 dismiss();
             }
         });
-        Drawable crossDrawable = getContext().getResources().getDrawable(R.drawable.com_facebook_close);
+        Drawable crossDrawable = getContext().getResources().getDrawable(AirFacebookExtension.getResourceId("drawable.com_facebook_close"));
         crossImageView.setImageDrawable(crossDrawable);
         /* 'x' should not be visible while webview is loading
          * make it visible only after webview has fully loaded
@@ -498,7 +500,8 @@ public class WebDialog extends Dialog {
         private Session session;
         private String applicationId;
         private String action;
-        private int theme = DEFAULT_THEME;
+        // private int theme = DEFAULT_THEME;
+        private int theme = 0;
         private OnCompleteListener listener;
         private Bundle parameters;
 
@@ -578,7 +581,11 @@ public class WebDialog extends Dialog {
                 parameters.putString(ServerProtocol.DIALOG_PARAM_APP_ID, applicationId);
             }
 
-            return new WebDialog(context, action, parameters, theme, listener);
+			if (theme == 0) {
+				return new WebDialog(context, action, parameters, AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar"), listener);
+			}
+			
+			return new WebDialog(context, action, parameters, theme, listener);
         }
 
         protected String getApplicationId() {
@@ -590,6 +597,9 @@ public class WebDialog extends Dialog {
         }
 
         protected int getTheme() {
+			if (theme == 0) {
+				return AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar");
+			}
             return theme;
         }
 

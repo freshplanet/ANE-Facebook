@@ -2,6 +2,7 @@
     <packagedDependencies>
         <packagedDependency>bolts-android-1.1.2.jar</packagedDependency>
         <packagedDependency>annotations.jar</packagedDependency>
+        <packagedDependency>android-support-v4.jar</packagedDependency>
         <!-- <packagedDependency>google-play-services.jar</packagedDependency> -->
     </packagedDependencies> 
     <packagedResources>

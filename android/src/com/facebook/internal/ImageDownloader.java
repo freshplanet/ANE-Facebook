@@ -24,6 +24,8 @@ import android.os.Looper;
 import com.facebook.FacebookException;
 import com.facebook.android.R;
 
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -258,7 +260,7 @@ public class ImageDownloader {
                         Utility.closeQuietly(reader);
                     } else {
                         errorMessageBuilder.append(
-                            context.getString(R.string.com_facebook_image_download_unknown_error));
+                            context.getString(AirFacebookExtension.getResourceId("string.com_facebook_image_download_unknown_error")));
                     }
                     error = new FacebookException(errorMessageBuilder.toString());
                     break;
