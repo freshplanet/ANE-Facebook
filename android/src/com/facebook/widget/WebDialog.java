@@ -72,7 +72,7 @@ public class WebDialog extends Dialog {
     // translucent border around the webview
     private static final int BACKGROUND_GRAY = 0xCC000000;
 
-    // public static final int DEFAULT_THEME = android.R.style.Theme_Translucent_NoTitleBar;
+    public static final int DEFAULT_THEME = android.R.style.Theme_Translucent_NoTitleBar;
 
     private String url;
     private String expectedRedirectUrl = REDIRECT_URI;
@@ -108,7 +108,7 @@ public class WebDialog extends Dialog {
      *                be a valid URL pointing to a Facebook Web Dialog
      */
     public WebDialog(Context context, String url) {
-        this(context, url, AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar"));
+        this(context, url, DEFAULT_THEME);
     }
 
     /**
@@ -500,8 +500,7 @@ public class WebDialog extends Dialog {
         private Session session;
         private String applicationId;
         private String action;
-        // private int theme = DEFAULT_THEME;
-        private int theme = 0;
+        private int theme = DEFAULT_THEME;
         private OnCompleteListener listener;
         private Bundle parameters;
 
@@ -581,11 +580,7 @@ public class WebDialog extends Dialog {
                 parameters.putString(ServerProtocol.DIALOG_PARAM_APP_ID, applicationId);
             }
 
-			if (theme == 0) {
-				return new WebDialog(context, action, parameters, AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar"), listener);
-			}
-			
-			return new WebDialog(context, action, parameters, theme, listener);
+            return new WebDialog(context, action, parameters, theme, listener);
         }
 
         protected String getApplicationId() {
@@ -597,9 +592,6 @@ public class WebDialog extends Dialog {
         }
 
         protected int getTheme() {
-			if (theme == 0) {
-				return AirFacebookExtension.getResourceId("style.Theme_Translucent_NoTitleBar");
-			}
             return theme;
         }
 
