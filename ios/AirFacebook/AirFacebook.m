@@ -714,11 +714,23 @@ DEFINE_ANE_FUNCTION(openDeferredAppLink)
 	return nil;
 }
 
+DEFINE_ANE_FUNCTION(isFrictionlessRecipient)
+{
+    NSString *facebookId = FPANE_FREObjectToNSString(argv[0]);
+    BOOL retValue = false;
+    if (facebookId != nil && frictionlessFriendCache != NULL)
+    {
+        retValue = [frictionlessFriendCache isFrictionlessRecipient:facebookId];
+    }
+
+    return FPANE_BOOLToFREObject(retValue);
+}
+
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    NSInteger nbFuntionsToLink = 19;
+    NSInteger nbFuntionsToLink = 20;
     *numFunctionsToTest = nbFuntionsToLink;
     
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * nbFuntionsToLink);
@@ -798,7 +810,12 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
 	func[18].name = (const uint8_t*) "openDeferredAppLink";
 	func[18].functionData = NULL;
 	func[18].function = &openDeferredAppLink;
-	
+
+    func[19].name = (const uint8_t*) "isFrictionlessRecipient";
+    func[19].functionData = NULL;
+    func[19].function = &isFrictionlessRecipient;
+
+
     *functionsToSet = func;
     
     AirFBCtx = ctx;

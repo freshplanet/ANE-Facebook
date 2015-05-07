@@ -509,6 +509,15 @@ package com.freshplanet.ane.AirFacebook
 			
 			_context.call('publishInstall', appId);
 		}
+
+		public function isFrictionlessRecipient(facebookId:String):Boolean
+		{
+			// iOS only for now
+			if (!isSupported || Capabilities.manufacturer.indexOf("Android") > -1 || !facebookId) return false;
+
+			return _context.call('isFrictionlessRecipient', facebookId) as Boolean;
+		}
+
 		
 		// --------------------------------------------------------------------------------------//
 		//																						 //
