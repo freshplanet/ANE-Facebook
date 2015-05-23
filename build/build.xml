@@ -58,6 +58,7 @@
         <mkdir dir="../android/gen"/>
         <exec executable="${flex.sdk}/lib/android/bin/aapt">
             <arg value="package"/>
+            <arg value="-v"/>
             <arg value="-f"/>
             <arg value="-m"/>
             <arg line=" -S ../android/res"/>
@@ -82,6 +83,7 @@
         </javac>
 
         <!-- Copy over the required libs -->
+        <copy file="../android/libs/android-support-v4.jar" todir="temp/android/"/>
         <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
         <copy file="../android/libs/annotations.jar" todir="temp/android/"/>
         
