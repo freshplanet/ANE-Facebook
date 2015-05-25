@@ -1,14 +1,14 @@
 Air Native Extension for Facebook (iOS + Android)
 ======================================
 
-This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
+This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com). FreshPlanet is no longer updating this ANE. I will try to update it as soon as possible to newest SDKs versions.
 
 
 Facebook SDK Versions
 ---------
 
-* iOS: 3.16.2 (compatible with iOS 5.0 and above)
-* Android: 3.6 (compatible with Android 2.2 and above)
+* iOS: 3.23.2 
+* Android: 3.23.1
 
 
 Installation
@@ -102,7 +102,8 @@ mv example.build.config build.config
 # Build the ANE
 ant
 ```
-
+NOTE:
+Don't forget to create local.properties file in android folder with sdk.dir pointing to android-15 sdk. (I will update build scripts to remove this step.)
 
 Facebook android sdk use
 ---------
@@ -119,13 +120,3 @@ Authors
 
 This ANE has been written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-
-Join the FreshPlanet team - GAME DEVELOPMENT in NYC
-------
-
-We are expanding our mobile engineering teams.
-
-FreshPlanet is a NYC based mobile game development firm and we are looking for senior engineers to lead the development initiatives for one or more of our games/apps. We work in small teams (6-9) who have total product control.  These teams consist of mobile engineers, UI/UX designers and product experts.
-
-
-Please contact Tom Cassidy (tcassidy@freshplanet.com) or apply at http://freshplanet.com/jobs/
