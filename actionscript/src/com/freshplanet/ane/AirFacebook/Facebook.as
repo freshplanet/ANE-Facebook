@@ -66,17 +66,7 @@ package com.freshplanet.ane.AirFacebook
 		{
 			return _instance ? _instance : new Facebook();
 		}
-		
-		/**
-		 * If <code>true</code>, logs will be displayed at the Actionscript level.
-		 * If <code>false</code>, logs will be displayed only at the native level.
-		 */
-		public function get logEnabled() : Boolean
-		{
-			return _logEnabled;
-		}
-		
-		
+
 		/**
 		 * This is only important on Android - if you are using stage3D for display at the time you log in to FB,
 		 * set this to true to avoid the display freezing
@@ -88,11 +78,6 @@ package com.freshplanet.ane.AirFacebook
 			}
 		}
 		
-		public function set logEnabled( value : Boolean ) : void
-		{
-			_logEnabled = value;
-		}
-		
 		/**
 		 * Initialize the Facebook extension.
 		 * 
@@ -101,11 +86,11 @@ package com.freshplanet.ane.AirFacebook
 		 * @param urlSchemeSuffix   (Optional) The URL Scheme Suffix to be used in scenarios where multiple iOS apps
 		 *                          use one Facebook App ID. Must contain only lowercase letters.
 		 */
-		public function init( appID : String, legacyMode : Boolean, urlSchemeSuffix : String = null ) : void
+		public function init(appID:String, urlSchemeSuffix : String = null ) : void
 		{
 			if (!isSupported) return;
 			
-			_context.call('init', appID, urlSchemeSuffix, legacyMode);
+			_context.call('init', appID, urlSchemeSuffix);
 		}
 		
 		/**
@@ -519,9 +504,13 @@ package com.freshplanet.ane.AirFacebook
 		private static const EXTENSION_ID : String = "com.freshplanet.AirFacebook";
 		
 		private static var _instance : Facebook;
-		
+		/**
+		 * If <code>true</code>, logs will be displayed at the ActionScript level.
+		 * If <code>false</code>, logs will be displayed only at the native level.
+		 */
+		public static var logEnabled : Boolean = false;
+
 		private var _context : ExtensionContext;
-		private var _logEnabled : Boolean = false;
 		private var _openSessionCallback : Function;
 		private var _reauthorizeSessionCallback : Function;
 		private var _requestCallbacks : Object = {};
@@ -642,7 +631,7 @@ package com.freshplanet.ane.AirFacebook
 		
 		private function log( message : String ) : void
 		{
-			if (_logEnabled) trace("[Facebook] " + message);
+			if (Facebook.logEnabled) trace("[Facebook] " + message);
 		}
 	}
 }

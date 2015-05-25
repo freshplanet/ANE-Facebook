@@ -53,10 +53,4 @@ public class AirFacebookExtension implements FREExtension
 	{
 		return context != null ? context.getResourceId(name) : 0;
 	}
-	
-	public static int[] getResourceIds(String name)
-	{
-		// TODO
-		return new int[0];
-	}
 }
