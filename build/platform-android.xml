@@ -7,7 +7,7 @@
     </packagedDependencies> 
     <packagedResources>
         <packagedResource>
-            <packageName>com.freshplanet.AirFacebook</packageName> 
+            <packageName>com.facebook.android</packageName>
             <folderName>res</folderName> 
         </packagedResource>
      <!--<packagedResource> 

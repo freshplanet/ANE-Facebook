@@ -51,52 +51,59 @@
     </target>
     <target name="android-build" description="Build Android Library">
 
+        <mkdir dir="temp/android/"/>
+
         <!-- make the build directory for the java code -->
-        <mkdir dir="temp/android/build/"/>
+        <!--<mkdir dir="temp/android/build/"/>-->
 
         <!-- make the R file -->
-        <mkdir dir="../android/gen"/>
-        <exec executable="${flex.sdk}/lib/android/bin/aapt">
-            <arg value="package"/>
-            <arg value="-v"/>
-            <arg value="-f"/>
-            <arg value="-m"/>
-            <arg line=" -S ../android/res"/>
-            <arg line=" -J ../android/gen"/>
-            <arg line=" -M ../android/AndroidManifest.xml"/>
-            <arg line=" -I ${android.sdk}/android.jar"/>
-        </exec>
+        <!--<mkdir dir="../android/gen"/>-->
+        <!--<exec executable="${flex.sdk}/lib/android/bin/aapt">-->
+            <!--<arg value="package"/>-->
+            <!--<arg value="-v"/>-->
+            <!--<arg value="-f"/>-->
+            <!--<arg value="-m"/>-->
+            <!--<arg line=" -S ../android/res"/>-->
+            <!--<arg line=" -J ../android/gen"/>-->
+            <!--<arg line=" -M ../android/AndroidManifest.xml"/>-->
+            <!--<arg line=" -I ${android.sdk}/android.jar"/>-->
+        <!--</exec>-->
 
         <echo message="Using Java version ${ant.java.version}."/>
 
         <!-- compile the java code -->
-        <javac source="1.6" destdir="temp/android/build/" includeantruntime="false" debug="${ANDROID_DEBUG}">
-            <src path="../android/gen"/>
-            <src path="../android/src"/>
-            <classpath>
-                <pathelement location="${android.sdk}/android.jar"/>
-                <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
-                <pathelement location="../android/libs/android-support-v4.jar"/>
-                <pathelement location="../android/libs/bolts-android-1.1.2.jar"/>
-                <pathelement location="../android/libs/annotations.jar"/><!-- needed since Facebook SDK 3.0 on api < 16 -->
-            </classpath>
-        </javac>
+        <!--<javac source="1.6" destdir="temp/android/build/" includeantruntime="false" debug="${ANDROID_DEBUG}">-->
+            <!--<src path="../android/gen"/>-->
+            <!--<src path="../android/src"/>-->
+            <!--<classpath>-->
+                <!--<pathelement location="${android.sdk}/android.jar"/>-->
+                <!--<pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>-->
+                <!--<pathelement location="../android/libs/android-support-v4.jar"/>-->
+                <!--<pathelement location="../android/libs/bolts-android-1.1.2.jar"/>-->
+                <!--<pathelement location="../android/libs/annotations.jar"/>&lt;!&ndash; needed since Facebook SDK 3.0 on api < 16 &ndash;&gt;-->
+            <!--</classpath>-->
+        <!--</javac>-->
+
+        <ant antfile="build.xml" target="clean" dir="../android" />
+        <ant antfile="build.xml" target="release" dir="../android" />
 
         <!-- Copy over the required libs -->
         <copy file="../android/libs/android-support-v4.jar" todir="temp/android/"/>
         <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
-        <copy file="../android/libs/annotations.jar" todir="temp/android/"/>
-        
+        <copy file="${android.tools}/lib/annotations.jar" todir="temp/android/"/>
+        <copy file="../android/bin/classes.jar" tofile="temp/android/lib${name}.jar"/>
+
         <!-- Copy over required resources -->
         <copy todir="temp/android/res/">
             <fileset dir="../android/res/"/>
         </copy>
 
         <!-- make the jar -->
-        <jar basedir="temp/android/build/" destfile="temp/android/lib${name}.jar"/>
+        <!--<jar basedir="temp/android/build/" destfile="temp/android/lib${name}.jar"/>-->
 
+        <delete dir="../android/bin"/>
         <!-- remove the build classes -->
-        <delete dir="temp/android/build/"/>
+        <!--<delete dir="temp/android/build/"/>-->
         <delete dir="../android/gen"/>
     </target>
 
