@@ -99,9 +99,12 @@ cd build
 mv example.build.config build.config
 # Edit build.config file to provide your machine-specific paths
 
-# Build the ANE - you MUST use Java 1.6 otherwise in android context will be null (probably bug in Adobe AIR SDK) (NOTE: on OSX you can call "export JAVA_HOME=`/usr/libexec/java_home -v 1.6`" without " to set JAVA_HOME properly)
+# Build the ANE
 ant
 ```
+
+You MUST use Java 1.6 otherwise in android context will be null (probably bug in Adobe AIR SDK). On OSX you can call "export JAVA_HOME=`/usr/libexec/java_home -v 1.6`" without " to set JAVA_HOME properly.
+
 NOTE:
 Don't forget to create local.properties file in android folder with sdk.dir pointing to android-15 sdk. (I will update build scripts to remove this step.)
 
