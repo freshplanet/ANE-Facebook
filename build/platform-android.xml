@@ -3,16 +3,11 @@
         <packagedDependency>bolts-android-1.1.2.jar</packagedDependency>
         <packagedDependency>annotations.jar</packagedDependency>
         <packagedDependency>android-support-v4.jar</packagedDependency>
-        <!-- <packagedDependency>google-play-services.jar</packagedDependency> -->
     </packagedDependencies> 
     <packagedResources>
         <packagedResource>
             <packageName>com.facebook.android</packageName>
             <folderName>res</folderName> 
         </packagedResource>
-     <!--<packagedResource> 
-            <packageName>com.google.android.gms</packageName> 
-            <folderName>google-play-services-res</folderName> 
-        </packagedResource>-->
     </packagedResources>
 </platform>

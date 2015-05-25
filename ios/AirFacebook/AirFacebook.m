@@ -96,7 +96,9 @@ static FBFrictionlessRecipientCache *frictionlessFriendCache;
         
         @try
         {
-            [session openWithBehavior:FBSessionLoginBehaviorUseSystemAccountIfPresent completionHandler:[AirFacebook openSessionCompletionHandler]];
+            // Login behavior was updated in 3.14 to allow individual permission control.
+            // See: https://developers.facebook.com/docs/ios/upgrading-3.x section "Upgrading from 3.13 to 3.14"
+            [session openWithBehavior:FBSessionLoginBehaviorWithFallbackToWebView completionHandler:[AirFacebook openSessionCompletionHandler]];
         }
         @catch (NSException *exception)
         {
@@ -345,7 +347,9 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
     
     // Select login behavior
-    FBSessionLoginBehavior loginBehavior = systemFlow ? FBSessionLoginBehaviorUseSystemAccountIfPresent : FBSessionLoginBehaviorWithFallbackToWebView;
+    // Login behavior was updated in 3.14 to allow individual permission control.
+    // See: https://developers.facebook.com/docs/ios/upgrading-3.x section "Upgrading from 3.13 to 3.14"
+    FBSessionLoginBehavior loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
     
     // Start authentication flow
     FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];

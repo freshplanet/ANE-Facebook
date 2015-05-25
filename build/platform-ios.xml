@@ -7,5 +7,7 @@
     </linkerOptions>
     <packagedDependencies>
         <packagedDependency>FacebookSDK.framework</packagedDependency>
+        <packagedDependency>FacebookSDK.framework</packagedDependency>
+        <packagedDependency>FBAudienceNetwork.framework</packagedDependency>
     </packagedDependencies>
 </platform>

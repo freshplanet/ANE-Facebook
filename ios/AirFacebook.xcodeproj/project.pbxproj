@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EA1B5F21B131CD5009206CD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA1B5F01B131CD5009206CD /* Bolts.framework */; };
+		2EA1B5F31B131CD5009206CD /* FBAudienceNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */; };
 		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
 		5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A98569B15213BC3003A8EB0 /* Foundation.framework */; };
 		5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9856A115213BC3003A8EB0 /* AirFacebook.m */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2EA1B5F01B131CD5009206CD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = frameworks/Bolts.framework; sourceTree = "<group>"; };
+		2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = frameworks/FBAudienceNetwork.framework; sourceTree = "<group>"; };
 		4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = ../FlashRuntimeExtensions.h; sourceTree = "<group>"; };
 		4AAA25371704F1C400ECB60C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4AAA253A1704F1C400ECB60C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -37,8 +41,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAA4F39517D78A17005A862A /* CoreGraphics.framework in Frameworks */,
+				2EA1B5F21B131CD5009206CD /* Bolts.framework in Frameworks */,
+				2EA1B5F31B131CD5009206CD /* FBAudienceNetwork.framework in Frameworks */,
 				B5BDE3A319AF969400CB8A8B /* FacebookSDK.framework in Frameworks */,
+				FAA4F39517D78A17005A862A /* CoreGraphics.framework in Frameworks */,
 				FAA4F39417D78A12005A862A /* UIKit.framework in Frameworks */,
 				5A98569C15213BC3003A8EB0 /* Foundation.framework in Frameworks */,
 			);
@@ -67,6 +73,8 @@
 		5A98569A15213BC3003A8EB0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2EA1B5F01B131CD5009206CD /* Bolts.framework */,
+				2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */,
 				B5BDE3A219AF969400CB8A8B /* FacebookSDK.framework */,
 				4AAA25371704F1C400ECB60C /* UIKit.framework */,
 				5A98569B15213BC3003A8EB0 /* Foundation.framework */,
@@ -213,9 +221,6 @@
 				DSTROOT = /tmp/AirFacebook.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\\\\\"$(SRCROOT)/facebook-ios-sdk/build\\\\\\\"",
-					"$(PROJECT_DIR)/facebook-ios-sdk/build",
-					"$(PROJECT_DIR)/framework",
 					"$(PROJECT_DIR)/frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -243,9 +248,6 @@
 				DSTROOT = /tmp/AirFacebook.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\\\\\"$(SRCROOT)/facebook-ios-sdk/build\\\\\\\"",
-					"$(PROJECT_DIR)/facebook-ios-sdk/build",
-					"$(PROJECT_DIR)/framework",
 					"$(PROJECT_DIR)/frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

@@ -35,6 +35,12 @@
         <copy todir="temp/ios/FacebookSDK.framework" overwrite="true">
             <fileset dir="../ios/frameworks/FacebookSDK.framework"/>
         </copy>
+        <copy todir="temp/ios/Bolts.framework" overwrite="true">
+            <fileset dir="../ios/frameworks/Bolts.framework"/>
+        </copy>
+        <copy todir="temp/ios/FBAudienceNetwork.framework" overwrite="true">
+            <fileset dir="../ios/frameworks/FBAudienceNetwork.framework"/>
+        </copy>
 
         <!-- remove the build directory -->
         <delete dir="temp/ios/build/"/>
@@ -127,6 +133,8 @@
             <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
         </exec>
+
+        <copy file="temp/swc/${name}.swc" todir="../bin/" />
 
         <unzip src="temp/swc/${name}.swc" dest="temp/swc/content" overwrite="true"/>
 
