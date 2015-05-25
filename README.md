@@ -108,7 +108,7 @@ You MUST use Java 1.6 otherwise in android context will be null (probably bug in
 NOTE:
 Don't forget to create local.properties file in android folder with sdk.dir pointing to android-15 sdk. (I will update build scripts to remove this step.)
 
-Facebook android sdk use
+Facebook android sdk use (deprecated)
 ---------
 
 This sdk is using staticaly linked elements. We had to modify all the calls to the com.facebook.android.R package by a custom function that is doing the linking at runtime:
