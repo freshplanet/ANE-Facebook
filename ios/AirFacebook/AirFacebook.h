@@ -25,7 +25,7 @@
 //typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
 //typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id result, NSError *error);
 
-@interface AirFacebook : NSObject <UIApplicationDelegate>
+@interface AirFacebook : NSObject
 
 + (id)sharedInstance;
 
@@ -40,6 +40,8 @@
 
 + (void)log:(NSString *)string, ...;
 
+- (void)didFinishLaunching:(NSNotification *)notification;
+
 @property (nonatomic, readonly) NSString *appID;
 @property (nonatomic, readonly) NSString *urlSchemeSuffix;
 
@@ -48,9 +50,9 @@
 // utils
 NSArray* getFREArrayAsNSArray( FREObject array );
 
-void applicationDidBecomeActive(id self, SEL _cmd, UIApplication* application);
-void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions);
-void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation);
+//void applicationDidBecomeActive(id self, SEL _cmd, UIApplication* application);
+//void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions);
+//void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation);
 
 // C interface
 DEFINE_ANE_FUNCTION(logMessage);

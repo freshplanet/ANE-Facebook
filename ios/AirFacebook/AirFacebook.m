@@ -38,32 +38,31 @@ FREContext AirFBCtx = nil;
 static AirFacebook *sharedInstance = nil;
 //static FBFrictionlessRecipientCache *frictionlessFriendCache;
 
-void applicationDidBecomeActive(id self, SEL _cmd, UIApplication* application)
-{
-    NSLog(@"ANEFACEBOOK applicationDidBecomeActive");
-    
-    [FBSDKAppEvents activateApp];
-}
-
-
-void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions)
-{
-    NSLog(@"ANEFACEBOOK didFinishLaunchingWithOptions");
-
-    [[FBSDKApplicationDelegate sharedInstance] application:application
-                                    didFinishLaunchingWithOptions:launchOptions];
-}
-
-
-void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation)
-{
-    NSLog(@"ANEFACEBOOK openURL");
-    
-    [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                          openURL:url
-                                                sourceApplication:sourceApplication
-                                                       annotation:annotation];
-}
+//void applicationDidBecomeActive(id self, SEL _cmd, UIApplication* application)
+//{
+//    NSLog(@"ANEFACEBOOK applicationDidBecomeActive");
+//    
+//    [FBSDKAppEvents activateApp];
+//}
+//
+//
+//void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions)
+//{
+//    NSLog(@"ANEFACEBOOK didFinishLaunchingWithOptions %@",launchOptions);
+//    [[FBSDKApplicationDelegate sharedInstance] application:application
+//                                    didFinishLaunchingWithOptions:launchOptions];
+//}
+//
+//
+//void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation)
+//{
+//    NSLog(@"ANEFACEBOOK openURL %@ %@ %@", url, sourceApplication, annotation);
+//    
+//    [[FBSDKApplicationDelegate sharedInstance] application:application
+//                                                          openURL:url
+//                                                sourceApplication:sourceApplication
+//                                                       annotation:annotation];
+//}
 
 
 + (AirFacebook *)sharedInstance
@@ -71,6 +70,7 @@ void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplica
     if (sharedInstance == nil)
     {
         sharedInstance = [[super allocWithZone:NULL] init];
+//        [[NSNotificationCenter defaultCenter] addObserver:sharedInstance selector:@selector(didFinishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
     }
     
     return sharedInstance;
@@ -291,6 +291,16 @@ void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplica
     }
 }
 
+- (void)didFinishLaunching:(NSNotification *)notification {
+    
+    NSDictionary *userInfo = [notification userInfo];
+    NSLog(@"FACEBOOK didFinishLaunching called! %@", userInfo);
+//    NSWindow *theWindow = [notification object];
+//    MyDocument = (MyDocument *)[[theWindow windowController] document];
+    
+    // Retrieve information about the document and update the panel.
+}
+
 @end
 
 
@@ -353,6 +363,8 @@ DEFINE_ANE_FUNCTION(init)
     
     if (urlSchemeSuffix.length == 0)
         urlSchemeSuffix = nil;
+    
+    [AirFacebook sharedInstance];
     
     // Initialize Facebook
 //    [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
@@ -790,36 +802,38 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     
+//    [[NSNotificationCenter defaultCenter] addObserver:[AirFacebook sharedInstance] selector:@selector(didFinishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
+    
     //injects our modified delegate functions into the sharedApplication delegate
     
-    id delegate = [[UIApplication sharedApplication] delegate];
-    Class objectClass = object_getClass(delegate);
-    NSString *newClassName = [NSString stringWithFormat:@"Custom_%@", NSStringFromClass(objectClass)];
-    Class modDelegate = NSClassFromString(newClassName);
-    if (modDelegate == nil) {
-        // this class doesn't exist; create it
-        // allocate a new class
-        modDelegate = objc_allocateClassPair(objectClass, [newClassName UTF8String], 0);
-        
-        SEL selectorToOverride1 = @selector(applicationDidBecomeActive:);
-        SEL selectorToOverride2 = @selector(application:didFinishLaunchingWithOptions:);
-        SEL selectorToOverride3 = @selector(application:openURL:sourceApplication:annotation:);
-        
-        // get the info on the method we're going to override
-        Method m1 = class_getInstanceMethod(objectClass, selectorToOverride1);
-        Method m2 = class_getInstanceMethod(objectClass, selectorToOverride2);
-        Method m3 = class_getInstanceMethod(objectClass, selectorToOverride3);
-        
-        // add the method to the new class
-        class_addMethod(modDelegate, selectorToOverride1, (IMP)applicationDidBecomeActive, method_getTypeEncoding(m1));
-        class_addMethod(modDelegate, selectorToOverride2, (IMP)applicationDidFinishLaunchingWithOptions, method_getTypeEncoding(m2));
-        class_addMethod(modDelegate, selectorToOverride3, (IMP)applicationOpenURLSourceApplicationAnnotation, method_getTypeEncoding(m3));
-        
-        // register the new class with the runtime
-        objc_registerClassPair(modDelegate);
-    }
-    // change the class of the object
-    object_setClass(delegate, modDelegate);
+//    id delegate = [[UIApplication sharedApplication] delegate];
+//    Class objectClass = object_getClass(delegate);
+//    NSString *newClassName = [NSString stringWithFormat:@"Custom_%@", NSStringFromClass(objectClass)];
+//    Class modDelegate = NSClassFromString(newClassName);
+//    if (modDelegate == nil) {
+//        // this class doesn't exist; create it
+//        // allocate a new class
+//        modDelegate = objc_allocateClassPair(objectClass, [newClassName UTF8String], 0);
+//        
+//        SEL selectorToOverride1 = @selector(applicationDidBecomeActive:);
+//        SEL selectorToOverride2 = @selector(application:didFinishLaunchingWithOptions:);
+//        SEL selectorToOverride3 = @selector(application:openURL:sourceApplication:annotation:);
+//        
+//        // get the info on the method we're going to override
+//        Method m1 = class_getInstanceMethod(objectClass, selectorToOverride1);
+//        Method m2 = class_getInstanceMethod(objectClass, selectorToOverride2);
+//        Method m3 = class_getInstanceMethod(objectClass, selectorToOverride3);
+//        
+//        // add the method to the new class
+//        class_addMethod(modDelegate, selectorToOverride1, (IMP)applicationDidBecomeActive, method_getTypeEncoding(m1));
+//        class_addMethod(modDelegate, selectorToOverride2, (IMP)applicationDidFinishLaunchingWithOptions, method_getTypeEncoding(m2));
+//        class_addMethod(modDelegate, selectorToOverride3, (IMP)applicationOpenURLSourceApplicationAnnotation, method_getTypeEncoding(m3));
+//        
+//        // register the new class with the runtime
+//        objc_registerClassPair(modDelegate);
+//    }
+//    // change the class of the object
+//    object_setClass(delegate, modDelegate);
     
     ///////// end of delegate injection / modification code
     

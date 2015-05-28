@@ -53,7 +53,7 @@ package com.freshplanet.ane.AirFacebook
 				}
 				_context.addEventListener(StatusEvent.STATUS, onStatus);
 				
-//				NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, onInvoke);
+				NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, onInvoke);
 				
 				_instance = this;
 			}
@@ -567,22 +567,22 @@ package com.freshplanet.ane.AirFacebook
 			return callbackName;
 		}
 		
-//		private function onInvoke( event : InvokeEvent ) : void
-//		{
+		private function onInvoke( event : InvokeEvent ) : void
+		{
 //			if (Capabilities.manufacturer.indexOf("iOS") != -1)
 //			{
-//				if (event.arguments != null && event.arguments.length > 0)
-//				{
-//					// if the invoke event arguments consist in a Referer begining with 'fb'
+				if (event.arguments != null && event.arguments.length > 0)
+				{
+					// if the invoke event arguments consist in a Referer begining with 'fb'
 //					var url:String = event.arguments[0] as String;
 //					if ( url != null && url.indexOf("fb") == 0)
 //					{
-//						log("about to call handleOpenURL on " + url);
+						log("FACEBOOK about to call handleOpenURL on count:" + event.arguments.length + " args: " + event.arguments);
 //						_context.call("handleOpenURL", url);
 //					}
-//				}
+				}
 //			}
-//		}
+		}
 		
 		private function onStatus( event : StatusEvent ) : void
 		{
