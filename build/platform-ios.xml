@@ -4,10 +4,12 @@
         <option>-weak_framework Accounts</option> 
         <option>-weak_framework AdSupport</option>
         <option>-weak_framework Social</option>
+        <option>-weak_framework CoreMotion</option>
     </linkerOptions>
     <packagedDependencies>
-        <packagedDependency>FacebookSDK.framework</packagedDependency>
-        <packagedDependency>FacebookSDK.framework</packagedDependency>
+        <packagedDependency>FBSDKCoreKit.framework</packagedDependency>
+        <packagedDependency>FBSDKLoginKit.framework</packagedDependency>
+        <packagedDependency>FBSDKShareKit.framework</packagedDependency>
         <packagedDependency>FBAudienceNetwork.framework</packagedDependency>
     </packagedDependencies>
 </platform>

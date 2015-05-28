@@ -25,6 +25,7 @@ package com.freshplanet.ane.AirFacebook
 	import flash.external.ExtensionContext;
 	import flash.system.Capabilities;
 	import com.freshplanet.ane.AirFacebook.FacebookPermissionEvent;
+	import com.pixelfederation.PixelAccessToken;
 
 	public class Facebook extends EventDispatcher
 	{
@@ -52,7 +53,7 @@ package com.freshplanet.ane.AirFacebook
 				}
 				_context.addEventListener(StatusEvent.STATUS, onStatus);
 				
-				NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, onInvoke);
+//				NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, onInvoke);
 				
 				_instance = this;
 			}
@@ -122,11 +123,22 @@ package com.freshplanet.ane.AirFacebook
 		}
 		
 		/** The current Facebook access token, or null if no session is open. */
-		public function get accessToken() : String
+		public function get accessToken():FBAccessToken
 		{
 			if (!isSupported) return null;
-			
-			return _context.call('getAccessToken') as String;
+
+			var accessToken:FBAccessToken = _context.call('getAccessToken') as FBAccessToken;
+			log(accessToken.toString());
+			return accessToken;
+		}
+
+		public function get profile():FBProfile
+		{
+			if (!isSupported) return null;
+
+			var profile:FBProfile = _context.call('getProfile') as FBProfile;
+			log(profile.toString());
+			return profile;
 		}
 		
 		/**
@@ -157,7 +169,7 @@ package com.freshplanet.ane.AirFacebook
 		{
 			openSessionWithPermissionsOfType(permissions, "read", callback, systemFlow);
 		}
-		
+
 		/**
 		 * Open a new session with a given set of publish permissions.<br><br>
 		 * 
@@ -555,28 +567,30 @@ package com.freshplanet.ane.AirFacebook
 			return callbackName;
 		}
 		
-		private function onInvoke( event : InvokeEvent ) : void
-		{
-			if (Capabilities.manufacturer.indexOf("iOS") != -1)
-			{
-				if (event.arguments != null && event.arguments.length > 0)
-				{
-					// if the invoke event arguments consist in a Referer begining with 'fb'
-					var url:String = event.arguments[0] as String;
-					if ( url != null && url.indexOf("fb") == 0)
-					{
-						log("about to call handleOpenURL on " + url);
-						_context.call("handleOpenURL", url);
-					}
-				}
-			}
-		}
+//		private function onInvoke( event : InvokeEvent ) : void
+//		{
+//			if (Capabilities.manufacturer.indexOf("iOS") != -1)
+//			{
+//				if (event.arguments != null && event.arguments.length > 0)
+//				{
+//					// if the invoke event arguments consist in a Referer begining with 'fb'
+//					var url:String = event.arguments[0] as String;
+//					if ( url != null && url.indexOf("fb") == 0)
+//					{
+//						log("about to call handleOpenURL on " + url);
+//						_context.call("handleOpenURL", url);
+//					}
+//				}
+//			}
+//		}
 		
 		private function onStatus( event : StatusEvent ) : void
 		{
 			var today:Date = new Date();
 			var callback:Function;
-			
+
+			log("onStatus " + event.code);
+
 			if (event.code.indexOf("SESSION") != -1) // If the event code contains SESSION, it's an open/reauthorize session result
 			{
 				var success:Boolean = (event.code.indexOf("SUCCESS") != -1);
@@ -588,7 +602,15 @@ package com.freshplanet.ane.AirFacebook
 				
 				_openSessionCallback = null;
 				_reauthorizeSessionCallback = null;
-				
+
+				var accessToken:FBAccessToken = _context.call('getAccessToken') as FBAccessToken;
+
+				log(accessToken.toString());
+
+				if(success){
+					log("onStatus success: true callback:" + callback);
+				}
+
 				if (callback != null) callback(success, userCancelled, error);
 			}
 			else if (event.code == "ACTION_REQUIRE_PERMISSION")
@@ -611,10 +633,10 @@ package com.freshplanet.ane.AirFacebook
 						try
 						{
 							data = JSON.parse(event.level);
-							if (accessToken != null && accessToken != '')
-							{
-								data["accessToken"] = accessToken;
-							}
+//							if (accessToken != null)
+//							{
+//								data["accessToken"] = accessToken;
+//							}
 						}
 						catch (e:Error)
 						{
@@ -631,7 +653,10 @@ package com.freshplanet.ane.AirFacebook
 		
 		private function log( message : String ) : void
 		{
-			if (Facebook.logEnabled) trace("[Facebook] " + message);
+			if (Facebook.logEnabled){
+				trace("[Facebook] " + message);
+				_context.call('log', message);
+			}
 		}
 	}
 }

@@ -122,9 +122,74 @@ FREObject FPANE_BOOLToFREObject(BOOL boolean)
     return result;
 }
 
-FREObject FPANE_NSStringToFREOBject(NSString *string)
+FREObject FPANE_NSStringToFREObject(NSString *string)
 {
     FREObject result;
-    FRENewObjectFromUTF8(string.length, (const uint8_t *)[string UTF8String], &result);
+    FRENewObjectFromUTF8((uint32_t)string.length, (const uint8_t *)[string UTF8String], &result);
     return result;
 }
+
+FREObject FPANE_NSArrayToFREObject(NSArray *value)
+{
+    FREObject result;
+    uint32_t arrayLength = (uint32_t)value.count;
+    
+    FRENewObject((const uint8_t*)"Array", 0, NULL, &result, nil);
+    FRESetArrayLength(result, arrayLength);
+    
+    for(int32_t i = 0; i < arrayLength; i++)
+    {
+        NSString* item = [value objectAtIndex: i];
+        FREObject element = FPANE_NSStringToFREObject(item);
+        FRESetArrayElementAt(result, i, element);
+    }
+    return result;
+}
+
+FREObject FPANE_doubleToFREObject(double value)
+{
+    FREObject result;
+    FRENewObjectFromDouble(value, &result);
+    return result;
+}
+
+// nodrock functions
+
+//FREResult NSStringToFREObject(FREObject *object, NSString *value)
+//{
+//    return FRENewObjectFromUTF8((uint32_t)value.length, (const uint8_t *)[value UTF8String], object);
+//}
+//
+//FREResult NSArrayToFREObject(FREObject *object, NSArray *value)
+//{
+//    uint32_t arrayLength = (uint32_t)value.count;
+//    
+//    FRENewObject((const uint8_t*)"Array", 0, NULL, object, nil);
+//    FRESetArrayLength(*object, arrayLength);
+//    
+//    for(int32_t i = 0; i < arrayLength; i++)
+//    {
+//        NSString* item = [value objectAtIndex: i];
+//        FREObject element;
+//        NSStringToFREObject(element, item);
+//        FRESetArrayElementAt(*object, i, element);
+//    }
+//    return FRE_OK;
+//}
+//
+//FREResult setObjectStringProperty(FREObject object, const uint8_t* propertyName, NSString *value)
+//{
+//    FREObject property;
+//    NSStringToFREObject(&property, value);
+//    return FRESetObjectProperty(object, propertyName, property, nil);
+//}
+//
+//FREResult setObjectStringArrayProperty(FREObject object, const uint8_t* propertyName, NSArray *value)
+//{
+//    FREObject property;
+//    NSArrayToFREObject(&property, value);
+//    return FRESetObjectProperty(object, propertyName, property, nil);
+//}
+
+
+

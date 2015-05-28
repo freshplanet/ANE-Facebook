@@ -17,25 +17,26 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #import "FlashRuntimeExtensions.h"
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "FPANEUtils.h"
 
-typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
-typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
-typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id result, NSError *error);
+//typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
+//typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
+//typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id result, NSError *error);
 
-@interface AirFacebook : NSObject
+@interface AirFacebook : NSObject <UIApplicationDelegate>
 
 + (id)sharedInstance;
 
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message;
 
-- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
+//- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
 
-+ (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
-+ (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
-+ (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
-+ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback;
+//+ (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
+//+ (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
+//+ (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
+//+ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback;
 
 + (void)log:(NSString *)string, ...;
 
@@ -47,14 +48,17 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 // utils
 NSArray* getFREArrayAsNSArray( FREObject array );
 
+void applicationDidBecomeActive(id self, SEL _cmd, UIApplication* application);
+void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions);
+void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation);
+
 // C interface
+DEFINE_ANE_FUNCTION(logMessage);
 DEFINE_ANE_FUNCTION(init);
 DEFINE_ANE_FUNCTION(handleOpenURL);
 DEFINE_ANE_FUNCTION(getAccessToken);
-DEFINE_ANE_FUNCTION(getExpirationTimestamp);
 DEFINE_ANE_FUNCTION(isSessionOpen);
 DEFINE_ANE_FUNCTION(openSessionWithPermissions);
-DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions);
 DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
 DEFINE_ANE_FUNCTION(requestWithGraphPath);
 DEFINE_ANE_FUNCTION(canPresentShareDialog);
@@ -68,6 +72,7 @@ DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
 DEFINE_ANE_FUNCTION(webDialog);
 DEFINE_ANE_FUNCTION(activateApp);
 DEFINE_ANE_FUNCTION(openDeferredAppLink);
+DEFINE_ANE_FUNCTION(getProfile);
 
 // ANE Setup
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
