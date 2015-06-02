@@ -36,8 +36,3 @@ FREObject FPANE_BOOLToFREObject(BOOL boolean);
 FREObject FPANE_NSStringToFREObject(NSString *string);
 FREObject FPANE_NSArrayToFREObject(NSArray *value);
 FREObject FPANE_doubleToFREObject(double value);
-
-//FREResult NSStringToFREObject(FREObject *object, NSString *string);
-//FREResult NSArrayToFREObject(FREObject *object, NSArray *value);
-//FREResult setObjectStringProperty(FREObject object, const uint8_t* propertyName, NSString *value);
-//FREResult setObjectStringArrayProperty(FREObject object, const uint8_t* propertyName, NSArray *value);
