@@ -50,10 +50,6 @@
 // utils
 NSArray* getFREArrayAsNSArray( FREObject array );
 
-//void applicationDidBecomeActive(id self, SEL _cmd, UIApplication* application);
-//void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions);
-//void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation);
-
 // C interface
 DEFINE_ANE_FUNCTION(logMessage);
 DEFINE_ANE_FUNCTION(init);
@@ -73,7 +69,6 @@ DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams);
 DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
 DEFINE_ANE_FUNCTION(webDialog);
 DEFINE_ANE_FUNCTION(activateApp);
-DEFINE_ANE_FUNCTION(openDeferredAppLink);
 DEFINE_ANE_FUNCTION(getProfile);
 
 // ANE Setup

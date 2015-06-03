@@ -44,25 +44,7 @@ static AirFacebook *sharedInstance = nil;
 //    
 //    [FBSDKAppEvents activateApp];
 //}
-//
-//
-//void applicationDidFinishLaunchingWithOptions(id self, SEL _cmd, UIApplication* application, NSDictionary* launchOptions)
-//{
-//    NSLog(@"ANEFACEBOOK didFinishLaunchingWithOptions %@",launchOptions);
-//    [[FBSDKApplicationDelegate sharedInstance] application:application
-//                                    didFinishLaunchingWithOptions:launchOptions];
-//}
-//
-//
-//void applicationOpenURLSourceApplicationAnnotation(id self, SEL _cmd,  UIApplication* application, NSURL* url, NSString* sourceApplication, id annotation)
-//{
-//    NSLog(@"ANEFACEBOOK openURL %@ %@ %@", url, sourceApplication, annotation);
-//    
-//    [[FBSDKApplicationDelegate sharedInstance] application:application
-//                                                          openURL:url
-//                                                sourceApplication:sourceApplication
-//                                                       annotation:annotation];
-//}
+
 
 
 + (AirFacebook *)sharedInstance
@@ -70,7 +52,6 @@ static AirFacebook *sharedInstance = nil;
     if (sharedInstance == nil)
     {
         sharedInstance = [[super allocWithZone:NULL] init];
-//        [[NSNotificationCenter defaultCenter] addObserver:sharedInstance selector:@selector(didFinishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
     }
     
     return sharedInstance;
@@ -206,57 +187,6 @@ static AirFacebook *sharedInstance = nil;
 //    };
 //}
 
-//+ (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback
-//{
-//    return [^(FBRequestConnection *connection, id result, NSError *error) {
-//        if (error)
-//        {
-//            
-//            // If user doesn't have the publish permission, ask them
-//            if (error.fberrorCategory == FBErrorCategoryPermissions) {
-//                [AirFacebook log:@"Requesting publish permissions"];
-//                [AirFacebook dispatchEvent:@"ACTION_REQUIRE_PERMISSION" withMessage:@"publish_actions"];
-//                return;
-//            } else if (callback)
-//			{
-//                NSDictionary* parsedResponseKey = [error.userInfo objectForKey:FBErrorParsedJSONResponseKey];
-//                if (parsedResponseKey && [parsedResponseKey objectForKey:@"body"])
-//                {
-//                    NSDictionary* body = [parsedResponseKey objectForKey:@"body"];
-//                    NSError *jsonError = nil;
-//                    NSData *resultData = [NSJSONSerialization dataWithJSONObject:body options:0 error:&jsonError];
-//                    if (jsonError)
-//                    {
-//                        [AirFacebook log:[NSString stringWithFormat:@"Request error -> JSON error: %@", [jsonError description]]];
-//                    } else
-//                    {
-//                        NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
-//                        FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[callback UTF8String], (const uint8_t *)[resultString UTF8String]);
-//                    }
-//                }
-//                return;
-//			}
-//            
-//            [AirFacebook log:[NSString stringWithFormat:@"Request error: %@", [error description]]];
-//            
-//        }
-//        else
-//        {
-//            NSError *jsonError = nil;
-//            NSData *resultData = [NSJSONSerialization dataWithJSONObject:result options:0 error:&jsonError];
-//            if (jsonError)
-//            {
-//                [AirFacebook log:[NSString stringWithFormat:@"Request JSON error: %@", [jsonError description]]];
-//            }
-//            else
-//            {
-//                NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
-//                [AirFacebook dispatchEvent:callback withMessage:resultString];
-//            }
-//            
-//        }
-//    } copy];
-//}
 
 //+ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback
 //{
@@ -291,16 +221,6 @@ static AirFacebook *sharedInstance = nil;
     }
 }
 
-- (void)didFinishLaunching:(NSNotification *)notification {
-    
-    NSDictionary *userInfo = [notification userInfo];
-    NSLog(@"FACEBOOK didFinishLaunching called! %@", userInfo);
-//    NSWindow *theWindow = [notification object];
-//    MyDocument = (MyDocument *)[[theWindow windowController] document];
-    
-    // Retrieve information about the document and update the panel.
-}
-
 @end
 
 
@@ -310,9 +230,6 @@ static AirFacebook *sharedInstance = nil;
 
 DEFINE_ANE_FUNCTION(openSessionWithPermissions)
 {
-    [FBSDKAccessToken setCurrentAccessToken:nil];
-    [FBSDKProfile setCurrentProfile:nil];
-    
     NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
     NSString *type = FPANE_FREObjectToNSString(argv[1]);
     
@@ -320,27 +237,25 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     
     FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
     [loginManager logInWithReadPermissions:permissions handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-            [AirFacebook log:@"Debug: canceled: %@  grantedPermissions: %@ declinedPermissions: %@ error: %@ )", result.isCancelled ? @"Yes" : @"No", result.grantedPermissions, result.declinedPermissions, error.description];
         
         if (error) {
             // Process error
-            [AirFacebook log:@"Login error : (Error details : %@ )", error.description];
+            [AirFacebook log:@"Login error: (Error details : %@ )", error.description];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:@"OK"];
-        } else if (result.isCancelled) {
+        }
+        else if (result.isCancelled) {
             // Handle cancellations
-            [AirFacebook log:@"Login error : User Cancelled (Error details : %@ )", error.description];
+            [AirFacebook log:@"Login failed! User cancelled! (Error details : %@ )", error.description];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_CANCEL" withMessage:@"OK"];
-        } else {
-            // If you ask for multiple permissions at once, you
-            // should check if specific permissions missing
-//            if ([result.grantedPermissions containsObject:@"email"]) {
-                // Do work
-//            }
-            //NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
-            [AirFacebook log:@"Login success : "];
+        }
+        else {
+            [AirFacebook log:@"Login success! grantedPermissions: %@ declinedPermissions: %@", result.grantedPermissions, result.declinedPermissions];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
         }
     }];
+  
+// for publish
+//    loginManager.defaultAudience = FBSDKDefaultAudienceFriends;
     
     return nil;
 }
@@ -349,39 +264,32 @@ DEFINE_ANE_FUNCTION(logMessage)
 {
     NSString *message = FPANE_FREObjectToNSString(argv[0]);
     
-    NSLog(@"[FACEBOOK] %@", message);
+    NSLog(@"FACEBOOK %@", message);
     
     return nil;
 }
 
 DEFINE_ANE_FUNCTION(init)
 {
-    
-    // Retrieve application ID, urlschemesuffix, and legacyMode switch
-    NSString *appID = FPANE_FREObjectToNSString(argv[0]);
-    NSString *urlSchemeSuffix = FPANE_FREObjectToNSString(argv[1]);
-    
-    if (urlSchemeSuffix.length == 0)
-        urlSchemeSuffix = nil;
-    
+    // maybe we dont need this sharedInstance
     [AirFacebook sharedInstance];
     
-    // Initialize Facebook
-//    [[AirFacebook sharedInstance] setupWithAppID:appID urlSchemeSuffix:urlSchemeSuffix];
-	
+    [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication] didFinishLaunchingWithOptions:[NSMutableDictionary dictionary]];
+    
     return nil;
 }
 
 DEFINE_ANE_FUNCTION(handleOpenURL)
 {
-    // Retrieve URL
-//    NSURL *url = [NSURL URLWithString:FPANE_FREObjectToNSString(argv[0])];
+    NSURL *url = [NSURL URLWithString:FPANE_FREObjectToNSString(argv[0])];
+    NSString *sourceApplication = FPANE_FREObjectToNSString(argv[1]);
+    NSString *annotation = FPANE_FREObjectToNSString(argv[2]);
     
-    // Give the URL to the Facebook session
-//    FBSession *session = [FBSession activeSession];
-//    [session handleOpenURL:url];
-    
-    return nil;
+    BOOL result = [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication]
+                                                                 openURL:url
+                                                       sourceApplication:sourceApplication
+                                                              annotation:annotation];
+    return FPANE_BOOLToFREObject(result);
 }
 
 DEFINE_ANE_FUNCTION(getAccessToken)
@@ -435,45 +343,9 @@ DEFINE_ANE_FUNCTION(isSessionOpen)
 //        return result;
 //    }
 //    else return nil;
-//    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
 
     return nil;
 }
-
-//DEFINE_ANE_FUNCTION(openSessionWithPermissions)
-//{
-//    NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
-//    NSString *type = FPANE_FREObjectToNSString(argv[1]);
-//    BOOL systemFlow = FPANE_FREObjectToBOOL(argv[2]);
-//    
-//    // Print log
-//    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
-//    
-//    // Select login behavior
-//    // Login behavior was updated in 3.14 to allow individual permission control.
-//    // See: https://developers.facebook.com/docs/ios/upgrading-3.x section "Upgrading from 3.13 to 3.14"
-//    FBSessionLoginBehavior loginBehavior = FBSessionLoginBehaviorWithFallbackToWebView;
-//    
-//    // Start authentication flow
-//    FBOpenSessionCompletionHandler completionHandler = [AirFacebook openSessionCompletionHandler];
-//    NSString *appID = [[AirFacebook sharedInstance] appID];
-//    NSString *urlSchemeSuffix = [[AirFacebook sharedInstance] urlSchemeSuffix];
-//    FBSession *session = nil;
-//    @try
-//    {
-//        session = [[FBSession alloc] initWithAppID:appID permissions:permissions defaultAudience:FBSessionDefaultAudienceFriends urlSchemeSuffix:urlSchemeSuffix tokenCacheStrategy:nil];
-//        [FBSession setActiveSession:session];
-//        [session openWithBehavior:loginBehavior completionHandler:completionHandler];
-//    }
-//    @catch (NSException *exception)
-//    {
-//        [AirFacebook dispatchEvent:@"OPEN_SESSION_ERROR" withMessage:[exception reason]];
-//        return nil;
-//    }
-//    
-//    return nil;
-//}
-
 
 DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation)
 {
@@ -481,30 +353,62 @@ DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation)
     [loginManager logOut];
     [FBSDKAccessToken setCurrentAccessToken:nil];
     [FBSDKProfile setCurrentProfile:nil];
-//    [[FBSession activeSession] closeAndClearTokenInformation];
-//    frictionlessFriendCache = nil;
+
     return nil;
 }
 
 DEFINE_ANE_FUNCTION(requestWithGraphPath)
 {
+    NSString *graphPath = FPANE_FREObjectToNSString(argv[0]);
+    NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
+    NSString *httpMethod = FPANE_FREObjectToNSString(argv[3]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[4]);
     
-//    // Retrieve graph path
-//    NSString *graphPath = FPANE_FREObjectToNSString(argv[0]);
-//    
-//    // Retrieve request parameters
-//    NSDictionary *parameters = FPANE_FREObjectsToNSDictionaryOfNSString(argv[1], argv[2]);
-//    
-//    // Retrieve HTTP method
-//    NSString *httpMethod = FPANE_FREObjectToNSString(argv[3]);
-//    
-//    // Retrieve callback name
-//    NSString *callback = FPANE_FREObjectToNSString(argv[4]);
-//    
-//    // Perform Facebook request
-//    FBRequest *request = [FBRequest requestWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod];
-//    FBRequestCompletionHandler completionHandler = [AirFacebook requestCompletionHandlerWithCallback:callback];
-//    [request startWithCompletionHandler:completionHandler];
+    if ([FBSDKAccessToken currentAccessToken]) {
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod]
+        startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+            if (error){
+                
+                if (callback){
+                    
+                    NSDictionary* parsedResponseKey = [error.userInfo objectForKey:FBSDKGraphRequestErrorParsedJSONResponseKey];
+                    if (parsedResponseKey && [parsedResponseKey objectForKey:@"body"])
+                    {
+                        NSDictionary* body = [parsedResponseKey objectForKey:@"body"];
+                        NSError *jsonError = nil;
+                        NSData *resultData = [NSJSONSerialization dataWithJSONObject:body options:0 error:&jsonError];
+                        if (jsonError)
+                        {
+                            [AirFacebook log:[NSString stringWithFormat:@"Request error -> JSON error: %@", [jsonError description]]];
+                        } else
+                        {
+                            NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
+                            [AirFacebook dispatchEvent:callback withMessage:resultString];
+                        }
+                    }
+                    return;
+                }
+                
+                [AirFacebook log:[NSString stringWithFormat:@"Request error: %@", [error description]]];
+                
+            }
+            else{
+                
+                NSError *jsonError = nil;
+                NSData *resultData = [NSJSONSerialization dataWithJSONObject:result options:0 error:&jsonError];
+                if (jsonError)
+                {
+                    [AirFacebook log:[NSString stringWithFormat:@"Request JSON error: %@", [jsonError description]]];
+                }
+                else
+                {
+                    NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
+                    [AirFacebook dispatchEvent:callback withMessage:resultString];
+                }
+                
+            }
+        }];
+    }
     
     return nil;
 }
@@ -781,64 +685,13 @@ DEFINE_ANE_FUNCTION(activateApp)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(openDeferredAppLink)
-{
-//	[FBAppCall openDeferredAppLink:^(NSError *error) {
-//		if (error) {
-//			NSLog(@"unexpected error opening deferred link:%@", error);
-//			[AirFacebook log:@"fallback with error, check device console"];
-//			[AirFacebook dispatchEvent:@"AppLink" withMessage:@"fallback with error, check device console"];
-//		}
-//		else {
-//			[AirFacebook log:@"fallback but no error"];
-//			[AirFacebook dispatchEvent:@"AppLink" withMessage:@"fallback but no error"];
-//		}
-//			
-//	}];
-	return nil;
-}
-
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
     
 //    [[NSNotificationCenter defaultCenter] addObserver:[AirFacebook sharedInstance] selector:@selector(didFinishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
     
-    //injects our modified delegate functions into the sharedApplication delegate
-    
-//    id delegate = [[UIApplication sharedApplication] delegate];
-//    Class objectClass = object_getClass(delegate);
-//    NSString *newClassName = [NSString stringWithFormat:@"Custom_%@", NSStringFromClass(objectClass)];
-//    Class modDelegate = NSClassFromString(newClassName);
-//    if (modDelegate == nil) {
-//        // this class doesn't exist; create it
-//        // allocate a new class
-//        modDelegate = objc_allocateClassPair(objectClass, [newClassName UTF8String], 0);
-//        
-//        SEL selectorToOverride1 = @selector(applicationDidBecomeActive:);
-//        SEL selectorToOverride2 = @selector(application:didFinishLaunchingWithOptions:);
-//        SEL selectorToOverride3 = @selector(application:openURL:sourceApplication:annotation:);
-//        
-//        // get the info on the method we're going to override
-//        Method m1 = class_getInstanceMethod(objectClass, selectorToOverride1);
-//        Method m2 = class_getInstanceMethod(objectClass, selectorToOverride2);
-//        Method m3 = class_getInstanceMethod(objectClass, selectorToOverride3);
-//        
-//        // add the method to the new class
-//        class_addMethod(modDelegate, selectorToOverride1, (IMP)applicationDidBecomeActive, method_getTypeEncoding(m1));
-//        class_addMethod(modDelegate, selectorToOverride2, (IMP)applicationDidFinishLaunchingWithOptions, method_getTypeEncoding(m2));
-//        class_addMethod(modDelegate, selectorToOverride3, (IMP)applicationOpenURLSourceApplicationAnnotation, method_getTypeEncoding(m3));
-//        
-//        // register the new class with the runtime
-//        objc_registerClassPair(modDelegate);
-//    }
-//    // change the class of the object
-//    object_setClass(delegate, modDelegate);
-    
-    ///////// end of delegate injection / modification code
-    
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
-    
     NSDictionary *functions = @{
         @"init":                                    [NSValue valueWithPointer:&init],
         @"handleOpenURL":                           [NSValue valueWithPointer:&handleOpenURL],
@@ -856,7 +709,6 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
         @"presentMessageDialogWithLinkAndParams":   [NSValue valueWithPointer:&presentMessageDialogWithLinkAndParams],
         @"webDialog":                               [NSValue valueWithPointer:&webDialog],
         @"activateApp":                             [NSValue valueWithPointer:&activateApp],
-        @"openDeferredAppLink":                     [NSValue valueWithPointer:&openDeferredAppLink],
         @"log":                                     [NSValue valueWithPointer:&logMessage],
         @"getProfile":                              [NSValue valueWithPointer:&getProfile],
     };

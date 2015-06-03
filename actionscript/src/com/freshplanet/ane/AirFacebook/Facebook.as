@@ -569,19 +569,19 @@ package com.freshplanet.ane.AirFacebook
 		
 		private function onInvoke( event : InvokeEvent ) : void
 		{
-//			if (Capabilities.manufacturer.indexOf("iOS") != -1)
-//			{
+			log("FACEBOOK about to call handleOpenURL on args: [" + event.arguments.join(",") + "] with reason: " + event.reason);
+
+			if (Capabilities.manufacturer.indexOf("iOS") != -1)
+			{
 				if (event.arguments != null && event.arguments.length > 0)
 				{
-					// if the invoke event arguments consist in a Referer begining with 'fb'
-//					var url:String = event.arguments[0] as String;
-//					if ( url != null && url.indexOf("fb") == 0)
-//					{
-						log("FACEBOOK about to call handleOpenURL on count:" + event.arguments.length + " args: " + event.arguments);
-//						_context.call("handleOpenURL", url);
-//					}
+					var url:String = event.arguments[0] as String;
+					var sourceApplication:String = event.arguments[1] as String;
+					var annotation:String = event.arguments[2] as String;
+
+					_context.call("handleOpenURL", url, sourceApplication, annotation);
 				}
-//			}
+			}
 		}
 		
 		private function onStatus( event : StatusEvent ) : void
