@@ -25,7 +25,6 @@ package com.freshplanet.ane.AirFacebook
 	import flash.external.ExtensionContext;
 	import flash.system.Capabilities;
 	import com.freshplanet.ane.AirFacebook.FacebookPermissionEvent;
-	import com.pixelfederation.PixelAccessToken;
 
 	public class Facebook extends EventDispatcher
 	{
