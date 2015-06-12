@@ -20,7 +20,7 @@ package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
-import com.facebook.Session;
+//import com.facebook.Session;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 public class GetExpirationTimestampFunction extends BaseFunction
@@ -29,15 +29,16 @@ public class GetExpirationTimestampFunction extends BaseFunction
 	{
 		super.call(context, args);
 		
-		Session session = AirFacebookExtension.context.getSession();
-		try
-		{
-			return FREObject.newObject(Math.round(session.getExpirationDate().getTime()/1000));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+//		Session session = AirFacebookExtension.context.getSession();
+//		try
+//		{
+//			return FREObject.newObject(Math.round(session.getExpirationDate().getTime()/1000));
+//		}
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//			return null;
+//		}
+		return null;
 	}
 }

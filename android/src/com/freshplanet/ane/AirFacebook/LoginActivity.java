@@ -23,23 +23,32 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Window;
 
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Session;
-import com.facebook.SessionState;
+import com.facebook.*;
+//import com.facebook.Session;
+//import com.facebook.SessionState;
 
-import com.facebook.android.R;
+import com.facebook.R;
+import com.facebook.login.LoginFragment;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 
 public class LoginActivity extends Activity
 {	
 	public static String extraPrefix = "com.freshplanet.ane.AirFacebook.LoginActivity";
-	
-	private Session.StatusCallback _statusCallback = new SessionStatusCallback();
+
+	CallbackManager callbackManager;
+
+//	private Session.StatusCallback _statusCallback = new SessionStatusCallback();
 	
 	private AirFacebookExtensionContext _context = null;
 	
@@ -51,113 +60,139 @@ public class LoginActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
+
+		//FacebookSdk.sdkInitialize(this);
+
 		// Retrieve context
 		_context = AirFacebookExtension.context;
-		if (_context == null)
-		{
+		if (_context == null) {
 			AirFacebookExtension.log("Extension context is null");
 			finish();
 			return;
 		}
-		
-		// Setup views
-		requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(R.layout.com_facebook_login_activity_layout);
-		
+
 		// Get extra values
 		Bundle extras = this.getIntent().getExtras();
 		_permissions = new ArrayList<String>(Arrays.asList(extras.getStringArray(extraPrefix+".permissions")));
 		String type = extras.getString(extraPrefix+".type");
 		_reauthorize = extras.getBoolean(extraPrefix+".reauthorize", false);
-		
+
+		callbackManager = CallbackManager.Factory.create();
+
+		LoginManager.getInstance().registerCallback(callbackManager,
+			new FacebookCallback<LoginResult>() {
+				@Override
+				public void onSuccess(LoginResult loginResult) {
+
+					AirFacebookExtension.log("OPEN_SESSION_SUCCESS");
+					_context.dispatchStatusEventAsync("OPEN_SESSION_SUCCESS", "OK");
+					finish();
+				}
+
+				@Override
+				public void onCancel() {
+					AirFacebookExtension.log("OPEN_SESSION_CANCEL");
+					_context.dispatchStatusEventAsync("OPEN_SESSION_CANCEL", "OK");
+					finish();
+				}
+
+				@Override
+				public void onError(FacebookException exception) {
+					AirFacebookExtension.log("OPEN_SESSION_ERROR " + exception.toString());
+					_context.dispatchStatusEventAsync("OPEN_SESSION_ERROR", exception.getMessage());
+					finish();
+				}
+			});
+
+		LoginManager.getInstance().logInWithReadPermissions(this, _permissions);
+
 		// Open or reauthorize session if necessary
-		Session session = _context.getSession();
-		if (_reauthorize && !session.getPermissions().containsAll(_permissions))
-		{
-			Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, _permissions).setCallback(_statusCallback);
-			try
-			{
-				if ("read".equals(type))
-				{
-					session.requestNewReadPermissions(newPermissionsRequest);
-				}
-				else
-				{
-					session.requestNewPublishPermissions(newPermissionsRequest);
-				}
-			}
-			catch (Exception e)
-			{
-				finishLogin(e);
-				return;
-			}
-		}
-		else if (!session.isOpened())
-		{
-			Session.OpenRequest openRequest = new Session.OpenRequest(this).setPermissions(_permissions).setCallback(_statusCallback);
-			final Session finalSession = session;
-			final Session.OpenRequest finalOpenRequest = openRequest;
-			if (!session.getState().equals(SessionState.CREATED) && !session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
-			{
-				_context.closeSessionAndClearTokenInformation();
-				session = _context.getSession();
-			}
-			if(_context.usingStage3D) {
-				try
-				{
-					delayHandler = new Handler();
-					if ("read".equals(type))
-					{
-						delayHandler.postDelayed( new Runnable() {
-	                        @Override
-	                        public void run() {
-	                        	try {
-	                        		finalSession.openForRead(finalOpenRequest);
-	                        	} catch (Exception e) {
-	                        		finishLogin(e);
-	                        	}
-	                        }
-						}, 1 );
-					}
-					else
-					{
-						delayHandler.postDelayed( new Runnable() {
-	                        @Override
-	                        public void run() {
-	                        	try {
-	                        		finalSession.openForPublish(finalOpenRequest);
-	                        	} catch (Exception e) {
-	                        		finishLogin(e);
-	                        	}
-	                        }
-						}, 1 );
-					}
-				}
-				catch (Exception e)
-				{
-					finishLogin(e);
-					return;
-				} 
-			} else {
-				try {
-					if("read".equals(type)) 
-					{
-						finalSession.openForRead(finalOpenRequest);
-					}
-					else 
-					{
-						finalSession.openForPublish(finalOpenRequest);
-					}
-				} catch (Exception e) {
-					finishLogin(e);
-				}
-			}
-		}
-		else
-		{
-			finishLogin();
-		}
+//		Session session = _context.getSession();
+//		if (_reauthorize && !session.getPermissions().containsAll(_permissions))
+//		{
+//			Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, _permissions).setCallback(_statusCallback);
+//			try
+//			{
+//				if ("read".equals(type))
+//				{
+//					session.requestNewReadPermissions(newPermissionsRequest);
+//				}
+//				else
+//				{
+//					session.requestNewPublishPermissions(newPermissionsRequest);
+//				}
+//			}
+//			catch (Exception e)
+//			{
+//				finishLogin(e);
+//				return;
+//			}
+//		}
+//		else if (!session.isOpened())
+//		{
+//			Session.OpenRequest openRequest = new Session.OpenRequest(this).setPermissions(_permissions).setCallback(_statusCallback);
+//			final Session finalSession = session;
+//			final Session.OpenRequest finalOpenRequest = openRequest;
+//			if (!session.getState().equals(SessionState.CREATED) && !session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
+//			{
+//				_context.closeSessionAndClearTokenInformation();
+//				session = _context.getSession();
+//			}
+//			if(_context.usingStage3D) {
+//				try
+//				{
+//					delayHandler = new Handler();
+//					if ("read".equals(type))
+//					{
+//						delayHandler.postDelayed( new Runnable() {
+//	                        @Override
+//	                        public void run() {
+//	                        	try {
+//	                        		finalSession.openForRead(finalOpenRequest);
+//	                        	} catch (Exception e) {
+//	                        		finishLogin(e);
+//	                        	}
+//	                        }
+//						}, 1 );
+//					}
+//					else
+//					{
+//						delayHandler.postDelayed( new Runnable() {
+//	                        @Override
+//	                        public void run() {
+//	                        	try {
+//	                        		finalSession.openForPublish(finalOpenRequest);
+//	                        	} catch (Exception e) {
+//	                        		finishLogin(e);
+//	                        	}
+//	                        }
+//						}, 1 );
+//					}
+//				}
+//				catch (Exception e)
+//				{
+//					finishLogin(e);
+//					return;
+//				}
+//			} else {
+//				try {
+//					if("read".equals(type))
+//					{
+//						finalSession.openForRead(finalOpenRequest);
+//					}
+//					else
+//					{
+//						finalSession.openForPublish(finalOpenRequest);
+//					}
+//				} catch (Exception e) {
+//					finishLogin(e);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			finishLogin();
+//		}
 	}
 
 	@Override
@@ -167,7 +202,7 @@ public class LoginActivity extends Activity
         
         if (_context != null)
         {
-        	_context.getSession().addCallback(_statusCallback);
+//        	_context.getSession().addCallback(_statusCallback);
         }
     }
 
@@ -178,7 +213,7 @@ public class LoginActivity extends Activity
         
         if (_context != null)
         {
-        	_context.getSession().removeCallback(_statusCallback);
+//        	_context.getSession().removeCallback(_statusCallback);
         }
     }
 
@@ -189,8 +224,9 @@ public class LoginActivity extends Activity
         
         if (_context != null)
         {
-        	_context.getSession().onActivityResult(this, requestCode, resultCode, data);
+//        	_context.getSession().onActivityResult(this, requestCode, resultCode, data);
         }
+		callbackManager.onActivityResult(requestCode, resultCode, data);
 	}
 
     @Override
@@ -210,17 +246,17 @@ public class LoginActivity extends Activity
 		finishLogin(new FacebookOperationCanceledException());
 	}
 
-	private class SessionStatusCallback implements Session.StatusCallback
-	{
-        @Override
-        public void call(Session session, SessionState state, Exception exception)
-        {
-        	if (_reauthorize || session.isOpened() || exception != null)
-        	{
-        		finishLogin(exception);
-        	}
-        }
-    }
+//	private class SessionStatusCallback implements Session.StatusCallback
+//	{
+//        @Override
+//        public void call(Session session, SessionState state, Exception exception)
+//        {
+//        	if (_reauthorize || session.isOpened() || exception != null)
+//        	{
+//        		finishLogin(exception);
+//        	}
+//        }
+//    }
 	
 	private void finishLogin(Exception exception)
 	{
@@ -236,39 +272,39 @@ public class LoginActivity extends Activity
 			return;
     	}
 		
-		Session session = _context.getSession();
+//		Session session = _context.getSession();
 		Boolean isCancel = (exception instanceof FacebookOperationCanceledException);
 		
 		String eventName = null;
 		if (_reauthorize)
 		{
-			if (session.getPermissions().containsAll(_permissions))
-			{
-				eventName = "REAUTHORIZE_SESSION_SUCCESS";
-			}
-			else if (exception != null && !isCancel)
-			{
-				eventName = "REAUTHORIZE_SESSION_ERROR";
-			}
-			else
-			{
-				eventName = "REAUTHORIZE_SESSION_CANCEL";
-			}
+//			if (session.getPermissions().containsAll(_permissions))
+//			{
+//				eventName = "REAUTHORIZE_SESSION_SUCCESS";
+//			}
+//			else if (exception != null && !isCancel)
+//			{
+//				eventName = "REAUTHORIZE_SESSION_ERROR";
+//			}
+//			else
+//			{
+//				eventName = "REAUTHORIZE_SESSION_CANCEL";
+//			}
 		}
 		else
 		{
-			if (session.isOpened())
-			{
-				eventName = "OPEN_SESSION_SUCCESS";
-			}
-			else if (isCancel)
-			{
-				eventName = "OPEN_SESSION_CANCEL";
-			}
-			else if (exception != null)
-			{
-				eventName = "OPEN_SESSION_ERROR";
-			}
+//			if (session.isOpened())
+//			{
+//				eventName = "OPEN_SESSION_SUCCESS";
+//			}
+//			else if (isCancel)
+//			{
+//				eventName = "OPEN_SESSION_CANCEL";
+//			}
+//			else if (exception != null)
+//			{
+//				eventName = "OPEN_SESSION_ERROR";
+//			}
 		}
 		
 		String eventInfo = "OK";

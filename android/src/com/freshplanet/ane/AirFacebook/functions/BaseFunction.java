@@ -2,13 +2,11 @@ package com.freshplanet.ane.AirFacebook.functions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import android.os.Bundle;
 
-import com.adobe.fre.FREArray;
-import com.adobe.fre.FREContext;
-import com.adobe.fre.FREFunction;
-import com.adobe.fre.FREObject;
+import com.adobe.fre.*;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
@@ -20,7 +18,26 @@ public class BaseFunction implements FREFunction
 		AirFacebookExtension.context = (AirFacebookExtensionContext)context;
 		return null;
 	}
-	
+
+	protected FREArray getFREArrayFromSet(Set<String> items) {
+
+		try
+		{
+			long i = 0;
+			FREArray array = FREArray.newArray(items.size());
+			for (String item : items) {
+				array.setObjectAt(i, FREObject.newObject(item));
+				i++;
+			}
+			return array;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	protected String getStringFromFREObject(FREObject object)
 	{
 		try

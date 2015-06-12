@@ -21,7 +21,7 @@ package com.freshplanet.ane.AirFacebook.functions;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
 import com.adobe.fre.FREWrongThreadException;
-import com.facebook.widget.FacebookDialog;
+//import com.facebook.widget.FacebookDialog;
 
 public class PresentMessageDialogWithLinkAndParamsFunction extends BaseFunction
 {
@@ -35,19 +35,19 @@ public class PresentMessageDialogWithLinkAndParamsFunction extends BaseFunction
 		String description = getStringFromFREObject(args[3]);
 		String pictureUrl = getStringFromFREObject(args[4]);
 
-		FacebookDialog.MessageDialogBuilder builder = new FacebookDialog.MessageDialogBuilder(context.getActivity())
-		    .setLink(url)
-		    .setName(name)
-		    .setCaption(caption)
-		    .setDescription(description)
-		    .setPicture(pictureUrl);
-
-		if (builder.canPresent()) 
-		{
-			FacebookDialog dialog = builder.build();
-			dialog.present();
-			// TODO: Investigate why Messenger does not get triggered
-		}
+//		FacebookDialog.MessageDialogBuilder builder = new FacebookDialog.MessageDialogBuilder(context.getActivity())
+//		    .setLink(url)
+//		    .setName(name)
+//		    .setCaption(caption)
+//		    .setDescription(description)
+//		    .setPicture(pictureUrl);
+//
+//		if (builder.canPresent())
+//		{
+//			FacebookDialog dialog = builder.build();
+//			dialog.present();
+//			// TODO: Investigate why Messenger does not get triggered
+//		}
 		
 		return null;
 	}

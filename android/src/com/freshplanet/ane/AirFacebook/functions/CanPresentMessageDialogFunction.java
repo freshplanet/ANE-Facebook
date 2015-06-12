@@ -21,7 +21,7 @@ package com.freshplanet.ane.AirFacebook.functions;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
 import com.adobe.fre.FREWrongThreadException;
-import com.facebook.widget.FacebookDialog;
+//import com.facebook.widget.FacebookDialog;
 
 public class CanPresentMessageDialogFunction extends BaseFunction
 {

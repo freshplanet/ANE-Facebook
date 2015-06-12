@@ -23,7 +23,7 @@ import android.content.Intent;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
+//import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
 
 public class ShareLinkDialogFunction extends BaseFunction implements FREFunction
 {
@@ -41,14 +41,14 @@ public class ShareLinkDialogFunction extends BaseFunction implements FREFunction
 		String pictureUrl = getStringFromFREObject(args[4]);
 		
 		// Start dialog activity
-		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareDialogActivity.class);
-		i.putExtra(ShareDialogActivity.extraPrefix+".link", link);
-		i.putExtra(ShareDialogActivity.extraPrefix+".name", name);
-		i.putExtra(ShareDialogActivity.extraPrefix+".caption", caption);
-		i.putExtra(ShareDialogActivity.extraPrefix+".description", description);
-		i.putExtra(ShareDialogActivity.extraPrefix+".pictureUrl", pictureUrl);
-		i.putExtra(ShareDialogActivity.extraPrefix+".callback", callback);
-		context.getActivity().startActivity(i);
+//		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareDialogActivity.class);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".link", link);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".name", name);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".caption", caption);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".description", description);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".pictureUrl", pictureUrl);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".callback", callback);
+//		context.getActivity().startActivity(i);
 		
 		return null;
 		

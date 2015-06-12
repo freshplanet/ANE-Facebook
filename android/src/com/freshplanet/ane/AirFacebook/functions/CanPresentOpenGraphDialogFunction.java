@@ -21,7 +21,7 @@ package com.freshplanet.ane.AirFacebook.functions;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
 import com.adobe.fre.FREWrongThreadException;
-import com.facebook.widget.FacebookDialog;
+//import com.facebook.widget.FacebookDialog;
 
 public class CanPresentOpenGraphDialogFunction extends BaseFunction
 {
@@ -29,20 +29,20 @@ public class CanPresentOpenGraphDialogFunction extends BaseFunction
 	{
 		
 		super.call(context, args);
-		
-		try {
-			return FREObject.newObject(
-						FacebookDialog.canPresentOpenGraphActionDialog(
-								context.getActivity(),
-								FacebookDialog.OpenGraphActionDialogFeature.OG_ACTION_DIALOG
-							)
-					);
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (FREWrongThreadException e) {
-			e.printStackTrace();
-		}
-		
+//
+//		try {
+//			return FREObject.newObject(
+//						FacebookDialog.canPresentOpenGraphActionDialog(
+//								context.getActivity(),
+//								FacebookDialog.OpenGraphActionDialogFeature.OG_ACTION_DIALOG
+//							)
+//					);
+//		} catch (IllegalStateException e) {
+//			e.printStackTrace();
+//		} catch (FREWrongThreadException e) {
+//			e.printStackTrace();
+//		}
+//
 		return null;
 	}
 }

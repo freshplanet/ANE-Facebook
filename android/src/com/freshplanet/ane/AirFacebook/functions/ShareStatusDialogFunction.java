@@ -23,7 +23,7 @@ import android.content.Intent;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
+//import com.freshplanet.ane.AirFacebook.ShareDialogActivity;
 
 public class ShareStatusDialogFunction extends BaseFunction implements FREFunction
 {
@@ -36,9 +36,9 @@ public class ShareStatusDialogFunction extends BaseFunction implements FREFuncti
 		String callback = getStringFromFREObject(args[0]);
 		
 		// Start dialog activity
-		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareDialogActivity.class);
-		i.putExtra(ShareDialogActivity.extraPrefix+".callback", callback);
-		context.getActivity().startActivity(i);
+//		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareDialogActivity.class);
+//		i.putExtra(ShareDialogActivity.extraPrefix+".callback", callback);
+//		context.getActivity().startActivity(i);
 		
 		return null;
 		

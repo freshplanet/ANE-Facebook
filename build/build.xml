@@ -96,14 +96,28 @@
             <!--</classpath>-->
         <!--</javac>-->
 
-        <ant antfile="build.xml" target="clean" dir="../android" />
-        <ant antfile="build.xml" target="release" dir="../android" />
+        <exec executable="/usr/libexec/java_home" outputproperty="java6home">
+            <arg line="-v 1.7" />
+        </exec>
+
+        <echo message="Java 7 Home: ${java6home}" />
+
+        <exec executable="./gradlew" dir="../">
+            <env key="JAVA_HOME" path="${java6home}"/>
+            <arg line=":android:assembleRelease"/>
+        </exec>
+
+        <!--<ant antfile="build.xml" target="clean" dir="../android" />-->
+        <!--<ant antfile="build.xml" target="release" dir="../android" />-->
 
         <!-- Copy over the required libs -->
         <copy file="../android/libs/android-support-v4.jar" todir="temp/android/"/>
-        <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
+        <copy file="../android/libs/bolts-android-1.2.0.jar" todir="temp/android/"/>
         <copy file="${android.tools}/lib/annotations.jar" todir="temp/android/"/>
-        <copy file="../android/bin/classes.jar" tofile="temp/android/lib${name}.jar"/>
+
+        <unzip src="../android/build/outputs/aar/android-release.aar" dest="../android/build/aar" overwrite="true"/>
+
+        <copy file="../android/build/aar/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
         <copy todir="temp/android/res/">
@@ -113,10 +127,10 @@
         <!-- make the jar -->
         <!--<jar basedir="temp/android/build/" destfile="temp/android/lib${name}.jar"/>-->
 
-        <delete dir="../android/bin"/>
+        <!--<delete dir="../android/build"/>-->
         <!-- remove the build classes -->
         <!--<delete dir="temp/android/build/"/>-->
-        <delete dir="../android/gen"/>
+        <!--<delete dir="../android/gen"/>-->
     </target>
 
     <!-- Actionscript -->

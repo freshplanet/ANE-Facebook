@@ -25,7 +25,7 @@ import com.adobe.fre.FREArray;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
-import com.freshplanet.ane.AirFacebook.ShareOGActivity;
+//import com.freshplanet.ane.AirFacebook.ShareOGActivity;
 
 public class ShareOpenGraphDialogFunction extends BaseFunction implements FREFunction
 {
@@ -41,12 +41,12 @@ public class ShareOpenGraphDialogFunction extends BaseFunction implements FREFun
 		String previewProperty = getStringFromFREObject(args[3]);
 		
 		// Start dialog activity
-		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareOGActivity.class);
-		i.putExtra(ShareOGActivity.extraPrefix+".actionType", actionType);
-		i.putExtra(ShareOGActivity.extraPrefix+".actionParams", actionParams);
-		i.putExtra(ShareOGActivity.extraPrefix+".previewProperty", previewProperty);
-		i.putExtra(ShareOGActivity.extraPrefix+".callback", callback);
-		context.getActivity().startActivity(i);
+//		Intent i = new Intent(context.getActivity().getApplicationContext(), ShareOGActivity.class);
+//		i.putExtra(ShareOGActivity.extraPrefix+".actionType", actionType);
+//		i.putExtra(ShareOGActivity.extraPrefix+".actionParams", actionParams);
+//		i.putExtra(ShareOGActivity.extraPrefix+".previewProperty", previewProperty);
+//		i.putExtra(ShareOGActivity.extraPrefix+".callback", callback);
+//		context.getActivity().startActivity(i);
 		
 		return null;
 		

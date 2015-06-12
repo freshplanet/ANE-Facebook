@@ -20,10 +20,10 @@ package com.freshplanet.ane.AirFacebook;
 
 import android.os.Bundle;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
 
 public class RequestThread extends Thread
 {
@@ -46,37 +46,30 @@ public class RequestThread extends Thread
     @Override 
     public void run()
     {
-    	Session session = _context.getSession();
-    	
+		AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
     	String data = null;
 		String error = null;
 		try
 		{
-			Request request;
-			if (_parameters != null)
-			{
-				request = new Request(session, _graphPath, _parameters, HttpMethod.valueOf(_httpMethod));
-			}
-			else
-			{
-				request = new Request(session, _graphPath);
-			}
+			GraphRequest request = new GraphRequest(accessToken, _graphPath, _parameters, HttpMethod.valueOf(_httpMethod));
+
 			
 			// If you remove the log statements before and after request.executeAndWait(), and if the request
 			// results in an error (such as lack of permissions), the app will CRASH and DIE. (libcore)
 			// ( Possibly, something non-thread-safe is happening during executeAndWait() when there's an error )
 			AirFacebookExtension.log("Before executing request (don't remove this log statement)");
-			Response response = request.executeAndWait();
+			GraphResponse response = request.executeAndWait();
 			AirFacebookExtension.log("After executing request  (don't remove this log statement)");
 			
 			
-			if (response.getGraphObject() != null)
+			if (response.getJSONObject() != null)
 			{
-				data = response.getGraphObject().getInnerJSONObject().toString();
+				data = response.getJSONObject().toString();
 			}
-			else if (response.getGraphObjectList() != null)
+			else if (response.getJSONArray() != null)
 			{
-				data = response.getGraphObjectList().getInnerJSONArray().toString();
+				data = response.getJSONArray().toString();
 			}
 			else if (response.getError() != null)
 			{
