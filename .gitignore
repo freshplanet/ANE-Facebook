@@ -21,6 +21,9 @@ android/lint.xml
 proguard-project.txt
 project.properties
 
+# Gradle
+.gradle
+
 # Xcode
 xcuserdata
 
