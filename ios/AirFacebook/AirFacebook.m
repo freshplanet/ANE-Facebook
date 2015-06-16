@@ -284,7 +284,7 @@ DEFINE_ANE_FUNCTION(init)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(handleOpenURL)
+DEFINE_ANE_FUNCTION(AirFacebookHandleOpenURL)
 {
     // Retrieve URL
     NSURL *url = [NSURL URLWithString:FPANE_FREObjectToNSString(argv[0])];
@@ -741,7 +741,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     
     func[1].name = (const uint8_t*) "handleOpenURL";
     func[1].functionData = NULL;
-    func[1].function = &handleOpenURL;
+    func[1].function = &AirFacebookHandleOpenURL;
     
     func[2].name = (const uint8_t*) "getAccessToken";
     func[2].functionData = NULL;

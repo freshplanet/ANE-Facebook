@@ -49,7 +49,7 @@ NSArray* getFREArrayAsNSArray( FREObject array );
 
 // C interface
 DEFINE_ANE_FUNCTION(init);
-DEFINE_ANE_FUNCTION(handleOpenURL);
+DEFINE_ANE_FUNCTION(AirFacebookHandleOpenURL);
 DEFINE_ANE_FUNCTION(getAccessToken);
 DEFINE_ANE_FUNCTION(getExpirationTimestamp);
 DEFINE_ANE_FUNCTION(isSessionOpen);
