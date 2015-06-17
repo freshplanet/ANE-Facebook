@@ -2,17 +2,16 @@ package com.freshplanet.ane.AirFacebook.functions;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
+import com.facebook.share.widget.AppInviteDialog;
 
-public class CanPresentShareDialogFunction extends BaseFunction
+public class CanPresentAppInviteDialogFunction extends BaseFunction
 {
 	public FREObject call(FREContext context, FREObject[] args)
 	{
 		super.call(context, args);
 
 		try {
-			return FREObject.newObject(ShareDialog.canShow(ShareLinkContent.class));
+			return FREObject.newObject(AppInviteDialog.canShow());
 		}
 		catch (Exception e)
 		{

@@ -3,6 +3,7 @@ package com.freshplanet.ane.AirFacebook.functions;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREObject;
 import com.facebook.Profile;
+import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
 /**
  * Created by nodrock on 12/06/15.
@@ -12,6 +13,8 @@ public class GetProfileFunction extends BaseFunction {
     public FREObject call(FREContext context, FREObject[] args)
     {
         super.call(context, args);
+
+        AirFacebookExtension.log("GetProfileFunction");
 
         Profile profile = Profile.getCurrentProfile();
         if (profile != null){
@@ -28,6 +31,7 @@ public class GetProfileFunction extends BaseFunction {
                 return result;
             } catch(Exception e) {
                 e.printStackTrace();
+                AirFacebookExtension.log("GetProfileFunction ERROR " + e.getMessage());
                 return null;
             }
         }

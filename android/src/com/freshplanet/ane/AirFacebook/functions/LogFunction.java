@@ -15,7 +15,7 @@ public class LogFunction extends BaseFunction {
 
         String message = getStringFromFREObject(args[0]);
 
-        Log.d("FACEBOOK", message);
+        Log.d("AirFacebook", "[FACEBOOK]" + message);
 
         return null;
     }

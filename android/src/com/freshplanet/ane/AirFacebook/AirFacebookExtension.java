@@ -48,6 +48,12 @@ public class AirFacebookExtension implements FREExtension
 		if (PRINT_LOG) Log.d(TAG, message);
 		if (context != null && message != null) context.dispatchStatusEventAsync("LOGGING", message);
 	}
+
+	// TODO
+//	public static void nativeLog(int level, String message)
+//	{
+//		Log.println(level, TAG, message);
+//	}
 	
 	public static int getResourceId(String name)
 	{

@@ -39,6 +39,13 @@ void FPANE_Log(FREContext context, NSString *message)
 
 #pragma mark - FREObject -> Obj-C
 
+NSUInteger FPANE_FREObjectToNSUInteger(FREObject object)
+{
+    uint32_t value;
+    FREGetObjectAsUint32(object, &value);
+    return [[NSNumber numberWithInt:value] unsignedIntegerValue];
+}
+
 NSString * FPANE_FREObjectToNSString(FREObject object)
 {
     uint32_t stringLength;

@@ -27,6 +27,7 @@ void FPANE_DispatchEvent(FREContext context, NSString *eventName);
 void FPANE_DispatchEventWithInfo(FREContext context, NSString *eventName, NSString *eventInfo);
 void FPANE_Log(FREContext context, NSString *message);
 
+NSUInteger FPANE_FREObjectToNSUInteger(FREObject object);
 NSString * FPANE_FREObjectToNSString(FREObject object);
 BOOL * FPANE_FREObjectToBOOL(FREObject object);
 NSArray * FPANE_FREObjectToNSArrayOfNSString(FREObject object);

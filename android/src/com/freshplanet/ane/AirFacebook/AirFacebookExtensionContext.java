@@ -19,22 +19,13 @@
 package com.freshplanet.ane.AirFacebook;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
-//import com.facebook.Session;
-//import com.facebook.SessionState;
-//import com.facebook.Settings;
-import com.facebook.*;
-import com.facebook.login.LoginFragment;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
+import com.facebook.FacebookSdk;
 import com.freshplanet.ane.AirFacebook.functions.*;
 
 public class AirFacebookExtensionContext extends FREContext
@@ -49,101 +40,50 @@ public class AirFacebookExtensionContext extends FREContext
 	public Map<String, FREFunction> getFunctions()
 	{
 		Map<String, FREFunction> functions = new HashMap<String, FREFunction>();
-		
+
+		// Base API
 		functions.put("init", new InitFunction());
 		functions.put("getAccessToken", new GetAccessTokenFunction());
 		functions.put("getProfile", new GetProfileFunction());
-		functions.put("getExpirationTimestamp", new GetExpirationTimestampFunction());
-		functions.put("isSessionOpen", new IsSessionOpenFunction());
 		functions.put("openSessionWithPermissions", new OpenSessionWithPermissionsFunction());
-		functions.put("reauthorizeSessionWithPermissions", new ReauthorizeSessionWithPermissionsFunction());
 		functions.put("closeSessionAndClearTokenInformation", new CloseSessionAndClearTokenInformationFunction());
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
+
+		// Sharing dialogs
 		functions.put("canPresentShareDialog", new CanPresentShareDialogFunction());
-		functions.put("shareStatusDialog", new ShareStatusDialogFunction());
 		functions.put("shareLinkDialog", new ShareLinkDialogFunction());
-		functions.put("canPresentOpenGraphDialog", new CanPresentOpenGraphDialogFunction());
-		functions.put("shareOpenGraphDialog", new ShareOpenGraphDialogFunction());
-		functions.put("canPresentMessageDialog", new CanPresentMessageDialogFunction());
-		functions.put("presentMessageDialogWithLinkAndParams", new PresentMessageDialogWithLinkAndParamsFunction());
-		functions.put("webDialog", new WebDialogFunction());
-		functions.put("activateApp", new ActivateAppFunction());
-		functions.put("setUsingStage3D", new SetUsingStage3dFunction());
+
+		// Invite dialog
+		functions.put("canPresentAppInviteDialog", new CanPresentAppInviteDialogFunction());
+		functions.put("appInviteDialog", new AppInviteDialogFunction());
+
 		functions.put("openDeferredAppLink", new OpenDeferredAppLinkFunction());
+
+		// FB events
+		functions.put("activateApp", new ActivateAppFunction());
+		functions.put("deactivateApp", new DeactivateAppFunction());
+
+		// Debug
 		functions.put("log", new LogFunction());
 		return functions;	
 	}
 	
 	private String _appID;
-//	private Session _session;
-	public boolean usingStage3D = false;
+
+	public String getAppID() {
+		return _appID;
+	}
 
 	public void init(String appID)
 	{
-		_appID = appID;
-		FacebookSdk.setApplicationId(_appID);
+		if(appID != null) {
+
+			_appID = appID;
+			FacebookSdk.setApplicationId(_appID);
+		}
 		FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+	}
 
-		//FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
-
-//		Session session = getSession();
-//		if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED))
-//		{
-//			Session.setActiveSession(session);
-//			try
-//			{
-//				session.openForRead(null);
-//			}
-//			catch (UnsupportedOperationException exception)
-//			{
-//				String error = exception != null ? exception.toString() : "null exception";
-//				AirFacebookExtension.log("ERROR - Couldn't open session from cached token: " + error);
-//			}
-//		}
-	}
-	
-//	public Session getSession()
-//	{
-//		if (_session == null)
-//		{
-//			_session = new Session.Builder(getActivity().getApplicationContext()).setApplicationId(_appID).build();
-//		}
-//
-//		return _session;
-//	}
-	
-	public void closeSessionAndClearTokenInformation()
-	{
-		AccessToken.setCurrentAccessToken(null);
-		Profile.setCurrentProfile(null);
-		LoginManager.getInstance().logOut();
-//		if (_session != null)
-//		{
-//			_session.closeAndClearTokenInformation();
-//			_session = null;
-//		}
-	}
-	
-	public void launchLoginActivity(List<String> permissions, String type, Boolean reauthorize)
-	{
-		AirFacebookExtension.log("launchLoginActivity");
-
-		Intent i = new Intent(getActivity().getApplicationContext(), LoginActivity.class);
-		i.putExtra(LoginActivity.extraPrefix+".permissions", permissions.toArray(new String[permissions.size()]));
-		i.putExtra(LoginActivity.extraPrefix+".type", type);
-		i.putExtra(LoginActivity.extraPrefix+".reauthorize", reauthorize);
-		getActivity().startActivity(i);
-	}
-	
-	public void launchDialogActivity(String method, Bundle parameters, String callback)
-	{
-//		Intent i = new Intent(getActivity().getApplicationContext(), WebDialogActivity.class);
-//		i.putExtra(WebDialogActivity.extraPrefix+".method", method);
-//		i.putExtra(WebDialogActivity.extraPrefix+".parameters", parameters);
-//		i.putExtra(WebDialogActivity.extraPrefix+".callback", callback);
-//		getActivity().startActivity(i);
-	}
-	
 	public void launchRequestThread(String graphPath, Bundle parameters, String httpMethod, String callback)
 	{
 		new RequestThread(this, graphPath, parameters, httpMethod, callback).start();

@@ -11,6 +11,8 @@
 		2E14AA401B136CB700453D81 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14AA3D1B136CB700453D81 /* FBSDKLoginKit.framework */; };
 		2E14AA411B136CB700453D81 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14AA3E1B136CB700453D81 /* FBSDKShareKit.framework */; };
 		2E14AA431B1377E200453D81 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14AA421B1377E200453D81 /* CoreMotion.framework */; };
+		2E95EEC51B30716C00FEE8F3 /* FBShareDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E95EEC31B30716C00FEE8F3 /* FBShareDelegate.h */; };
+		2E95EEC61B30716C00FEE8F3 /* FBShareDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */; };
 		2EA1B5F21B131CD5009206CD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA1B5F01B131CD5009206CD /* Bolts.framework */; };
 		2EA1B5F31B131CD5009206CD /* FBAudienceNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */; };
 		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
@@ -28,6 +30,8 @@
 		2E14AA3D1B136CB700453D81 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		2E14AA3E1B136CB700453D81 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = frameworks/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		2E14AA421B1377E200453D81 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		2E95EEC31B30716C00FEE8F3 /* FBShareDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShareDelegate.h; sourceTree = "<group>"; };
+		2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShareDelegate.m; sourceTree = "<group>"; };
 		2EA1B5F01B131CD5009206CD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = frameworks/Bolts.framework; sourceTree = "<group>"; };
 		2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = frameworks/FBAudienceNetwork.framework; sourceTree = "<group>"; };
 		4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = ../FlashRuntimeExtensions.h; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 				5A9856A015213BC3003A8EB0 /* AirFacebook.h */,
 				5A9856A115213BC3003A8EB0 /* AirFacebook.m */,
 				5A98569E15213BC3003A8EB0 /* Supporting Files */,
+				2E95EEC31B30716C00FEE8F3 /* FBShareDelegate.h */,
+				2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */,
 			);
 			path = AirFacebook;
 			sourceTree = "<group>";
@@ -124,6 +130,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */,
+				2E95EEC51B30716C00FEE8F3 /* FBShareDelegate.h in Headers */,
 				FAD87E6B1822EC3200A4D717 /* FPANEUtils.h in Headers */,
 				E25E190B18525A56005798D2 /* AirFacebook-Prefix.pch in Headers */,
 			);
@@ -180,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAD87E6C1822EC3200A4D717 /* FPANEUtils.m in Sources */,
+				2E95EEC61B30716C00FEE8F3 /* FBShareDelegate.m in Sources */,
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
