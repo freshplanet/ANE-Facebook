@@ -19,8 +19,6 @@
 
 #import "AirFacebook.h"
 
-#define PRINT_LOG   YES
-
 FREContext AirFBCtx = nil;
 
 @implementation AirFacebook {
@@ -28,6 +26,7 @@ FREContext AirFBCtx = nil;
     NSMutableDictionary *shareActivities;
 }
 
+@synthesize nativeLogEnabled;
 @synthesize defaultShareDialogMode;
 @synthesize defaultAudience;
 @synthesize loginBehavior;
@@ -69,11 +68,11 @@ static AirFacebook *sharedInstance = nil;
 // every time we have to send back information to the air application, invoque this method wich will dispatch an Event in air
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message
 {
-    NSLog(@"FACEBOOK %@ %@", event, message);
-    NSString *eventName = event ? event : @"LOGGING";
-    NSString *messageText = message ? message : @"";
-    FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[messageText UTF8String]);
-    
+    if(AirFBCtx != nil){
+        NSString *eventName = event ? event : @"LOGGING";
+        NSString *messageText = message ? message : @"";
+        FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[messageText UTF8String]);
+    }
 }
 
 + (void)log:(NSString *)format, ...
@@ -82,13 +81,25 @@ static AirFacebook *sharedInstance = nil;
     {
         va_list args;
         va_start(args, format);
-        NSString *string = [[NSString alloc] initWithFormat:format arguments:args];
-        if (PRINT_LOG) NSLog(@"[AirFacebook] %@", string);
-        [AirFacebook dispatchEvent:@"LOGGING" withMessage:string];
+        NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+        [AirFacebook as3Log:message];
+        [AirFacebook nativeLog:message withPrefix:@"NATIVE"];
     }
     @catch (NSException *exception)
     {
         NSLog(@"[AirFacebook] Couldn't log message. Exception: %@", exception);
+    }
+}
+
++ (void)as3Log:(NSString *)message
+{
+    [AirFacebook dispatchEvent:@"LOGGING" withMessage:message];
+}
+
++ (void)nativeLog:(NSString *)message withPrefix:(NSString *)prefix
+{
+    if ([[AirFacebook sharedInstance] isNativeLogEnabled]) {
+        NSLog(@"[AirFacebook][%@] %@", prefix, message);
     }
 }
 
@@ -172,7 +183,7 @@ static AirFacebook *sharedInstance = nil;
 
 #pragma mark - C interface
 
-DEFINE_ANE_FUNCTION(openSessionWithPermissions)
+DEFINE_ANE_FUNCTION(logInWithPermissions)
 {
     NSArray *permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
     NSString *type = FPANE_FREObjectToNSString(argv[1]);
@@ -191,17 +202,30 @@ DEFINE_ANE_FUNCTION(openSessionWithPermissions)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(logMessage)
+DEFINE_ANE_FUNCTION(nativeLog)
 {
     NSString *message = FPANE_FREObjectToNSString(argv[0]);
     
-    NSLog(@"FACEBOOK %@", message);
+    // NOTE: logs from as3 should go only to native log
+    [AirFacebook nativeLog:message withPrefix:@"AS3"];
     
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(init)
+
+DEFINE_ANE_FUNCTION(setNativeLogEnabled)
 {
+    BOOL nativeLogEnabled = FPANE_FREObjectToBOOL(argv[0]);
+    
+    [[AirFacebook sharedInstance] setNativeLogEnabled:nativeLogEnabled];
+    
+    return nil;
+}
+
+DEFINE_ANE_FUNCTION(initFacebook)
+{
+    [AirFacebook log:@"initFacebook"];
+    
     // maybe we dont need this sharedInstance
     [AirFacebook sharedInstance];
     
@@ -212,6 +236,8 @@ DEFINE_ANE_FUNCTION(init)
 
 DEFINE_ANE_FUNCTION(handleOpenURL)
 {
+    [AirFacebook log:@"handleOpenURL"];
+    
     NSURL *url = [NSURL URLWithString:FPANE_FREObjectToNSString(argv[0])];
     NSString *sourceApplication = FPANE_FREObjectToNSString(argv[1]);
     NSString *annotation = FPANE_FREObjectToNSString(argv[2]);
@@ -267,7 +293,7 @@ DEFINE_ANE_FUNCTION(getProfile)
     return result;
 }
 
-DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation)
+DEFINE_ANE_FUNCTION(logOut)
 {
     FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
     [loginManager logOut];
@@ -410,26 +436,29 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
     NSDictionary *functions = @{
-        @"init":                                    [NSValue valueWithPointer:&init],
-        @"handleOpenURL":                           [NSValue valueWithPointer:&handleOpenURL],
-        @"getAccessToken":                          [NSValue valueWithPointer:&getAccessToken],
-        @"getProfile":                              [NSValue valueWithPointer:&getProfile],
-        @"openSessionWithPermissions":              [NSValue valueWithPointer:&openSessionWithPermissions],
-        @"closeSessionAndClearTokenInformation":    [NSValue valueWithPointer:&closeSessionAndClearTokenInformation],
-        @"requestWithGraphPath":                    [NSValue valueWithPointer:&requestWithGraphPath],
+        @"initFacebook":                    [NSValue valueWithPointer:&initFacebook],
+        @"handleOpenURL":                   [NSValue valueWithPointer:&handleOpenURL],
+        @"getAccessToken":                  [NSValue valueWithPointer:&getAccessToken],
+        @"getProfile":                      [NSValue valueWithPointer:&getProfile],
+        @"logInWithPermissions":            [NSValue valueWithPointer:&logInWithPermissions],
+        @"logOut":                          [NSValue valueWithPointer:&logOut],
+        @"requestWithGraphPath":            [NSValue valueWithPointer:&requestWithGraphPath],
         
         // Settings
-        @"setDefaultShareDialogMode":               [NSValue valueWithPointer:&setDefaultShareDialogMode],
-        @"setLoginBehavior":                        [NSValue valueWithPointer:&setLoginBehavior],
-        @"setDefaultAudience":                      [NSValue valueWithPointer:&setDefaultAudience],
+        @"setDefaultShareDialogMode":       [NSValue valueWithPointer:&setDefaultShareDialogMode],
+        @"setLoginBehavior":                [NSValue valueWithPointer:&setLoginBehavior],
+        @"setDefaultAudience":              [NSValue valueWithPointer:&setDefaultAudience],
         
         // Sharing dialogs
-        @"canPresentShareDialog":                   [NSValue valueWithPointer:&canPresentShareDialog],
-        @"shareLinkDialog":                         [NSValue valueWithPointer:&shareLinkDialog],
+        @"canPresentShareDialog":           [NSValue valueWithPointer:&canPresentShareDialog],
+        @"shareLinkDialog":                 [NSValue valueWithPointer:&shareLinkDialog],
 
         // FB events
-        @"activateApp":                             [NSValue valueWithPointer:&activateApp],
-        @"log":                                     [NSValue valueWithPointer:&logMessage],
+        @"activateApp":                     [NSValue valueWithPointer:&activateApp],
+        
+        // Debug
+        @"nativeLog":                       [NSValue valueWithPointer:&nativeLog],
+        @"setNativeLogEnabled":             [NSValue valueWithPointer:&setNativeLogEnabled],
     };
     
     *numFunctionsToTest = (uint32_t)[functions count];

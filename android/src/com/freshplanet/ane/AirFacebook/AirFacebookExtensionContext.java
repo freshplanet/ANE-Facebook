@@ -21,11 +21,8 @@ package com.freshplanet.ane.AirFacebook;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.os.Bundle;
-
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
-import com.facebook.FacebookSdk;
 import com.freshplanet.ane.AirFacebook.functions.*;
 
 public class AirFacebookExtensionContext extends FREContext
@@ -42,11 +39,11 @@ public class AirFacebookExtensionContext extends FREContext
 		Map<String, FREFunction> functions = new HashMap<String, FREFunction>();
 
 		// Base API
-		functions.put("init", new InitFunction());
+		functions.put("initFacebook", new InitFacebookFunction());
 		functions.put("getAccessToken", new GetAccessTokenFunction());
 		functions.put("getProfile", new GetProfileFunction());
-		functions.put("openSessionWithPermissions", new OpenSessionWithPermissionsFunction());
-		functions.put("closeSessionAndClearTokenInformation", new CloseSessionAndClearTokenInformationFunction());
+		functions.put("logInWithPermissions", new LogInWithPermissionsFunction());
+		functions.put("logOut", new LogOutFunction());
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 
 		// Sharing dialogs
@@ -64,28 +61,19 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("deactivateApp", new DeactivateAppFunction());
 
 		// Debug
-		functions.put("log", new LogFunction());
+		functions.put("nativeLog", new NativeLogFunction());
+		functions.put("setNativeLogEnabled", new SetNativeLogEnabledFunction());
 		return functions;	
 	}
 	
 	private String _appID;
 
 	public String getAppID() {
+
 		return _appID;
 	}
+	public void setAppID(String _appID) {
 
-	public void init(String appID)
-	{
-		if(appID != null) {
-
-			_appID = appID;
-			FacebookSdk.setApplicationId(_appID);
-		}
-		FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
-	}
-
-	public void launchRequestThread(String graphPath, Bundle parameters, String httpMethod, String callback)
-	{
-		new RequestThread(this, graphPath, parameters, httpMethod, callback).start();
+		this._appID = _appID;
 	}
 }

@@ -5,9 +5,6 @@ import com.adobe.fre.FREObject;
 import com.facebook.Profile;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
-/**
- * Created by nodrock on 12/06/15.
- */
 public class GetProfileFunction extends BaseFunction {
 
     public FREObject call(FREContext context, FREObject[] args)

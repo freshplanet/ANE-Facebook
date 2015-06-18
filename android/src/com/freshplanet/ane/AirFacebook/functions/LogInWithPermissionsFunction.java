@@ -9,7 +9,7 @@ import com.adobe.fre.FREObject;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.LoginActivity;
 
-public class OpenSessionWithPermissionsFunction extends BaseFunction
+public class LogInWithPermissionsFunction extends BaseFunction
 {
 	public FREObject call(FREContext context, FREObject[] args)
 	{

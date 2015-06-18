@@ -7,7 +7,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 
-public class CloseSessionAndClearTokenInformationFunction extends BaseFunction
+public class LogOutFunction extends BaseFunction
 {	
 	public FREObject call(FREContext context, FREObject[] args)
 	{

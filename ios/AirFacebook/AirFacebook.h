@@ -39,9 +39,10 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 - (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi delegate:(id<FBSDKSharingDelegate>)delegate;
 - (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andShareCallback:(NSString *)callback;
 
-@property (nonatomic, assign) FBSDKShareDialogMode defaultShareDialogMode;
-@property (nonatomic, assign) FBSDKDefaultAudience defaultAudience;
-@property (nonatomic, assign) FBSDKLoginBehavior loginBehavior;
+@property (getter=isNativeLogEnabled) BOOL nativeLogEnabled;
+@property FBSDKShareDialogMode defaultShareDialogMode;
+@property FBSDKDefaultAudience defaultAudience;
+@property FBSDKLoginBehavior loginBehavior;
 
 @end
 
@@ -49,12 +50,12 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 NSArray* getFREArrayAsNSArray( FREObject array );
 
 // C interface
-DEFINE_ANE_FUNCTION(init);
+DEFINE_ANE_FUNCTION(initFacebook);
 DEFINE_ANE_FUNCTION(handleOpenURL);
 DEFINE_ANE_FUNCTION(getAccessToken);
 DEFINE_ANE_FUNCTION(getProfile);
-DEFINE_ANE_FUNCTION(openSessionWithPermissions);
-DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
+DEFINE_ANE_FUNCTION(logInWithPermissions);
+DEFINE_ANE_FUNCTION(logOut);
 DEFINE_ANE_FUNCTION(requestWithGraphPath);
 
 // Settings
@@ -70,7 +71,8 @@ DEFINE_ANE_FUNCTION(shareLinkDialog);
 DEFINE_ANE_FUNCTION(activateApp);
 
 // Debug
-DEFINE_ANE_FUNCTION(logMessage);
+DEFINE_ANE_FUNCTION(nativeLog);
+DEFINE_ANE_FUNCTION(setNativeLogEnabled);
 
 // ANE Setup
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
