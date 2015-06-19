@@ -96,15 +96,15 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function setDefaultShareDialogMode(shareDialogModeIOS:FBShareDialogModeIOS,
-                                              shareDialogModeAndroid:FBShareDialogModeAndroid):void
+    public function setDefaultShareDialogMode(shareDialogModeIOS:FBShareDialogModeIOS = null,
+                                              shareDialogModeAndroid:FBShareDialogModeAndroid = null):void
     {
         if (_initialized) {
 
-            if (isIOS()) {
+            if (isIOS() && shareDialogModeIOS) {
 
                 _context.call("setDefaultShareDialogMode", shareDialogModeIOS.value);
-            } else if (isAndroid()) {
+            } else if (isAndroid() && shareDialogModeAndroid) {
 
                 _context.call("setDefaultShareDialogMode", shareDialogModeAndroid.value);
             }
@@ -114,15 +114,15 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function setLoginBehavior(loginBehaviorIOS:FBLoginBehaviorIOS,
-                                     loginBehaviorAndroid:FBLoginBehaviorAndroid):void
+    public function setLoginBehavior(loginBehaviorIOS:FBLoginBehaviorIOS = null,
+                                     loginBehaviorAndroid:FBLoginBehaviorAndroid = null):void
     {
         if (_initialized) {
 
-            if (isIOS()) {
+            if (isIOS() && loginBehaviorIOS) {
 
                 _context.call("setLoginBehavior", loginBehaviorIOS.value);
-            } else if (isAndroid()) {
+            } else if (isAndroid() && loginBehaviorAndroid) {
 
                 _context.call("setLoginBehavior", loginBehaviorAndroid.value);
             }
@@ -132,11 +132,14 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function setDefaultAudience(defaultAudience:FBDefaultAudience):void
+    public function setDefaultAudience(defaultAudience:FBDefaultAudience = null):void
     {
         if (_initialized) {
 
-            _context.call("setDefaultAudience", defaultAudience.value);
+            if(defaultAudience) {
+
+                _context.call("setDefaultAudience", defaultAudience.value);
+            }
         } else {
 
             log("You must call init() before any other method!");
