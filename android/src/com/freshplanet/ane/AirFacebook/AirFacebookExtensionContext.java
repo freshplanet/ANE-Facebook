@@ -23,6 +23,9 @@ import java.util.Map;
 
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
+import com.facebook.login.DefaultAudience;
+import com.facebook.login.LoginBehavior;
+import com.facebook.share.widget.ShareDialog;
 import com.freshplanet.ane.AirFacebook.functions.*;
 
 public class AirFacebookExtensionContext extends FREContext
@@ -54,7 +57,12 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("canPresentAppInviteDialog", new CanPresentAppInviteDialogFunction());
 		functions.put("appInviteDialog", new AppInviteDialogFunction());
 
-		functions.put("openDeferredAppLink", new OpenDeferredAppLinkFunction());
+		//functions.put("openDeferredAppLink", new OpenDeferredAppLinkFunction());
+
+		// Settings
+		functions.put("setLoginBehavior", new SetLoginBehaviorFunction());
+		functions.put("setDefaultAudience", new SetDefaultAudienceFunction());
+		functions.put("setDefaultShareDialogMode", new SetDefaultShareDialogModeFunction());
 
 		// FB events
 		functions.put("activateApp", new ActivateAppFunction());
@@ -66,14 +74,39 @@ public class AirFacebookExtensionContext extends FREContext
 		return functions;	
 	}
 	
-	private String _appID;
+	private String appID;
+	private DefaultAudience defaultAudience = DefaultAudience.FRIENDS;
+	private ShareDialog.Mode defaultShareDialogMode = ShareDialog.Mode.AUTOMATIC;
+	private LoginBehavior loginBehavior = LoginBehavior.SSO_WITH_FALLBACK;
 
 	public String getAppID() {
-
-		return _appID;
+		return appID;
 	}
-	public void setAppID(String _appID) {
+	public void setAppID(String appID) {
+		this.appID = appID;
+	}
 
-		this._appID = _appID;
+	public DefaultAudience getDefaultAudience() {
+		return defaultAudience;
+	}
+
+	public void setDefaultAudience(DefaultAudience defaultAudience) {
+		this.defaultAudience = defaultAudience;
+	}
+
+	public ShareDialog.Mode getDefaultShareDialogMode() {
+		return defaultShareDialogMode;
+	}
+
+	public void setDefaultShareDialogMode(ShareDialog.Mode defaultShareDialogMode) {
+		this.defaultShareDialogMode = defaultShareDialogMode;
+	}
+
+	public LoginBehavior getLoginBehavior() {
+		return loginBehavior;
+	}
+
+	public void setLoginBehavior(LoginBehavior loginBehavior) {
+		this.loginBehavior = loginBehavior;
 	}
 }

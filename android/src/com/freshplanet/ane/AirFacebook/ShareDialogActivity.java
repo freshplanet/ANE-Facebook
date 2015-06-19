@@ -43,9 +43,9 @@ public class ShareDialogActivity extends Activity implements FacebookCallback<Sh
 			shareDialog = new ShareDialog(this);
 			shareDialog.registerCallback(callbackManager, this);
 
-			if (ShareDialog.canShow(ShareLinkContent.class)) {
+			if (shareDialog.canShow(shareLinkContent, AirFacebookExtension.context.getDefaultShareDialogMode())) {
 
-				shareDialog.show(shareLinkContent);
+				shareDialog.show(shareLinkContent, AirFacebookExtension.context.getDefaultShareDialogMode());
 			} else {
 
 				AirFacebookExtension.log("ERROR - CANNOT SHARE!");

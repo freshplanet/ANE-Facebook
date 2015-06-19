@@ -50,6 +50,19 @@ public class BaseFunction implements FREFunction
 			return null;
 		}
 	}
+
+	protected int getIntFromFREObject(FREObject object)
+	{
+		try
+		{
+			return object.getAsInt();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
 	
 	protected Boolean getBooleanFromFREObject(FREObject object)
 	{

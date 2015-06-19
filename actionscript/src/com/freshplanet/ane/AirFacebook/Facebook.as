@@ -96,13 +96,17 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function setDefaultShareDialogMode(shareDialogMode:FBShareDialogModeIOS):void
+    public function setDefaultShareDialogMode(shareDialogModeIOS:FBShareDialogModeIOS,
+                                              shareDialogModeAndroid:FBShareDialogModeAndroid):void
     {
         if (_initialized) {
 
             if (isIOS()) {
 
-                _context.call("setDefaultShareDialogMode", shareDialogMode.value);
+                _context.call("setDefaultShareDialogMode", shareDialogModeIOS.value);
+            } else if (isAndroid()) {
+
+                _context.call("setDefaultShareDialogMode", shareDialogModeAndroid.value);
             }
         } else {
 
@@ -110,13 +114,17 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function setLoginBehavior(loginBehavior:FBLoginBehaviorIOS):void
+    public function setLoginBehavior(loginBehaviorIOS:FBLoginBehaviorIOS,
+                                     loginBehaviorAndroid:FBLoginBehaviorAndroid):void
     {
         if (_initialized) {
 
             if (isIOS()) {
 
-                _context.call("setLoginBehavior", loginBehavior.value);
+                _context.call("setLoginBehavior", loginBehaviorIOS.value);
+            } else if (isAndroid()) {
+
+                _context.call("setLoginBehavior", loginBehaviorAndroid.value);
             }
         } else {
 
@@ -124,14 +132,11 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function setDefaultAudience(defaultAudience:FBLoginBehaviorIOS):void
+    public function setDefaultAudience(defaultAudience:FBDefaultAudience):void
     {
-        if (_initialized && isIOS()) {
+        if (_initialized) {
 
-            if (isIOS()) {
-
-                _context.call("setDefaultAudience", defaultAudience.value);
-            }
+            _context.call("setDefaultAudience", defaultAudience.value);
         } else {
 
             log("You must call init() before any other method!");
@@ -393,17 +398,9 @@ public class Facebook extends EventDispatcher {
             var userCancelled:Boolean = (event.code.indexOf("CANCEL") != -1);
             var error:String = (event.code.indexOf("ERROR") != -1) ? event.level : null;
 
-            if (event.code.indexOf("OPEN") != -1) callback = _openSessionCallback;
+            callback = _openSessionCallback;
 
             _openSessionCallback = null;
-
-            var accessToken:FBAccessToken = _context.call('getAccessToken') as FBAccessToken;
-
-            log(accessToken ? accessToken.toString() : "No access token!");
-
-            if (success) {
-                log("onStatus success: true callback:" + callback);
-            }
 
             if (callback != null) callback(success, userCancelled, error);
         }
@@ -419,6 +416,13 @@ public class Facebook extends EventDispatcher {
                 var callbackName:String = dataArr[2];
 
                 callback = _requestCallbacks[callbackName];
+
+                if (callback != null) {
+
+                    callback(status == "SUCCESS", status == "CANCELLED", status == "ERROR" ? event.level : null);
+
+                    delete _requestCallbacks[event.code];
+                }
             }
         }
         else // Default case: we check for a registered callback associated with the event code
@@ -430,10 +434,6 @@ public class Facebook extends EventDispatcher {
                 if (callback != null) {
                     try {
                         data = JSON.parse(event.level);
-//							if (accessToken != null)
-//							{
-//								data["accessToken"] = accessToken;
-//							}
                     }
                     catch (e:Error) {
                         log("ERROR - " + e);

@@ -44,6 +44,8 @@ public class LoginActivity extends Activity
 
 		callbackManager = CallbackManager.Factory.create();
 
+		LoginManager.getInstance().setLoginBehavior(_context.getLoginBehavior());
+		LoginManager.getInstance().setDefaultAudience(_context.getDefaultAudience());
 		LoginManager.getInstance().registerCallback(callbackManager,
 				new FacebookCallback<LoginResult>() {
 					@Override
