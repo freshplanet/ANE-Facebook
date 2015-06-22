@@ -26,11 +26,6 @@ FREContext AirFBCtx = nil;
     NSMutableDictionary *shareActivities;
 }
 
-@synthesize nativeLogEnabled;
-@synthesize defaultShareDialogMode;
-@synthesize defaultAudience;
-@synthesize loginBehavior;
-
 static AirFacebook *sharedInstance = nil;
 
 + (AirFacebook *)sharedInstance
@@ -58,9 +53,9 @@ static AirFacebook *sharedInstance = nil;
     self = [super init];
     if (self) {
         shareActivities = [NSMutableDictionary dictionary];
-        defaultShareDialogMode = FBSDKShareDialogModeAutomatic;
-        defaultAudience = FBSDKDefaultAudienceFriends;
-        loginBehavior = FBSDKLoginBehaviorNative;
+        self.defaultShareDialogMode = FBSDKShareDialogModeAutomatic;
+        self.defaultAudience = FBSDKDefaultAudienceFriends;
+        self.loginBehavior = FBSDKLoginBehaviorNative;
     }
     return self;
 }
@@ -117,7 +112,7 @@ static AirFacebook *sharedInstance = nil;
         FBSDKShareDialog *dialog = [[FBSDKShareDialog alloc] init];
         dialog.fromViewController = rootViewController;
         dialog.shareContent = content;
-        dialog.mode = defaultShareDialogMode;
+        dialog.mode = self.defaultShareDialogMode;
         dialog.delegate = delegate;
         [dialog show];
     }
