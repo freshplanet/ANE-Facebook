@@ -61,7 +61,7 @@ On Android:
 
                 ...
 
-                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="{YOUR_FB_APPLICATION_ID}"/>
+                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb{YOUR_FB_APPLICATION_ID}"/>
 
                 <activity android:name="com.facebook.FacebookActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
                     android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="{YOUR_APP_NAME}" />
@@ -79,6 +79,7 @@ On Android:
 </android>
 ```
 
+NOTE: It is important to prefix YOUR_FB_APP_ID with "fb", because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null). Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
 
 Documentation
 --------
