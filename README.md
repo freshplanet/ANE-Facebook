@@ -1,14 +1,14 @@
 Air Native Extension for Facebook (iOS + Android)
 ======================================
 
-This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com). FreshPlanet is no longer updating this ANE. I will try to update it as soon as possible to newest SDKs versions.
+This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](https://developers.facebook.com/docs#apis-and-sdks) on iOS and Android. It has been originally developed by [FreshPlanet](http://freshplanet.com). I will try to maintain this project. For any suggestions open a issue.
 
 
 Facebook SDK Versions
 ---------
 
-* iOS: 3.23.2 
-* Android: 3.23.1
+* iOS: 4.2.0
+* Android: 4.2.0
 
 
 Installation
@@ -30,12 +30,12 @@ On iOS:
             <dict>
                 <key>CFBundleURLSchemes</key>
                     <array>
-                        <string>fb{YOUR_FB_ID}</string>
+                        <string>fb{YOUR_FB_APPLICATION_ID}</string>
                     </array>
             </dict>
         </array>
         <key>FacebookAppID</key>
-        <string>{YOUR_FB_ID}</string>
+        <string>{YOUR_FB_APPLICATION_ID}</string>
 
     ]]></InfoAdditions>
 
@@ -60,10 +60,17 @@ On Android:
             <application>
 
                 ...
-                
-                <activity android:name="com.facebook.LoginActivity"/>
-                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+
+                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="{YOUR_FB_APPLICATION_ID}"/>
+
+                <activity android:name="com.facebook.FacebookActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="{YOUR_APP_NAME}" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.ShareDialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+
+                <provider android:authorities="com.facebook.app.FacebookContentProvider{YOUR_FB_APPLICATION_ID}" android:name="com.facebook.FacebookContentProvider" android:exported="true"/>
                 
             </application>
 
@@ -108,18 +115,9 @@ You MUST use Java 1.6 otherwise in android context will be null (probably bug in
 NOTE:
 Don't forget to create local.properties file in android folder with sdk.dir pointing to android-15 sdk. (I will update build scripts to remove this step.)
 
-Facebook android sdk use (deprecated)
----------
-
-This sdk is using staticaly linked elements. We had to modify all the calls to the com.facebook.android.R package by a custom function that is doing the linking at runtime:
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension
-and use AirFacebookExtension.getResourceId("nameOfTheRessource") or AirFacebookExtension.getResourceIds("nameOfTheRessource")
-
-Also an error when linking the ressources into the app, I had to rename the res/values/styles.xml to res/values/style.xml
-
 
 Authors
 ------
 
-This ANE has been written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+This ANE has been originally written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). Rewrites and modifications to version SDK 4.x were made by [Ján Horváth](https://github.com/nodrock).
 
