@@ -1,4 +1,4 @@
-<platform xmlns="http://ns.adobe.com/air/extension/15.0"> 
+<platform xmlns="http://ns.adobe.com/air/extension/16.0">
     <packagedDependencies>
         <packagedDependency>bolts-android-1.2.0.jar</packagedDependency>
         <packagedDependency>annotations.jar</packagedDependency>
