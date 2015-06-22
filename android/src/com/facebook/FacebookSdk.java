@@ -580,11 +580,17 @@ public final class FacebookSdk {
         }
 
         if (applicationId == null) {
-            Object appId = ai.metaData.get(APPLICATION_ID_PROPERTY);
-            if (appId instanceof String) {
-                applicationId = (String) appId;
-            } else if (appId instanceof Integer) {
-                applicationId = appId.toString();
+
+            String appIdStr = ai.metaData.getString(APPLICATION_ID_PROPERTY);
+            if(appIdStr != null && appIdStr.startsWith("fb")) {
+                applicationId = appIdStr.substring(2);
+            } else {
+                Object appId = ai.metaData.get(APPLICATION_ID_PROPERTY);
+                if (appId instanceof String) {
+                    applicationId = (String) appId;
+                } else if (appId instanceof Integer) {
+                    applicationId = appId.toString();
+                }
             }
         }
 

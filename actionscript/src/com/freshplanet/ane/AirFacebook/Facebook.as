@@ -77,11 +77,14 @@ public class Facebook extends EventDispatcher {
     /**
      * Initialize the Facebook extension.
      *
-     * @param appID             A Facebook application ID (must be set for Android if there is missing FacebookId in application descriptor).
+     * @param appID             A Facebook application ID (must be set for Android if there is missing FacebookId in application descriptor).<br><br>
      *
      * <code>
-     *     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="$FB_APP_ID"/>
+     *     &lt;meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb{YOUR_FB_APP_ID}"/&gt;
      * </code>
+     *
+     * NOTE: It is important to prefix YOUR_FB_APP_ID with "fb", because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null).
+     * Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
      */
     public function init(appID:String = null):void
     {
@@ -96,6 +99,15 @@ public class Facebook extends EventDispatcher {
         }
     }
 
+    /**
+     * Sets default share dialog mode.
+     *
+     * @param shareDialogModeIOS
+     * @param shareDialogModeAndroid
+     *
+     * @see com.freshplanet.ane.AirFacebook.FBShareDialogModeIOS
+     * @see com.freshplanet.ane.AirFacebook.FBShareDialogModeAndroid
+     */
     public function setDefaultShareDialogMode(shareDialogModeIOS:FBShareDialogModeIOS = null,
                                               shareDialogModeAndroid:FBShareDialogModeAndroid = null):void
     {
@@ -114,6 +126,15 @@ public class Facebook extends EventDispatcher {
         }
     }
 
+    /**
+     * Sets default login behavior.
+     *
+     * @param loginBehaviorIOS
+     * @param loginBehaviorAndroid
+     *
+     * @see com.freshplanet.ane.AirFacebook.FBLoginBehaviorIOS
+     * @see com.freshplanet.ane.AirFacebook.FBLoginBehaviorAndroid
+     */
     public function setLoginBehavior(loginBehaviorIOS:FBLoginBehaviorIOS = null,
                                      loginBehaviorAndroid:FBLoginBehaviorAndroid = null):void
     {
@@ -132,6 +153,13 @@ public class Facebook extends EventDispatcher {
         }
     }
 
+    /**
+     * Sets default audience for publish_actions.
+     *
+     * @param defaultAudience
+     *
+     * @see com.freshplanet.ane.AirFacebook.FBDefaultAudience
+     */
     public function setDefaultAudience(defaultAudience:FBDefaultAudience = null):void
     {
         if (_initialized) {
@@ -156,7 +184,11 @@ public class Facebook extends EventDispatcher {
 //			_context.call('openDeferredAppLink');
 //		}
 
-    /** The current Facebook access token, or null if no session is open. */
+    /**
+     * The current Facebook access token, or null if no session is open.
+     *
+     * @see com.freshplanet.ane.AirFacebook.FBAccessToken
+     */
     public function get accessToken():FBAccessToken
     {
         if (_initialized) {
@@ -171,6 +203,11 @@ public class Facebook extends EventDispatcher {
         }
     }
 
+    /**
+     * Current Facebook profile, or null if no session is open.
+     *
+     * @see com.freshplanet.ane.AirFacebook.FBProfile
+     */
     public function get profile():FBProfile
     {
         if (_initialized) {
@@ -225,7 +262,9 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    /** Close the current Facebook session and delete the token from the cache. */
+    /**
+     * Closes the current Facebook session and delete the token from the cache.
+     */
     public function logOut():void
     {
         if (_initialized) {
@@ -303,11 +342,11 @@ public class Facebook extends EventDispatcher {
      * To make sure this succeeds, call canPresentShareDialog, otherwise
      * you can fall back to a web view with the <code>webDialog</code> method
      *
-     * @param link (Optional) Link to share.
-     * @param name (Optional) Title of the publication.
-     * @param caption (Optional) Short summary of the link content.
-     * @param description (Optional) Description of the link content.
-     * @param pictureUrl (Optional) Url of the attached picture.
+     * @param contentUrl (Optional) Url to share.
+     * @param contentTitle (Optional) Title of the publication.
+     * @param contentDescription (Optional) Description of the link content.
+     * @param imageUrl (Optional) Url of the attached picture.
+     * @param useShareApi If you have publish_actions permission you can directly post through ShareAPI.
      * @param callback (Optional) A callback function of the following form:
      * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
      * object returned by Facebook.
@@ -356,6 +395,7 @@ public class Facebook extends EventDispatcher {
         if (!isSupported) return;
 
         _openSessionCallback = callback;
+        if(permissions == null) permissions = [];
         _context.call('logInWithPermissions', permissions, type);
     }
 
