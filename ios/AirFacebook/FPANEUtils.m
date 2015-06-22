@@ -39,6 +39,13 @@ void FPANE_Log(FREContext context, NSString *message)
 
 #pragma mark - FREObject -> Obj-C
 
+NSUInteger FPANE_FREObjectToNSUInteger(FREObject object)
+{
+    uint32_t value;
+    FREGetObjectAsUint32(object, &value);
+    return [[NSNumber numberWithInt:value] unsignedIntegerValue];
+}
+
 NSString * FPANE_FREObjectToNSString(FREObject object)
 {
     uint32_t stringLength;
@@ -61,7 +68,7 @@ NSArray * FPANE_FREObjectToNSArrayOfNSString(FREObject object)
     
     uint32_t stringLength;
     NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:arrayLength];
-    for (NSInteger i = 0; i < arrayLength; i++)
+    for (uint32_t i = 0; i < arrayLength; i++)
     {
         FREObject itemRaw;
         FREGetArrayElementAt(object, i, &itemRaw);
@@ -90,7 +97,7 @@ NSDictionary * FPANE_FREObjectsToNSDictionaryOfNSString(FREObject keys, FREObjec
     uint32_t stringLength;
     uint32_t numItems = MIN(numKeys, numValues);
     NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithCapacity:numItems];
-    for (NSInteger i = 0; i < numItems; i++)
+    for (uint32_t i = 0; i < numItems; i++)
     {
         FREObject keyRaw, valueRaw;
         FREGetArrayElementAt(keys, i, &keyRaw);
@@ -122,9 +129,34 @@ FREObject FPANE_BOOLToFREObject(BOOL boolean)
     return result;
 }
 
-FREObject FPANE_NSStringToFREOBject(NSString *string)
+FREObject FPANE_NSStringToFREObject(NSString *string)
 {
     FREObject result;
-    FRENewObjectFromUTF8(string.length, (const uint8_t *)[string UTF8String], &result);
+    FRENewObjectFromUTF8((uint32_t)string.length, (const uint8_t *)[string UTF8String], &result);
     return result;
 }
+
+FREObject FPANE_NSArrayToFREObject(NSArray *value)
+{
+    FREObject result;
+    uint32_t arrayLength = (uint32_t)value.count;
+    
+    FRENewObject((const uint8_t*)"Array", 0, NULL, &result, nil);
+    FRESetArrayLength(result, arrayLength);
+    
+    for(int32_t i = 0; i < arrayLength; i++)
+    {
+        NSString* item = [value objectAtIndex: i];
+        FREObject element = FPANE_NSStringToFREObject(item);
+        FRESetArrayElementAt(result, i, element);
+    }
+    return result;
+}
+
+FREObject FPANE_doubleToFREObject(double value)
+{
+    FREObject result;
+    FRENewObjectFromDouble(value, &result);
+    return result;
+}
+

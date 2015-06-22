@@ -17,30 +17,32 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #import "FlashRuntimeExtensions.h"
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 #import "FPANEUtils.h"
+#import "FBShareDelegate.h"
 
-typedef void (^FBOpenSessionCompletionHandler)(FBSession *session, FBSessionState status, NSError *error);
-typedef void (^FBReauthorizeSessionCompletionHandler)(FBSession *session, NSError *error);
-typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id result, NSError *error);
+typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *result, NSError *error);
 
 @interface AirFacebook : NSObject
 
 + (id)sharedInstance;
 
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message;
-
-- (void)setupWithAppID:(NSString *)appID urlSchemeSuffix:(NSString *)urlSchemeSuffix;
-
-+ (FBOpenSessionCompletionHandler)openSessionCompletionHandler;
-+ (FBReauthorizeSessionCompletionHandler)reauthorizeSessionCompletionHandler;
-+ (FBRequestCompletionHandler)requestCompletionHandlerWithCallback:(NSString *)callback;
-+ (FBDialogAppCallCompletionHandler)shareDialogHandlerWithCallback:(NSString *)callback;
-
 + (void)log:(NSString *)string, ...;
++ (NSString*) jsonStringFromObject:(id)obj andPrettyPrint:(BOOL) prettyPrint;
 
-@property (nonatomic, readonly) NSString *appID;
-@property (nonatomic, readonly) NSString *urlSchemeSuffix;
+//- (void)didFinishLaunching:(NSNotification *)notification;
+
+- (void)shareFinishedForCallback:(NSString *)callback;
+- (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi delegate:(id<FBSDKSharingDelegate>)delegate;
+- (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andShareCallback:(NSString *)callback;
+
+@property (getter=isNativeLogEnabled) BOOL nativeLogEnabled;
+@property FBSDKShareDialogMode defaultShareDialogMode;
+@property FBSDKDefaultAudience defaultAudience;
+@property FBSDKLoginBehavior loginBehavior;
 
 @end
 
@@ -48,26 +50,29 @@ typedef void (^FBRequestCompletionHandler)(FBRequestConnection *connection, id r
 NSArray* getFREArrayAsNSArray( FREObject array );
 
 // C interface
-DEFINE_ANE_FUNCTION(init);
+DEFINE_ANE_FUNCTION(initFacebook);
 DEFINE_ANE_FUNCTION(handleOpenURL);
 DEFINE_ANE_FUNCTION(getAccessToken);
-DEFINE_ANE_FUNCTION(getExpirationTimestamp);
-DEFINE_ANE_FUNCTION(isSessionOpen);
-DEFINE_ANE_FUNCTION(openSessionWithPermissions);
-DEFINE_ANE_FUNCTION(reauthorizeSessionWithPermissions);
-DEFINE_ANE_FUNCTION(closeSessionAndClearTokenInformation);
+DEFINE_ANE_FUNCTION(getProfile);
+DEFINE_ANE_FUNCTION(logInWithPermissions);
+DEFINE_ANE_FUNCTION(logOut);
 DEFINE_ANE_FUNCTION(requestWithGraphPath);
+
+// Settings
+DEFINE_ANE_FUNCTION(setDefaultAudience);
+DEFINE_ANE_FUNCTION(setLoginBehavior);
+DEFINE_ANE_FUNCTION(setDefaultShareDialogMode);
+
+// Sharing dialogs
 DEFINE_ANE_FUNCTION(canPresentShareDialog);
-DEFINE_ANE_FUNCTION(shareStatusDialog);
 DEFINE_ANE_FUNCTION(shareLinkDialog);
-DEFINE_ANE_FUNCTION(canPresentOpenGraphDialog);
-DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
-DEFINE_ANE_FUNCTION(canPresentMessageDialog);
-DEFINE_ANE_FUNCTION(presentMessageDialogWithLinkAndParams);
-DEFINE_ANE_FUNCTION(shareOpenGraphDialog);
-DEFINE_ANE_FUNCTION(webDialog);
+
+// FB events
 DEFINE_ANE_FUNCTION(activateApp);
-DEFINE_ANE_FUNCTION(openDeferredAppLink);
+
+// Debug
+DEFINE_ANE_FUNCTION(nativeLog);
+DEFINE_ANE_FUNCTION(setNativeLogEnabled);
 
 // ANE Setup
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet);
