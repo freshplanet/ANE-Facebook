@@ -46,9 +46,6 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 
 @end
 
-// utils
-NSArray* getFREArrayAsNSArray( FREObject array );
-
 // C interface
 DEFINE_ANE_FUNCTION(initFacebook);
 DEFINE_ANE_FUNCTION(handleOpenURL);
