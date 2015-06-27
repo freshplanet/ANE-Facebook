@@ -39,15 +39,12 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 - (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi delegate:(id<FBSDKSharingDelegate>)delegate;
 - (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andShareCallback:(NSString *)callback;
 
-@property (getter=isNativeLogEnabled) BOOL nativeLogEnabled;
-@property FBSDKShareDialogMode defaultShareDialogMode;
-@property FBSDKDefaultAudience defaultAudience;
-@property FBSDKLoginBehavior loginBehavior;
+@property (nonatomic, getter=isNativeLogEnabled) BOOL nativeLogEnabled;
+@property (nonatomic) FBSDKShareDialogMode defaultShareDialogMode;
+@property (nonatomic) FBSDKDefaultAudience defaultAudience;
+@property (nonatomic) FBSDKLoginBehavior loginBehavior;
 
 @end
-
-// utils
-NSArray* getFREArrayAsNSArray( FREObject array );
 
 // C interface
 DEFINE_ANE_FUNCTION(initFacebook);
