@@ -21,7 +21,6 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import "FPANEUtils.h"
-#import "FBShareDelegate.h"
 
 typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *result, NSError *error);
 
@@ -36,8 +35,7 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 //- (void)didFinishLaunching:(NSNotification *)notification;
 
 - (void)shareFinishedForCallback:(NSString *)callback;
-- (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi delegate:(id<FBSDKSharingDelegate>)delegate;
-- (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andShareCallback:(NSString *)callback;
+- (void)shareContent:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andCallback:(NSString *)callback;
 
 @property (nonatomic, getter=isNativeLogEnabled) BOOL nativeLogEnabled;
 @property (nonatomic) FBSDKShareDialogMode defaultShareDialogMode;
@@ -63,6 +61,7 @@ DEFINE_ANE_FUNCTION(setDefaultShareDialogMode);
 // Sharing dialogs
 DEFINE_ANE_FUNCTION(canPresentShareDialog);
 DEFINE_ANE_FUNCTION(shareLinkDialog);
+DEFINE_ANE_FUNCTION(appInviteDialog);
 
 // FB events
 DEFINE_ANE_FUNCTION(activateApp);

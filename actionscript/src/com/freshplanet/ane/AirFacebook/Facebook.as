@@ -1,4 +1,5 @@
 ﻿package com.freshplanet.ane.AirFacebook {
+import com.freshplanet.ane.AirFacebook.share.FBAppInviteContent;
 import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
 
 import flash.desktop.NativeApplication;
@@ -363,6 +364,20 @@ public class Facebook extends EventDispatcher {
                 return;
             }
             _context.call('shareLinkDialog', shareLinkContent, useShareApi, getNewCallbackName(callback));
+        } else {
+
+            log("You must call init() before any other method!");
+        }
+    }
+
+    public function appInviteDialog(appInviteContent:FBAppInviteContent, callback:Function = null)
+    {
+        if (_initialized) {
+
+            if(appInviteContent == null){
+                return;
+            }
+            _context.call('appInviteDialog', appInviteContent, getNewCallbackName(callback));
         } else {
 
             log("You must call init() before any other method!");

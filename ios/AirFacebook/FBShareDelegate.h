@@ -11,11 +11,8 @@
 #import "AirFacebook.h"
 
 @interface FBShareDelegate : NSObject<FBSDKSharingDelegate>
-{
-    NSString *callback;
-}
 
 - (id)initWithCallback:(NSString *)aCallback;
-- (BOOL)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi;
+- (BOOL)shareContent:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi;
 
 @end

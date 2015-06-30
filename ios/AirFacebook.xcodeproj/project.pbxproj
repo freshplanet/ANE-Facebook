@@ -15,6 +15,8 @@
 		2E95EEC61B30716C00FEE8F3 /* FBShareDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */; };
 		2E9EEA711B42A8B900B9370E /* FREConversionUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E9EEA6F1B42A8B900B9370E /* FREConversionUtil.h */; };
 		2E9EEA721B42A8B900B9370E /* FREConversionUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E9EEA701B42A8B900B9370E /* FREConversionUtil.m */; };
+		2E9EEA751B42DA4D00B9370E /* FBAppInviteDialogDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E9EEA731B42DA4D00B9370E /* FBAppInviteDialogDelegate.h */; };
+		2E9EEA761B42DA4D00B9370E /* FBAppInviteDialogDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E9EEA741B42DA4D00B9370E /* FBAppInviteDialogDelegate.m */; };
 		2EA1B5F21B131CD5009206CD /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA1B5F01B131CD5009206CD /* Bolts.framework */; };
 		2EA1B5F31B131CD5009206CD /* FBAudienceNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */; };
 		4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */; };
@@ -36,6 +38,8 @@
 		2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShareDelegate.m; sourceTree = "<group>"; };
 		2E9EEA6F1B42A8B900B9370E /* FREConversionUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FREConversionUtil.h; sourceTree = "<group>"; };
 		2E9EEA701B42A8B900B9370E /* FREConversionUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FREConversionUtil.m; sourceTree = "<group>"; };
+		2E9EEA731B42DA4D00B9370E /* FBAppInviteDialogDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBAppInviteDialogDelegate.h; sourceTree = "<group>"; };
+		2E9EEA741B42DA4D00B9370E /* FBAppInviteDialogDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBAppInviteDialogDelegate.m; sourceTree = "<group>"; };
 		2EA1B5F01B131CD5009206CD /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = frameworks/Bolts.framework; sourceTree = "<group>"; };
 		2EA1B5F11B131CD5009206CD /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = frameworks/FBAudienceNetwork.framework; sourceTree = "<group>"; };
 		4AAA25061703433600ECB60C /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlashRuntimeExtensions.h; path = ../FlashRuntimeExtensions.h; sourceTree = "<group>"; };
@@ -110,6 +114,8 @@
 				5A9856A115213BC3003A8EB0 /* AirFacebook.m */,
 				5A98569E15213BC3003A8EB0 /* Supporting Files */,
 				2E95EEC31B30716C00FEE8F3 /* FBShareDelegate.h */,
+				2E9EEA731B42DA4D00B9370E /* FBAppInviteDialogDelegate.h */,
+				2E9EEA741B42DA4D00B9370E /* FBAppInviteDialogDelegate.m */,
 				2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */,
 			);
 			path = AirFacebook;
@@ -139,6 +145,7 @@
 				2E95EEC51B30716C00FEE8F3 /* FBShareDelegate.h in Headers */,
 				2E9EEA711B42A8B900B9370E /* FREConversionUtil.h in Headers */,
 				FAD87E6B1822EC3200A4D717 /* FPANEUtils.h in Headers */,
+				2E9EEA751B42DA4D00B9370E /* FBAppInviteDialogDelegate.h in Headers */,
 				E25E190B18525A56005798D2 /* AirFacebook-Prefix.pch in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E9EEA761B42DA4D00B9370E /* FBAppInviteDialogDelegate.m in Sources */,
 				FAD87E6C1822EC3200A4D717 /* FPANEUtils.m in Sources */,
 				2E95EEC61B30716C00FEE8F3 /* FBShareDelegate.m in Sources */,
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
