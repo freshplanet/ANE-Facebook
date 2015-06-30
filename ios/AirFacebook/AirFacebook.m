@@ -18,6 +18,7 @@
 //
 
 #import "AirFacebook.h"
+#import "FREConversionUtil.h"
 
 FREContext AirFBCtx = nil;
 
@@ -395,20 +396,27 @@ DEFINE_ANE_FUNCTION(canPresentShareDialog)
 
 DEFINE_ANE_FUNCTION(shareLinkDialog)
 {
-    NSString *contentUrl = FPANE_FREObjectToNSString(argv[0]);
-    NSString *contentTitle = FPANE_FREObjectToNSString(argv[1]);
-    NSString *contentDescription = FPANE_FREObjectToNSString(argv[2]);
-    NSString *imageUrl = FPANE_FREObjectToNSString(argv[3]);
-    BOOL useShareApi = FPANE_FREObjectToBOOL(argv[4]);
-    NSString *callback = FPANE_FREObjectToNSString(argv[5]);
+    NSString *contentUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentUrl" fromObject:argv[0]]];
+    NSArray *peopleIds = [FREConversionUtil toStringArray:[FREConversionUtil getProperty:@"peopleIds" fromObject:argv[0]]];
+    NSString *placeId = [FREConversionUtil toString:[FREConversionUtil getProperty:@"placeId" fromObject:argv[0]]];
+    NSString *ref = [FREConversionUtil toString:[FREConversionUtil getProperty:@"ref" fromObject:argv[0]]];
+    NSString *contentTitle = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentTitle" fromObject:argv[0]]];
+    NSString *contentDescription = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentDescription" fromObject:argv[0]]];
+    NSString *imageUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"imageUrl" fromObject:argv[0]]];
+
+    BOOL useShareApi = FPANE_FREObjectToBOOL(argv[1]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[2]);
     
     FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-    if(contentUrl != NULL) content.contentURL = [NSURL URLWithString:contentUrl];
-    if(contentTitle != NULL) content.contentTitle = contentTitle;
-    if(contentDescription != NULL) content.contentDescription = contentDescription;
-    if(imageUrl != NULL) content.imageURL = [NSURL URLWithString:imageUrl];
+    if(contentUrl != nil) content.contentURL = [NSURL URLWithString:contentUrl];
+    if(peopleIds != nil) content.peopleIDs = peopleIds;
+    if(placeId != nil) content.placeID = placeId;
+    if(ref != nil) content.ref = ref;
+    if(contentTitle != nil) content.contentTitle = contentTitle;
+    if(contentDescription != nil) content.contentDescription = contentDescription;
+    if(imageUrl != nil) content.imageURL = [NSURL URLWithString:imageUrl];
     
-    if(callback == NULL){
+    if(callback == nil){
         [[AirFacebook sharedInstance] share:content usingShareApi:useShareApi delegate:nil];
     } else {
         [[AirFacebook sharedInstance] share:content usingShareApi:useShareApi andShareCallback:callback];

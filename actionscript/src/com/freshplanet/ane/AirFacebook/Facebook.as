@@ -1,4 +1,6 @@
 ﻿package com.freshplanet.ane.AirFacebook {
+import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
+
 import flash.desktop.NativeApplication;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -351,16 +353,16 @@ public class Facebook extends EventDispatcher {
      * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
      * object returned by Facebook.
      */
-    public function shareLinkDialog(contentUrl:String = null,
-                                    contentTitle:String = null,
-                                    contentDescription:String = null,
-                                    imageUrl:String = null,
+    public function shareLinkDialog(shareLinkContent:FBShareLinkContent,
                                     useShareApi:Boolean = false,
                                     callback:Function = null):void
     {
         if (_initialized) {
 
-            _context.call('shareLinkDialog', contentUrl, contentTitle, contentDescription, imageUrl, useShareApi, getNewCallbackName(callback));
+            if(shareLinkContent == null){
+                return;
+            }
+            _context.call('shareLinkDialog', shareLinkContent, useShareApi, getNewCallbackName(callback));
         } else {
 
             log("You must call init() before any other method!");

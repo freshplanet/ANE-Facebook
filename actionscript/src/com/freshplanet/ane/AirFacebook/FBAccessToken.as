@@ -1,6 +1,5 @@
 package com.freshplanet.ane.AirFacebook
 {
-    //[RemoteClass(alias="com.freshplanet.ane.AirFacebook.FBAccessToken")]
     public class FBAccessToken{
 
         public var appID:String;
