@@ -85,7 +85,7 @@ On Android:
 Documentation
 --------
 
-Actionscript documentation is available in HTML format in the *docs* folder.
+ActionScript documentation is available in HTML format on project pages [here](http://nodrock.github.io/ANE-Facebook/docs/).
 
 
 Samples (deprecated)
