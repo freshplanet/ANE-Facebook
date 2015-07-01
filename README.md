@@ -80,7 +80,7 @@ On Android:
 </android>
 ```
 
-NOTE: It is important to prefix YOUR_FB_APP_ID with "fb" in `<meta-data>` (and ONLY in `<meta-data>`) tag, because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null). Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
+**NOTE:** It is important to prefix YOUR_FB_APP_ID with "fb" in `<meta-data>` (and ONLY in `<meta-data>`) tag, because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null). Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
 
 Documentation
 --------
@@ -88,7 +88,7 @@ Documentation
 Actionscript documentation is available in HTML format in the *docs* folder.
 
 
-Samples
+Samples (deprecated)
 --------
 
 A sample project is available in the *sample* folder.
@@ -113,10 +113,6 @@ ant
 ```
 
 You MUST use Java 1.6 otherwise in android context will be null (probably bug in Adobe AIR SDK). On OSX you can call "export JAVA_HOME=`/usr/libexec/java_home -v 1.6`" without " to set JAVA_HOME properly.
-
-NOTE:
-Don't forget to create local.properties file in android folder with sdk.dir pointing to android-15 sdk. (I will update build scripts to remove this step.)
-
 
 Authors
 ------
