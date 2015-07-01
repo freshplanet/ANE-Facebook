@@ -9,6 +9,9 @@
 #import "FBShareDelegate.h"
 
 @implementation FBShareDelegate
+{
+    NSString *callback;
+}
 
 - (id)initWithCallback:(NSString *)aCallback
 {
@@ -20,7 +23,7 @@
     return self;
 }
 
--(BOOL)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi
+-(BOOL)shareContent:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi
 {
     if(useShareApi){
         

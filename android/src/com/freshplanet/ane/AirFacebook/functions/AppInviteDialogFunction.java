@@ -7,6 +7,7 @@ import com.adobe.fre.FREObject;
 import com.facebook.share.model.AppInviteContent;
 import com.freshplanet.ane.AirFacebook.AirFacebookExtension;
 import com.freshplanet.ane.AirFacebook.AppInviteActivity;
+import com.freshplanet.ane.AirFacebook.utils.FREConversionUtil;
 
 public class AppInviteDialogFunction extends BaseFunction implements FREFunction
 {
@@ -15,9 +16,9 @@ public class AppInviteDialogFunction extends BaseFunction implements FREFunction
 		super.call(context, args);
 		
 		// Retrieve callback
-		String appLinkUrl = getStringFromFREObject(args[0]);
-		String previewImageUrl = getStringFromFREObject(args[1]);
-		String callback = getStringFromFREObject(args[2]);
+		String appLinkUrl = FREConversionUtil.toString(FREConversionUtil.getProperty("appLinkUrl", args[0]));
+		String previewImageUrl = FREConversionUtil.toString(FREConversionUtil.getProperty("previewImageUrl", args[0]));
+		String callback = getStringFromFREObject(args[1]);
 
 		AirFacebookExtension.log("AppInviteDialogFunction");
 

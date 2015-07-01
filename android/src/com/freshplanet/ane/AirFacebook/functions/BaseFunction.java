@@ -19,6 +19,40 @@ public class BaseFunction implements FREFunction
 		return null;
 	}
 
+	protected String getStringProperty(FREObject object, String property)
+	{
+		try
+		{
+			FREObject propertyObject = object.getProperty(property);
+			if(propertyObject == null){
+				return null;
+			}
+			return getStringFromFREObject(propertyObject);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	protected List<String> getStringListProperty(FREObject object, String property)
+	{
+		try
+		{
+			FREArray propertyArray = (FREArray)object.getProperty(property);
+			if(propertyArray == null){
+				return null;
+			}
+			return getListOfStringFromFREArray(propertyArray);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	protected FREArray getFREArrayFromSet(Set<String> items) {
 
 		try

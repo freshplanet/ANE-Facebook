@@ -18,6 +18,9 @@
 //
 
 #import "AirFacebook.h"
+#import "FREConversionUtil.h"
+#import "FBShareDelegate.h"
+#import "FBAppInviteDialogDelegate.h"
 
 FREContext AirFBCtx = nil;
 
@@ -100,32 +103,14 @@ static AirFacebook *sharedInstance = nil;
 
 // sharing
 
-- (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi delegate:(id<FBSDKSharingDelegate>)delegate
-{
-    if(useShareApi){
-        
-        [FBSDKShareAPI shareWithContent:content delegate:delegate];
-    } else {
-        
-        UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        
-        FBSDKShareDialog *dialog = [[FBSDKShareDialog alloc] init];
-        dialog.fromViewController = rootViewController;
-        dialog.shareContent = content;
-        dialog.mode = self.defaultShareDialogMode;
-        dialog.delegate = delegate;
-        [dialog show];
-    }
-}
-
-- (void)share:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andShareCallback:(NSString *)callback
+- (void)shareContent:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi andCallback:(NSString *)callback
 {
     [AirFacebook log:@"share:usingShareApi:andShareCallback: callback: %@", callback];
     
-    if (callback != NULL){
+    if (callback != nil){
         FBShareDelegate *delegate = [[FBShareDelegate alloc] initWithCallback:callback];
         [shareActivities setObject:delegate forKey:callback];
-        [delegate share:content usingShareApi:useShareApi];
+        [delegate shareContent:content usingShareApi:useShareApi];
     }
 }
 
@@ -133,8 +118,19 @@ static AirFacebook *sharedInstance = nil;
 {
     [AirFacebook log:@"shareFinishedForCallback: callback: %@", callback];
     
-    if (callback != NULL){
+    if (callback != nil){
         [shareActivities removeObjectForKey:callback];
+    }
+}
+
+- (void)showAppInviteDialogWithContent:(FBSDKAppInviteContent *)content andCallback:(NSString *)callback
+{
+    [AirFacebook log:@"showAppInviteDialog:withCallback: callback: %@", callback];
+    
+    if(callback != nil){
+        FBAppInviteDialogDelegate *delegate = [[FBAppInviteDialogDelegate alloc] initWithCallback:callback];
+        [shareActivities setObject:delegate forKey:callback];
+        [delegate showAppInviteDialogWithContent:content];
     }
 }
 
@@ -395,24 +391,43 @@ DEFINE_ANE_FUNCTION(canPresentShareDialog)
 
 DEFINE_ANE_FUNCTION(shareLinkDialog)
 {
-    NSString *contentUrl = FPANE_FREObjectToNSString(argv[0]);
-    NSString *contentTitle = FPANE_FREObjectToNSString(argv[1]);
-    NSString *contentDescription = FPANE_FREObjectToNSString(argv[2]);
-    NSString *imageUrl = FPANE_FREObjectToNSString(argv[3]);
-    BOOL useShareApi = FPANE_FREObjectToBOOL(argv[4]);
-    NSString *callback = FPANE_FREObjectToNSString(argv[5]);
+    NSString *contentUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentUrl" fromObject:argv[0]]];
+    NSArray *peopleIds = [FREConversionUtil toStringArray:[FREConversionUtil getProperty:@"peopleIds" fromObject:argv[0]]];
+    NSString *placeId = [FREConversionUtil toString:[FREConversionUtil getProperty:@"placeId" fromObject:argv[0]]];
+    NSString *ref = [FREConversionUtil toString:[FREConversionUtil getProperty:@"ref" fromObject:argv[0]]];
+    NSString *contentTitle = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentTitle" fromObject:argv[0]]];
+    NSString *contentDescription = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentDescription" fromObject:argv[0]]];
+    NSString *imageUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"imageUrl" fromObject:argv[0]]];
+
+    BOOL useShareApi = FPANE_FREObjectToBOOL(argv[1]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[2]);
     
     FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
-    if(contentUrl != NULL) content.contentURL = [NSURL URLWithString:contentUrl];
-    if(contentTitle != NULL) content.contentTitle = contentTitle;
-    if(contentDescription != NULL) content.contentDescription = contentDescription;
-    if(imageUrl != NULL) content.imageURL = [NSURL URLWithString:imageUrl];
+    if(contentUrl != nil) content.contentURL = [NSURL URLWithString:contentUrl];
+    if(peopleIds != nil) content.peopleIDs = peopleIds;
+    if(placeId != nil) content.placeID = placeId;
+    if(ref != nil) content.ref = ref;
+    if(contentTitle != nil) content.contentTitle = contentTitle;
+    if(contentDescription != nil) content.contentDescription = contentDescription;
+    if(imageUrl != nil) content.imageURL = [NSURL URLWithString:imageUrl];
     
-    if(callback == NULL){
-        [[AirFacebook sharedInstance] share:content usingShareApi:useShareApi delegate:nil];
-    } else {
-        [[AirFacebook sharedInstance] share:content usingShareApi:useShareApi andShareCallback:callback];
-    }
+    [[AirFacebook sharedInstance] shareContent:content usingShareApi:useShareApi andCallback:callback];
+    
+    return nil;
+}
+
+DEFINE_ANE_FUNCTION(appInviteDialog)
+{
+    NSString *appLinkUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"appLinkUrl" fromObject:argv[0]]];
+    NSString *previewImageUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"previewImageUrl" fromObject:argv[0]]];
+    
+    NSString *callback = FPANE_FREObjectToNSString(argv[1]);
+    
+    FBSDKAppInviteContent *content = [[FBSDKAppInviteContent alloc] init];
+    if(appLinkUrl != nil) content.appLinkURL = [NSURL URLWithString:appLinkUrl];
+    if(previewImageUrl != nil) content.appInvitePreviewImageURL = [NSURL URLWithString:previewImageUrl];
+    
+    [[AirFacebook sharedInstance] showAppInviteDialogWithContent:content andCallback:callback];
     
     return nil;
 }
@@ -447,7 +462,8 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
         // Sharing dialogs
         @"canPresentShareDialog":           [NSValue valueWithPointer:&canPresentShareDialog],
         @"shareLinkDialog":                 [NSValue valueWithPointer:&shareLinkDialog],
-
+        @"appInviteDialog":                 [NSValue valueWithPointer:&appInviteDialog],
+        
         // FB events
         @"activateApp":                     [NSValue valueWithPointer:&activateApp],
         
