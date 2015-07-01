@@ -322,8 +322,8 @@ public class Facebook extends EventDispatcher {
     }
 
     /**
-     * Determine if we can open a native share dialog with the given parameters.
-     * Call this method to decide whether you should use <code>shareStatusDialog</code> or <code>webDialog</code>
+     * Determine if we can open a share dialog with current share dialog mode.
+     * Call this method to decide what default share dialog mode you want to use.
      *
      * @see #setDefaultShareDialogMode
      */
@@ -340,19 +340,16 @@ public class Facebook extends EventDispatcher {
     }
 
     /**
-     * Open a native Facebook dialog for sharing a link
-     * This requires that the Facebook app is installed on the device,
-     * To make sure this succeeds, call canPresentShareDialog, otherwise
-     * you can fall back to a web view with the <code>webDialog</code> method
+     * Shares a link. If useShareApi is set to true no dialog will be opened, otherwise you
+     * can specify default share dialog mode by setting setDefaultShareDialogMode.
      *
-     * @param contentUrl (Optional) Url to share.
-     * @param contentTitle (Optional) Title of the publication.
-     * @param contentDescription (Optional) Description of the link content.
-     * @param imageUrl (Optional) Url of the attached picture.
-     * @param useShareApi If you have publish_actions permission you can directly post through ShareAPI.
+     * @param shareLinkContent Content of share dialog.
+     * @param useShareApi If you have publish_actions permission you can directly share through ShareAPI.
      * @param callback (Optional) A callback function of the following form:
      * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
      * object returned by Facebook.
+     *
+     * @see #setDefaultShareDialogMode
      */
     public function shareLinkDialog(shareLinkContent:FBShareLinkContent,
                                     useShareApi:Boolean = false,
@@ -370,7 +367,13 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    public function appInviteDialog(appInviteContent:FBAppInviteContent, callback:Function = null)
+    /**
+     * Opens app invite dialog.
+     *
+     * @param appInviteContent Content of app invite dialog.
+     * @param callback (TODO)
+     */
+    public function appInviteDialog(appInviteContent:FBAppInviteContent, callback:Function = null):void
     {
         if (_initialized) {
 

@@ -1,7 +1,10 @@
-/**
- * Created by nodrock on 30/06/15.
- */
 package com.freshplanet.ane.AirFacebook.share {
+
+/**
+ * Describes the content that will be displayed by the AppInviteDialog.
+ *
+ * @see http://developers.facebook.com/docs/reference/android/current/class/AppInviteContent/
+ */
 public class FBAppInviteContent {
 
     /**
