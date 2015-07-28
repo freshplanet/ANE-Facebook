@@ -22,7 +22,7 @@
         <!-- compile the ios lib -->
         <exec executable="xcodebuild" failonerror="true" dir="../ios/">
             <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-sdk ${ios.sdkversion}"/>
+            <arg line="-sdk iphoneos"/>
             <arg line="-alltargets"/>
             <arg line="-configuration Release"/>
             <arg line="SYMROOT=../build/temp/ios/build/"/>
@@ -51,44 +51,40 @@
     </target>
     <target name="android-build" description="Build Android Library">
 
-        <!-- make the build directory for the java code -->
-        <mkdir dir="temp/android/build/"/>
+        <property name="android.platform.home" value="${android.sdk.home}/platforms/android-${android.platform}"/>
+
+        <property name="android.support.path" value="${android.sdk.home}/extras/android/support"/>
+        <property name="android.support.v4.path" value="${android.support.path}/v4"/>
+        <property name="android.support.annotations.path" value="${android.support.path}/annotations"/>
 
         <!-- make the R file -->
+        <delete dir="../android/gen"/>
         <mkdir dir="../android/gen"/>
-        <exec executable="${flex.sdk}/lib/android/bin/aapt">
+        <exec executable="${air.sdk.home}/lib/android/bin/aapt">
             <arg value="package"/>
             <arg value="-f"/>
             <arg value="-m"/>
             <arg line=" -S ../android/res"/>
             <arg line=" -J ../android/gen"/>
             <arg line=" -M ../android/AndroidManifest.xml"/>
-            <arg line=" -I ${android.sdk}/android.jar"/>
+            <arg line=" -I ${android.platform.home}/android.jar"/>
         </exec>
 
-        <echo message="Using Java version ${ant.java.version}."/>
+        <!-- make the build directory for the java code -->
+        <mkdir dir="temp/android/build/"/>
 
         <!-- compile the java code -->
-        <javac source="1.6" destdir="temp/android/build/" includeantruntime="false" debug="${ANDROID_DEBUG}">
+        <javac source="1.7" target="1.7" destdir="temp/android/build/" includeantruntime="false" debug="${ANDROID_DEBUG}">
             <src path="../android/gen"/>
             <src path="../android/src"/>
             <classpath>
-                <pathelement location="${android.sdk}/android.jar"/>
-                <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
-                <pathelement location="../android/libs/android-support-v4.jar"/>
+                <pathelement location="${android.platform.home}/android.jar"/>
+                <pathelement location="${android.support.v4.path}/android-support-v4.jar"/>
+                <pathelement location="${android.support.annotations.path}/android-support-annotations.jar"/>
+                <pathelement location="${air.sdk.home}/lib/android/FlashRuntimeExtensions.jar"/>
                 <pathelement location="../android/libs/bolts-android-1.1.2.jar"/>
-                <pathelement location="../android/libs/annotations.jar"/><!-- needed since Facebook SDK 3.0 on api < 16 -->
             </classpath>
         </javac>
-
-        <!-- Copy over the required libs -->
-        <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
-        <copy file="../android/libs/annotations.jar" todir="temp/android/"/>
-        
-        <!-- Copy over required resources -->
-        <copy todir="temp/android/res/">
-            <fileset dir="../android/res/"/>
-        </copy>
 
         <!-- make the jar -->
         <jar basedir="temp/android/build/" destfile="temp/android/lib${name}.jar"/>
@@ -96,6 +92,18 @@
         <!-- remove the build classes -->
         <delete dir="temp/android/build/"/>
         <delete dir="../android/gen"/>
+
+        <!-- Copy over the required libs -->
+        <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
+        
+        <!-- Copy over required resources -->
+        <copy todir="temp/android/res/">
+            <fileset dir="../android/res/"/>
+        </copy>
+
+        <!-- android support libraries -->
+        <!-- <copy file="${android.support.v4.path}/android-support-v4.jar" todir="temp/android/"/> -->
+        <!-- <copy file="${android.support.annotations.path}/android-support-annotations.jar" todir="temp/android/"/> -->
     </target>
 
     <!-- Actionscript -->
@@ -110,12 +118,12 @@
             <regexpmapper from=".*src.(.*)\.as" to="\1"/>
         </pathconvert>
 
-        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
-            <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
+        <exec executable="${air.sdk.home}/bin/compc" failonerror="true">
+            <env key="AIR_SDK_HOME" value="${air.sdk.home}"/>
             <arg line='-source-path ../actionscript/src'/>
             <arg line='-output temp/swc/${name}.swc'/>
             <arg line='-swf-version=25'/>
-            <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
+            <arg line='-external-library-path+="${air.sdk.home}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
         </exec>
 
@@ -129,7 +137,7 @@
 
     <!-- Package -->
     <target name="package" description="Create the extension package">
-        <exec executable="${flex.sdk}/bin/adt${bin.ext}" failonerror="true" dir="temp/">
+        <exec executable="${air.sdk.home}/bin/adt" failonerror="true" dir="temp/">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
@@ -147,13 +155,13 @@
 
     <!-- HTML Documentation (must be run manually) -->
     <target name="asdoc" description="generate the asdoc in readable html">
-        <exec executable="${flex.sdk}/bin/asdoc${bin.ext}" failonerror="true">
-            <env key="FLEX_HOME" value="${flex.sdk}"/>
-            <env key="FALCON_HOME" value="${flex.sdk}"/>
+        <exec executable="${air.sdk.home}/bin/asdoc" failonerror="true">
+            <env key="FLEX_HOME" value="${air.sdk.home}"/>
+            <env key="FALCON_HOME" value="${air.sdk.home}"/>
             <arg line='-source-path ../actionscript/src'/>
             <arg line='-doc-sources ../actionscript/src'/>
             <arg line='-output ../docs'/>
-            <arg line='-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
+            <arg line='-library-path+="${air.sdk.home}/frameworks/libs/air/airglobal.swc"'/>
         </exec>
     </target>
 
