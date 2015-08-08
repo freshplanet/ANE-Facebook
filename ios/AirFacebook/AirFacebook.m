@@ -354,6 +354,7 @@ DEFINE_ANE_FUNCTION(setDefaultAudience)
 {
     NSUInteger defaultAudience = FPANE_FREObjectToNSUInteger(argv[0]);
     
+    [AirFacebook log:@"defaultAudience value:%d", defaultAudience];
     [[AirFacebook sharedInstance] setDefaultAudience:defaultAudience];
     
     return nil;
@@ -363,6 +364,7 @@ DEFINE_ANE_FUNCTION(setLoginBehavior)
 {
     NSUInteger loginBehavior = FPANE_FREObjectToNSUInteger(argv[0]);
     
+    [AirFacebook log:@"setLoginBehavior value:%d", loginBehavior];
     [[AirFacebook sharedInstance] setLoginBehavior:loginBehavior];
     
     return nil;
@@ -372,6 +374,7 @@ DEFINE_ANE_FUNCTION(setDefaultShareDialogMode)
 {
     NSUInteger defaultShareDialogMode = FPANE_FREObjectToNSUInteger(argv[0]);
     
+    [AirFacebook log:@"defaultShareDialogMode value:%d", defaultShareDialogMode];
     [[AirFacebook sharedInstance] setDefaultShareDialogMode:defaultShareDialogMode];
     
     return nil;
@@ -438,6 +441,18 @@ DEFINE_ANE_FUNCTION(activateApp)
     return nil;
 }
 
+DEFINE_ANE_FUNCTION(logEvent)
+{
+    NSString *eventName = [FREConversionUtil toString:[FREConversionUtil getProperty:@"eventName" fromObject:argv[0]]];
+    NSNumber *valueToSum = [FREConversionUtil toNumber:[FREConversionUtil getProperty:@"valueToSum" fromObject:argv[0]]];
+    NSDictionary *parameters = FPANE_FREObjectsToNSDictionary([FREConversionUtil getProperty:@"paramsKeys" fromObject:argv[0]],
+                                                              [FREConversionUtil getProperty:@"paramsTypes" fromObject:argv[0]],
+                                                              [FREConversionUtil getProperty:@"paramsValues" fromObject:argv[0]]);
+    
+    [FBSDKAppEvents logEvent:eventName valueToSum:[valueToSum doubleValue] parameters:parameters];
+    return nil;
+}
+
 void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx,
                         uint32_t* numFunctionsToTest, const FRENamedFunction** functionsToSet) 
 {
@@ -466,6 +481,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
         
         // FB events
         @"activateApp":                     [NSValue valueWithPointer:&activateApp],
+        @"logEvent":                        [NSValue valueWithPointer:&logEvent],
         
         // Debug
         @"nativeLog":                       [NSValue valueWithPointer:&nativeLog],

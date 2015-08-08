@@ -12,6 +12,10 @@ import com.freshplanet.ane.AirFacebook.AirFacebookExtensionContext;
 
 public class BaseFunction implements FREFunction
 {
+	public static final int TYPE_STRING = 0;
+	public static final int TYPE_INT = 1;
+	public static final int TYPE_BOOL = 2;
+
 	@Override
 	public FREObject call(FREContext context, FREObject[] args)
 	{
@@ -137,6 +141,33 @@ public class BaseFunction implements FREFunction
 		
 		return result;
 	}
+
+	protected List<Integer> getListOfIntegerFromFREArray(FREArray array)
+	{
+		List<Integer> result = new ArrayList<Integer>();
+
+		try
+		{
+			for (int i = 0; i < array.getLength(); i++)
+			{
+				try
+				{
+					result.add(getIntFromFREObject(array.getObjectAt((long) i)));
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+
+		return result;
+	}
 	
 	protected Bundle getBundleOfStringFromFREArrays(FREArray keys, FREArray values)
 	{
@@ -165,6 +196,50 @@ public class BaseFunction implements FREFunction
 			return null;
 		}
 		
+		return result;
+	}
+
+	protected Bundle getBundleFromFREArrays(FREArray keys, FREArray types, FREArray values)
+	{
+		Bundle result = new Bundle();
+
+		try
+		{
+			long length = keys.getLength();
+
+			if(length != types.getLength() || length != values.getLength()){
+				throw new Error("Wrong input arrays length!");
+			}
+
+			for (long i = 0; i < length; i++) {
+				try {
+					String key = getStringFromFREObject(keys.getObjectAt(i));
+					int type = getIntFromFREObject(types.getObjectAt(i));
+					FREObject valueObject = values.getObjectAt(i);
+					switch (type){
+						case TYPE_STRING:
+							result.putString(key, valueObject.getAsString());
+							break;
+						case TYPE_INT:
+							result.putInt(key, valueObject.getAsInt());
+							break;
+						case TYPE_BOOL:
+							result.putBoolean(key, valueObject.getAsBool());
+							break;
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+
 		return result;
 	}
 }

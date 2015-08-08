@@ -49,10 +49,12 @@ public class AirFacebookExtensionContext extends FREContext
 		// FB events
 		functions.put("activateApp", new ActivateAppFunction());
 		functions.put("deactivateApp", new DeactivateAppFunction());
+		functions.put("logEvent", new LogEventFunction());
 
 		// Debug
 		functions.put("nativeLog", new NativeLogFunction());
 		functions.put("setNativeLogEnabled", new SetNativeLogEnabledFunction());
+
 		return functions;	
 	}
 	
