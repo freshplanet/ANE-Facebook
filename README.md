@@ -7,8 +7,8 @@ This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensi
 Facebook SDK Versions
 ---------
 
-* iOS: 4.2.0
-* Android: 4.2.0
+* iOS: 4.4.0
+* Android: 4.4.1
 
 **IMPORTANT NOTE FOR ANDROID:** Use this ANE only when you build with AIR >=18. New FB Android SDK needs Java 1.7 and extension compiled with Java 1.7 will not work with AIR 16 (AIR 17 had a lot of issues with Android so I don't consider it either). Context of extension will not be created on Android. There should be no issues with iOS.
 
@@ -112,7 +112,7 @@ mv example.build.config build.config
 ant
 ```
 
-You MUST use Java 1.6 otherwise in android context will be null (probably bug in Adobe AIR SDK). On OSX you can call "export JAVA_HOME=`/usr/libexec/java_home -v 1.6`" without " to set JAVA_HOME properly.
+**NOTE (deprecated):**  You MUST use Java 1.6 otherwise in android context will be null (probably bug in Adobe AIR SDK). On OSX you can call "export JAVA_HOME=`/usr/libexec/java_home -v 1.6`" without " to set JAVA_HOME properly.
 
 Authors
 ------
