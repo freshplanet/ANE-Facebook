@@ -5,6 +5,7 @@
         <option>-weak_framework AdSupport</option>
         <option>-weak_framework Social</option>
         <option>-weak_framework CoreMotion</option>
+        <option>-weak_framework StoreKit</option>
     </linkerOptions>
     <packagedDependencies>
         <packagedDependency>Bolts.framework</packagedDependency>
