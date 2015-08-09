@@ -38,6 +38,9 @@ public class Facebook extends EventDispatcher {
 
     public function Facebook()
     {
+        if(!isSupported){
+            throw new Error("This extension is supported only on iOS and Android!");
+        }
         if (!_instance) {
             _context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
             if (!_context) {
@@ -75,6 +78,10 @@ public class Facebook extends EventDispatcher {
 
     public static function getInstance():Facebook
     {
+        if(!isSupported){
+            trace("This extension is supported only on iOS and Android!");
+            return null;
+        }
         return _instance ? _instance : new Facebook();
     }
 
