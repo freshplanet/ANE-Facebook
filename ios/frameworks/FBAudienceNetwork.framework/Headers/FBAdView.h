@@ -44,7 +44,7 @@ FB_CLASS_EXPORT
  */
 - (instancetype)initWithPlacementID:(NSString *)placementID
                              adSize:(FBAdSize)adSize
-                 rootViewController:(UIViewController *)viewController;
+                 rootViewController:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method

@@ -7,8 +7,10 @@ framework module FBAudienceNetwork {
     }
 
     link framework "AdSupport"
+    link framework "AVFoundation"
     link framework "CoreGraphics"
     link framework "CoreImage"
+    link framework "CoreMedia"
     link framework "CoreMotion"
     link framework "Foundation"
     link framework "Security"

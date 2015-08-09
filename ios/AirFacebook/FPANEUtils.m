@@ -18,6 +18,9 @@
 
 #import "FPANEUtils.h"
 
+const int PARAM_TYPE_STRING = 0;
+const int PARAM_TYPE_INT = 1;
+const int PARAM_TYPE_BOOL = 2;
 
 #pragma mark - Dispatch events
 
@@ -38,6 +41,13 @@ void FPANE_Log(FREContext context, NSString *message)
 
 
 #pragma mark - FREObject -> Obj-C
+
+NSInteger FPANE_FREObjectToNSInteger(FREObject object)
+{
+    int32_t value;
+    FREGetObjectAsInt32(object, &value);
+    return [[NSNumber numberWithInt:value] integerValue];
+}
 
 NSUInteger FPANE_FREObjectToNSUInteger(FREObject object)
 {
@@ -114,6 +124,65 @@ NSDictionary * FPANE_FREObjectsToNSDictionaryOfNSString(FREObject keys, FREObjec
         NSString *key = [NSString stringWithUTF8String:(char*)keyString];
         NSString *value = [NSString stringWithUTF8String:(char*)valueString];
         [mutableDictionary setObject:value forKey:key];
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:mutableDictionary];
+}
+
+NSDictionary * FPANE_FREObjectsToNSDictionary(FREObject keys, FREObject types, FREObject values)
+{
+    uint32_t numKeys, numTypes, numValues;
+    FREGetArrayLength(keys, &numKeys);
+    FREGetArrayLength(types, &numTypes);
+    FREGetArrayLength(values, &numValues);
+    
+    if(numKeys != numTypes || numKeys != numValues || numKeys == 0){
+        return nil;
+    }
+    
+    uint32_t stringLength;
+    NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithCapacity:numKeys];
+    for (uint32_t i = 0; i < numKeys; i++)
+    {
+        FREObject keyRaw, typeRaw, valueRaw;
+        FREGetArrayElementAt(keys, i, &keyRaw);
+        FREGetArrayElementAt(types, i, &typeRaw);
+        FREGetArrayElementAt(values, i, &valueRaw);
+        
+        // Convert key and value to strings. Skip with warning if not possible.
+        const uint8_t *keyString;
+        uint32_t type;
+    
+        if (FREGetObjectAsUTF8(keyRaw, &stringLength, &keyString) != FRE_OK || FREGetObjectAsUint32(typeRaw, &type) != FRE_OK)
+        {
+            NSLog(@"Couldn't convert FREObject to NSString at index %u", i);
+            continue;
+        }
+        
+        NSString *key = [NSString stringWithUTF8String:(char*)keyString];
+        
+        switch (type) {
+            case PARAM_TYPE_STRING:
+            {
+                NSString *value = FPANE_FREObjectToNSString(valueRaw);
+                [mutableDictionary setObject:value forKey:key];
+                break;
+            }
+            case PARAM_TYPE_INT:
+            {
+                NSInteger value = FPANE_FREObjectToNSInteger(valueRaw);
+                [mutableDictionary setObject:@(value) forKey:key]; // same as [NSNumber numberWithLong:value]
+                break;
+            }
+            case PARAM_TYPE_BOOL:
+            {
+                BOOL value = FPANE_FREObjectToBOOL(valueRaw);
+                [mutableDictionary setObject:@(value) forKey:key]; // same as [NSNumber numberWithBool:value]
+                break;
+            }
+            default:
+                continue;
+        }
     }
     
     return [NSDictionary dictionaryWithDictionary:mutableDictionary];

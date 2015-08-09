@@ -89,7 +89,7 @@ FB_CLASS_EXPORT
  @param numAdsRequested The number of ads you would like the native ads manager to retrieve.
  */
 - (instancetype)initWithPlacementID:(NSString *)placementID
-                 forNumAdsRequested:(NSUInteger)numAdsRequested;
+                 forNumAdsRequested:(NSUInteger)numAdsRequested NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method
@@ -107,11 +107,11 @@ FB_CLASS_EXPORT
 
 
 /*!
- @method
+ @property
 
  @abstract Retrieve the next native ad to be used from the batch. It is highly recommended that the caller wait until immediately before rendering the ad content to call this method to ensure the best ad for the given context is used. If more than uniqueNativeAdCount ads are requested cloned ads will be returned. Periodically the native ads manager will refresh and new ads will be returned.
 
- @return A FBNativeAd which is loaded and ready to be used.
+  @return A FBNativeAd which is loaded and ready to be used.
  */
 - (FBNativeAd *)nextNativeAd;
 

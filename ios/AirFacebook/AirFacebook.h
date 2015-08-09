@@ -65,6 +65,7 @@ DEFINE_ANE_FUNCTION(appInviteDialog);
 
 // FB events
 DEFINE_ANE_FUNCTION(activateApp);
+DEFINE_ANE_FUNCTION(logEvent);
 
 // Debug
 DEFINE_ANE_FUNCTION(nativeLog);

@@ -49,17 +49,19 @@ public class AirFacebookExtensionContext extends FREContext
 		// FB events
 		functions.put("activateApp", new ActivateAppFunction());
 		functions.put("deactivateApp", new DeactivateAppFunction());
+		functions.put("logEvent", new LogEventFunction());
 
 		// Debug
 		functions.put("nativeLog", new NativeLogFunction());
 		functions.put("setNativeLogEnabled", new SetNativeLogEnabledFunction());
+
 		return functions;	
 	}
 	
 	private String appID;
 	private DefaultAudience defaultAudience = DefaultAudience.FRIENDS;
 	private ShareDialog.Mode defaultShareDialogMode = ShareDialog.Mode.AUTOMATIC;
-	private LoginBehavior loginBehavior = LoginBehavior.SSO_WITH_FALLBACK;
+	private LoginBehavior loginBehavior = LoginBehavior.NATIVE_WITH_FALLBACK;
 
 	public String getAppID() {
 		return appID;

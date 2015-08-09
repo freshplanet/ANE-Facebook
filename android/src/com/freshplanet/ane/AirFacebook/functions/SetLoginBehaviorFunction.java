@@ -17,10 +17,10 @@ public class SetLoginBehaviorFunction extends BaseFunction {
 
         int loginBehaviorInt = getIntFromFREObject(args[0]);
         switch (loginBehaviorInt){
-            case 0: loginBehavior = LoginBehavior.SSO_WITH_FALLBACK; break;
-            case 1: loginBehavior = LoginBehavior.SSO_ONLY; break;
-            case 2: loginBehavior = LoginBehavior.SUPPRESS_SSO; break;
-            default: loginBehavior = LoginBehavior.SSO_WITH_FALLBACK;
+            case 0: loginBehavior = LoginBehavior.NATIVE_WITH_FALLBACK; break;
+            case 1: loginBehavior = LoginBehavior.NATIVE_ONLY; break;
+            case 2: loginBehavior = LoginBehavior.WEB_ONLY; break;
+            default: loginBehavior = LoginBehavior.NATIVE_WITH_FALLBACK;
         }
         AirFacebookExtension.context.setLoginBehavior(loginBehavior);
 

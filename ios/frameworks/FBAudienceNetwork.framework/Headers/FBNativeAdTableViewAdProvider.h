@@ -44,7 +44,7 @@ FB_CLASS_EXPORT
 
  @param manager The FBNativeAdsManager which is consumed by this class.
  */
-- (instancetype)initWithManager:(FBNativeAdsManager *)manager;
+- (instancetype)initWithManager:(FBNativeAdsManager *)manager NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method

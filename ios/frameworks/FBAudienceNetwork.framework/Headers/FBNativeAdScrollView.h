@@ -113,6 +113,6 @@ FB_CLASS_EXPORT
  @param childViewProvider Block that creates new views for each loaded native ad. Must not reuse the same instance, but return a new view for each call. Views may be arbitrarily resized and should support resizing their content through Auto Layout constraints, autoresizing masks, or manual resizing.
  @param maximumNativeAdCount Maximum native ads to show at once.
  */
-- (instancetype)initWithNativeAdsManager:(FBNativeAdsManager *)manager withViewProvider:(UIView *(^)(FBNativeAd *nativeAd, NSUInteger position))childViewProvider withMaximum:(NSUInteger)maximumNativeAdCount;
+- (instancetype)initWithNativeAdsManager:(FBNativeAdsManager *)manager withViewProvider:(UIView *(^)(FBNativeAd *nativeAd, NSUInteger position))childViewProvider withMaximum:(NSUInteger)maximumNativeAdCount NS_DESIGNATED_INITIALIZER;
 
 @end

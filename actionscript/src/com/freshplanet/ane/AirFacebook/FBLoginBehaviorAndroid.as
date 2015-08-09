@@ -8,17 +8,19 @@ package com.freshplanet.ane.AirFacebook {
 public class FBLoginBehaviorAndroid {
 
     /**
-     * Specifies that login should attempt Single Sign On (SSO), and if that does not work fall back to dialog auth. This is the default behavior.
+     * Specifies that login should attempt login in using the Facebook App, and if that
+     * does not work fall back to web dialog auth. This is the default behavior.
      */
-    public static const SSO_WITH_FALLBACK:FBLoginBehaviorAndroid = new FBLoginBehaviorAndroid(Private, 0);
+    public static const NATIVE_WITH_FALLBACK:FBLoginBehaviorAndroid = new FBLoginBehaviorAndroid(Private, 0);
     /**
-     * Specifies that login should only attempt SSO. If SSO fails, then the login fails.
+     * Specifies that login should only attempt to login using the Facebook App.
+     * If the Facebook App cannot be used then the login fails.
      */
-    public static const SSO_ONLY:FBLoginBehaviorAndroid = new FBLoginBehaviorAndroid(Private, 1);
+    public static const NATIVE_ONLY:FBLoginBehaviorAndroid = new FBLoginBehaviorAndroid(Private, 1);
     /**
-     * Specifies that SSO should not be attempted, and to only use dialog auth.
+     * Specifies that only the web dialog auth should be used.
      */
-    public static const SUPPRESS_SSO:FBLoginBehaviorAndroid = new FBLoginBehaviorAndroid(Private, 2);
+    public static const WEB_ONLY:FBLoginBehaviorAndroid = new FBLoginBehaviorAndroid(Private, 2);
 
     private var _value:int;
 

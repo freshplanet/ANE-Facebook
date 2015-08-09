@@ -1,4 +1,5 @@
 ﻿package com.freshplanet.ane.AirFacebook {
+import com.freshplanet.ane.AirFacebook.appevents.FBEvent;
 import com.freshplanet.ane.AirFacebook.share.FBAppInviteContent;
 import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
 
@@ -37,6 +38,9 @@ public class Facebook extends EventDispatcher {
 
     public function Facebook()
     {
+        if(!isSupported){
+            throw new Error("This extension is supported only on iOS and Android!");
+        }
         if (!_instance) {
             _context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
             if (!_context) {
@@ -74,6 +78,10 @@ public class Facebook extends EventDispatcher {
 
     public static function getInstance():Facebook
     {
+        if(!isSupported){
+            trace("This extension is supported only on iOS and Android!");
+            return null;
+        }
         return _instance ? _instance : new Facebook();
     }
 
@@ -93,8 +101,8 @@ public class Facebook extends EventDispatcher {
     {
         if (isSupported && _context != null) {
 
-            _context.call('setNativeLogEnabled', Facebook.nativeLogEnabled);
-            _context.call('initFacebook', appID);
+            _context.call("setNativeLogEnabled", Facebook.nativeLogEnabled);
+            _context.call("initFacebook", appID);
             _initialized = true;
         } else {
 
@@ -196,7 +204,7 @@ public class Facebook extends EventDispatcher {
     {
         if (_initialized) {
 
-            var accessToken:FBAccessToken = _context.call('getAccessToken') as FBAccessToken;
+            var accessToken:FBAccessToken = _context.call("getAccessToken") as FBAccessToken;
             log(accessToken ? accessToken.toString() : "No access token!");
             return accessToken;
         } else {
@@ -272,7 +280,7 @@ public class Facebook extends EventDispatcher {
     {
         if (_initialized) {
 
-            _context.call('logOut');
+            _context.call("logOut");
         } else {
 
             log("You must call init() before any other method!");
@@ -314,7 +322,7 @@ public class Facebook extends EventDispatcher {
             var callbackName:String = getNewCallbackName(callback);
 
             // Execute the request
-            _context.call('requestWithGraphPath', graphPath, keys, values, httpMethod, callbackName);
+            _context.call("requestWithGraphPath", graphPath, keys, values, httpMethod, callbackName);
         } else {
 
             log("You must call init() before any other method!");
@@ -331,7 +339,7 @@ public class Facebook extends EventDispatcher {
     {
         if (_initialized) {
 
-            return _context.call('canPresentShareDialog');
+            return _context.call("canPresentShareDialog");
         } else {
 
             log("You must call init() before any other method!");
@@ -360,7 +368,7 @@ public class Facebook extends EventDispatcher {
             if(shareLinkContent == null){
                 return;
             }
-            _context.call('shareLinkDialog', shareLinkContent, useShareApi, getNewCallbackName(callback));
+            _context.call("shareLinkDialog", shareLinkContent, useShareApi, getNewCallbackName(callback));
         } else {
 
             log("You must call init() before any other method!");
@@ -380,7 +388,18 @@ public class Facebook extends EventDispatcher {
             if(appInviteContent == null){
                 return;
             }
-            _context.call('appInviteDialog', appInviteContent, getNewCallbackName(callback));
+            _context.call("appInviteDialog", appInviteContent, getNewCallbackName(callback));
+        } else {
+
+            log("You must call init() before any other method!");
+        }
+    }
+
+    public function logEvent(event:FBEvent):void
+    {
+        if(_initialized){
+
+            _context.call("logEvent", event);
         } else {
 
             log("You must call init() before any other method!");
