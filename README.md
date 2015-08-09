@@ -70,6 +70,8 @@ On Android:
                     android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
                 <activity android:name="com.freshplanet.ane.AirFacebook.ShareDialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
                     android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.AppInviteActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 
                 <provider android:authorities="com.facebook.app.FacebookContentProvider{YOUR_FB_APPLICATION_ID}" android:name="com.facebook.FacebookContentProvider" android:exported="true"/>
                 
