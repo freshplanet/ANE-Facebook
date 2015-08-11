@@ -12,6 +12,8 @@ Facebook SDK Versions
 
 **IMPORTANT NOTE FOR ANDROID:** Use this ANE only when you build with AIR >=18. New FB Android SDK needs Java 1.7 and extension compiled with Java 1.7 will not work with AIR 16 (AIR 17 had a lot of issues with Android so I don't consider it either). Context of extension will not be created on Android. There should be no issues with iOS.
 
+**IMPORTANT NOTE FOR IOS 9:** With IOS 9 you must update your application descriptor to match [these changes](https://developers.facebook.com/docs/ios/ios9).
+
 Installation
 ---------
 
