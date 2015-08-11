@@ -20,7 +20,7 @@ public class AppInviteDialogFunction extends BaseFunction implements FREFunction
 		String previewImageUrl = FREConversionUtil.toString(FREConversionUtil.getProperty("previewImageUrl", args[0]));
 		String callback = getStringFromFREObject(args[1]);
 
-		AirFacebookExtension.log("AppInviteDialogFunction");
+		AirFacebookExtension.log("AppInviteDialogFunction appLinkUrl:" + appLinkUrl + " previewImageUrl:" + previewImageUrl);
 
 		AppInviteContent.Builder builder = new AppInviteContent.Builder();
 		if(appLinkUrl != null) builder.setApplinkUrl(appLinkUrl);
