@@ -40,7 +40,7 @@
  @abstract When the FBNativeAdsManager has reached a failure while attempting to load a batch of ads this message will be sent to the application.
  @param error An NSError object with information about the failure.
  */
-- (void)nativeAdsFailedToLoadWithError:(NSError *)error;
+- (void)nativeAdsFailedToLoadWithError:(nonnull NSError *)error;
 
 @end
 
@@ -57,7 +57,7 @@ FB_CLASS_EXPORT
 
  @abstract The delegate
  */
-@property (nonatomic, weak) id <FBNativeAdsManagerDelegate> delegate;
+@property (nonatomic, weak, nullable) id <FBNativeAdsManagerDelegate> delegate;
 
 /*!
  @property
@@ -88,8 +88,8 @@ FB_CLASS_EXPORT
  @param placementID The id of the ad placement. You can create your placement id from Facebook developers page.
  @param numAdsRequested The number of ads you would like the native ads manager to retrieve.
  */
-- (instancetype)initWithPlacementID:(NSString *)placementID
-                 forNumAdsRequested:(NSUInteger)numAdsRequested NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementID:(nonnull NSString *)placementID
+                         forNumAdsRequested:(NSUInteger)numAdsRequested NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method
@@ -113,6 +113,6 @@ FB_CLASS_EXPORT
 
   @return A FBNativeAd which is loaded and ready to be used.
  */
-- (FBNativeAd *)nextNativeAd;
+- (nonnull FBNativeAd *)nextNativeAd;
 
 @end

@@ -57,13 +57,13 @@ FB_CLASS_EXPORT
  @param nativeAd The native ad to use to create this view.
  @param type The type of this native ad template. For more information, consult FBNativeAdViewType.
  */
-+ (instancetype)nativeAdViewWithNativeAd:(FBNativeAd *)nativeAd withType:(FBNativeAdViewType)type;
++ (nonnull instancetype)nativeAdViewWithNativeAd:(nonnull FBNativeAd *)nativeAd withType:(FBNativeAdViewType)type;
 
 /*!
  @property
  @abstract A view controller that is used to present modal content. If nil, the view searches for a view controller.
  */
-@property (nonatomic, weak) UIViewController *viewController;
+@property (nonatomic, weak, nullable) UIViewController *viewController;
 
 /*!
  @method
@@ -73,7 +73,7 @@ FB_CLASS_EXPORT
  @param type The type of this native ad template. For more information, consult FBNativeAdViewType.
  @param attributes The attributes to render this native ad template with.
  */
-+ (instancetype)nativeAdViewWithNativeAd:(FBNativeAd *)nativeAd withType:(FBNativeAdViewType)type withAttributes:(FBNativeAdViewAttributes *)attributes;
++ (nonnull instancetype)nativeAdViewWithNativeAd:(nonnull FBNativeAd *)nativeAd withType:(FBNativeAdViewType)type withAttributes:(nonnull FBNativeAdViewAttributes *)attributes;
 
 @end
 
@@ -89,55 +89,61 @@ FB_CLASS_EXPORT
  @abstract
  Background color of the native ad view.
  */
-@property (nonatomic, copy) UIColor *backgroundColor;
+@property (nonatomic, copy, nullable) UIColor *backgroundColor;
 /*!
  @property
  @abstract
  Color of the title label.
  */
-@property (nonatomic, copy) UIColor *titleColor;
+@property (nonatomic, copy, nullable) UIColor *titleColor;
 /*!
  @property
  @abstract
  Font of the title label.
  */
-@property (nonatomic, copy) UIFont *titleFont;
+@property (nonatomic, copy, nullable) UIFont *titleFont;
 /*!
  @property
  @abstract
  Color of the description label.
  */
-@property (nonatomic, copy) UIColor *descriptionColor;
+@property (nonatomic, copy, nullable) UIColor *descriptionColor;
 /*!
  @property
  @abstract
  Font of the description label.
  */
-@property (nonatomic, copy) UIFont *descriptionFont;
+@property (nonatomic, copy, nullable) UIFont *descriptionFont;
 /*!
  @property
  @abstract
  Background color of the call to action button.
  */
-@property (nonatomic, copy) UIColor *buttonColor;
+@property (nonatomic, copy, nullable) UIColor *buttonColor;
 /*!
  @property
  @abstract
  Color of the call to action button's title label.
  */
-@property (nonatomic, copy) UIColor *buttonTitleColor;
+@property (nonatomic, copy, nullable) UIColor *buttonTitleColor;
 /*!
  @property
  @abstract
  Font of the call to action button's title label.
  */
-@property (nonatomic, copy) UIFont *buttonTitleFont;
+@property (nonatomic, copy, nullable) UIFont *buttonTitleFont;
 /*!
  @property
  @abstract
  Border color of the call to action button. If nil, no border is shown.
  */
-@property (nonatomic, copy) UIColor *buttonBorderColor;
+@property (nonatomic, copy, nullable) UIColor *buttonBorderColor;
+/*!
+ @property
+ @abstract
+ Enables or disables autoplay for some types of media. Defaults to YES.
+ */
+@property (nonatomic, assign, getter=isAutoplayEnabled) BOOL autoplayEnabled;
 
 /*!
  @method
@@ -146,6 +152,6 @@ FB_CLASS_EXPORT
 
  @param type The type for this layout.
  */
-+ (instancetype)defaultAttributesForType:(FBNativeAdViewType)type;
++ (nonnull instancetype)defaultAttributesForType:(FBNativeAdViewType)type;
 
 @end

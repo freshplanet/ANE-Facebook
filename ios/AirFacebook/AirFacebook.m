@@ -136,6 +136,11 @@ static AirFacebook *sharedInstance = nil;
 
 + (NSString*) jsonStringFromObject:(id)obj andPrettyPrint:(BOOL) prettyPrint
 {
+    if(obj == nil){
+        NSLog(@"jsonStringFromObject:andPrettyPrint: first argument was nil!");
+        return @"[]";
+    }
+    
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:obj
                                                        options:(NSJSONWritingOptions) (prettyPrint ? NSJSONWritingPrettyPrinted : 0)

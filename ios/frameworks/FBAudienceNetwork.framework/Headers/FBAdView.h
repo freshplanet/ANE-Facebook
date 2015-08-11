@@ -42,9 +42,9 @@ FB_CLASS_EXPORT
  @param adSize The size of the ad; for example, kFBAdSizeHeight50Banner or kFBAdSizeHeight90Banner.
  @param viewController The view controller that will be used to present the ad and the app store view.
  */
-- (instancetype)initWithPlacementID:(NSString *)placementID
-                             adSize:(FBAdSize)adSize
-                 rootViewController:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementID:(nonnull NSString *)placementID
+                                     adSize:(FBAdSize)adSize
+                         rootViewController:(nonnull UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method
@@ -77,17 +77,17 @@ FB_CLASS_EXPORT
  @property
  @abstract Typed access to the id of the ad placement.
  */
-@property (nonatomic, copy, readonly) NSString *placementID;
+@property (nonatomic, copy, readonly, nonnull) NSString *placementID;
 /*!
  @property
  @abstract Typed access to the app's root view controller.
  */
-@property (nonatomic, weak, readonly) UIViewController *rootViewController;
+@property (nonatomic, weak, readonly, nullable) UIViewController *rootViewController;
 /*!
  @property
  @abstract the delegate
  */
-@property (nonatomic, weak) id<FBAdViewDelegate> delegate;
+@property (nonatomic, weak, nullable) id<FBAdViewDelegate> delegate;
 
 @end
 
@@ -111,7 +111,7 @@ FB_CLASS_EXPORT
 
  @param adView An FBAdView object sending the message.
  */
-- (void)adViewDidClick:(FBAdView *)adView;
+- (void)adViewDidClick:(nonnull FBAdView *)adView;
 /*!
  @method
 
@@ -122,7 +122,7 @@ FB_CLASS_EXPORT
 
  @param adView An FBAdView object sending the message.
  */
-- (void)adViewDidFinishHandlingClick:(FBAdView *)adView;
+- (void)adViewDidFinishHandlingClick:(nonnull FBAdView *)adView;
 /*!
  @method
 
@@ -131,7 +131,7 @@ FB_CLASS_EXPORT
 
  @param adView An FBAdView object sending the message.
  */
-- (void)adViewDidLoad:(FBAdView *)adView;
+- (void)adViewDidLoad:(nonnull FBAdView *)adView;
 /*!
  @method
 
@@ -141,7 +141,7 @@ FB_CLASS_EXPORT
  @param adView An FBAdView object sending the message.
  @param error An error object containing details of the error.
  */
-- (void)adView:(FBAdView *)adView didFailWithError:(NSError *)error;
+- (void)adView:(nonnull FBAdView *)adView didFailWithError:(nonnull NSError *)error;
 
 /*!
  @method
@@ -151,7 +151,7 @@ FB_CLASS_EXPORT
 
  @param adView An FBAdView object sending the message.
  */
-- (void)adViewWillLogImpression:(FBAdView *)adView;
+- (void)adViewWillLogImpression:(nonnull FBAdView *)adView;
 
 /*!
  @method
@@ -162,6 +162,6 @@ FB_CLASS_EXPORT
 
  @return A view controller that is used to present modal content.
  */
-- (UIViewController *)viewControllerForPresentingModalView;
+- (nonnull UIViewController *)viewControllerForPresentingModalView;
 
 @end

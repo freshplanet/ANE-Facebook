@@ -41,7 +41,7 @@ FB_CLASS_EXPORT
  @param manager The naitve ad manager consumed by this provider
  @param type The type of this native ad template. For more information, consult FBNativeAdViewType.
  */
-- (instancetype)initWithManager:(FBNativeAdsManager *)manager forType:(FBNativeAdViewType)type;
+- (nonnull instancetype)initWithManager:(nonnull FBNativeAdsManager *)manager forType:(FBNativeAdViewType)type;
 
 /*!
  @method
@@ -52,27 +52,27 @@ FB_CLASS_EXPORT
  @param type The type of this native ad template. For more information, consult FBNativeAdViewType.
  @param attributes The layout of this native ad template. For more information, consult FBNativeAdViewLayout.
  */
-- (instancetype)initWithManager:(FBNativeAdsManager *)manager forType:(FBNativeAdViewType)type forAttributes:(FBNativeAdViewAttributes *)attributes NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithManager:(nonnull FBNativeAdsManager *)manager forType:(FBNativeAdViewType)type forAttributes:(nonnull FBNativeAdViewAttributes *)attributes NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method
 
  @abstract Helper method for implementors of UITableViewDataSource who would like to host native ad UITableViewCells in their table view.
  */
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath;
 
 /*!
  @method
 
  @abstract Helper method for implementors of UITableViewDelegate who would like to host native ad UITableViewCells in their table view.
  */
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGFloat)tableView:(nonnull UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath;
 
 /*!
  @method
 
  @abstract Helper method for implementors of UITableViewDelegate who would like to host native ad UITableViewCells in their table view.
  */
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGFloat)tableView:(nonnull UITableView *)tableView estimatedHeightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath;
 
 @end

@@ -35,4 +35,10 @@
 
 #define FB_CLASS_EXPORT __attribute__((visibility("default")))
 
+#if __IPHONE_9_0
+#define FBInterfaceOrientationMask UIInterfaceOrientationMask
+#else
+#define FBInterfaceOrientationMask NSUInteger
+#endif
+
 #endif

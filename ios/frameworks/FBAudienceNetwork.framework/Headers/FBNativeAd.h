@@ -44,7 +44,7 @@ FB_CLASS_EXPORT
  @property
  @abstract Typed access to the id of the ad placement.
  */
-@property (nonatomic, copy, readonly) NSString *placementID;
+@property (nonatomic, copy, readonly, nonnull) NSString *placementID;
 /*!
  @property
  @abstract Typed access to the ad star rating. See `FBAdStarRating` for details.
@@ -54,37 +54,37 @@ FB_CLASS_EXPORT
  @property
  @abstract Typed access to the ad title.
  */
-@property (nonatomic, copy, readonly) NSString *title;
+@property (nonatomic, copy, readonly, nullable) NSString *title;
 /*!
  @property
  @abstract Typed access to the ad subtitle.
  */
-@property (nonatomic, copy, readonly) NSString *subtitle;
+@property (nonatomic, copy, readonly, nullable) NSString *subtitle;
 /*!
  @property
  @abstract Typed access to the ad social context, for example "Over half a million users".
  */
-@property (nonatomic, copy, readonly) NSString *socialContext;
+@property (nonatomic, copy, readonly, nullable) NSString *socialContext;
 /*!
  @property
  @abstract Typed access to the call to action phrase of the ad, for example "Install Now".
  */
-@property (nonatomic, copy, readonly) NSString *callToAction;
+@property (nonatomic, copy, readonly, nullable) NSString *callToAction;
 /*!
  @property
  @abstract Typed access to the ad icon. See `FBAdImage` for details.
  */
-@property (nonatomic, strong, readonly) FBAdImage *icon;
+@property (nonatomic, strong, readonly, nullable) FBAdImage *icon;
 /*!
  @property
  @abstract Typed access to the ad cover image creative. See `FBAdImage` for details.
  */
-@property (nonatomic, strong, readonly) FBAdImage *coverImage;
+@property (nonatomic, strong, readonly, nullable) FBAdImage *coverImage;
 /*!
  @property
  @abstract Typed access to the body text, usually a longer description of the ad.
  */
-@property (nonatomic, copy, readonly) NSString *body;
+@property (nonatomic, copy, readonly, nullable) NSString *body;
 /*!
  @property
 
@@ -95,7 +95,7 @@ FB_CLASS_EXPORT
  @property
  @abstract the delegate
  */
-@property (nonatomic, weak) id<FBNativeAdDelegate> delegate;
+@property (nonatomic, weak, nullable) id<FBNativeAdDelegate> delegate;
 
 /*!
  @method
@@ -105,7 +105,7 @@ FB_CLASS_EXPORT
 
  @param placementID The id of the ad placement. You can create your placement id from Facebook developers page.
  */
-- (instancetype)initWithPlacementID:(NSString *)placementID NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithPlacementID:(nonnull NSString *)placementID NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method
@@ -119,8 +119,8 @@ FB_CLASS_EXPORT
 
  @discussion The whole area of the UIView will be clickable.
  */
-- (void)registerViewForInteraction:(UIView *)view
-                withViewController:(UIViewController *)viewController;
+- (void)registerViewForInteraction:(nonnull UIView *)view
+                withViewController:(nonnull UIViewController *)viewController;
 
 /*!
  @method
@@ -135,9 +135,9 @@ FB_CLASS_EXPORT
  @param clickableViews An array of UIView you created to render the native ads data element, e.g.
  CallToAction button, Icon image, which you want to specify as clickable.
  */
-- (void)registerViewForInteraction:(UIView *)view
-                withViewController:(UIViewController *)viewController
-                withClickableViews:(NSArray *)clickableViews;
+- (void)registerViewForInteraction:(nonnull UIView *)view
+                withViewController:(nonnull UIViewController *)viewController
+                withClickableViews:(nonnull NSArray *)clickableViews;
 
 /*!
  @method
@@ -188,7 +188,7 @@ FB_CLASS_EXPORT
 
  @param nativeAd An FBNativeAd object sending the message.
  */
-- (void)nativeAdDidLoad:(FBNativeAd *)nativeAd;
+- (void)nativeAdDidLoad:(nonnull FBNativeAd *)nativeAd;
 
 /*!
  @method
@@ -198,7 +198,7 @@ FB_CLASS_EXPORT
 
  @param nativeAd An FBNativeAd object sending the message.
  */
-- (void)nativeAdWillLogImpression:(FBNativeAd *)nativeAd;
+- (void)nativeAdWillLogImpression:(nonnull FBNativeAd *)nativeAd;
 
 /*!
  @method
@@ -209,7 +209,7 @@ FB_CLASS_EXPORT
  @param nativeAd An FBNativeAd object sending the message.
  @param error An error object containing details of the error.
  */
-- (void)nativeAd:(FBNativeAd *)nativeAd didFailWithError:(NSError *)error;
+- (void)nativeAd:(nonnull FBNativeAd *)nativeAd didFailWithError:(nonnull NSError *)error;
 
 /*!
  @method
@@ -219,7 +219,7 @@ FB_CLASS_EXPORT
 
  @param nativeAd An FBNativeAd object sending the message.
  */
-- (void)nativeAdDidClick:(FBNativeAd *)nativeAd;
+- (void)nativeAdDidClick:(nonnull FBNativeAd *)nativeAd;
 
 /*!
  @method
@@ -231,7 +231,7 @@ FB_CLASS_EXPORT
 
  @param nativeAd An FBNativeAd object sending the message.
  */
-- (void)nativeAdDidFinishHandlingClick:(FBNativeAd *)nativeAd;
+- (void)nativeAdDidFinishHandlingClick:(nonnull FBNativeAd *)nativeAd;
 
 @end
 
@@ -258,7 +258,7 @@ FB_CLASS_EXPORT
  @property
  @abstract Typed access to the image url.
  */
-@property (nonatomic, copy, readonly) NSURL *url;
+@property (nonatomic, copy, readonly, nonnull) NSURL *url;
 /*!
  @property
  @abstract Typed access to the image width.
@@ -280,7 +280,7 @@ FB_CLASS_EXPORT
  @param width the image width.
  @param height the image height.
  */
-- (instancetype)initWithURL:(NSURL *)url width:(NSInteger)width height:(NSInteger)height NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithURL:(nonnull NSURL *)url width:(NSInteger)width height:(NSInteger)height NS_DESIGNATED_INITIALIZER;
 
 /*!
  @method
@@ -290,7 +290,7 @@ FB_CLASS_EXPORT
 
  @param block Block to handle the loaded image.
  */
-- (void)loadImageAsyncWithBlock:(void (^)(UIImage * image))block;
+- (void)loadImageAsyncWithBlock:(nullable void (^)(UIImage * __nullable image))block;
 
 @end
 
@@ -313,13 +313,13 @@ FB_CLASS_EXPORT
  @property
  @abstract The color drawn for filled-in stars. Defaults to yellow.
  */
-@property (strong, nonatomic) UIColor *primaryColor;
+@property (strong, nonatomic, nonnull) UIColor *primaryColor;
 
 /*!
  @property
  @abstract The color drawn for empty stars. Defaults to gray.
  */
-@property (strong, nonatomic) UIColor *secondaryColor;
+@property (strong, nonatomic, nonnull) UIColor *secondaryColor;
 
 /*!
  @method
@@ -330,6 +330,6 @@ FB_CLASS_EXPORT
  @param frame Frame of this view.
  @param starRating Star rating from a native ad.
  */
-- (instancetype)initWithFrame:(CGRect)frame withStarRating:(struct FBAdStarRating)starRating NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame withStarRating:(struct FBAdStarRating)starRating NS_DESIGNATED_INITIALIZER;
 
 @end

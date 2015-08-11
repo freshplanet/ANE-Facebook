@@ -37,13 +37,19 @@ FB_CLASS_EXPORT
  @property
  @abstract Access to the text label contained in this view.
  */
-@property (nonatomic, weak, readonly) UILabel *label;
+@property (nonatomic, weak, readonly, nullable) UILabel *label;
 
 /*!
  @property
  @abstract Determines whether the background mask is shown, or a transparent mask is used.
  */
 @property (nonatomic, assign, getter=isBackgroundShown) BOOL backgroundShown;
+
+/*!
+ @property
+ @abstract Determines whether the view can be expanded upon being tapped, or defaults to fullsize. Defaults to NO.
+ */
+@property (nonatomic, assign, readonly, getter=isExpandable) BOOL expandable;
 
 /*!
  @method
@@ -53,7 +59,19 @@ FB_CLASS_EXPORT
 
  @param nativeAd The native ad to initialize with.
  */
-- (instancetype)initWithNativeAd:(FBNativeAd *)nativeAd;
+- (nonnull instancetype)initWithNativeAd:(nonnull FBNativeAd *)nativeAd;
+
+/*!
+ @method
+
+ @abstract
+ Initialize this view with a given native ad. Configuration is pulled from the native ad.
+
+ @param nativeAd The native ad to initialize with.
+ @param expandable Controls whether view defaults to expanded or not, see property documentation
+ */
+- (nonnull instancetype)initWithNativeAd:(nonnull FBNativeAd *)nativeAd
+                              expandable:(BOOL)expandable;
 
 /*!
  @method
@@ -66,8 +84,27 @@ FB_CLASS_EXPORT
  @param adChoicesLinkURL Native ad AdChoices link URL.
  @param attributes Attributes to configure look and feel.
  */
-- (instancetype)initWithViewController:(UIViewController *)viewController adChoicesIcon:(FBAdImage *)adChoicesIcon adChoicesLinkURL:(NSURL *)adChoicesLinkURL attributes:(FBNativeAdViewAttributes *)attributes NS_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController
+                                 adChoicesIcon:(nonnull FBAdImage *)adChoicesIcon
+                              adChoicesLinkURL:(nonnull NSURL *)adChoicesLinkURL
+                                    attributes:(nullable FBNativeAdViewAttributes *)attributes;
+/*!
+ @method
 
+ @abstract
+ Initialize this view with explicit parameters.
+
+ @param viewController View controller to present the AdChoices webview from.
+ @param adChoicesIcon Native ad AdChoices icon.
+ @param adChoicesLinkURL Native ad AdChoices link URL.
+ @param attributes Attributes to configure look and feel.
+ @param expandable Controls whether view defaults to expanded or not, see property documentation
+ */
+- (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController
+                                 adChoicesIcon:(nonnull FBAdImage *)adChoicesIcon
+                              adChoicesLinkURL:(nonnull NSURL *)adChoicesLinkURL
+                                    attributes:(nullable FBNativeAdViewAttributes *)attributes
+                                    expandable:(BOOL)expandable NS_DESIGNATED_INITIALIZER;
 /*!
  @method
 
