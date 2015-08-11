@@ -19,6 +19,7 @@
 #import <UIKit/UIKit.h>
 
 #import <FBAudienceNetwork/FBAdChoicesView.h>
+#import <FBAudienceNetwork/FBAdDefines.h>
 #import <FBAudienceNetwork/FBAdSettings.h>
 #import <FBAudienceNetwork/FBAdView.h>
 #import <FBAudienceNetwork/FBInterstitialAd.h>
@@ -30,4 +31,4 @@
 #import <FBAudienceNetwork/FBNativeAdView.h>
 #import <FBAudienceNetwork/FBNativeAdsManager.h>
 
-#define FB_AD_SDK_VERSION @"4.4.0"
+#define FB_AD_SDK_VERSION @"4.5.0"

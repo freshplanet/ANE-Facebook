@@ -36,7 +36,7 @@ FB_CLASS_EXPORT
  @property
  @abstract the delegate
  */
-@property (nonatomic, weak) id<FBMediaViewDelegate> delegate;
+@property (nonatomic, weak, nullable) id<FBMediaViewDelegate> delegate;
 
 /*!
  @method
@@ -44,9 +44,19 @@ FB_CLASS_EXPORT
  This is a method to create a media view using the given native ad.
  @param nativeAd The native ad to load media content from.
  */
-- (instancetype)initWithNativeAd:(FBNativeAd *)nativeAd;
+- (nonnull instancetype)initWithNativeAd:(nonnull FBNativeAd *)nativeAd;
 
-@property (nonatomic, strong) FBNativeAd *nativeAd;
+/*!
+ @property
+ @abstract the native ad, can be set again to reuse this view.
+ */
+@property (nonatomic, strong, nonnull) FBNativeAd *nativeAd;
+
+/*!
+ @property
+ @abstract Enables or disables autoplay for some types of media. Defaults to YES.
+ */
+@property (nonatomic, assign, getter=isAutoplayEnabled) BOOL autoplayEnabled;
 
 @end
 
@@ -68,6 +78,6 @@ FB_CLASS_EXPORT
 
  @param mediaView An FBMediaView object sending the message.
  */
-- (void)mediaViewDidLoad:(FBMediaView *)mediaView;
+- (void)mediaViewDidLoad:(nonnull FBMediaView *)mediaView;
 
 @end
