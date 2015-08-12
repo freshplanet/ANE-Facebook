@@ -32,6 +32,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
+import com.facebook.android.R;
 
 public class WebDialogActivity extends Activity implements WebDialog.OnCompleteListener
 {
@@ -64,7 +65,7 @@ public class WebDialogActivity extends Activity implements WebDialog.OnCompleteL
 		
 		// Setup views
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(AirFacebookExtension.getResourceId("layout.com_facebook_login_activity_layout"));
+		setContentView(R.layout.com_facebook_login_activity_layout);
 		
 		if ( session.isOpened() )
 		{
