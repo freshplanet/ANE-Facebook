@@ -12,6 +12,9 @@ import flash.external.ExtensionContext;
 import flash.system.Capabilities;
 
 public class Facebook extends EventDispatcher {
+
+    public static const VERSION:String = "4.5.1";
+
     private var _initialized:Boolean;
 
     // --------------------------------------------------------------------------------------//
@@ -86,10 +89,10 @@ public class Facebook extends EventDispatcher {
     }
 
     /**
-     * Initialize the Facebook extension.
+     * Initialize the Facebook extension. Call any other method after onInitialized callback is called.
      *
      * @param appID             A Facebook application ID (must be set for Android if there is missing FacebookId in application descriptor).<br><br>
-     *
+     * @param onInitialized     Called when Facebook SDK initialization is complete.
      * <code>
      *     &lt;meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb{YOUR_FB_APP_ID}"/&gt;
      * </code>
@@ -97,13 +100,13 @@ public class Facebook extends EventDispatcher {
      * NOTE: It is important to prefix YOUR_FB_APP_ID with "fb", because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null).
      * Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
      */
-    public function init(appID:String = null):void
+    public function init(appID:String = null, onInitialized:Function = null):void
     {
         if (isSupported && _context != null) {
 
             _context.call("setNativeLogEnabled", Facebook.nativeLogEnabled);
-            _context.call("initFacebook", appID);
-            _initialized = true;
+            // iOS is synchronous but we will simulate async to have consistent API
+            _context.call("initFacebook", appID, getNewCallbackName(onInitialized));
         } else {
 
             log("Can't initialize extension! Unsupported platform or context couldn't be created!")
@@ -472,6 +475,8 @@ public class Facebook extends EventDispatcher {
 
     private function onStatus(event:StatusEvent):void
     {
+        var dataArr:Array;
+        var callbackName:String;
         var callback:Function;
 
         if (event.code.indexOf("SESSION") != -1) // If the event code contains SESSION, it's an open/reauthorize session result
@@ -492,10 +497,10 @@ public class Facebook extends EventDispatcher {
             as3Log(event.level, "NATIVE");
         }
         else if (event.code.indexOf("SHARE") != -1) {
-            var dataArr:Array = event.code.split("_");
+            dataArr = event.code.split("_");
             if (dataArr.length == 3) {
                 var status:String = dataArr[1];
-                var callbackName:String = dataArr[2];
+                callbackName = dataArr[2];
 
                 callback = _requestCallbacks[callbackName];
 
@@ -503,7 +508,29 @@ public class Facebook extends EventDispatcher {
 
                     callback(status == "SUCCESS", status == "CANCELLED", status == "ERROR" ? event.level : null);
 
-                    delete _requestCallbacks[event.code];
+                    // TODO we should delete also null values from callback array
+                    delete _requestCallbacks[callbackName];
+                }
+            }
+        }
+        else if (event.code.indexOf("SDKINIT") != -1) {
+
+            log("Facebook SDK initialized.");
+
+            _initialized = true;
+
+            dataArr = event.code.split("_");
+            if (dataArr.length == 2) {
+                callbackName = dataArr[1];
+
+                callback = _requestCallbacks[callbackName];
+
+                if(callback != null){
+
+                    callback();
+
+                    // TODO we should delete also null values from callback array
+                    delete _requestCallbacks[callbackName];
                 }
             }
         }

@@ -13,6 +13,7 @@ public class InitFacebookFunction extends BaseFunction
 		super.call(context, args);
 
         String appID = getStringFromFREObject(args[0]);
+		final String callback = getStringFromFREObject(args[1]);
 
 		Bundle metaData = context.getActivity().getApplicationContext().getApplicationInfo().metaData;
 		String appIdFromMetadata = metaData != null ? metaData.getString("com.facebook.sdk.ApplicationId") : null;
@@ -24,17 +25,20 @@ public class InitFacebookFunction extends BaseFunction
 			FacebookSdk.setApplicationId(appID);
 		}
 
-		FacebookSdk.sdkInitialize(context.getActivity().getApplicationContext());
-
 		AirFacebookExtension.log("Initializing with application ID " + FacebookSdk.getApplicationId());
 
-//		StringBuilder str = new StringBuilder();
-//		for(String key : metaData.keySet()){
-//			str.append(key);
-//			str.append(":");
-//			str.append(metaData.get(key));
-//			str.append(";");
-//		}
+		FacebookSdk.sdkInitialize(context.getActivity().getApplicationContext(), new FacebookSdk.InitializeCallback() {
+			@Override
+			public void onInitialized() {
+
+				AirFacebookExtension.log("Facebook sdk initialized.");
+
+				if (AirFacebookExtension.context != null && callback != null) {
+
+					AirFacebookExtension.context.dispatchStatusEventAsync("SDKINIT_" + callback, "");
+				}
+			}
+		});
 
 		return null;
 	}
