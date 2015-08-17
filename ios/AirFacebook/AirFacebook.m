@@ -222,10 +222,14 @@ DEFINE_ANE_FUNCTION(initFacebook)
 {
     [AirFacebook log:@"initFacebook"];
     
+    NSString *callback = FPANE_FREObjectToNSString(argv[1]);
+    
     // maybe we dont need this sharedInstance
     [AirFacebook sharedInstance];
     
     [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication] didFinishLaunchingWithOptions:[NSMutableDictionary dictionary]];
+    
+    [AirFacebook dispatchEvent:[NSString stringWithFormat:@"SDKINIT_%@", callback] withMessage:nil];
     
     return nil;
 }
