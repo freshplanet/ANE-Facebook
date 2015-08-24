@@ -1,15 +1,18 @@
 Air Native Extension for Facebook (iOS + Android)
 ======================================
 
-This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
+This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](https://developers.facebook.com/docs#apis-and-sdks) on iOS and Android. It has been originally developed by [FreshPlanet](http://freshplanet.com). I will try to maintain this project. For any suggestions open a issue.
 
 
 Facebook SDK Versions
 ---------
 
-* iOS: 3.16.2 (compatible with iOS 5.0 and above)
-* Android: 3.6 (compatible with Android 2.2 and above)
+* iOS: 4.5.0
+* Android: 4.5.0
 
+**IMPORTANT NOTE FOR ANDROID:** Use this ANE only when you build with AIR >=18. New FB Android SDK needs Java 1.7 and extension compiled with Java 1.7 will not work with AIR 16 (AIR 17 had a lot of issues with Android so I don't consider it either). Context of extension will not be created on Android. There should be no issues with iOS.
+
+**IMPORTANT NOTE FOR IOS 9:** With IOS 9 you must update your application descriptor to match [these changes](https://developers.facebook.com/docs/ios/ios9).
 
 Installation
 ---------
@@ -30,12 +33,12 @@ On iOS:
             <dict>
                 <key>CFBundleURLSchemes</key>
                     <array>
-                        <string>fb{YOUR_FB_ID}</string>
+                        <string>fb{YOUR_FB_APPLICATION_ID}</string>
                     </array>
             </dict>
         </array>
         <key>FacebookAppID</key>
-        <string>{YOUR_FB_ID}</string>
+        <string>{YOUR_FB_APPLICATION_ID}</string>
 
     ]]></InfoAdditions>
 
@@ -60,10 +63,19 @@ On Android:
             <application>
 
                 ...
-                
-                <activity android:name="com.facebook.LoginActivity"/>
-                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
-                <activity android:name="com.freshplanet.ane.AirFacebook.DialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></activity>
+
+                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb{YOUR_FB_APPLICATION_ID}"/>
+
+                <activity android:name="com.facebook.FacebookActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="{YOUR_APP_NAME}" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.ShareDialogActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.AppInviteActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+
+                <provider android:authorities="com.facebook.app.FacebookContentProvider{YOUR_FB_APPLICATION_ID}" android:name="com.facebook.FacebookContentProvider" android:exported="true"/>
                 
             </application>
 
@@ -72,14 +84,15 @@ On Android:
 </android>
 ```
 
+**NOTE:** It is important to prefix YOUR_FB_APP_ID with "fb" in `<meta-data>` (and ONLY in `<meta-data>`) tag, because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null). Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
 
 Documentation
 --------
 
-Actionscript documentation is available in HTML format in the *docs* folder.
+ActionScript documentation is available in HTML format on project pages [here](http://nodrock.github.io/ANE-Facebook/docs/).
 
 
-Samples
+Samples (deprecated)
 --------
 
 A sample project is available in the *sample* folder.
@@ -103,29 +116,10 @@ mv example.build.config build.config
 ant
 ```
 
-
-Facebook android sdk use
----------
-
-This sdk is using staticaly linked elements. We had to modify all the calls to the com.facebook.android.R package by a custom function that is doing the linking at runtime:
-import com.freshplanet.ane.AirFacebook.AirFacebookExtension
-and use AirFacebookExtension.getResourceId("nameOfTheRessource") or AirFacebookExtension.getResourceIds("nameOfTheRessource")
-
-Also an error when linking the ressources into the app, I had to rename the res/values/styles.xml to res/values/style.xml
-
+**NOTE (deprecated):**  You MUST use Java 1.6 otherwise in android context will be null (probably bug in Adobe AIR SDK). On OSX you can call "export JAVA_HOME=`/usr/libexec/java_home -v 1.6`" without " to set JAVA_HOME properly.
 
 Authors
 ------
 
-This ANE has been written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). It belongs to [FreshPlanet Inc.](http://freshplanet.com) and is distributed under the [Apache Licence, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+This ANE has been originally written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com) and [Renaud Bardet](http://github.com/renaudbardet). Rewrites and modifications to version SDK 4.x were made by [Ján Horváth](https://github.com/nodrock).
 
-
-Join the FreshPlanet team - GAME DEVELOPMENT in NYC
-------
-
-We are expanding our mobile engineering teams.
-
-FreshPlanet is a NYC based mobile game development firm and we are looking for senior engineers to lead the development initiatives for one or more of our games/apps. We work in small teams (6-9) who have total product control.  These teams consist of mobile engineers, UI/UX designers and product experts.
-
-
-Please contact Tom Cassidy (tcassidy@freshplanet.com) or apply at http://freshplanet.com/jobs/
