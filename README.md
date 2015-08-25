@@ -1,7 +1,7 @@
 Air Native Extension for Facebook (iOS + Android)
 ======================================
 
-This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](https://developers.facebook.com/docs#apis-and-sdks) on iOS and Android. It has been originally developed by [FreshPlanet](http://freshplanet.com). I will try to maintain this project. For any suggestions open a issue.
+This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
 
 
 Facebook SDK Versions
@@ -74,6 +74,8 @@ On Android:
                     android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
                 <activity android:name="com.freshplanet.ane.AirFacebook.AppInviteActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
                     android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+                <activity android:name="com.freshplanet.ane.AirFacebook.GameRequestActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 
                 <provider android:authorities="com.facebook.app.FacebookContentProvider{YOUR_FB_APPLICATION_ID}" android:name="com.facebook.FacebookContentProvider" android:exported="true"/>
                 
@@ -85,19 +87,6 @@ On Android:
 ```
 
 **NOTE:** It is important to prefix YOUR_FB_APP_ID with "fb" in `<meta-data>` (and ONLY in `<meta-data>`) tag, because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null). Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
-
-Documentation
---------
-
-ActionScript documentation is available in HTML format on project pages [here](http://nodrock.github.io/ANE-Facebook/docs/).
-
-
-Samples (deprecated)
---------
-
-A sample project is available in the *sample* folder.
-Read HOW-TO.txt walkthrought to set-up and run the sample application.
-
 
 Build from source
 ---------
