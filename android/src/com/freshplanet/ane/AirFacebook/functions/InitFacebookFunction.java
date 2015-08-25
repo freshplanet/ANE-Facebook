@@ -17,21 +17,21 @@ public class InitFacebookFunction extends BaseFunction
 
 		Bundle metaData = context.getActivity().getApplicationContext().getApplicationInfo().metaData;
 		String appIdFromMetadata = metaData != null ? metaData.getString("com.facebook.sdk.ApplicationId") : null;
-		AirFacebookExtension.log("FB application ID from AndroidManifest.xml: " + appIdFromMetadata != null ? appIdFromMetadata : "no metadata");
+		AirFacebookExtension.log("FB application ID from AndroidManifest.xml: " + (appIdFromMetadata != null ? appIdFromMetadata : "no metadata"));
 
 		if(appIdFromMetadata == null && appID != null) {
 
 			AirFacebookExtension.context.setAppID(appID);
 			FacebookSdk.setApplicationId(appID);
+			AirFacebookExtension.log("Initializing with custom applicationId: " + appID);
 		}
 
-		AirFacebookExtension.log("Initializing with application ID " + FacebookSdk.getApplicationId());
 
 		FacebookSdk.sdkInitialize(context.getActivity().getApplicationContext(), new FacebookSdk.InitializeCallback() {
 			@Override
 			public void onInitialized() {
 
-				AirFacebookExtension.log("Facebook sdk initialized.");
+				AirFacebookExtension.log("Facebook sdk initialized with applicationId: " + FacebookSdk.getApplicationId());
 
 				if (AirFacebookExtension.context != null && callback != null) {
 
