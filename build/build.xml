@@ -81,7 +81,7 @@
         <copy file="../android/build/aar/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
-        <copy todir="temp/android/res/">
+        <copy todir="temp/android/airfacebook-res/">
             <fileset dir="../android/res/"/>
         </copy>
 

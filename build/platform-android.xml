@@ -7,7 +7,7 @@
     <packagedResources>
         <packagedResource>
             <packageName>com.facebook</packageName>
-            <folderName>res</folderName> 
+            <folderName>airfacebook-res</folderName> 
         </packagedResource>
     </packagedResources>
 </platform>
