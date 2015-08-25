@@ -46,7 +46,7 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 
 // C interface
 DEFINE_ANE_FUNCTION(initFacebook);
-DEFINE_ANE_FUNCTION(handleOpenURL);
+DEFINE_ANE_FUNCTION(AirFacebookHandleOpenURL);
 DEFINE_ANE_FUNCTION(getAccessToken);
 DEFINE_ANE_FUNCTION(getProfile);
 DEFINE_ANE_FUNCTION(logInWithPermissions);
@@ -65,7 +65,7 @@ DEFINE_ANE_FUNCTION(appInviteDialog);
 
 // FB events
 DEFINE_ANE_FUNCTION(activateApp);
-DEFINE_ANE_FUNCTION(logEvent);
+DEFINE_ANE_FUNCTION(AirFacebookLogEvent);
 
 // Debug
 DEFINE_ANE_FUNCTION(nativeLog);

@@ -234,7 +234,7 @@ DEFINE_ANE_FUNCTION(initFacebook)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(handleOpenURL)
+DEFINE_ANE_FUNCTION(AirFacebookHandleOpenURL)
 {
     [AirFacebook log:@"handleOpenURL"];
     
@@ -450,7 +450,7 @@ DEFINE_ANE_FUNCTION(activateApp)
     return nil;
 }
 
-DEFINE_ANE_FUNCTION(logEvent)
+DEFINE_ANE_FUNCTION(AirFacebookLogEvent)
 {
     NSString *eventName = [FREConversionUtil toString:[FREConversionUtil getProperty:@"eventName" fromObject:argv[0]]];
     NSNumber *valueToSum = [FREConversionUtil toNumber:[FREConversionUtil getProperty:@"valueToSum" fromObject:argv[0]]];
@@ -471,7 +471,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     // Register the links btwn AS3 and ObjC. (dont forget to modify the nbFuntionsToLink integer if you are adding/removing functions)
     NSDictionary *functions = @{
         @"initFacebook":                    [NSValue valueWithPointer:&initFacebook],
-        @"handleOpenURL":                   [NSValue valueWithPointer:&handleOpenURL],
+        @"handleOpenURL":                   [NSValue valueWithPointer:&AirFacebookHandleOpenURL],
         @"getAccessToken":                  [NSValue valueWithPointer:&getAccessToken],
         @"getProfile":                      [NSValue valueWithPointer:&getProfile],
         @"logInWithPermissions":            [NSValue valueWithPointer:&logInWithPermissions],
@@ -490,7 +490,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
         
         // FB events
         @"activateApp":                     [NSValue valueWithPointer:&activateApp],
-        @"logEvent":                        [NSValue valueWithPointer:&logEvent],
+        @"logEvent":                        [NSValue valueWithPointer:&AirFacebookLogEvent],
         
         // Debug
         @"nativeLog":                       [NSValue valueWithPointer:&nativeLog],
