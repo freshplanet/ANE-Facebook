@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		164474E31B87816300B4E60A /* FBGameRequestDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 164474E11B87816300B4E60A /* FBGameRequestDelegate.h */; };
+		164474E41B87816300B4E60A /* FBGameRequestDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 164474E21B87816300B4E60A /* FBGameRequestDelegate.m */; };
 		2E14AA3F1B136CB700453D81 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14AA3C1B136CB700453D81 /* FBSDKCoreKit.framework */; };
 		2E14AA401B136CB700453D81 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14AA3D1B136CB700453D81 /* FBSDKLoginKit.framework */; };
 		2E14AA411B136CB700453D81 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14AA3E1B136CB700453D81 /* FBSDKShareKit.framework */; };
@@ -30,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		164474E11B87816300B4E60A /* FBGameRequestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGameRequestDelegate.h; sourceTree = "<group>"; };
+		164474E21B87816300B4E60A /* FBGameRequestDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGameRequestDelegate.m; sourceTree = "<group>"; };
 		2E14AA3C1B136CB700453D81 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = frameworks/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		2E14AA3D1B136CB700453D81 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		2E14AA3E1B136CB700453D81 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = frameworks/FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -114,11 +118,13 @@
 			children = (
 				5A9856A015213BC3003A8EB0 /* AirFacebook.h */,
 				5A9856A115213BC3003A8EB0 /* AirFacebook.m */,
-				5A98569E15213BC3003A8EB0 /* Supporting Files */,
-				2E95EEC31B30716C00FEE8F3 /* FBShareDelegate.h */,
 				2E9EEA731B42DA4D00B9370E /* FBAppInviteDialogDelegate.h */,
 				2E9EEA741B42DA4D00B9370E /* FBAppInviteDialogDelegate.m */,
+				2E95EEC31B30716C00FEE8F3 /* FBShareDelegate.h */,
 				2E95EEC41B30716C00FEE8F3 /* FBShareDelegate.m */,
+				5A98569E15213BC3003A8EB0 /* Supporting Files */,
+				164474E11B87816300B4E60A /* FBGameRequestDelegate.h */,
+				164474E21B87816300B4E60A /* FBGameRequestDelegate.m */,
 			);
 			path = AirFacebook;
 			sourceTree = "<group>";
@@ -145,6 +151,7 @@
 			files = (
 				4AAA25071703433600ECB60C /* FlashRuntimeExtensions.h in Headers */,
 				2E95EEC51B30716C00FEE8F3 /* FBShareDelegate.h in Headers */,
+				164474E31B87816300B4E60A /* FBGameRequestDelegate.h in Headers */,
 				2E9EEA711B42A8B900B9370E /* FREConversionUtil.h in Headers */,
 				FAD87E6B1822EC3200A4D717 /* FPANEUtils.h in Headers */,
 				2E9EEA751B42DA4D00B9370E /* FBAppInviteDialogDelegate.h in Headers */,
@@ -204,6 +211,7 @@
 			files = (
 				2E9EEA761B42DA4D00B9370E /* FBAppInviteDialogDelegate.m in Sources */,
 				FAD87E6C1822EC3200A4D717 /* FPANEUtils.m in Sources */,
+				164474E41B87816300B4E60A /* FBGameRequestDelegate.m in Sources */,
 				2E95EEC61B30716C00FEE8F3 /* FBShareDelegate.m in Sources */,
 				5A9856A215213BC3003A8EB0 /* AirFacebook.m in Sources */,
 				2E9EEA721B42A8B900B9370E /* FREConversionUtil.m in Sources */,

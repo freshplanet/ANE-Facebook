@@ -21,6 +21,7 @@
 #import "FREConversionUtil.h"
 #import "FBShareDelegate.h"
 #import "FBAppInviteDialogDelegate.h"
+#import "FBGameRequestDelegate.h"
 
 FREContext AirFBCtx = nil;
 
@@ -131,6 +132,17 @@ static AirFacebook *sharedInstance = nil;
         FBAppInviteDialogDelegate *delegate = [[FBAppInviteDialogDelegate alloc] initWithCallback:callback];
         [shareActivities setObject:delegate forKey:callback];
         [delegate showAppInviteDialogWithContent:content];
+    }
+}
+
+- (void)gameRequestWithContent:(FBSDKGameRequestContent *)content enableFrictionless:(BOOL)frictionless andCallback:(NSString *)callback
+{
+    [AirFacebook log:@"showGameRequestDialogWithContent: andCallback: %@", callback];
+    
+    if(callback != nil){
+        FBGameRequestDelegate *delegate = [[FBGameRequestDelegate alloc] initWithCallback:callback];
+        [shareActivities setObject:delegate forKey:callback];
+        [delegate gameRequestWithContent:content enableFrictionless:frictionless];
     }
 }
 
@@ -444,6 +456,35 @@ DEFINE_ANE_FUNCTION(appInviteDialog)
     return nil;
 }
 
+DEFINE_ANE_FUNCTION(gameRequestDialog)
+{
+    FBSDKGameRequestActionType actionType = [FREConversionUtil toUInt:[FREConversionUtil getProperty:@"actionType" fromObject:argv[0]]];
+    NSString* data = [FREConversionUtil toString:[FREConversionUtil getProperty:@"data" fromObject:argv[0]]];
+    FBSDKGameRequestFilter filters = [FREConversionUtil toUInt:[FREConversionUtil getProperty:@"filters" fromObject:argv[0]]];
+    NSString* message = [FREConversionUtil toString:[FREConversionUtil getProperty:@"message" fromObject:argv[0]]];
+    NSString* objectID = [FREConversionUtil toString:[FREConversionUtil getProperty:@"objectID" fromObject:argv[0]]];
+    NSArray* recipients = [FREConversionUtil toStringArray:[FREConversionUtil getProperty:@"recipients" fromObject:argv[0]]];
+    NSArray* recipientSuggestions = [FREConversionUtil toStringArray:[FREConversionUtil getProperty:@"recipientSuggestions" fromObject:argv[0]]];
+    NSString* title = [FREConversionUtil toString:[FREConversionUtil getProperty:@"title" fromObject:argv[0]]];
+    
+    BOOL frictionless = FPANE_FREObjectToBOOL(argv[1]);
+    NSString *callback = FPANE_FREObjectToNSString(argv[2]);
+    
+    FBSDKGameRequestContent *gameRequestContent = [[FBSDKGameRequestContent alloc] init];
+    gameRequestContent.actionType = actionType;
+    if(data != nil) gameRequestContent.data = data;
+    gameRequestContent.filters = filters;
+    if(message != nil) gameRequestContent.message = message;
+    if(objectID != nil) gameRequestContent.objectID = objectID;
+    if(recipients != nil) gameRequestContent.recipients = recipients;
+    if(recipientSuggestions != nil) gameRequestContent.recipientSuggestions = recipientSuggestions;
+    if(title != nil) gameRequestContent.title = title;
+    
+    [[AirFacebook sharedInstance] gameRequestWithContent:gameRequestContent enableFrictionless:frictionless andCallback:callback];
+    
+    return nil;
+}
+
 DEFINE_ANE_FUNCTION(activateApp)
 {
     [FBSDKAppEvents activateApp];
@@ -487,6 +528,7 @@ void AirFacebookContextInitializer(void* extData, const uint8_t* ctxType, FRECon
         @"canPresentShareDialog":           [NSValue valueWithPointer:&canPresentShareDialog],
         @"shareLinkDialog":                 [NSValue valueWithPointer:&shareLinkDialog],
         @"appInviteDialog":                 [NSValue valueWithPointer:&appInviteDialog],
+        @"gameRequestDialog":               [NSValue valueWithPointer:&gameRequestDialog],
         
         // FB events
         @"activateApp":                     [NSValue valueWithPointer:&activateApp],
