@@ -1,8 +1,9 @@
 ﻿package com.freshplanet.ane.AirFacebook {
+
 import com.freshplanet.ane.AirFacebook.appevents.FBEvent;
 import com.freshplanet.ane.AirFacebook.share.FBAppInviteContent;
-    import com.freshplanet.ane.AirFacebook.share.FBGameRequestContent;
-    import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
+import com.freshplanet.ane.AirFacebook.share.FBGameRequestContent;
+import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
 
 import flash.desktop.InvokeEventReason;
 
