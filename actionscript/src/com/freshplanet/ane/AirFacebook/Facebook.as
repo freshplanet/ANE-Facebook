@@ -3,6 +3,8 @@ import com.freshplanet.ane.AirFacebook.appevents.FBEvent;
 import com.freshplanet.ane.AirFacebook.share.FBAppInviteContent;
 import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
 
+import flash.desktop.InvokeEventReason;
+
 import flash.desktop.NativeApplication;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -460,14 +462,28 @@ public class Facebook extends EventDispatcher {
 
     private function onInvoke(event:InvokeEvent):void
     {
-        log("FACEBOOK about to call handleOpenURL on args: [" + event.arguments.join(",") + "] with reason: " + event.reason);
+//  NOTE: you can debug onInvoke with these lines of code
+//        var debugStr:String;
+//        if(event.reason == InvokeEventReason.NOTIFICATION){
+//            var obj:Object = event.arguments[0];
+//            var arr:Array = [];
+//            for (var prop in obj) {
+//                arr.push(prop + ": " + obj[prop]);
+//            }
+//            debugStr = arr.join(", ")
+//        }else{
+//            debugStr = event.arguments.join(",");
+//        }
+//
+//        log("onInvoke reason: " + event.reason + " params: " + debugStr);
 
         if (Capabilities.manufacturer.indexOf("iOS") != -1) {
-            if (event.arguments != null && event.arguments.length > 0) {
+            if (event.reason == InvokeEventReason.OPEN_URL && event.arguments != null && event.arguments.length == 3) {
                 var url:String = event.arguments[0] as String;
                 var sourceApplication:String = event.arguments[1] as String;
                 var annotation:String = event.arguments[2] as String;
 
+                log("handleOpenURL url: " + url + " sourceApplication: " + sourceApplication + " annotation: " + annotation);
                 _context.call("handleOpenURL", url, sourceApplication, annotation);
             }
         }
@@ -556,7 +572,12 @@ public class Facebook extends EventDispatcher {
         }
     }
 
-    private function log(message:String):void
+    /**
+     * Do not use this method outside this class. It may be removed anytime!
+     * 
+     * @param message
+     */
+    public function log(message:String):void
     {
         if (Facebook.logEnabled) {
             as3Log(message, "AS3");
