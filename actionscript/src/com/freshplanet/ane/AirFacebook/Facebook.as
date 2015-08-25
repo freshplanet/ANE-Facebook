@@ -396,6 +396,25 @@ public class Facebook extends EventDispatcher {
         }
     }
 
+    /**
+     *
+     * @param gameRequestContent
+     * @param callback
+     */
+    public function gameRequestDialog(gameRequestContent:FBGameRequestContent, frictionless:Boolean, callback:Function):void
+    {
+        if (_initialized) {
+
+            if(gameRequestContent == null){
+                return;
+            }
+            _context.call("gameRequestDialog", gameRequestContent, frictionless, getNewCallbackName(callback));
+        } else {
+
+            log("You must call init() before any other method!");
+        }
+    }
+
     public function logEvent(event:FBEvent):void
     {
         if(_initialized){
