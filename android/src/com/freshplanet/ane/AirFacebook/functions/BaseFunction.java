@@ -40,6 +40,23 @@ public class BaseFunction implements FREFunction
 		}
 	}
 
+	protected int getIntProperty(FREObject object, String property)
+	{
+		try
+		{
+			FREObject propertyObject = object.getProperty(property);
+			if(propertyObject == null){
+				return 0;
+			}
+			return getIntFromFREObject(propertyObject);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
 	protected List<String> getStringListProperty(FREObject object, String property)
 	{
 		try

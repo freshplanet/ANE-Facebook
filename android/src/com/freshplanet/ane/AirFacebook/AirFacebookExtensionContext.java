@@ -39,6 +39,9 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("canPresentAppInviteDialog", new CanPresentAppInviteDialogFunction());
 		functions.put("appInviteDialog", new AppInviteDialogFunction());
 
+		// request dialog
+		functions.put("gameRequestDialog", new GameRequestDialogFunction());
+
 		//functions.put("openDeferredAppLink", new OpenDeferredAppLinkFunction());
 
 		// Settings
