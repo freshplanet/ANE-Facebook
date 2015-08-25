@@ -15,7 +15,7 @@ import flash.system.Capabilities;
 
 public class Facebook extends EventDispatcher {
 
-    public static const VERSION:String = "4.5.1";
+    public static const VERSION:String = "4.5.2";
 
     private var _initialized:Boolean;
 
@@ -107,6 +107,7 @@ public class Facebook extends EventDispatcher {
         if (isSupported && _context != null) {
 
             _context.call("setNativeLogEnabled", Facebook.nativeLogEnabled);
+            log("ANE Facebook version: " + VERSION);
             // iOS is synchronous but we will simulate async to have consistent API
             _context.call("initFacebook", appID, getNewCallbackName(onInitialized));
         } else {
@@ -574,7 +575,7 @@ public class Facebook extends EventDispatcher {
 
     /**
      * Do not use this method outside this class. It may be removed anytime!
-     * 
+     *
      * @param message
      */
     public function log(message:String):void
