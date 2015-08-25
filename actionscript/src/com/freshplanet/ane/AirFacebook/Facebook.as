@@ -33,20 +33,20 @@ public class Facebook extends EventDispatcher {
 
     private static function isIOS():Boolean
     {
-        return Capabilities.version.indexOf("IOS") != -1;
+        return Capabilities.manufacturer.indexOf("iOS") > -1;
     }
 
     private static function isAndroid():Boolean
     {
-        return Capabilities.version.indexOf("AND") != -1;
+        return Capabilities.manufacturer.indexOf("Android") > -1;
     }
 
     public function Facebook()
     {
-        if(!isSupported){
-            throw new Error("This extension is supported only on iOS and Android!");
-        }
         if (!_instance) {
+
+            _instance = this;
+
             _context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
             if (!_context) {
                 log("ERROR - Extension context is null. Please check if extension.xml is setup correctly.");
@@ -58,7 +58,6 @@ public class Facebook extends EventDispatcher {
             NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivate);
             NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeactivate);
 
-            _instance = this;
         }
         else {
             throw Error("This is a singleton, use getInstance(), do not call the constructor directly.");
@@ -83,10 +82,6 @@ public class Facebook extends EventDispatcher {
 
     public static function getInstance():Facebook
     {
-        if(!isSupported){
-            trace("This extension is supported only on iOS and Android!");
-            return null;
-        }
         return _instance ? _instance : new Facebook();
     }
 
