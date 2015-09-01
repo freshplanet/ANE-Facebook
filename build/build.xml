@@ -32,19 +32,19 @@
         <copy file="temp/ios/build/Release-iphoneos/lib${name}.a" todir="temp/ios" overwrite="true"/>
 
         <!-- Copy over required frameworks and libs -->
-        <copy todir="temp/ios/FBSDKCoreKit.framework" overwrite="true">
+        <copy todir="temp/ios/FBSDKCoreKit.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
             <fileset dir="../ios/frameworks/FBSDKCoreKit.framework"/>
         </copy>
-        <copy todir="temp/ios/FBSDKLoginKit.framework" overwrite="true">
+        <copy todir="temp/ios/FBSDKLoginKit.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
             <fileset dir="../ios/frameworks/FBSDKLoginKit.framework"/>
         </copy>
-        <copy todir="temp/ios/FBSDKShareKit.framework" overwrite="true">
+        <copy todir="temp/ios/FBSDKShareKit.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
             <fileset dir="../ios/frameworks/FBSDKShareKit.framework"/>
         </copy>
-        <copy todir="temp/ios/Bolts.framework" overwrite="true">
+        <copy todir="temp/ios/Bolts.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
             <fileset dir="../ios/frameworks/Bolts.framework"/>
         </copy>
-        <copy todir="temp/ios/FBAudienceNetwork.framework" overwrite="true">
+        <copy todir="temp/ios/FBAudienceNetwork.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
             <fileset dir="../ios/frameworks/FBAudienceNetwork.framework"/>
         </copy>
 
