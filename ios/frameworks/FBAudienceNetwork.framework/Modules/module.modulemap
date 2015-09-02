@@ -13,6 +13,7 @@ framework module FBAudienceNetwork {
     link framework "CoreMedia"
     link framework "CoreMotion"
     link framework "Foundation"
+    link framework "SafariServices"
     link framework "Security"
     link framework "StoreKit"
     link framework "UIKit"

@@ -85,6 +85,13 @@ FB_CLASS_EXPORT
 @interface FBNativeAdViewAttributes : NSObject <NSCopying>
 
 /*!
+ ​​@method
+ @abstract
+ This is a method to create native ad view attributes with a dictionary
+ */
+- (nonnull instancetype)initWithDictionary:(nonnull NSDictionary *) dict;
+
+/*!
  @property
  @abstract
  Background color of the native ad view.
