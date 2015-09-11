@@ -60,7 +60,7 @@
         <echo message="Using Java version ${ant.java.version}."/>
 
         <exec executable="/usr/libexec/java_home" outputproperty="java7home">
-            <arg line="-v 1.7" />
+            <arg line="-v 1.8" />
         </exec>
 
         <echo message="Java 7 Home: ${java7home}" />

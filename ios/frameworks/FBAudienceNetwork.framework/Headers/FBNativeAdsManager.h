@@ -113,6 +113,6 @@ FB_CLASS_EXPORT
 
   @return A FBNativeAd which is loaded and ready to be used.
  */
-- (nonnull FBNativeAd *)nextNativeAd;
+- (nullable FBNativeAd *)nextNativeAd;
 
 @end
