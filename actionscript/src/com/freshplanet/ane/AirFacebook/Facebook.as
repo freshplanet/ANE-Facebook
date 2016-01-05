@@ -512,7 +512,7 @@ public class Facebook extends EventDispatcher {
         var callbackName:String;
         var callback:Function;
 
-        if (event.code.indexOf("SESSION") != -1) // If the event code contains SESSION, it's an open/reauthorize session result
+        if (event.code.indexOf("SESSION") != -1 && profile) // If the event code contains SESSION, it's an open/reauthorize session result
         {
             var success:Boolean = (event.code.indexOf("SUCCESS") != -1);
             var userCancelled:Boolean = (event.code.indexOf("CANCEL") != -1);
