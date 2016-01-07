@@ -26,9 +26,11 @@
 FREContext AirFBCtx = nil;
 
 @implementation AirFacebook {
-    
+    NSString *_appID;
+
     NSMutableDictionary *shareActivities;
 }
+
 
 static AirFacebook *sharedInstance = nil;
 
@@ -71,6 +73,21 @@ static AirFacebook *sharedInstance = nil;
         NSString *eventName = event ? event : @"LOGGING";
         NSString *messageText = message ? message : @"";
         FREDispatchStatusEventAsync(AirFBCtx, (const uint8_t *)[eventName UTF8String], (const uint8_t *)[messageText UTF8String]);
+    }
+}
+
+- (void)setupWithAppID:(NSString *)appID {
+    // Save parameters
+    _appID = appID;
+    [FBSDKSettings setAppID:appID];
+    NSMutableString *logMessage = [NSMutableString stringWithFormat:@"Initializing with application ID %@", _appID];
+    [AirFacebook log:logMessage];
+
+    if ([FBSDKAccessToken currentAccessToken]) {
+        [AirFacebook log:@"Init with already logged in user: %@", [FBSDKAccessToken currentAccessToken].userID];
+    }
+    else {
+        [AirFacebook log:@"User not logged in"];
     }
 }
 
@@ -202,9 +219,9 @@ DEFINE_ANE_FUNCTION(logInWithPermissions)
     loginManager.loginBehavior = [[AirFacebook sharedInstance] loginBehavior];
     loginManager.defaultAudience = [[AirFacebook sharedInstance] defaultAudience];
     if([type isEqualToString:@"read"]){
-        [loginManager logInWithReadPermissions:permissions handler: [AirFacebook openSessionCompletionHandler]];
+        [loginManager logInWithReadPermissions:permissions fromViewController: nil handler: [AirFacebook openSessionCompletionHandler]];
     }else{
-        [loginManager logInWithPublishPermissions:permissions handler: [AirFacebook openSessionCompletionHandler]];
+        [loginManager logInWithPublishPermissions:permissions fromViewController: nil handler: [AirFacebook openSessionCompletionHandler]];
     }
     
     return nil;
@@ -233,12 +250,20 @@ DEFINE_ANE_FUNCTION(setNativeLogEnabled)
 DEFINE_ANE_FUNCTION(initFacebook)
 {
     [AirFacebook log:@"initFacebook"];
-    
+
+    NSString *appID = FPANE_FREObjectToNSString(argv[0]);
+
+
     NSString *callback = FPANE_FREObjectToNSString(argv[1]);
-    
-    // maybe we dont need this sharedInstance
-    [AirFacebook sharedInstance];
-    
+
+    // Initialize Facebook
+    [[AirFacebook sharedInstance] setupWithAppID:appID];
+    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
+    [[NSNotificationCenter defaultCenter] addObserverForName:FBSDKProfileDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+         [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
+    }];
+
+
     [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication] didFinishLaunchingWithOptions:[NSMutableDictionary dictionary]];
     
     [AirFacebook dispatchEvent:[NSString stringWithFormat:@"SDKINIT_%@", callback] withMessage:nil];

@@ -8,6 +8,7 @@ import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
 import flash.desktop.InvokeEventReason;
 
 import flash.desktop.NativeApplication;
+import flash.display.Stage;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.InvokeEvent;
@@ -87,6 +88,10 @@ public class Facebook extends EventDispatcher {
         return _instance ? _instance : new Facebook();
     }
 
+
+    public function set stage(stage:Stage) : void {
+    }
+
     /**
      * Initialize the Facebook extension. Call any other method after onInitialized callback is called.
      *
@@ -99,7 +104,7 @@ public class Facebook extends EventDispatcher {
      * NOTE: It is important to prefix YOUR_FB_APP_ID with "fb", because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null).
      * Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
      */
-    public function init(appID:String = null, onInitialized:Function = null):void
+    public function init(appID:String = null, onInitialized:Function = null, redirectUrl:String = null):void
     {
         if (isSupported && _context != null) {
 
@@ -512,7 +517,7 @@ public class Facebook extends EventDispatcher {
         var callbackName:String;
         var callback:Function;
 
-        if (event.code.indexOf("SESSION") != -1) // If the event code contains SESSION, it's an open/reauthorize session result
+        if (event.code.indexOf("SESSION") != -1 && profile) // If the event code contains SESSION, it's an open/reauthorize session result
         {
             var success:Boolean = (event.code.indexOf("SUCCESS") != -1);
             var userCancelled:Boolean = (event.code.indexOf("CANCEL") != -1);

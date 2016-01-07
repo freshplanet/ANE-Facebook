@@ -29,6 +29,7 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 + (id)sharedInstance;
 
 + (void)dispatchEvent:(NSString *)event withMessage:(NSString *)message;
+- (void)setupWithAppID:(NSString *)appID;
 + (void)log:(NSString *)string, ...;
 + (NSString*) jsonStringFromObject:(id)obj andPrettyPrint:(BOOL) prettyPrint;
 
