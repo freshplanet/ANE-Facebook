@@ -20,8 +20,9 @@ package com.freshplanet.ane.AirFacebook
 {
 	import com.facebook.graph.FacebookMobile;
 	import com.facebook.graph.core.FacebookURLDefaults;
+import com.facebook.graph.data.FacebookSession;
 
-	import flash.display.Stage;
+import flash.display.Stage;
 
 	import flash.events.EventDispatcher;
 	import flash.geom.Rectangle;
@@ -206,24 +207,37 @@ package com.freshplanet.ane.AirFacebook
 		private var _profile:FBProfile;
 		private var _accessToken:FBAccessToken;
 
-		private function onFacebookInit(success:Object, fail:Object):void {
+		private function onFacebookInit(success:FacebookSession, fail:Object):void {
 			_initialized = true;
 			if(success) {
-				log("Already logged in to Facebook");
+				log("Logged in to Facebook");
 				_userId = success["uid"];
 
 				setAccessTokenFromSession(success);
 
 				setProfileFromSession(success);
-				sessionOpened = true;		
+
+				FacebookMobile.api("/me", onPermissionsReceived, {fields: "permissions"});
+				sessionOpened = true;
 			} 
 			else {
 				log("You need to login to Facebook");
 			}
+
+		}
+
+		private function onPermissionsReceived(result:Object, fail:Object):void {
+			if(result) {
+				for each(var permission:Object in result.permissions.data) {
+					accessToken.permissions.push(permission.permission);
+				}
+			} else {
+				log("Error, failed to get granted permissions: " + JSON.stringify(fail));
+			}
 			onInitialized();
 		}
 
-		private function setProfileFromSession(success:Object):void{
+		private function setProfileFromSession(success:FacebookSession):void{
                     profile = new FBProfile();
                     profile.userID = _userId;
                     profile.firstName = success.user.first_name;
@@ -233,13 +247,13 @@ package com.freshplanet.ane.AirFacebook
                     profile.linkUrl = success.user.link;
                 }
 
-		private function setAccessTokenFromSession(success:Object):void{
+		private function setAccessTokenFromSession(success:FacebookSession):void{
                     accessToken = new FBAccessToken();
                     accessToken.tokenString = success.accessToken;
                     accessToken.appID = _appID;
                     accessToken.declinedPermissions = [];
-                    accessToken.permissions = success.availablePermissions ? success.availablePermissions : [];
-                    accessToken.expirationDate = success.expireDate;
+                    accessToken.permissions = [];
+                    accessToken.expirationDate = success.expireDate.date;
                     accessToken.refreshDate = new Date().date;
                     accessToken.userID = _userId;
                 }
@@ -284,12 +298,12 @@ package com.freshplanet.ane.AirFacebook
 			}
 		}
 
-		private function onFacebookLogin(success:Object, fail:Object):void {
+		private function onFacebookLogin(success:FacebookSession, fail:Object):void {
 			if(success) {
 				log("Logged in to Facebook");
 				_userId = success["uid"];
 
-				log(String(success));
+				log(String(JSON.stringify(success.availablePermissions)));
 
 				setAccessTokenFromSession(success);
 
