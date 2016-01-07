@@ -222,6 +222,7 @@ import flash.display.Stage;
 			} 
 			else {
 				log("You need to login to Facebook");
+				onInitialized();
 			}
 
 		}
@@ -229,7 +230,11 @@ import flash.display.Stage;
 		private function onPermissionsReceived(result:Object, fail:Object):void {
 			if(result) {
 				for each(var permission:Object in result.permissions.data) {
-					accessToken.permissions.push(permission.permission);
+					if(permission.status == 'granted') {
+						accessToken.permissions.push(permission.permission);
+					} else {
+						accessToken.declinedPermissions.push(permission.permission);
+					}
 				}
 			} else {
 				log("Error, failed to get granted permissions: " + JSON.stringify(fail));
