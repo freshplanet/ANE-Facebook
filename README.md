@@ -1,5 +1,6 @@
 Air Native Extension for Facebook (iOS + Android)
 ======================================
+[![Badge](http://www.libtastic.com/static/osbadges/182.png)](http://www.libtastic.com/technology/182/)
 
 This is an [Air native extension](http://www.adobe.com/devnet/air/native-extensions-for-air.html) for [Facebook SDK](http://developers.facebook.com/docs/guides/mobile/) on iOS and Android. It has been developed by [FreshPlanet](http://freshplanet.com) and is used in the game [SongPop](http://songpop.fm).
 
