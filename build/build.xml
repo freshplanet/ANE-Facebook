@@ -72,7 +72,6 @@
         </exec>
 
         <!-- Copy over the required libs -->
-        <copy file="../android/libs/android-support-v4.jar" todir="temp/android/"/>
         <copy file="../android/libs/bolts-android-1.2.0.jar" todir="temp/android/"/>
         <copy file="${android.sdk}/tools/lib/annotations.jar" todir="temp/android/"/>
 
