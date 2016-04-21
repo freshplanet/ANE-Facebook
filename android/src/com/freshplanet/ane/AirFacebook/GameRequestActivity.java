@@ -52,7 +52,9 @@ public class GameRequestActivity extends Activity implements FacebookCallback<Ga
     @Override
     public void onSuccess(GameRequestDialog.Result result) {
         AirFacebookExtension.log("REQUEST_COMPLETE " + result.toString());
-        AirFacebookExtension.context.dispatchStatusEventAsync(callback, result.toString()); // todo : get result
+
+        String resultString = "{\"request\":" + result.getRequestId() + ",\"recipients\":" + result.getRequestRecipients() + "}";
+        AirFacebookExtension.context.dispatchStatusEventAsync(callback, resultString);
         finish();
     }
 
