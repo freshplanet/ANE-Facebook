@@ -11,78 +11,74 @@
     <target name="ios" description="Build iOS Library">
 
         <!-- make the build directory for the objc code -->
-        <mkdir dir="temp/ios/build/"/>
+        <mkdir dir="temp/ios/"/>
 
         <!-- clean the build -->
         <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-alltargets clean"/>
+            <arg line="-workspace ${name}.xcworkspace"/>
+            <arg line="-scheme ${name}"/>
+            <arg line="clean"/>
         </exec>
 
         <!-- compile the ios lib -->
         <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-sdk ${ios.sdkversion}"/>
-            <arg line="-alltargets"/>
+            <arg line="-workspace ${name}.xcworkspace"/>
+            <arg line="-scheme ${name}"/>
+            <arg line="-sdk iphoneos"/>
             <arg line="-configuration Release"/>
-            <arg line="SYMROOT=../build/temp/ios/build/"/>
+            <arg line="SYMROOT=$(PWD)/../ios/build/"/>
         </exec>
 
         <!-- copy the ios lib to the base temp ios directory -->
-        <copy file="temp/ios/build/Release-iphoneos/lib${name}.a" todir="temp/ios" overwrite="true"/>
-
-        <!-- Copy over required frameworks and libs -->
-        <copy todir="temp/ios/FBSDKCoreKit.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
-            <fileset dir="../ios/frameworks/FBSDKCoreKit.framework"/>
-        </copy>
-        <copy todir="temp/ios/FBSDKLoginKit.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
-            <fileset dir="../ios/frameworks/FBSDKLoginKit.framework"/>
-        </copy>
-        <copy todir="temp/ios/FBSDKShareKit.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
-            <fileset dir="../ios/frameworks/FBSDKShareKit.framework"/>
-        </copy>
-        <copy todir="temp/ios/Bolts.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
-            <fileset dir="../ios/frameworks/Bolts.framework"/>
-        </copy>
-        <copy todir="temp/ios/FBAudienceNetwork.framework" overwrite="true" flatten="true" includeEmptyDirs="false">
-            <fileset dir="../ios/frameworks/FBAudienceNetwork.framework"/>
+        <copy todir="temp/ios/" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="../ios/build/Release-iphoneos"/>
         </copy>
 
         <!-- remove the build directory -->
-        <delete dir="temp/ios/build/"/>
+        <delete dir="../ios/build/"/>
+
     </target>
 
     <!-- Android -->
     <target name="android" description="Build Android Library">
 
+        <!-- paths -->
+        <property name="build" value="../android/build"/>
+        <property name="build.bundles" value="${build}/intermediates/bundles"/>
+        <property name="build.exploded-aar" value="${build}/intermediates/exploded-aar"/>
+
+        <!-- make the build directory for the java code -->
         <mkdir dir="temp/android/"/>
 
-        <echo message="Using Java version ${ant.java.version}."/>
-
-        <exec executable="/usr/libexec/java_home" outputproperty="java7home">
-            <arg line="-v 1.8" />
+        <!-- get the java oath -->
+        <exec executable="/usr/libexec/java_home" outputproperty="JAVA_HOME">
+            <!-- <arg line="-v 1.8" /> -->
         </exec>
 
-        <echo message="Java 7 Home: ${java7home}" />
-
-        <exec executable="./gradlew${bin.ext}" dir="../">
-            <env key="JAVA_HOME" path="${java7home}"/>
-            <env key="ANDROID_HOME" path="${android.sdk}"/>
+        <!-- compile the java code -->
+        <exec executable="./gradlew" dir="../">
+            <env key="JAVA_HOME" path="${JAVA_HOME}"/>
+            <env key="ANDROID_HOME" path="${android.sdk.home}"/>
             <arg line=":android:assembleRelease"/>
         </exec>
 
-        <!-- Copy over the required libs -->
-        <copy file="../android/libs/bolts-android-1.2.0.jar" todir="temp/android/"/>
-        <copy file="${android.sdk}/tools/lib/annotations.jar" todir="temp/android/"/>
-
-        <unzip src="../android/build/outputs/aar/android-release.aar" dest="../android/build/aar" overwrite="true"/>
-
-        <copy file="../android/build/aar/classes.jar" tofile="temp/android/lib${name}.jar"/>
+        <!-- get the jar -->
+        <copy file="${build.bundles}/release/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
-        <copy todir="temp/android/airfacebook-res/">
-            <fileset dir="../android/res/"/>
+        <copy todir="temp/android/${name}-res/">
+            <fileset dir="${build}/intermediates/res/release/"/>
         </copy>
+
+        <!-- Copy over the bundled libs -->
+        <copy todir="temp/android/">
+            <fileset dir="${build.bundles}/release/libs/" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
+        </copy>
+
+        <!-- Copy over the exploded aar libs -->
+        <exec executable="/bin/bash">
+            <arg value="copy_aars.sh"/>
+        </exec>
 
         <!-- remove the build classes -->
         <delete dir="../android/build"/>
@@ -100,16 +96,14 @@
             <regexpmapper from=".*src.(.*)\.as" to="\1"/>
         </pathconvert>
 
-        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
-            <env key="AIR_SDK_HOME" value="${flex.sdk}"/>
+        <exec executable="${air.sdk.home}/bin/compc" failonerror="true">
+            <env key="AIR_SDK_HOME" value="${air.sdk.home}"/>
             <arg line='-source-path ../actionscript/src'/>
             <arg line='-output temp/swc/${name}.swc'/>
             <arg line='-swf-version=29'/>
-            <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
+            <arg line='-external-library-path+="${air.sdk.home}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
         </exec>
-
-        <copy file="temp/swc/${name}.swc" todir="../bin/" />
 
         <unzip src="temp/swc/${name}.swc" dest="temp/swc/content" overwrite="true"/>
 
@@ -121,7 +115,8 @@
 
     <!-- Package -->
     <target name="package" description="Create the extension package">
-        <exec executable="${flex.sdk}/bin/adt${bin.ext}" failonerror="true" dir="temp/">
+
+        <exec executable="${air.sdk.home}/bin/adt" failonerror="true" dir="temp/">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
@@ -134,7 +129,8 @@
         </exec>
 
         <move file="temp/${name}.ane" todir="../bin"/>
-        <delete dir="temp/"/>
+        <delete dir="temp"/>
+
     </target>
 
     <!-- HTML Documentation (must be run manually) -->
