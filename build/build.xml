@@ -11,31 +11,31 @@
     <target name="ios" description="Build iOS Library">
 
         <!-- make the build directory for the objc code -->
-        <mkdir dir="temp/ios/"/>
+        <mkdir dir="temp/ios"/>
 
         <!-- clean the build -->
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+        <exec executable="xcodebuild" failonerror="true" dir="../ios">
             <arg line="-workspace ${name}.xcworkspace"/>
             <arg line="-scheme ${name}"/>
             <arg line="clean"/>
         </exec>
 
         <!-- compile the ios lib -->
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
+        <exec executable="xcodebuild" failonerror="true" dir="../ios">
             <arg line="-workspace ${name}.xcworkspace"/>
             <arg line="-scheme ${name}"/>
             <arg line="-sdk iphoneos"/>
             <arg line="-configuration Release"/>
-            <arg line="SYMROOT=$(PWD)/../ios/build/"/>
+            <arg line="SYMROOT=$(PWD)/../ios/build"/>
         </exec>
 
         <!-- copy the ios lib to the base temp ios directory -->
-        <copy todir="temp/ios/" overwrite="true" includeEmptyDirs="false">
+        <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false">
             <fileset dir="../ios/build/Release-iphoneos"/>
         </copy>
 
         <!-- remove the build directory -->
-        <delete dir="../ios/build/"/>
+        <delete dir="../ios/build"/>
     </target>
 
     <!-- Android -->
@@ -47,20 +47,20 @@
         <property name="build.exploded-aar" value="${build.intermediates}/exploded-aar"/>
 
         <!-- make the build directory -->
-        <mkdir dir="temp/android/"/>
+        <mkdir dir="temp/android"/>
 
         <exec executable="/usr/libexec/java_home" outputproperty="java.home">
             <!-- <arg line="-v 1.8" /> -->
         </exec>
 
         <!-- clean the build -->
-        <exec executable="./gradlew" dir="../">
+        <exec executable="./gradlew" dir="..">
             <env key="JAVA_HOME" path="${java.home}"/>
             <arg line="clean"/>
         </exec>
 
         <!-- compile the java code -->
-        <exec executable="./gradlew" dir="../">
+        <exec executable="./gradlew" dir="..">
             <env key="JAVA_HOME" path="${java.home}"/>
             <env key="ANDROID_HOME" path="${android.sdk.home}"/>
             <arg line=":android:assembleRelease"/>
@@ -70,13 +70,13 @@
         <copy file="${build.release}/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
-        <copy todir="temp/android/res/">
-            <fileset dir="${build.intermediates}/res/merged/release/"/>
+        <copy todir="temp/android/res">
+            <fileset dir="${build.intermediates}/res/merged/release"/>
         </copy>
 
         <!-- Copy over the bundled libs -->
-        <copy todir="temp/android/">
-            <fileset dir="${build.release}/libs/" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
+        <copy todir="temp/android">
+            <fileset dir="${build.release}/libs" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
         </copy>
 
         <!-- Copy over the exploded aar libs -->
@@ -85,12 +85,12 @@
         </exec>
 
         <!-- remove the build classes -->
-        <delete dir="../android/build/"/>
+        <delete dir="../android/build"/>
     </target>
 
     <!-- Actionscript -->
     <target name="swc" description="Build SWC library">
-        <mkdir dir="temp/swc/content/"/>
+        <mkdir dir="temp/swc/content"/>
 
         <fileset dir="../actionscript/src" casesensitive="yes" id="classfiles">
             <include name="**/*.as"/>
@@ -120,7 +120,7 @@
     <!-- Package -->
     <target name="package" description="Create the extension package">
 
-        <exec executable="${air.sdk.home}/bin/adt" failonerror="true" dir="temp/">
+        <exec executable="${air.sdk.home}/bin/adt" failonerror="true" dir="temp">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
