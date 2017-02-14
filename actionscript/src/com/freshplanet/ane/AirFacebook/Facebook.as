@@ -434,7 +434,7 @@ public class Facebook extends EventDispatcher {
     // 																						 //
     // --------------------------------------------------------------------------------------//
 
-    private static const EXTENSION_ID:String = "com.freshplanet.AirFacebook";
+    private static const EXTENSION_ID:String = "com.freshplanet.ane.AirFacebook";
 
     private static var _instance:Facebook;
     /**
