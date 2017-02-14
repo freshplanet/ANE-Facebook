@@ -31,7 +31,7 @@
 
         <!-- copy the ios lib to the base temp ios directory -->
         <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="../ios/build/Release-iphoneos"/>
+            <fileset dir="../ios/build/Release-iphoneos" includes="lib${name}.a, **/*.bundle/"/>
         </copy>
 
         <!-- remove the build directory -->
@@ -134,7 +134,6 @@
 
         <move file="temp/${name}.ane" todir="../bin"/>
         <delete dir="temp"/>
-
     </target>
 
     <!-- HTML Documentation (must be run manually) -->
