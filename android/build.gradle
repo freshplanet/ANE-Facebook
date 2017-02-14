@@ -2,8 +2,8 @@
 apply plugin: 'com.android.library'
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.facebook.android:facebook-android-sdk:4.+'
-    compile files('libs/FlashRuntimeExtensions.jar')
 }
 
 android {
