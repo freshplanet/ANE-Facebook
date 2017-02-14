@@ -5,7 +5,7 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
+    <target name="all" depends="ios, android, swc, package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -36,43 +36,47 @@
 
         <!-- remove the build directory -->
         <delete dir="../ios/build/"/>
-
     </target>
 
     <!-- Android -->
     <target name="android" description="Build Android Library">
 
         <!-- paths -->
-        <property name="build" value="../android/build"/>
-        <property name="build.bundles" value="${build}/intermediates/bundles"/>
-        <property name="build.exploded-aar" value="${build}/intermediates/exploded-aar"/>
+        <property name="build.intermediates" value="../android/build/intermediates"/>
+        <property name="build.release" value="${build.intermediates}/bundles/release"/>
+        <property name="build.exploded-aar" value="${build.intermediates}/exploded-aar"/>
 
-        <!-- make the build directory for the java code -->
+        <!-- make the build directory -->
         <mkdir dir="temp/android/"/>
 
-        <!-- get the java oath -->
-        <exec executable="/usr/libexec/java_home" outputproperty="JAVA_HOME">
+        <exec executable="/usr/libexec/java_home" outputproperty="java.home">
             <!-- <arg line="-v 1.8" /> -->
+        </exec>
+
+        <!-- clean the build -->
+        <exec executable="./gradlew" dir="../">
+            <env key="JAVA_HOME" path="${java.home}"/>
+            <arg line="clean"/>
         </exec>
 
         <!-- compile the java code -->
         <exec executable="./gradlew" dir="../">
-            <env key="JAVA_HOME" path="${JAVA_HOME}"/>
+            <env key="JAVA_HOME" path="${java.home}"/>
             <env key="ANDROID_HOME" path="${android.sdk.home}"/>
             <arg line=":android:assembleRelease"/>
         </exec>
 
         <!-- get the jar -->
-        <copy file="${build.bundles}/release/classes.jar" tofile="temp/android/lib${name}.jar"/>
+        <copy file="${build.release}/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
-        <copy todir="temp/android/${name}-res/">
-            <fileset dir="${build}/intermediates/res/release/"/>
+        <copy todir="temp/android/res/">
+            <fileset dir="${build.intermediates}/res/merged/release/"/>
         </copy>
 
         <!-- Copy over the bundled libs -->
         <copy todir="temp/android/">
-            <fileset dir="${build.bundles}/release/libs/" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
+            <fileset dir="${build.release}/libs/" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
         </copy>
 
         <!-- Copy over the exploded aar libs -->
@@ -81,7 +85,7 @@
         </exec>
 
         <!-- remove the build classes -->
-        <delete dir="../android/build"/>
+        <delete dir="../android/build/"/>
     </target>
 
     <!-- Actionscript -->
