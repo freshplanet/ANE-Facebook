@@ -36,3 +36,5 @@ Thumbs.db
 *.iml
 /out
 /bin
+
+local.properties
