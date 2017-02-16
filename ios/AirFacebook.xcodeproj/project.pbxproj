@@ -14,7 +14,6 @@
 		165F93761E525E9700A12835 /* FBShareDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F936F1E525E9700A12835 /* FBShareDelegate.m */; };
 		165F93771E525E9700A12835 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93711E525E9700A12835 /* FPANEUtils.m */; };
 		165F93781E525E9700A12835 /* FREConversionUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93731E525E9700A12835 /* FREConversionUtil.m */; };
-		165F937C1E525EA300A12835 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F937B1E525EA300A12835 /* FPANEUtils.m */; };
 		A582FC77A12998956DF9F360 /* libPods-AirFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F71D558BD30719FEC6B2A08 /* libPods-AirFacebook.a */; };
 /* End PBXBuildFile section */
 
@@ -46,8 +45,6 @@
 		165F93721E525E9700A12835 /* FREConversionUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FREConversionUtil.h; sourceTree = "<group>"; };
 		165F93731E525E9700A12835 /* FREConversionUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FREConversionUtil.m; sourceTree = "<group>"; };
 		165F93791E525EA300A12835 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlashRuntimeExtensions.h; sourceTree = SOURCE_ROOT; };
-		165F937A1E525EA300A12835 /* FPANEUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPANEUtils.h; sourceTree = SOURCE_ROOT; };
-		165F937B1E525EA300A12835 /* FPANEUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPANEUtils.m; sourceTree = SOURCE_ROOT; };
 		3F71D558BD30719FEC6B2A08 /* libPods-AirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AirFacebook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		94DA02F7285FFC3B174A79B4 /* Pods-AirFacebook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirFacebook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook.debug.xcconfig"; sourceTree = "<group>"; };
 		D8F731664E3EEDC74CB8CE46 /* Pods-AirFacebook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirFacebook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook.release.xcconfig"; sourceTree = "<group>"; };
@@ -87,8 +84,6 @@
 			isa = PBXGroup;
 			children = (
 				165F93791E525EA300A12835 /* FlashRuntimeExtensions.h */,
-				165F937A1E525EA300A12835 /* FPANEUtils.h */,
-				165F937B1E525EA300A12835 /* FPANEUtils.m */,
 				165F936A1E525E9700A12835 /* FBAppInviteDialogDelegate.h */,
 				165F936B1E525E9700A12835 /* FBAppInviteDialogDelegate.m */,
 				165F936C1E525E9700A12835 /* FBGameRequestDelegate.h */,
@@ -216,7 +211,6 @@
 			files = (
 				165F93631E525E5400A12835 /* AirFacebook.m in Sources */,
 				165F93781E525E9700A12835 /* FREConversionUtil.m in Sources */,
-				165F937C1E525EA300A12835 /* FPANEUtils.m in Sources */,
 				165F93741E525E9700A12835 /* FBAppInviteDialogDelegate.m in Sources */,
 				165F93761E525E9700A12835 /* FBShareDelegate.m in Sources */,
 				165F93751E525E9700A12835 /* FBGameRequestDelegate.m in Sources */,
