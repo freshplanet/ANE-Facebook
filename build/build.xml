@@ -81,7 +81,7 @@
 
         <!-- Copy over the exploded aar libs -->
         <exec executable="/bin/bash">
-            <arg value="copy_aars.sh"/>
+            <arg value="extractJars.sh"/>
         </exec>
 
         <!-- remove the build classes -->
