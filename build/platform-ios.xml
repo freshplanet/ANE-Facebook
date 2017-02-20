@@ -1,17 +1,7 @@
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <sdkVersion>8.0</sdkVersion>
     <linkerOptions>
-        <option>-weak_framework Accounts</option> 
-        <option>-weak_framework AdSupport</option>
-        <option>-weak_framework Social</option>
-        <option>-weak_framework CoreMotion</option>
-        <option>-weak_framework StoreKit</option>
     </linkerOptions>
     <packagedDependencies>
-        <packagedDependency>Bolts.framework</packagedDependency>
-        <packagedDependency>FBAudienceNetwork.framework</packagedDependency>
-        <packagedDependency>FBSDKCoreKit.framework</packagedDependency>
-        <packagedDependency>FBSDKLoginKit.framework</packagedDependency>
-        <packagedDependency>FBSDKShareKit.framework</packagedDependency>
     </packagedDependencies>
 </platform>
