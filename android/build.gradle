@@ -7,9 +7,11 @@ dependencies {
 }
 
 android {
+
+    useLibrary  'org.apache.http.legacy'
+
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
-    useLibrary  'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 16
