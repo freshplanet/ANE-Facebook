@@ -16,7 +16,7 @@
     <packagedResources>
         <packagedResource>
             <packageName>com.facebook</packageName>
-            <folderName>airfacebook-res</folderName> 
+            <folderName>AirFacebook-res</folderName> 
         </packagedResource>
     </packagedResources>
 </platform>
