@@ -138,13 +138,13 @@
 
     <!-- HTML Documentation (must be run manually) -->
     <target name="asdoc" description="generate the asdoc in readable html">
-        <exec executable="${flex.sdk}/bin/asdoc${bin.ext}" failonerror="true">
-            <env key="FLEX_HOME" value="${flex.sdk}"/>
-            <env key="FALCON_HOME" value="${flex.sdk}"/>
+        <exec executable="${air.sdk.home}/bin/asdoc" failonerror="true">
+            <env key="FLEX_HOME" value="${air.sdk.home}"/>
+            <env key="FALCON_HOME" value="${air.sdk.home}"/>
             <arg line='-source-path ../actionscript/src'/>
             <arg line='-doc-sources ../actionscript/src'/>
             <arg line='-output ../docs'/>
-            <arg line='-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
+            <arg line='-library-path+="${air.sdk.home}/frameworks/libs/air/airglobal.swc"'/>
         </exec>
     </target>
 
