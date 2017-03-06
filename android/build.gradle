@@ -1,0 +1,33 @@
+
+apply plugin: 'com.android.library'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.facebook.android:facebook-android-sdk:4.19.0'
+}
+
+android {
+
+    useLibrary  'org.apache.http.legacy'
+
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 22
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}

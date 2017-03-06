@@ -1,648 +1,656 @@
-﻿ //////////////////////////////////////////////////////////////////////////////////////
+﻿/**
+ * Copyright 2017 FreshPlanet
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.freshplanet.ane.AirFacebook {
+
+    import com.freshplanet.ane.AirFacebook.appevents.FBEvent;
+    import com.freshplanet.ane.AirFacebook.share.FBAppInviteContent;
+    import com.freshplanet.ane.AirFacebook.share.FBGameRequestContent;
+    import com.freshplanet.ane.AirFacebook.share.FBShareLinkContent;
+
+    import flash.desktop.InvokeEventReason;
+
+    import flash.desktop.NativeApplication;
+    import flash.events.Event;
+    import flash.events.EventDispatcher;
+    import flash.events.HTTPStatusEvent;
+    import flash.events.InvokeEvent;
+    import flash.events.StatusEvent;
+    import flash.external.ExtensionContext;
+    import flash.net.URLRequestMethod;
+    import flash.system.Capabilities;
+
+    /**
+     * todo
+     */
+    public class Facebook extends EventDispatcher {
+
+        /**
+         *
+         */
+        public static const VERSION:String = "4.19.0";
+
+        /**
+         * If <code>true</code>, logs will be displayed at the ActionScript level.
+         */
+        public static var logEnabled:Boolean = false;
+
+        /**
+         * If <code>true</code>, logs will be displayed at the native level.
+         * You must change this before first call of getInstance() to actually see logs in native.
+         */
+        public static var nativeLogEnabled:Boolean = false;
+
+        // --------------------------------------------------------------------------------------//
+        //																						 //
+        // 									   PUBLIC API										 //
+        // 																						 //
+        // --------------------------------------------------------------------------------------//
+
+        /**
+         *
+         */
+        public static function get isSupported():Boolean {
+            return _isIOS() || _isAndroid();
+        }
+
+        /**
+         *
+         */
+        public static function get instance():Facebook {
+            return _instance ? _instance : new Facebook();
+        }
+
+        /**
+         * Do not use this method outside this class. It may be removed anytime!
+         *
+         * @param message
+         */
+        public function log(message:String):void {
+
+            if (Facebook.logEnabled)
+                _as3Log(message, "AS3");
+
+            if (Facebook.nativeLogEnabled)
+                _nativeLog(message);
+        }
+
+        /**
+         * Initialize the Facebook extension. Call any other method after onInitialized callback is called.
+         *
+         * @param appID             A Facebook application ID (must be set for Android if there is missing FacebookId in application descriptor).<br><br>
+         * @param onInitialized     Called when Facebook SDK initialization is complete.
+         * <code>
+         *     &lt;meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb{YOUR_FB_APP_ID}"/&gt;
+         * </code>
+         *
+         * NOTE: It is important to prefix YOUR_FB_APP_ID with "fb", because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null).
+         * Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
+         */
+        public function init(appID:String = null,
+                             onInitialized:Function = null):void {
+
+            if (isSupported && _context != null) {
+
+                _context.call("setNativeLogEnabled", Facebook.nativeLogEnabled);
+                log("ANE Facebook version: " + VERSION);
+                // iOS is synchronous but we will simulate async to have consistent API
+                _context.call("initFacebook", appID, _getNewCallbackName(onInitialized));
+            } else {
+
+                log("Can't initialize extension! Unsupported platform or context couldn't be created!")
+            }
+        }
+
+        /**
+         * Sets default share dialog mode.
+         *
+         * @param shareDialogModeIOS
+         * @param shareDialogModeAndroid
+         *
+         * @see com.freshplanet.ane.AirFacebook.FBShareDialogModeIOS
+         * @see com.freshplanet.ane.AirFacebook.FBShareDialogModeAndroid
+         */
+        public function setDefaultShareDialogMode(shareDialogModeIOS:FBShareDialogModeIOS = null,
+                                                  shareDialogModeAndroid:FBShareDialogModeAndroid = null):void {
+
+            if (_isInitialized()) {
+
+                if (_isIOS() && shareDialogModeIOS)
+                    _context.call("setDefaultShareDialogMode", shareDialogModeIOS.value);
+                else if (_isAndroid() && shareDialogModeAndroid)
+                    _context.call("setDefaultShareDialogMode", shareDialogModeAndroid.value);
+            }
+        }
+
+        /**
+         * Sets default login behavior.
+         *
+         * @param loginBehaviorIOS
+         * @param loginBehaviorAndroid
+         *
+         * @see com.freshplanet.ane.AirFacebook.FBLoginBehaviorIOS
+         * @see com.freshplanet.ane.AirFacebook.FBLoginBehaviorAndroid
+         */
+        public function setLoginBehavior(loginBehaviorIOS:FBLoginBehaviorIOS = null,
+                                         loginBehaviorAndroid:FBLoginBehaviorAndroid = null):void {
+
+            if (_isInitialized()) {
+
+                if (_isIOS() && loginBehaviorIOS)
+                    _context.call("setLoginBehavior", loginBehaviorIOS.value);
+                else if (_isAndroid() && loginBehaviorAndroid)
+                    _context.call("setLoginBehavior", loginBehaviorAndroid.value);
+            }
+        }
+
+        /**
+         * Sets default audience for publish_actions.
+         *
+         * @param defaultAudience
+         *
+         * @see com.freshplanet.ane.AirFacebook.FBDefaultAudience
+         */
+        public function setDefaultAudience(defaultAudience:FBDefaultAudience = null):void {
+
+            if (_isInitialized() && defaultAudience)
+                _context.call("setDefaultAudience", defaultAudience.value);
+        }
+
+        /**
+         * Fetches any deferred applink data and attempts to open the returned url
+         */
+//		public function openDeferredAppLink() : void
+//		{
+//			if (!isSupported) return;
 //
-//  Copyright 2012 Freshplanet (http://freshplanet.com | opensource@freshplanet.com)
-//  
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//  
-//    http://www.apache.org/licenses/LICENSE-2.0
-//  
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
-//  
-//////////////////////////////////////////////////////////////////////////////////////
+//			_context.call('openDeferredAppLink');
+//		}
 
-package com.freshplanet.ane.AirFacebook
-{
-	import flash.desktop.NativeApplication;
-	import flash.events.EventDispatcher;
-	import flash.events.InvokeEvent;
-	import flash.events.StatusEvent;
-	import flash.external.ExtensionContext;
-	import flash.system.Capabilities;
-	import com.freshplanet.ane.AirFacebook.FacebookPermissionEvent;
+        /**
+         * The current Facebook access token, or null if no session is open.
+         *
+         * @see com.freshplanet.ane.AirFacebook.FBAccessToken
+         */
+        public function get accessToken():FBAccessToken {
 
-	public class Facebook extends EventDispatcher
-	{
-		// --------------------------------------------------------------------------------------//
-		//																						 //
-		// 									   PUBLIC API										 //
-		// 																						 //
-		// --------------------------------------------------------------------------------------//
-		
-		/** Facebook is supported on iOS and Android devices. */
-		public static function get isSupported() : Boolean
-		{
-			return Capabilities.manufacturer.indexOf("iOS") > -1 || Capabilities.manufacturer.indexOf("Android") > -1;
-		}
-		
-		public function Facebook()
-		{
-			if (!_instance)
-			{
-				_context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
-				if (!_context)
-				{
-					log("ERROR - Extension context is null. Please check if extension.xml is setup correctly.");
-					return;
-				}
-				_context.addEventListener(StatusEvent.STATUS, onStatus);
-				
-				NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, onInvoke);
-				
-				_instance = this;
-			}
-			else
-			{
-				throw Error("This is a singleton, use getInstance(), do not call the constructor directly.");
-			}
-		}
-		
-		public static function getInstance() : Facebook
-		{
-			return _instance ? _instance : new Facebook();
-		}
-		
-		/**
-		 * If <code>true</code>, logs will be displayed at the Actionscript level.
-		 * If <code>false</code>, logs will be displayed only at the native level.
-		 */
-		public function get logEnabled() : Boolean
-		{
-			return _logEnabled;
-		}
-		
-		
-		/**
-		 * This is only important on Android - if you are using stage3D for display at the time you log in to FB,
-		 * set this to true to avoid the display freezing
-		 */
-		public function setUsingStage3D(using3d:Boolean) : void 
-		{
-			if(Capabilities.manufacturer.indexOf("Android") > -1) {
-				_context.call('setUsingStage3D', using3d);
-			}
-		}
-		
-		public function set logEnabled( value : Boolean ) : void
-		{
-			_logEnabled = value;
-		}
-		
-		/**
-		 * Initialize the Facebook extension.
-		 * 
-		 * @param appID             A Facebook application ID.
-         * @param legacyMode        TRUE enables Graph 1.0, FALSE uses current Graph API.
-		 * @param urlSchemeSuffix   (Optional) The URL Scheme Suffix to be used in scenarios where multiple iOS apps
-		 *                          use one Facebook App ID. Must contain only lowercase letters.
-		 */
-		public function init( appID : String, legacyMode : Boolean, urlSchemeSuffix : String = null ) : void
-		{
-			if (!isSupported) return;
-			
-			_context.call('init', appID, urlSchemeSuffix, legacyMode);
-		}
-		
-		/**
-		 * Track an activation of the app
-		 */
-		public function activateApp() : void
-		{
-			if (!isSupported) return;
-			
-			_context.call('activateApp');
-		}
-		
-		/**
-		 * Fetches any deferred applink data and attempts to open the returned url
-		 */
-		public function openDeferredAppLink() : void
-		{
-			if (!isSupported) return;
-			
-			_context.call('openDeferredAppLink');
-		}
-		
-		/** True if a Facebook session is open, false otherwise. */
-		public function get isSessionOpen() : Boolean
-		{
-			if (!isSupported) return false;
-			
-			return _context.call('isSessionOpen');
-		}
-		
-		/** The current Facebook access token, or null if no session is open. */
-		public function get accessToken() : String
-		{
-			if (!isSupported) return null;
-			
-			return _context.call('getAccessToken') as String;
-		}
-		
-		/**
-		 * The expiration timestamp (in seconds since Unix epoch) associated with the current Facebook access token,
-		 * or 0 if the session doesn't expire or doesn't exist.
-		 */
-		public function get expirationTimestamp() : Number
-		{
-			if (!isSupported) return 0;
-			
-			return _context.call('getExpirationTimestamp') as Number;
-		}
-		
-		/**
-		 * Open a new session with a given set of read permissions.<br><br>
-		 * 
-		 * @param permissions An array of requested <strong>read</strong> permissions.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
-		 * @param systemFlow Boolean indicating if the native system flow should be used instead of
-		 * fast-app switching on iOS 6 and above. Default: <code>true</code>.
-		 * 
-		 * @see #openSessionWithPublishPermissions()
-		 * @see #reauthorizeSessionWithReadPermissions()
-		 * @see #reauthorizeSessionWithPublishPermissions()
-		 */
-		public function openSessionWithReadPermissions( permissions : Array, callback : Function = null, systemFlow:Boolean = true ) : void
-		{
-			openSessionWithPermissionsOfType(permissions, "read", callback, systemFlow);
-		}
-		
-		/**
-		 * Open a new session with a given set of publish permissions.<br><br>
-		 * 
-		 * @param permissions An array of requested <strong>publish</strong> permissions.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
-		 * @param systemFlow Boolean indicating if the native system flow should be used instead of
-		 * fast-app switching on iOS 6 and above. Default: <code>true</code>.
-		 * 
-		 * @see #openSessionWithReadPermissions()
-		 * @see #reauthorizeSessionWithReadPermissions()
-		 * @see #reauthorizeSessionWithPublishPermissions()
-		 */
-		public function openSessionWithPublishPermissions( permissions : Array, callback : Function = null, systemFlow:Boolean = true ) : void
-		{
-			openSessionWithPermissionsOfType(permissions, "publish", callback, systemFlow);
-		}
-		
-		/**
-		 * Reauthorize the current session with a given set of read permissions.<br><br>
-		 * 
-		 * @param permissions An array of requested <strong>read</strong> permissions.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
-		 * 
-		 * @see #reauthorizeSessionWithPublishPermissions()
-		 */
-		public function reauthorizeSessionWithReadPermissions( permissions : Array, callback : Function = null ) : void
-		{
-			reauthorizeSessionWithPermissionsOfType(permissions, "read", callback);
-		}
-		
-		/**
-		 * Reauthorize the current session with a given set of publish permissions.<br><br>
-		 * 
-		 * @param permissions An array of requested <strong>publish</strong> permissions.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
-		 * 
-		 * @see #reauthorizeSessionWithReadPermissions()
-		 */
-		public function reauthorizeSessionWithPublishPermissions( permissions : Array, callback : Function = null ) : void
-		{
-			reauthorizeSessionWithPermissionsOfType(permissions, "publish", callback);
-		}
-		
-		/** Close the current Facebook session and delete the token from the cache. */
-		public function closeSessionAndClearTokenInformation() : void
-		{
-			if (!isSupported) return;
-			
-			_context.call('closeSessionAndClearTokenInformation');
-		}
-		
-		/**
-		 * Run a Facebook request with a Graph API path.
-		 * 
-		 * @param graphPath A Graph API path.
-		 * @param parameters (Optional) An object (key-value pairs) containing the request parameters.
-		 * @param httpMethod (Optional) The HTTP method to use (GET, POST or DELETE). Default is GET.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
-		 * object returned by Facebook.
-		 */
-		public function requestWithGraphPath( graphPath : String, parameters : Object = null, httpMethod : String = "GET", callback : Function = null ) : void
-		{
-			if (!isSupported) return;
-			
-			// Verify the HTTP method
-			if (httpMethod != "GET" && httpMethod != "POST" && httpMethod != "DELETE")
-			{
-				log("ERROR - Invalid HTTP method: " + httpMethod + " (must be GET, POST or DELETE)");
-				return;
-			}
-			
-			// Separate parameters keys and values
-			var keys:Array = []; var values:Array = [];
-			for (var key:String in parameters)
-			{
-				var value:String = parameters[key] as String;
-				if (value)
-				{
-					keys.push(key); 
-					values.push(value);
-				}
-			}
-			
-			// Register the callback
-			var callbackName:String = getNewCallbackName(callback);
-			
-			// Execute the request
-			_context.call('requestWithGraphPath', graphPath, keys, values, httpMethod, callbackName);
-		}
+            var accessToken:FBAccessToken = null;
 
-		/**
-		 * Determine if we can open a native share dialog with the given parameters.
-		 * Call this method to decide wether you should use <code>shareStatusDialog</code> or <code>webDialog</code>
-		 */
-		public function canPresentShareDialog():Boolean
-		{
+            if (_isInitialized()) {
 
-			return _context.call('canPresentShareDialog') ;
+                accessToken = _context.call("getAccessToken") as FBAccessToken;
+                log(accessToken ? accessToken.toString() : "No access token!");
+            }
 
-		}
+            return accessToken;
+        }
 
-		/**
-		 * Open a native Facebook dialog for sharing a link
-		 * This requires that the Facebook app is installed on the device,
-		 * To make sure this succeeds, call canPresentShareDialog, otherwise
-		 * you can fall back to a web view with the <code>webDialog</code> method
-		 */
-		public function shareStatusDialog( callback:Function ):void
-		{
+        /**
+         * Current Facebook profile, or null if no session is open.
+         *
+         * @see com.freshplanet.ane.AirFacebook.FBProfile
+         */
+        public function get profile():FBProfile {
 
-			_context.call('shareStatusDialog', getNewCallbackName(callback) );
+            var profile:FBProfile = null;
 
-		}
+            if (_isInitialized()) {
 
-		/**
-		 * Open a native Facebook dialog for sharing a link
-		 * This requires that the Facebook app is installed on the device,
-		 * To make sure this succeeds, call canPresentShareDialog, otherwise
-		 * you can fall back to a web view with the <code>webDialog</code> method
-		 *
-		 * @param link (Optional) Link to share.
-		 * @param name (Optional) Title of the publication.
-		 * @param caption (Optional) Short summary of the link content.
-		 * @param description (Optional) Description of the link content.
-		 * @param pictureUrl (Optional) Url of the attached picture.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
-		 * object returned by Facebook.
-		 */
-		public function shareLinkDialog(
-			link:String =null,
-			name:String =null,
-			caption:String =null,
-			description:String =null,
-			pictureUrl:String =null,
-			clientState:Object =null,
-			callback:Function =null ):void
-		{
+                profile = _context.call('getProfile') as FBProfile;
+                log(profile ? profile.toString() : "No profile!");
+            }
 
-			// Separate parameters keys and values
-			var keys:Array = []; var values:Array = [];
-			for (var key:String in clientState)
-			{
-				var value:String = clientState[key] as String;
-				if (value)
-				{
-					keys.push(key); 
-					values.push(value);
-				}
-			}
+            return profile;
+        }
 
-			_context.call('shareLinkDialog', link, name, caption, description, pictureUrl, keys, values, getNewCallbackName(callback)) ;
+        /**
+         * Open a new session with a given set of read permissions.<br><br>
+         *
+         * @param permissions An array of requested <strong>read</strong> permissions.
+         * @param callback (Optional) A callback function of the following form:
+         * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
+         *
+         * @see #logInWithPublishPermissions()
+         */
+        public function logInWithReadPermissions(permissions:Array,
+                                                 callback:Function = null):void {
 
-		}
+            if (_isInitialized())
+                _logIn(permissions, "read", callback);
+        }
 
-		/**
-		 * Determine if we can open a native share dialog for OpenGraph with the given parameters.
-		 * Call this method to know if you can use <code>shareOpenGraphDialog</code>
-		 */
-		public function canPresentOpenGraphDialog( actionType:String, graphObject:Object, previewProperty:String =null):Boolean
-		{
+        /**
+         * Open a new session with a given set of publish permissions.<br><br>
+         *
+         * @param permissions An array of requested <strong>publish</strong> permissions.
+         * @param callback (Optional) A callback function of the following form:
+         * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
+         *
+         * @see #logInWithReadPermissions()
+         */
+        public function logInWithPublishPermissions(permissions:Array,
+                                                    callback:Function = null):void {
 
-			// Separate parameters keys and values
-			var keys:Array = []; var values:Array = [];
-			for (var key:String in graphObject)
-			{
-				var value:String = graphObject[key] as String;
-				if (value)
-				{
-					keys.push(key); 
-					values.push(value);
-				}
-			}
+            if (_isInitialized())
+                _logIn(permissions, "publish", callback);
+        }
 
-			return _context.call('canPresentOpenGraphDialog', actionType, keys, values, previewProperty) ;
+        /**
+         * Closes the current Facebook session and delete the token from the cache.
+         */
+        public function logOut():void {
 
-		}
+            if (_isInitialized())
+                _context.call("logOut");
+        }
 
-		/**
-		 * Open a native Facebook dialog for sharing an OpenGraph action
-		 * This requires that the Facebook app is installed on the device,
-		 * To make sure this succeeds, call canPresentOpenGraphDialog
-		 *
-		 * @param actionType the OpenGraph action you want to share (e.g. books.read)
-		 * @param graphObject the OpenGraph object you want to share, set properties accordingly with
-		 * the definition you created on developers.facebook.com (e.g. { book:"http://freshplanet.com/books/how-to-make-anes.html" })
-		 * @param previewProperty defines the property over wich the story should emphasis (e.g. 'book')
-		 * @param clientState (Optional) deprecated
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
-		 * object returned by Facebook.
-		 */
-		public function shareOpenGraphDialog(
-			actionType:String,
-			graphObject:Object,
-			previewProperty:String =null,
-			clientState:Object =null,
-			callback:Function =null ):void
-		{
+        /**
+         * Run a Facebook request with a Graph API path.
+         *
+         * @param graphPath A Graph API path.
+         * @param parameters (Optional) An object (key-value pairs) containing the request parameters.
+         * @param httpMethod (Optional) The HTTP method to use (GET, POST or DELETE). Default is GET.
+         * @param callback (Optional) A callback function of the following form:
+         * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+         * object returned by Facebook.
+         */
+        public function requestWithGraphPath(graphPath:String,
+                                             parameters:Object = null,
+                                             httpMethod:String = URLRequestMethod.GET,
+                                             callback:Function = null):void {
 
-			// Separate parameters keys and values
-			var keys:Array = []; var values:Array = [];
-			for (var key:String in graphObject)
-			{
-				var value:String = graphObject[key] as String;
-				if (value)
-				{
-					keys.push(key); 
-					values.push(value);
-				}
-			}
+            if (_isInitialized()) {
 
-			// Separate parameters keys and valuesm for clientState
-			var cskeys:Array = []; var csvalues:Array = [];
-			for (var cskey:String in clientState)
-			{
-				value = clientState[key] as String;
-				if (value)
-				{
-					cskeys.push(key); 
-					csvalues.push(value);
-				}
-			}
+                // Verify the HTTP method
+                if (httpMethod != URLRequestMethod.GET &&
+                    httpMethod != URLRequestMethod.POST &&
+                    httpMethod != URLRequestMethod.DELETE) {
 
-			_context.call('shareOpenGraphDialog', actionType, keys, values, previewProperty, cskeys, csvalues, getNewCallbackName(callback));
+                    log("ERROR - Invalid HTTP method: " + httpMethod + " (must be GET, POST or DELETE)");
+                    return;
+                }
 
-		}
+                // Separate parameters keys and values
+                var keys:Array = [];
+                var values:Array = [];
 
-		
-		/**
-		 * Determine if we can open a native Message Dialog.
-		 * Call this method to know if you can use <code>presentMessageDialogWithLinkWithParams</code>
-		 */
-		public function canPresentMessageDialog():Boolean
-		{
-			var result:Boolean =  _context.call('canPresentMessageDialog');
-			return result;
-		}
-		
-		
-		public function presentMessageDialogWithLinkAndParams(
-			linkUrl:String,
-			name:String,
-			caption:String,
-			description:String,
-			pictureUrl:String,
-			callback:Function ):void
-		{
-			var keys:Array = ["link", "name", "caption", "description", "picture"];
-			var values:Array = [linkUrl, name, caption, description, pictureUrl];
-			
-			// Register the callback
-			var callbackName:String = getNewCallbackName(callback);
-			
-			_context.call('presentMessageDialogWithLinkAndParams', keys, values, callbackName);
-		}
-		
-		/**
-		 * Open a Facebook dialog in a WebView
-		 *
-		 * @param method A dialog method (eg. login, feed...).
-		 * @param parameters (Optional) An object (key-value pairs) containing the dialog parameters.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
-		 * object returned by Facebook.
-		 */
-		public function webDialog( method : String, parameters : Object = null, callback : Function = null ) : void
-		{
-			// Separate parameters keys and values
-			var keys:Array = []; var values:Array = [];
-			for (var key:String in parameters)
-			{
-				var value:String = parameters[key] as String;
-				if (value)
-				{
-					keys.push(key); 
-					values.push(value);
-				}
-			}
-			
-			// Register the callback
-			var callbackName:String = getNewCallbackName(callback);
-			
-			// Open the dialog
-			_context.call('webDialog', method, keys, values, callbackName);
-		}
+                for (var key:String in parameters) {
 
-		/**
-		 * Open a Facebook dialog.
-		 * This method is kept for compatibility.
-		 * If allowNativeUI is set to false this is equivalent to the method <code>webDialog</code>, else we try
-		 * to call the correct native dialog based on given parameters and revert to <code>webDialog</code> if
-		 * a native dialog cannot be used.
-		 * 
-		 * @param method A dialog method (eg. login, feed...).
-		 * @param parameters (Optional) An object (key-value pairs) containing the dialog parameters.
-		 * @param callback (Optional) A callback function of the following form:
-		 * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
-		 * object returned by Facebook.
-		 * @param allowNativeUI (Optional) If true, we will try to use the native sharing dialog.
-		 * Native sharing dialog will only be used if <code>method</code> is <em>feed</em> and <code>
-		 * parameters</code> doesn't contain a non-empty <em>to</em> parameter. If the native sharing
-		 * dialog can be used, only the following parameters will be used: name, picture, link, caption,
-		 * description. Default is true.
-		 */
-		public function dialog( method : String, parameters : Object = null, callback : Function = null, allowNativeUI : Boolean = true ) : void
-		{
-			
-			const isFeedDialog:Boolean = method == "feed";
-			const hasRecipients:Boolean = parameters.hasOwnProperty("to");
+                    var value:String = parameters[key] as String;
 
-			var useNativeShareUI:Boolean = isFeedDialog && allowNativeUI && !hasRecipients ;
-			useNativeShareUI &&= canPresentShareDialog();
+                    if (value) {
 
-			if( useNativeShareUI )
-			{
-				shareLinkDialog( parameters['link'], parameters['name'], parameters['caption'], parameters['description'], parameters['picture'], callback );
-			}
-			else
-			{
-				webDialog( method, parameters, callback );
-			}
+                        keys.push(key);
+                        values.push(value);
+                    }
+                }
 
-		}
-		
-		/** Register the appId for install tracking. */
-		public function publishInstall(appId:String):void
-		{
-			if (!isSupported) return;
-			
-			_context.call('publishInstall', appId);
-		}
-		
-		// --------------------------------------------------------------------------------------//
-		//																						 //
-		// 									 	PRIVATE API										 //
-		// 																						 //
-		// --------------------------------------------------------------------------------------//
-		
-		private static const EXTENSION_ID : String = "com.freshplanet.AirFacebook";
-		
-		private static var _instance : Facebook;
-		
-		private var _context : ExtensionContext;
-		private var _logEnabled : Boolean = false;
-		private var _openSessionCallback : Function;
-		private var _reauthorizeSessionCallback : Function;
-		private var _requestCallbacks : Object = {};
-		
-		private function openSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null, systemFlow : Boolean = true ) : void
-		{
-			if (!isSupported) return;
-			
-			_openSessionCallback = callback;
-			_context.call('openSessionWithPermissions', permissions, type, systemFlow);
-		}
-		
-		private function reauthorizeSessionWithPermissionsOfType( permissions : Array, type : String, callback : Function = null ) : void
-		{
-			if (!isSupported) return;
-			
-			if (!isSessionOpen)
-			{
-				callback(false, false, "No opened session");
-				return;
-			}
-			
-			_reauthorizeSessionCallback = callback;
-			_context.call('reauthorizeSessionWithPermissions', permissions, type);
-		}
-		
-		private function getNewCallbackName( callback : Function ) : String
-		{
-			// Generate callback name based on current time
-			var date:Date = new Date();
-			var callbackName:String = date.time.toString();
-			
-			// Clean up old callback if the name already exists
-			if (_requestCallbacks.hasOwnProperty(callbackName))
-			{
-				delete _requestCallbacks[callbackName]
-			}
-			
-			// Save new callback under this name
-			_requestCallbacks[callbackName] = callback;
-			
-			return callbackName;
-		}
-		
-		private function onInvoke( event : InvokeEvent ) : void
-		{
-			if (Capabilities.manufacturer.indexOf("iOS") != -1)
-			{
-				if (event.arguments != null && event.arguments.length > 0)
-				{
-					// if the invoke event arguments consist in a Referer begining with 'fb'
-					var url:String = event.arguments[0] as String;
-					if ( url != null && url.indexOf("fb") == 0)
-					{
-						log("about to call handleOpenURL on " + url);
-						_context.call("handleOpenURL", url);
-					}
-				}
-			}
-		}
-		
-		private function onStatus( event : StatusEvent ) : void
-		{
-			var today:Date = new Date();
-			var callback:Function;
-			
-			if (event.code.indexOf("SESSION") != -1) // If the event code contains SESSION, it's an open/reauthorize session result
-			{
-				var success:Boolean = (event.code.indexOf("SUCCESS") != -1);
-				var userCancelled:Boolean = (event.code.indexOf("CANCEL") != -1);
-				var error:String = (event.code.indexOf("ERROR") != -1) ? event.level : null;
-				
-				if (event.code.indexOf("OPEN") != -1) callback = _openSessionCallback;
-				else if (event.code.indexOf("REAUTHORIZE") != -1) callback = _reauthorizeSessionCallback;
-				
-				_openSessionCallback = null;
-				_reauthorizeSessionCallback = null;
-				
-				if (callback != null) callback(success, userCancelled, error);
-			}
-			else if (event.code == "ACTION_REQUIRE_PERMISSION")
-			{
-				dispatchEvent(new FacebookPermissionEvent(FacebookPermissionEvent.PERMISSION_NEEDED, event.level.split(',')));
-			}
-			else if (event.code == "LOGGING") // Simple log message
-			{
-				log(event.level);
-			}
-			else // Default case: we check for a registered callback associated with the event code
-			{
-				if (_requestCallbacks.hasOwnProperty(event.code))
-				{
-					callback = _requestCallbacks[event.code];
-					var data:Object;
-					
-					if (callback != null)
-					{
-						try
-						{
-							data = JSON.parse(event.level);
-							if (accessToken != null && accessToken != '')
-							{
-								data["accessToken"] = accessToken;
-							}
-						}
-						catch (e:Error)
-						{
-							log("ERROR - " + e);
-						}
-						
-						callback(data);
-						
-						delete _requestCallbacks[event.code];
-					}
-				}
-			}
-		}
-		
-		private function log( message : String ) : void
-		{
-			if (_logEnabled) trace("[Facebook] " + message);
-		}
-	}
+                // Register the callback
+                var callbackName:String = _getNewCallbackName(callback);
+
+                // Execute the request
+                _context.call("requestWithGraphPath", graphPath, keys, values, httpMethod, callbackName);
+            }
+        }
+
+        /**
+         * Determine if we can open a share dialog with current share dialog mode.
+         * Call this method to decide what default share dialog mode you want to use.
+         *
+         * @see #setDefaultShareDialogMode
+         */
+        public function canPresentShareDialog():Boolean {
+
+            var res:Boolean = false;
+
+            if (_isInitialized())
+                res = _context.call("canPresentShareDialog");
+
+            return res;
+        }
+
+        /**
+         * Shares a link. If useShareApi is set to true no dialog will be opened, otherwise you
+         * can specify default share dialog mode by setting setDefaultShareDialogMode.
+         *
+         * @param shareLinkContent Content of share dialog.
+         * @param useShareApi If you have publish_actions permission you can directly share through ShareAPI.
+         * @param callback (Optional) A callback function of the following form:
+         * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
+         * object returned by Facebook.
+         *
+         * @see #setDefaultShareDialogMode
+         */
+        public function shareLinkDialog(shareLinkContent:FBShareLinkContent,
+                                        useShareApi:Boolean = false,
+                                        callback:Function = null):void {
+
+            if (_isInitialized() && shareLinkContent != null)
+                _context.call("shareLinkDialog", shareLinkContent, useShareApi, _getNewCallbackName(callback));
+        }
+
+        /**
+         * Opens app invite dialog.
+         *
+         * @param appInviteContent Content of app invite dialog.
+         * @param callback (TODO)
+         */
+        public function appInviteDialog(appInviteContent:FBAppInviteContent,
+                                        callback:Function = null):void {
+
+            if (_isInitialized() && appInviteContent != null)
+                _context.call("appInviteDialog", appInviteContent, _getNewCallbackName(callback));
+        }
+
+        /**
+         *
+         * @param gameRequestContent
+         * @param frictionless
+         * @param callback
+         */
+        public function gameRequestDialog(gameRequestContent:FBGameRequestContent,
+                                          frictionless:Boolean,
+                                          callback:Function):void {
+
+            if (_isInitialized() && gameRequestContent != null)
+                _context.call("gameRequestDialog", gameRequestContent, frictionless, _getNewCallbackName(callback));
+        }
+
+        /**
+         *
+         * @param event
+         */
+        public function logEvent(event:FBEvent):void {
+
+            if (_isInitialized())
+                _context.call("logEvent", event);
+        }
+
+        // --------------------------------------------------------------------------------------//
+        //																						 //
+        // 									 	PRIVATE API										 //
+        // 																						 //
+        // --------------------------------------------------------------------------------------//
+
+        private static const EXTENSION_ID:String = "com.freshplanet.ane.AirFacebook";
+
+        private static var _instance:Facebook = null;
+
+        private var _initialized:Boolean = false;
+        private var _context:ExtensionContext = null;
+        private var _openSessionCallback:Function = null;
+        private var _requestCallbacks:Object = {};
+
+        /**
+         * "private" singleton constructor
+         */
+        public function Facebook() {
+
+            super();
+
+            if (_instance)
+                throw Error("This is a singleton, use getInstance(), do not call the constructor directly.");
+
+            _instance = this;
+
+            _context = ExtensionContext.createExtensionContext(EXTENSION_ID, null);
+
+            if (!_context)
+                log("ERROR - Extension context is null. Please check if extension.xml is setup correctly.");
+            else {
+
+                _context.addEventListener(StatusEvent.STATUS, _onStatus);
+
+                NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, _onInvoke);
+                NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, _onActivate);
+                NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, _onDeactivate);
+            }
+        }
+
+        /**
+         *
+         * @param permissions
+         * @param type
+         * @param callback
+         */
+        private function _logIn(permissions:Array, type:String, callback:Function = null):void {
+
+            if (!isSupported)
+                return;
+
+            if (permissions == null)
+                permissions = [];
+
+            _openSessionCallback = callback;
+            _context.call('logInWithPermissions', permissions, type);
+        }
+
+        /**
+         *
+         * @param callback
+         * @return
+         */
+        private function _getNewCallbackName(callback:Function):String {
+
+            // Generate callback name based on current time
+            var date:Date = new Date();
+            var callbackName:String = date.time.toString();
+
+            // Clean up old callback if the name already exists
+            if (_requestCallbacks.hasOwnProperty(callbackName))
+                delete _requestCallbacks[callbackName];
+
+            // Save new callback under this name
+            _requestCallbacks[callbackName] = callback;
+
+            return callbackName;
+        }
+
+        /**
+         *
+         * @param event
+         */
+        private function _onInvoke(event:InvokeEvent):void {
+
+            //  NOTE: you can debug onInvoke with these lines of code
+//            var debugStr:String;
+//            if(event.reason == InvokeEventReason.NOTIFICATION) {
+//                var obj:Object = event.arguments[0];
+//                var arr:Array = [];
+//                for (var prop in obj) {
+//                    arr.push(prop + ": " + obj[prop]);
+//                }
+//                debugStr = arr.join(", ")
+//            }else{
+//                debugStr = event.arguments.join(",");
+//            }
+//
+//            log("onInvoke reason: " + event.reason + " params: " + debugStr);
+
+            if (Capabilities.manufacturer.indexOf("iOS") != -1) {
+
+                if (event.reason == InvokeEventReason.OPEN_URL && event.arguments != null && event.arguments.length == 3) {
+
+                    var url:String = event.arguments[0] as String;
+                    var sourceApplication:String = event.arguments[1] as String;
+                    var annotation:String = event.arguments[2] as String;
+
+                    log("handleOpenURL url: " + url + " sourceApplication: " + sourceApplication + " annotation: " + annotation);
+                    _context.call("handleOpenURL", url, sourceApplication, annotation);
+                }
+            }
+        }
+
+        /**
+         *
+         * @param event
+         */
+        private function _onStatus(event:StatusEvent):void {
+
+            var dataArr:Array = null;
+            var callbackName:String = null;
+            var callback:Function = null;
+
+            // If the event code contains SESSION, it's an open/reauthorize session result
+            if (event.code == "LOGGING")
+                _as3Log(event.level, "NATIVE");
+            else if (event.code.indexOf("SESSION") != -1) {
+
+                var success:Boolean = (event.code.indexOf("SUCCESS") != -1);
+                var userCancelled:Boolean = (event.code.indexOf("CANCEL") != -1);
+                var error:String = (event.code.indexOf("ERROR") != -1) ? event.level : null;
+
+                callback = _openSessionCallback;
+                _openSessionCallback = null;
+
+                if (callback != null)
+                    callback(success, userCancelled, error);
+            }
+            else if (event.code.indexOf("SHARE") != -1) {
+
+                dataArr = event.code.split("_");
+
+                if (dataArr.length == 3) {
+
+                    var status:String = dataArr[1];
+                    callbackName = dataArr[2];
+
+                    callback = _requestCallbacks[callbackName];
+
+                    if (callback != null) {
+
+                        callback(status == "SUCCESS", status == "CANCELLED", status == "ERROR" ? event.level : null);
+
+                        // TODO we should delete also null values from callback array
+                        delete _requestCallbacks[callbackName];
+                    }
+                }
+            }
+            else if (event.code.indexOf("SDKINIT") != -1) {
+
+                log("Facebook SDK initialized.");
+
+                _initialized = true;
+
+                dataArr = event.code.split("_");
+
+                if (dataArr.length == 2) {
+
+                    callbackName = dataArr[1];
+                    callback = _requestCallbacks[callbackName];
+
+                    if (callback != null) {
+
+                        callback();
+
+                        // TODO we should delete also null values from callback array
+                        delete _requestCallbacks[callbackName];
+                    }
+                }
+            }
+            else { // Default case: we check for a registered callback associated with the event code
+
+                if (_requestCallbacks.hasOwnProperty(event.code)) {
+
+                    callback = _requestCallbacks[event.code];
+                    var data:Object;
+
+                    if (callback != null) {
+
+                        try {
+                            data = JSON.parse(event.level);
+                        }
+                        catch (e:Error) {
+                            log("ERROR - " + e);
+                        }
+
+                        callback(data);
+
+                        delete _requestCallbacks[event.code];
+                    }
+                }
+            }
+        }
+
+        /**
+         *
+         * @param event
+         */
+        private function _onActivate(event:Event):void {
+
+            if (isSupported && _context != null)
+                _context.call("activateApp");
+        }
+
+        /**
+         *
+         * @param event
+         */
+        private function _onDeactivate(event:Event):void {
+
+            if (isSupported && _context != null && _isAndroid())
+                _context.call("deactivateApp");
+        }
+
+        /**
+         *
+         * @param message
+         * @param prefix
+         */
+        private function _as3Log(message:String, prefix:String):void {
+            trace("[AirFacebook][" + prefix + "] " + message);
+        }
+
+        /**
+         *
+         * @param message
+         */
+        private function _nativeLog(message:String):void {
+
+            if (_context != null)
+                _context.call('nativeLog', message);
+        }
+
+        /**
+         *
+         * @return
+         */
+        private function _isInitialized():Boolean {
+
+            if (!_initialized) {
+
+                log("You must call init() before any other method!");
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         *
+         * @return
+         */
+        private static function _isIOS():Boolean {
+            return Capabilities.manufacturer.indexOf("iOS") > -1;
+        }
+
+        /**
+         *
+         * @return
+         */
+        private static function _isAndroid():Boolean {
+            return Capabilities.manufacturer.indexOf("Android") > -1;
+        }
+    }
 }

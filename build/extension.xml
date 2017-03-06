@@ -16,8 +16,8 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////-->
 
-<extension xmlns="http://ns.adobe.com/air/extension/15.0">
-  <id>com.freshplanet.AirFacebook</id>
+<extension xmlns="http://ns.adobe.com/air/extension/22.0">
+  <id>com.freshplanet.ane.AirFacebook</id>
   <versionNumber>1</versionNumber>
   <platforms>
 

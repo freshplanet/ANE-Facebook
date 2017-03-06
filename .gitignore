@@ -13,12 +13,16 @@ actionscript/bin
 .project
 
 # Android
+android/build
 android/bin
 android/gen
 android/lint.xml
 .classpath
 proguard-project.txt
 project.properties
+
+# Gradle
+.gradle
 
 # Xcode
 xcuserdata
@@ -31,3 +35,7 @@ Thumbs.db
 *.idea
 *.iml
 /out
+/bin
+
+local.properties
+ios/build

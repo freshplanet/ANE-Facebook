@@ -5,110 +5,92 @@
     <property file="build.config"/>
 
     <!-- All -->
-    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
+    <target name="all" depends="ios, android, swc, package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
 
         <!-- make the build directory for the objc code -->
-        <mkdir dir="temp/ios/build/"/>
+        <mkdir dir="temp/ios"/>
 
         <!-- clean the build -->
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-alltargets clean"/>
+        <exec executable="xcodebuild" failonerror="true" dir="../ios">
+            <arg line="-workspace ${name}.xcworkspace"/>
+            <arg line="-scheme ${name}"/>
+            <arg line="clean"/>
         </exec>
 
         <!-- compile the ios lib -->
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
+        <exec executable="xcodebuild" failonerror="true" dir="../ios">
+            <arg line="-workspace ${name}.xcworkspace"/>
+            <arg line="-scheme ${name}"/>
             <arg line="-sdk iphoneos"/>
-            <arg line="-alltargets"/>
             <arg line="-configuration Release"/>
-            <arg line="SYMROOT=../build/temp/ios/build/"/>
+            <arg line="SYMROOT=$(PWD)/../ios/build"/>
         </exec>
 
         <!-- copy the ios lib to the base temp ios directory -->
-        <copy file="temp/ios/build/Release-iphoneos/lib${name}.a" todir="temp/ios" overwrite="true"/>
-
-        <!-- Copy over required frameworks and libs -->
-        <copy todir="temp/ios/FacebookSDK.framework" overwrite="true">
-            <fileset dir="../ios/frameworks/FacebookSDK.framework"/>
+        <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="../ios/build/Release-iphoneos" includes="lib${name}.a, **/*.bundle/"/>
         </copy>
 
         <!-- remove the build directory -->
-        <delete dir="temp/ios/build/"/>
+        <delete dir="../ios/build"/>
     </target>
 
     <!-- Android -->
-    <target name="android" description="Build Android Library with debugging disabled">
-        <property name="ANDROID_DEBUG" value="false"/>
-        <antcall target="android-build"/>
-    </target>
-    <target name="android-debug" description="Build Android Library with debugging enabled">
-        <property name="ANDROID_DEBUG" value="true"/>
-        <antcall target="android-build"/>
-    </target>
-    <target name="android-build" description="Build Android Library">
+    <target name="android" description="Build Android Library">
 
-        <property name="android.platform.home" value="${android.sdk.home}/platforms/android-${android.platform}"/>
+        <!-- paths -->
+        <property name="build.intermediates" value="../android/build/intermediates"/>
+        <property name="build.release" value="${build.intermediates}/bundles/release"/>
+        <property name="build.exploded-aar" value="${build.intermediates}/exploded-aar"/>
 
-        <property name="android.support.path" value="${android.sdk.home}/extras/android/support"/>
-        <property name="android.support.v4.path" value="${android.support.path}/v4"/>
-        <property name="android.support.annotations.path" value="${android.support.path}/annotations"/>
+        <!-- make the build directory -->
+        <mkdir dir="temp/android"/>
 
-        <!-- make the R file -->
-        <delete dir="../android/gen"/>
-        <mkdir dir="../android/gen"/>
-        <exec executable="${air.sdk.home}/lib/android/bin/aapt">
-            <arg value="package"/>
-            <arg value="-f"/>
-            <arg value="-m"/>
-            <arg line=" -S ../android/res"/>
-            <arg line=" -J ../android/gen"/>
-            <arg line=" -M ../android/AndroidManifest.xml"/>
-            <arg line=" -I ${android.platform.home}/android.jar"/>
+        <exec executable="/usr/libexec/java_home" outputproperty="java.home">
+            <!-- <arg line="-v 1.8" /> -->
         </exec>
 
-        <!-- make the build directory for the java code -->
-        <mkdir dir="temp/android/build/"/>
+        <!-- clean the build -->
+        <exec executable="./gradlew" dir="..">
+            <env key="JAVA_HOME" path="${java.home}"/>
+            <arg line="clean"/>
+        </exec>
 
         <!-- compile the java code -->
-        <javac source="1.7" target="1.7" destdir="temp/android/build/" includeantruntime="false" debug="${ANDROID_DEBUG}">
-            <src path="../android/gen"/>
-            <src path="../android/src"/>
-            <classpath>
-                <pathelement location="${android.platform.home}/android.jar"/>
-                <pathelement location="${android.support.v4.path}/android-support-v4.jar"/>
-                <pathelement location="${android.support.annotations.path}/android-support-annotations.jar"/>
-                <pathelement location="${air.sdk.home}/lib/android/FlashRuntimeExtensions.jar"/>
-                <pathelement location="../android/libs/bolts-android-1.1.2.jar"/>
-            </classpath>
-        </javac>
+        <exec executable="./gradlew" dir="..">
+            <env key="JAVA_HOME" path="${java.home}"/>
+            <env key="ANDROID_HOME" path="${android.sdk.home}"/>
+            <arg line=":android:assembleRelease"/>
+        </exec>
 
-        <!-- make the jar -->
-        <jar basedir="temp/android/build/" destfile="temp/android/lib${name}.jar"/>
+        <!-- get the jar -->
+        <copy file="${build.release}/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
-        <!-- remove the build classes -->
-        <delete dir="temp/android/build/"/>
-        <delete dir="../android/gen"/>
-
-        <!-- Copy over the required libs -->
-        <copy file="../android/libs/bolts-android-1.1.2.jar" todir="temp/android/"/>
-        
         <!-- Copy over required resources -->
-        <copy todir="temp/android/res/">
-            <fileset dir="../android/res/"/>
+        <copy todir="temp/android/${name}-res">
+            <fileset dir="${build.intermediates}/res/merged/release"/>
         </copy>
 
-        <!-- android support libraries -->
-        <!-- <copy file="${android.support.v4.path}/android-support-v4.jar" todir="temp/android/"/> -->
-        <!-- <copy file="${android.support.annotations.path}/android-support-annotations.jar" todir="temp/android/"/> -->
+        <!-- Copy over the bundled libs -->
+        <copy todir="temp/android">
+            <fileset dir="${build.release}/libs" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
+        </copy>
+
+        <!-- Copy over the exploded aar libs -->
+        <exec executable="/bin/bash">
+            <arg value="extractJars.sh"/>
+        </exec>
+
+        <!-- remove the build classes -->
+        <delete dir="../android/build"/>
     </target>
 
     <!-- Actionscript -->
     <target name="swc" description="Build SWC library">
-        <mkdir dir="temp/swc/content/"/>
+        <mkdir dir="temp/swc/content"/>
 
         <fileset dir="../actionscript/src" casesensitive="yes" id="classfiles">
             <include name="**/*.as"/>
@@ -122,7 +104,7 @@
             <env key="AIR_SDK_HOME" value="${air.sdk.home}"/>
             <arg line='-source-path ../actionscript/src'/>
             <arg line='-output temp/swc/${name}.swc'/>
-            <arg line='-swf-version=25'/>
+            <arg line='-swf-version=29'/>
             <arg line='-external-library-path+="${air.sdk.home}/frameworks/libs/air/airglobal.swc"'/>
             <arg line='-include-classes ${classlist}'/>
         </exec>
@@ -137,7 +119,8 @@
 
     <!-- Package -->
     <target name="package" description="Create the extension package">
-        <exec executable="${air.sdk.home}/bin/adt" failonerror="true" dir="temp/">
+
+        <exec executable="${air.sdk.home}/bin/adt" failonerror="true" dir="temp">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
@@ -150,7 +133,7 @@
         </exec>
 
         <move file="temp/${name}.ane" todir="../bin"/>
-        <delete dir="temp/"/>
+        <delete dir="temp"/>
     </target>
 
     <!-- HTML Documentation (must be run manually) -->
