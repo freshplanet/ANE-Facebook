@@ -1,4 +1,8 @@
-## v2 (06/03/2017)
+## 15/03/2017
+- **fixes**
+  - iOS compiles now
+  - ANE requires AIR 25 so now it's restricted to it
+## 06/03/2017
 - **build overhaul**
   - bringing this ANE in line with others in terms of build style for both platforms
   - this ANE will serve as the new baseline for how builds will be managed
