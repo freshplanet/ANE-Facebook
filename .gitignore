@@ -53,3 +53,7 @@ build/makeExtensionXML\.sh
 build/makeIosPlatformXML\.sh
 
 build/platform-android-template\.xml
+
+sample/out/
+
+build/intermediates/
