@@ -1,7 +1,11 @@
-<platform xmlns="http://ns.adobe.com/air/extension/22.0">
+<platform xmlns="http://ns.adobe.com/air/extension/25.0">
     <sdkVersion>8.0</sdkVersion>
     <linkerOptions>
     </linkerOptions>
     <packagedDependencies>
+    	<packagedDependency>libBolts.a</packagedDependency>
+    	<packagedDependency>libFBSDKCoreKit.a</packagedDependency>
+    	<packagedDependency>libFBSDKLoginKit.a</packagedDependency>
+    	<packagedDependency>libFBSDKShareKit.a</packagedDependency>
     </packagedDependencies>
 </platform>

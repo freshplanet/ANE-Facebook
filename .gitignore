@@ -39,3 +39,21 @@ Thumbs.db
 
 local.properties
 ios/build
+
+actionscript/src/com/freshplanet/ane/FPExtensionContext\.as
+
+actionscript/src/com/freshplanet/ane/IFPExtension\.as
+
+android/full_libs/
+
+build/makeAndroidPlatformXML\.sh
+
+build/makeExtensionXML\.sh
+
+build/makeIosPlatformXML\.sh
+
+build/platform-android-template\.xml
+
+sample/out/
+
+build/intermediates/
