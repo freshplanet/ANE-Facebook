@@ -1,4 +1,4 @@
-<platform xmlns="http://ns.adobe.com/air/extension/22.0">
+<platform xmlns="http://ns.adobe.com/air/extension/25.0">
     <sdkVersion>8.0</sdkVersion>
     <linkerOptions>
     </linkerOptions>
