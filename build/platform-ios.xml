@@ -3,5 +3,9 @@
     <linkerOptions>
     </linkerOptions>
     <packagedDependencies>
+    	<packagedDependency>libBolts.a</packagedDependency>
+    	<packagedDependency>libFBSDKCoreKit.a</packagedDependency>
+    	<packagedDependency>libFBSDKLoginKit.a</packagedDependency>
+    	<packagedDependency>libFBSDKShareKit.a</packagedDependency>
     </packagedDependencies>
 </platform>
