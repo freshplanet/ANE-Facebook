@@ -67,7 +67,7 @@ You will need to add the following activities and permission in your application
         </manifest>
     ]]></manifestAdditions>
 </android>
-``
+```
 
 You can check out our example of this in our sample project [here](https://github.com/freshplanet/ANE-Facebook/blob/mastesample/src/Main.xml#L19).
 
@@ -80,7 +80,7 @@ Once installed you can initialize the ANE...
 
 ```actionscript
 Facebook.instance.init("0123456789", _initCallback);
-``
+```
 
 and it will be ready to go! Check out [our sample code](https://github.com/freshplanet/ANE-Facebook/blob/master/sample/src/Main.as) to aid you.
 
