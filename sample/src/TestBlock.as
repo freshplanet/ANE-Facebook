@@ -28,15 +28,13 @@ package {
 
         private var _name:String = null;
         private var _func:Function = null;
-        private var _vars:Array = null;
 
-        public function TestBlock(name:String, func:Function, vars:Array = null) {
+        public function TestBlock(name:String, func:Function) {
 
             super();
 
             _name = name;
             _func = func;
-            _vars = vars;
 
             this.addEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
         }
@@ -62,11 +60,7 @@ package {
         }
 
         private function _onClick(mouseEvent:MouseEvent):void {
-
-            if (!_vars || _vars.length == 0)
-                _func();
-            else
-                _func.apply(null, _vars);
+            _func();
         }
     }
 }
