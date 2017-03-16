@@ -33,7 +33,6 @@ package {
     import flash.display.Sprite;
     import flash.display.StageAlign;
     import flash.events.Event;
-    import flash.net.URLRequestDefaults;
     import flash.net.URLRequestMethod;
 
     /**

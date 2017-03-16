@@ -1,3 +1,7 @@
+## 16/03/2017
+- **documentation**
+  - updated sample project to be easier to parse actual use of methods
+  - added pointers in the readme for the sample
 ## 15/03/2017
 - **fixes**
   - iOS compiles now
