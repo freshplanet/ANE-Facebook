@@ -13,7 +13,7 @@ Facebook SDK Versions
 Installation
 ---------
 
-The ANE binary (AirFacebook.ane) is located in the *bin* folder. You should add it to your application project's Build Path and make sure to package it with your app (more information [here](http://help.adobe.com/en_US/air/build/WS597e5dadb9cc1e0253f7d2fc1311b491071-8000.html)).
+The ANE binary (AirFacebook.ane) is located in the *bin* folder. You should add it to your application project's Build Path and make sure to package it with your app (more information [here](http://help.adobe.com/en_US/air/build/WS597e5dadb9cc1e0253f7d2fc1311b491071-8000.html)). See it within our sample project's app descriptor [here](https://github.com/freshplanet/ANE-Facebook/blob/master/sample/src/Main.xml#L138).
 
 ```xml
 <extensions>
@@ -23,7 +23,10 @@ The ANE binary (AirFacebook.ane) is located in the *bin* folder. You should add 
 ```
 
 **iOS**
-  Be sure to follow steps [1](https://developers.facebook.com/docs/ios/getting-started/#settings) and [4](https://developers.facebook.com/docs/ios/getting-started/#xcode) of the [Getting Started with the Facebook SDK for iOS](https://developers.facebook.com/docs/ios/getting-started/) guide.
+
+Be sure to follow steps [1](https://developers.facebook.com/docs/ios/getting-started/#settings) and [4](https:developers.facebook.com/docs/ios/getting-started/#xcode) of the [Getting Started with the Facebook SDK for iOS](https:developers.facebook.com/docs/ios/getting-started/) guide.
+
+Check out the sample project [here](https://github.com/freshplanet/ANE-Facebook/blob/master/sample/src/Main.xml#L70) for app descriptor inclusions.
 
 **Android**
 
@@ -56,7 +59,7 @@ You will need to add the following activities and permission in your application
                 <activity android:name="com.freshplanet.ane.AirFacebook.GameRequestActivity" 
                           android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 
-                <!-- If you're sharing links, images or video via the Facebook for Android app, you also need to declare the FacebookContentProvider in the manifest. -->
+                <!-- If you're sharing links, images or video via the Facebook for Android app, you also need to declarthe   FacebookContentProvider in the manifest. -->
                 <provider android:authorities="com.facebook.app.FacebookContentProvider{YOUR_FB_APPLICATION_ID}" 
                           android:name="com.facebook.FacebookContentProvider" 
                           android:exported="true"/>
@@ -66,7 +69,20 @@ You will need to add the following activities and permission in your application
 </android>
 ```
 
-**NOTE:** It is important to prefix YOUR_FB_APP_ID with "fb" in `<meta-data>` (and ONLY in `<meta-data>`) tag, because of bug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null). Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
+You can check out our example of this in our sample project [here](https://github.com/freshplanet/ANE-Facebook/blob/mastesample/src/Main.xml#L19).
+
+**NOTE:** It is important to prefix YOUR_FB_APP_ID with "fb" in `<meta-data>` (and ONLY in `<meta-data>`) tag, because obug in Android manifest file (http://stackoverflow.com/questions/16156856/android-facebook-applicationid-cannot-be-null)Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
+
+Using the ANE
+---------
+
+Once installed you can initialize the ANE...
+
+```actionscript
+Facebook.instance.init("0123456789", _initCallback);
+```
+
+and it will be ready to go! Check out [our sample code](https://github.com/freshplanet/ANE-Facebook/blob/master/sample/src/Main.as) to aid you.
 
 Build from source
 ---------
