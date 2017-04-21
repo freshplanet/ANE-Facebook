@@ -16,9 +16,9 @@
 //  
 //////////////////////////////////////////////////////////////////////////////////////-->
 
-<extension xmlns="http://ns.adobe.com/air/extension/25.0">
+<extension xmlns="http://ns.adobe.com/air/extension/22.0">
   <id>com.freshplanet.ane.AirFacebook</id>
-  <versionNumber>1</versionNumber>
+  <versionNumber>2.0.0</versionNumber>
   <platforms>
 
     <platform name="iPhone-ARM">
@@ -40,5 +40,6 @@
     <platform name="default"> 
         <applicationDeployment/> 
     </platform> 
+
   </platforms>
 </extension>

@@ -1,4 +1,4 @@
-<platform xmlns="http://ns.adobe.com/air/extension/25.0">
+<platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <packagedDependencies>
 		<packagedDependency>facebook-android-sdk-4.19.0.jar</packagedDependency>
 
