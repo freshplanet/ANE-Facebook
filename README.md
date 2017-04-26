@@ -50,15 +50,6 @@ You will need to add the following activities and permission in your application
                 <activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity" 
                           android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 
-                <activity android:name="com.freshplanet.ane.AirFacebook.ShareDialogActivity" 
-                          android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
-                <activity android:name="com.freshplanet.ane.AirFacebook.AppInviteActivity" 
-                          android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
-                <activity android:name="com.freshplanet.ane.AirFacebook.GameRequestActivity" 
-                          android:theme="@android:style/Theme.Translucent.NoTitleBar" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
                 <!-- If you're sharing links, images or video via the Facebook for Android app, you also need to declarthe   FacebookContentProvider in the manifest. -->
                 <provider android:authorities="com.facebook.app.FacebookContentProvider{YOUR_FB_APPLICATION_ID}" 
                           android:name="com.facebook.FacebookContentProvider" 
@@ -104,5 +95,5 @@ ant
 Authors
 ------
 
-This ANE has been originally written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com), [Renaud Bardet](http://github.com/renaudbardet) and [Adam Schlesinger](https://github.com/AdamFP). Rewrites and modifications to version SDK 4.x were made by [Ján Horváth](https://github.com/nodrock).
+This ANE has been written by [Thibaut Crenn](https://github.com/titi-us), [Alexis Taugeron](http://alexistaugeron.com), [Renaud Bardet](http://github.com/renaudbardet), and [Adam Schlesinger](https://github.com/AdamFP). Rewrites and modifications to version SDK 4.x were made by [Ján Horváth](https://github.com/nodrock).
 

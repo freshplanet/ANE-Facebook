@@ -49,18 +49,6 @@
 					<activity android:name="com.freshplanet.ane.AirFacebook.LoginActivity"
 					          android:theme="@android:style/Theme.Translucent.NoTitleBar"
 					          android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
-					<activity android:name="com.freshplanet.ane.AirFacebook.ShareDialogActivity"
-					          android:theme="@android:style/Theme.Translucent.NoTitleBar"
-					          android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
-					<activity android:name="com.freshplanet.ane.AirFacebook.AppInviteActivity"
-					          android:theme="@android:style/Theme.Translucent.NoTitleBar"
-					          android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
-					<activity android:name="com.freshplanet.ane.AirFacebook.GameRequestActivity"
-					          android:theme="@android:style/Theme.Translucent.NoTitleBar"
-					          android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 				</application>
 			</manifest>
 		]]></manifestAdditions>
