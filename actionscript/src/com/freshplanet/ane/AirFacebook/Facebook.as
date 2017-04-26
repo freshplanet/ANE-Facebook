@@ -24,7 +24,6 @@ package com.freshplanet.ane.AirFacebook {
     import flash.desktop.NativeApplication;
     import flash.events.Event;
     import flash.events.EventDispatcher;
-    import flash.events.HTTPStatusEvent;
     import flash.events.InvokeEvent;
     import flash.events.StatusEvent;
     import flash.external.ExtensionContext;
