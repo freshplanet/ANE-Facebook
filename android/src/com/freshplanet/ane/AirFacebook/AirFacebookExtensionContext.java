@@ -3,24 +3,101 @@ package com.freshplanet.ane.AirFacebook;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Activity;
+import android.app.Application;
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
+import com.adobe.fre.FREObject;
+import com.facebook.AccessToken;
+import com.facebook.Profile;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.DefaultAudience;
 import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
 import com.facebook.share.widget.ShareDialog;
 import com.freshplanet.ane.AirFacebook.functions.*;
+import com.freshplanet.ane.AirFacebook.utils.FREConversionUtil;
 
-public class AirFacebookExtensionContext extends FREContext
-{
+public class AirFacebookExtensionContext extends FREContext {
+
+    /**
+     *
+     * INTERFACE
+     *
+     */
+
+    private FREFunction logOut = new FREFunction() {
+        @Override
+        public FREObject call(FREContext ctx, FREObject[] args) {
+
+            AirFacebookExtension.log("CloseSessionAndClearTokenInformationFunction");
+
+            AccessToken.setCurrentAccessToken(null);
+            Profile.setCurrentProfile(null);
+            LoginManager.getInstance().logOut();
+
+            return null;
+        }
+    };
+
+    private FREFunction nativeLog = new FREFunction() {
+        @Override
+        public FREObject call(FREContext ctx, FREObject[] args) {
+
+            String message = FREConversionUtil.toString(args[0]);
+            AirFacebookExtension.nativeLog(message, "AS3");
+
+            return null;
+        }
+    };
+
+    private FREFunction setNativeLogEnabled = new FREFunction() {
+        @Override
+        public FREObject call(FREContext ctx, FREObject[] args) {
+
+            AirFacebookExtension.nativeLogEnabled = FREConversionUtil.toBoolean(args[0]);
+            return null;
+        }
+    };
+
+    private FREFunction activateApp = new FREFunction() {
+        @Override
+        public FREObject call(FREContext ctx, FREObject[] args) {
+
+            Activity activity = ctx.getActivity();
+            Application application = activity.getApplication();
+            AppEventsLogger.activateApp(application);
+
+            return null;
+        }
+    };
+
+    private FREFunction deactivateApp = new FREFunction() {
+        @Override
+        public FREObject call(FREContext ctx, FREObject[] args) {
+
+            Activity activity = ctx.getActivity();
+            Application application = activity.getApplication();
+            AppEventsLogger.deactivateApp(application);
+
+            return null;
+        }
+    };
+
+    /**
+     *
+     * FRECONTEXT SETUP
+     *
+     */
+
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		AirFacebookExtension.context = null;
 	}
 
 	@Override
-	public Map<String, FREFunction> getFunctions()
-	{
+	public Map<String, FREFunction> getFunctions() {
+
 		Map<String, FREFunction> functions = new HashMap<String, FREFunction>();
 
 		// Base API
@@ -28,7 +105,7 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("getAccessToken", new GetAccessTokenFunction());
 		functions.put("getProfile", new GetProfileFunction());
 		functions.put("logInWithPermissions", new LogInWithPermissionsFunction());
-		functions.put("logOut", new LogOutFunction());
+		functions.put("logOut", logOut);
 		functions.put("requestWithGraphPath", new RequestWithGraphPathFunction());
 
 		// Sharing dialogs
@@ -50,13 +127,13 @@ public class AirFacebookExtensionContext extends FREContext
 		functions.put("setDefaultShareDialogMode", new SetDefaultShareDialogModeFunction());
 
 		// FB events
-		functions.put("activateApp", new ActivateAppFunction());
-		functions.put("deactivateApp", new DeactivateAppFunction());
+		functions.put("activateApp", activateApp);
+		functions.put("deactivateApp", deactivateApp);
 		functions.put("logEvent", new LogEventFunction());
 
 		// Debug
-		functions.put("nativeLog", new NativeLogFunction());
-		functions.put("setNativeLogEnabled", new SetNativeLogEnabledFunction());
+		functions.put("nativeLog", nativeLog);
+		functions.put("setNativeLogEnabled", setNativeLogEnabled);
 
 		return functions;	
 	}
