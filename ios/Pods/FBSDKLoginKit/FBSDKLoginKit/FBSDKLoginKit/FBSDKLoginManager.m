@@ -83,9 +83,10 @@ typedef NS_ENUM(NSInteger, FBSDKLoginManagerState) {
   [self assertPermissions:permissions];
   NSSet *permissionSet = [NSSet setWithArray:permissions];
   if (![FBSDKInternalUtility areAllPermissionsReadPermissions:permissionSet]) {
-    [self raiseLoginException:[NSException exceptionWithName:NSInvalidArgumentException
-                                                      reason:@"Publish or manage permissions are not permitted to be requested with read permissions."
-                                                    userInfo:nil]];
+    [[NSException exceptionWithName:NSInvalidArgumentException
+                             reason:@"Publish or manage permissions are not permitted to be requested with read permissions."
+                           userInfo:nil]
+     raise];
   }
   self.fromViewController = fromViewController;
   [self logInWithPermissions:permissionSet handler:handler];
@@ -108,9 +109,10 @@ typedef NS_ENUM(NSInteger, FBSDKLoginManagerState) {
   [self assertPermissions:permissions];
   NSSet *permissionSet = [NSSet setWithArray:permissions];
   if (![FBSDKInternalUtility areAllPermissionsPublishPermissions:permissionSet]) {
-    [self raiseLoginException:[NSException exceptionWithName:NSInvalidArgumentException
-                                                      reason:@"Read permissions are not permitted to be requested with publish or manage permissions."
-                                                    userInfo:nil]];
+    [[NSException exceptionWithName:NSInvalidArgumentException
+                             reason:@"Read permissions are not permitted to be requested with publish or manage permissions."
+                           userInfo:nil]
+     raise];
   }
   self.fromViewController = fromViewController;
   [self logInWithPermissions:permissionSet handler:handler];
@@ -137,14 +139,7 @@ typedef NS_ENUM(NSInteger, FBSDKLoginManagerState) {
 
 #pragma mark - Private
 
-- (void)raiseLoginException:(NSException *)exception
-{
-  _state = FBSDKLoginManagerStateIdle;
-  [exception raise];
-}
-
-- (void)handleImplicitCancelOfLogIn
-{
+- (void)handleImplicitCancelOfLogIn {
   FBSDKLoginManagerLoginResult *result = [[FBSDKLoginManagerLoginResult alloc] initWithToken:nil
                                                                                  isCancelled:YES
                                                                           grantedPermissions:nil
@@ -182,14 +177,16 @@ typedef NS_ENUM(NSInteger, FBSDKLoginManagerState) {
 {
   for (NSString *permission in permissions) {
     if (![permission isKindOfClass:[NSString class]]) {
-      [self raiseLoginException:[NSException exceptionWithName:NSInvalidArgumentException
-                                                         reason:@"Permissions must be string values."
-                                                       userInfo:nil]];
+      [[NSException exceptionWithName:NSInvalidArgumentException
+                               reason:@"Permissions must be string values."
+                             userInfo:nil]
+       raise];
     }
     if ([permission rangeOfString:@","].location != NSNotFound) {
-      [self raiseLoginException:[NSException exceptionWithName:NSInvalidArgumentException
-                                                        reason:@"Permissions should each be specified in separate string values in the array."
-                                                      userInfo:nil]];
+      [[NSException exceptionWithName:NSInvalidArgumentException
+                               reason:@"Permissions should each be specified in separate string values in the array."
+                             userInfo:nil]
+       raise];
     }
   }
 }
