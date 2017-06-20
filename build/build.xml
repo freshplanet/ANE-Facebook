@@ -74,7 +74,7 @@
         <copy file="${build.release}/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
-        <copy todir="temp/android/${name}-res">
+        <copy todir="temp/android/${name}-res" failonerror="false">
             <fileset dir="${build.intermediates}/res/merged/release"/>
         </copy>
 

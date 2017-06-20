@@ -1,6 +1,6 @@
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <packagedDependencies>
-		<packagedDependency>facebook-android-sdk-4.19.0.jar</packagedDependency>
+		<packagedDependency>facebook-android-sdk-4.18.0.jar</packagedDependency>
 
     	<packagedDependency>animated-vector-drawable-25.0.0.jar</packagedDependency>
 		<packagedDependency>appcompat-v7-25.0.0.jar</packagedDependency>
