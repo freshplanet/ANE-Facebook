@@ -3,6 +3,13 @@
 
     <!-- Config -->
     <property file="build.config"/>
+    
+    <!-- Load ant-contrib -->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="ant-contrib-0.6.jar"/>
+        </classpath>
+    </taskdef>
 
     <!-- All -->
     <target name="all" depends="ios, android, swc, package" description="Full build of extension"/>
@@ -29,17 +36,36 @@
             <arg line="SYMROOT=$(PWD)/../ios/build"/>
         </exec>
 
-        <!-- copy the ios lib to the base temp ios directory -->
+        <!-- copy the libs and resources to the base temp ios directory -->
         <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false" flatten="true">
-            <fileset dir="../ios/build/Release-iphoneos" includes="**/*.a" excludes="*Pods-${name}*"/>
+            <fileset dir="../ios/">
+                <include name="build/Release-iphoneos/**/*"/>
+                <exclude name="**/*Pods-${name}*"/>
+                <exclude name="**/*.bundle/"/>
+                <exclude name="**/*.nib/"/>
+                <exclude name="**/*.h"/>
+            </fileset>
         </copy>
 
-        <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="../ios/build/Release-iphoneos" includes="**/*.bundle/"/>
-        </copy>
+        <!-- copy over necessary frameworks, bundles, etc -->
+        <for param="path">
+            <path>
+                <dirset dir="../ios/">
+                    <include name="build/Release-iphoneos/**/*.bundle"/>
+                    <include name="build/Release-iphoneos/**/*.nib"/>
+                    <include name="**/*.framework"/>
+                </dirset>
+            </path>
+            <sequential>
+                <propertyregex property="folder.name" override="true" input="@{path}" regexp=".+\/(.+)" select="\1"/>
+                <copy todir="temp/ios/${folder.name}" overwrite="true" includeEmptyDirs="false" flatten="true">
+                    <fileset dir="@{path}"/>
+                </copy>
+            </sequential>
+        </for>
 
         <!-- remove the build directory -->
-        <delete dir="../ios/build"/>
+        <delete dir="../ios/build/"/>
     </target>
 
     <!-- Android -->
