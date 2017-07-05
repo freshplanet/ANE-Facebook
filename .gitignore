@@ -57,3 +57,5 @@ build/platform-android-template\.xml
 sample/out/
 
 build/intermediates/
+
+android/lib/build/
