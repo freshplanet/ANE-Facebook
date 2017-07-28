@@ -38,11 +38,8 @@
 
         <!-- copy the libs and resources to the base temp ios directory -->
         <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false" flatten="false">
-            <fileset dir="../ios/">
-                <include name="build/Release-iphoneos/**/*"/>
+            <fileset dir="../ios/build/Release-iphoneos/">
                 <exclude name="**/*Pods-${name}*"/>
-                <exclude name="**/*.bundle/"/>
-                <exclude name="**/*.h"/>
             </fileset>
         </copy>
 
@@ -50,7 +47,6 @@
         <for param="path">
             <path>
                 <dirset dir="../ios/">
-                    <include name="build/Release-iphoneos/**/*.bundle"/>
                     <include name="**/*.framework"/>
                 </dirset>
             </path>
