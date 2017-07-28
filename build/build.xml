@@ -37,7 +37,7 @@
         </exec>
 
         <!-- copy the libs and resources to the base temp ios directory -->
-        <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false" flatten="true">
+        <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false" flatten="false">
             <fileset dir="../ios/">
                 <include name="build/Release-iphoneos/**/*"/>
                 <exclude name="**/*Pods-${name}*"/>
@@ -99,15 +99,15 @@
 
         <!-- Copy over required resources -->
         <if>
-            <equals arg1="${exclude.shared.resources}" arg2="true"/>
+            <equals arg1="${include.shared.resources}" arg2="true"/>
             <then>
                 <copy todir="temp/android/${name}-res">
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.18.0/res"/>
+                    <fileset dir="${build.intermediates}/res/merged/release"/>
                 </copy>
             </then>
             <else>
                 <copy todir="temp/android/${name}-res">
-                    <fileset dir="${build.intermediates}/res/merged/release"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.18.0/res"/>
                 </copy>
             </else>
         </if>
