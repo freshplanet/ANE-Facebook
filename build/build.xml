@@ -99,7 +99,7 @@
 
         <!-- Copy over required resources -->
         <if>
-            <equals arg1="${exclude.shared.resources}" arg2="true">
+            <equals arg1="${exclude.shared.resources}" arg2="true"/>
             <then>
                 <copy todir="temp/android/${name}-res">
                     <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.18.0/res"/>
