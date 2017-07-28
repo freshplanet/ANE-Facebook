@@ -1,27 +1,27 @@
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <packagedDependencies>
 
-		<packagedDependency>facebook-android-sdk-4.19.0.jar</packagedDependency>
+		<packagedDependency>facebook-android-sdk-4.18.0.jar</packagedDependency>
 
         <!-- support -->
-        <packagedDependency>animated-vector-drawable-25.0.0.jar</packagedDependency>
-        <packagedDependency>appcompat-v7-25.0.0.jar</packagedDependency>
+        <!--<packagedDependency>animated-vector-drawable-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>appcompat-v7-25.0.0.jar</packagedDependency>-->
         <packagedDependency>cardview-v7-25.0.0.jar</packagedDependency>
         <packagedDependency>customtabs-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-compat-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-core-ui-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-core-utils-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-fragment-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-media-compat-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-v4-25.0.0.jar</packagedDependency>
-        <packagedDependency>support-vector-drawable-25.0.0.jar</packagedDependency>
+        <!--<packagedDependency>support-compat-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-core-ui-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-core-utils-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-fragment-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-media-compat-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-v4-25.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-vector-drawable-25.0.0.jar</packagedDependency>-->
 
         <!-- internal support -->
-        <packagedDependency>support-compat-25.0.0-internal.jar</packagedDependency>
-        <packagedDependency>support-core-ui-25.0.0-internal.jar</packagedDependency>
-        <packagedDependency>support-core-utils-25.0.0-internal.jar</packagedDependency>
-        <packagedDependency>support-fragment-25.0.0-internal.jar</packagedDependency>
-        <packagedDependency>support-media-compat-25.0.0-internal.jar</packagedDependency>
+        <!--<packagedDependency>support-compat-25.0.0-internal.jar</packagedDependency>-->
+        <!--<packagedDependency>support-core-ui-25.0.0-internal.jar</packagedDependency>-->
+        <!--<packagedDependency>support-core-utils-25.0.0-internal.jar</packagedDependency>-->
+        <!--<packagedDependency>support-fragment-25.0.0-internal.jar</packagedDependency>-->
+        <!--<packagedDependency>support-media-compat-25.0.0-internal.jar</packagedDependency>-->
 
     </packagedDependencies> 
     <packagedResources>
@@ -29,5 +29,9 @@
             <packageName>com.facebook</packageName>
             <folderName>AirFacebook-res</folderName> 
         </packagedResource>
+        <!--<packagedResource>
+            <packageName>com.google.android.gms</packageName> 
+            <folderName>AirFacebook-res</folderName> 
+        </packagedResource>-->
     </packagedResources>
 </platform>

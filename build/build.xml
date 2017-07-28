@@ -42,7 +42,6 @@
                 <include name="build/Release-iphoneos/**/*"/>
                 <exclude name="**/*Pods-${name}*"/>
                 <exclude name="**/*.bundle/"/>
-                <exclude name="**/*.nib/"/>
                 <exclude name="**/*.h"/>
             </fileset>
         </copy>
@@ -52,7 +51,6 @@
             <path>
                 <dirset dir="../ios/">
                     <include name="build/Release-iphoneos/**/*.bundle"/>
-                    <include name="build/Release-iphoneos/**/*.nib"/>
                     <include name="**/*.framework"/>
                 </dirset>
             </path>
@@ -100,9 +98,19 @@
         <copy file="${build.release}/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
         <!-- Copy over required resources -->
-        <copy todir="temp/android/${name}-res">
-            <fileset dir="${build.intermediates}/res/merged/release"/>
-        </copy>
+        <if>
+            <equals arg1="${exclude.shared.resources}" arg2="true">
+            <then>
+                <copy todir="temp/android/${name}-res">
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.18.0/res"/>
+                </copy>
+            </then>
+            <else>
+                <copy todir="temp/android/${name}-res">
+                    <fileset dir="${build.intermediates}/res/merged/release"/>
+                </copy>
+            </else>
+        </if>
 
         <!-- Copy over the bundled libs -->
         <copy todir="temp/android">

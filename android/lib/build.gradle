@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.facebook.android:facebook-android-sdk:4.19.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
 }
 
 android {
