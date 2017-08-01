@@ -80,6 +80,7 @@
         <!-- clean the build -->
         <exec executable="./gradlew" dir="../android">
             <env key="JAVA_HOME" path="${java.home}"/>
+            <env key="ANDROID_HOME" path="${android.sdk.home}"/>
             <arg line="clean"/>
         </exec>
 
