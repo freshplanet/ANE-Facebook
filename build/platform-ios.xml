@@ -13,13 +13,13 @@
  limitations under the License.
 -->
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
-    <sdkVersion>8.0</sdkVersion>
+    <sdkVersion>9.0</sdkVersion>
     <linkerOptions>
     </linkerOptions>
     <packagedDependencies>
-    	<packagedDependency>libBolts.a</packagedDependency>
-    	<packagedDependency>libFBSDKCoreKit.a</packagedDependency>
-    	<packagedDependency>libFBSDKLoginKit.a</packagedDependency>
-    	<packagedDependency>libFBSDKShareKit.a</packagedDependency>
+    	<packagedDependency>Bolts/libBolts.a</packagedDependency>
+    	<packagedDependency>FBSDKCoreKit/libFBSDKCoreKit.a</packagedDependency>
+    	<packagedDependency>FBSDKLoginKit/libFBSDKLoginKit.a</packagedDependency>
+    	<packagedDependency>FBSDKShareKit/libFBSDKShareKit.a</packagedDependency>
     </packagedDependencies>
 </platform>
