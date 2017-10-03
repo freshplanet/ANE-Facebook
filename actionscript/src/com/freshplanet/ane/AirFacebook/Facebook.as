@@ -481,9 +481,9 @@ package com.freshplanet.ane.AirFacebook {
 
                 if (event.reason == InvokeEventReason.OPEN_URL && event.arguments != null && event.arguments.length == 3) {
 
-                    var url:String = event.arguments[0] as String;
-                    var sourceApplication:String = event.arguments[1] as String;
-                    var annotation:String = event.arguments[2] as String;
+                    var url:String = (event.arguments[0] as String) || "";
+                    var sourceApplication:String = (event.arguments[1] as String) || "";
+                    var annotation:String = (event.arguments[2] as String) || "";
 
                     log("handleOpenURL url: " + url + " sourceApplication: " + sourceApplication + " annotation: " + annotation);
                     _context.call("handleOpenURL", url, sourceApplication, annotation);
