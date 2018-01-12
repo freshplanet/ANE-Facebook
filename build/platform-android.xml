@@ -15,13 +15,13 @@
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <packagedDependencies>
 
-		<packagedDependency>facebook-android-sdk-4.18.0.jar</packagedDependency>
+		<packagedDependency>facebook-android-sdk-4.26.0.jar</packagedDependency>
 
         <!-- support -->
         <!--<packagedDependency>animated-vector-drawable-25.0.0.jar</packagedDependency>-->
         <!--<packagedDependency>appcompat-v7-25.0.0.jar</packagedDependency>-->
-        <packagedDependency>cardview-v7-25.0.0.jar</packagedDependency>
-        <packagedDependency>customtabs-25.0.0.jar</packagedDependency>
+        <packagedDependency>cardview-v7-25.3.1.jar</packagedDependency>
+        <packagedDependency>customtabs-25.3.1.jar</packagedDependency>
         <!--<packagedDependency>support-compat-25.0.0.jar</packagedDependency>-->
         <!--<packagedDependency>support-core-ui-25.0.0.jar</packagedDependency>-->
         <!--<packagedDependency>support-core-utils-25.0.0.jar</packagedDependency>-->
