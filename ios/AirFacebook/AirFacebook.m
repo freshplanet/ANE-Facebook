@@ -434,9 +434,9 @@ DEFINE_ANE_FUNCTION(shareLinkDialog) {
     if (peopleIds != nil) content.peopleIDs = peopleIds;
     if (placeId != nil) content.placeID = placeId;
     if (ref != nil) content.ref = ref;
-    if (contentTitle != nil) content.contentTitle = contentTitle;
-    if (contentDescription != nil) content.contentDescription = contentDescription;
-    if (imageUrl != nil) content.imageURL = [NSURL URLWithString:imageUrl];
+//    if (contentTitle != nil) content.contentTitle = contentTitle;
+//    if (contentDescription != nil) content.contentDescription = contentDescription;
+//    if (imageUrl != nil) content.imageURL = [NSURL URLWithString:imageUrl];
     
     [[AirFacebook sharedInstance] shareContent:content usingShareApi:useShareApi andCallback:callback];
     
