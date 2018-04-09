@@ -104,8 +104,20 @@
             </then>
             <else>
                 <copy todir="temp/android/${name}-res">
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.26.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.31.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-common/4.31.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-core/4.31.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-login/4.31.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-messenger/4.31.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-places/4.31.0/res"/>
+                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-share/4.31.0/res"/>
                 </copy>
+                <!--<copy todir="temp/android/${name}-res">-->
+                    <!--<fileset dir="${build.exploded-aar}/com.facebook.android/facebook-applinks/4.31.0/res"/>-->
+                <!--</copy>-->
+                <!--<copy todir="temp/android/${name}-res">-->
+                    <!--<fileset dir="${build.exploded-aar}/com.facebook.android/facebook-common/4.31.0/res"/>-->
+                <!--</copy>-->
             </else>
         </if>
 
@@ -165,7 +177,7 @@
         </exec>
 
         <move file="temp/${name}.ane" todir="../bin"/>
-        <delete dir="temp"/>
+        <!--<delete dir="temp"/>-->
     </target>
 
     <!-- HTML Documentation (must be run manually) -->
