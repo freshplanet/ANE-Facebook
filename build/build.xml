@@ -68,7 +68,6 @@
         <!-- paths -->
         <property name="build.intermediates" value="../android/lib/build/intermediates"/>
         <property name="build.release" value="${build.intermediates}/bundles/release"/>
-        <property name="build.exploded-aar" value="${build.intermediates}/exploded-aar"/>
 
         <!-- make the build directory -->
         <mkdir dir="temp/android"/>
@@ -94,6 +93,27 @@
         <!-- get the jar -->
         <copy file="${build.release}/classes.jar" tofile="temp/android/lib${name}.jar"/>
 
+        <!-- Copy dependencies into temp folder -->
+        <exec executable="./gradlew" dir="../android">
+            <env key="JAVA_HOME" path="${java.home}"/>
+            <env key="ANDROID_HOME" path="${android.sdk.home}"/>
+            <arg line="copyDependencies"/>
+        </exec>
+
+        <!-- Extract aar files -->
+        <foreach target="unzipAAR" param="aarFile">
+            <fileset dir="../android/lib/dependencies">
+                <include name="*.aar"/>
+            </fileset>
+        </foreach>
+
+        <!-- Copy to build folder -->
+        <copy todir="temp/android">
+            <fileset dir="../android/lib/dependencies" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+
         <!-- Copy over required resources -->
         <if>
             <equals arg1="${include.shared.resources}" arg2="true"/>
@@ -103,33 +123,35 @@
                 </copy>
             </then>
             <else>
-                <copy todir="temp/android/${name}-res">
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-android-sdk/4.31.0/res"/>
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-common/4.31.0/res"/>
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-core/4.31.0/res"/>
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-login/4.31.0/res"/>
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-messenger/4.31.0/res"/>
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-places/4.31.0/res"/>
-                    <fileset dir="${build.exploded-aar}/com.facebook.android/facebook-share/4.31.0/res"/>
+                <copy todir="temp/android/${name}-facebook-common-res">
+                    <fileset dir="../android/lib/dependencies/facebook-common-4.31.0/res"/>
                 </copy>
-                <!--<copy todir="temp/android/${name}-res">-->
-                    <!--<fileset dir="${build.exploded-aar}/com.facebook.android/facebook-applinks/4.31.0/res"/>-->
-                <!--</copy>-->
-                <!--<copy todir="temp/android/${name}-res">-->
-                    <!--<fileset dir="${build.exploded-aar}/com.facebook.android/facebook-common/4.31.0/res"/>-->
-                <!--</copy>-->
+                <copy todir="temp/android/${name}-facebook-login-res">
+                    <fileset dir="../android/lib/dependencies/facebook-login-4.31.0/res"/>
+                </copy>
+                <copy todir="temp/android/${name}-facebook-messenger-res">
+                    <fileset dir="../android/lib/dependencies/facebook-messenger-4.31.0/res"/>
+                </copy>
+                <copy todir="temp/android/${name}-facebook-share-res">
+                    <fileset dir="../android/lib/dependencies/facebook-share-4.31.0/res"/>
+                </copy>
             </else>
         </if>
 
-        <!-- Copy over the bundled libs -->
-        <copy todir="temp/android">
-            <fileset dir="${build.release}/libs" excludes="FlashRuntimeExtensions.jar, runtimeClasses.jar"/>
-        </copy>
+        <delete dir="../android/lib/dependencies"/>
 
-        <!-- Copy over the exploded aar libs -->
-        <exec executable="/bin/bash">
-            <arg value="extractJars.sh"/>
-        </exec>
+    </target>
+
+    <target name="unzipAAR">
+        <basename property="aarFileName" file="${aarFile}"
+            suffix=".aar"/>
+        <unzip src="${aarFile}" dest="../android/lib/dependencies/${aarFileName}" overwrite="true"/>
+        <if>
+            <available file="../android/lib/dependencies/${aarFileName}/classes.jar"/>
+            <then>
+                <move file="../android/lib/dependencies/${aarFileName}/classes.jar" tofile="../android/lib/dependencies/${aarFileName}.jar"/>
+            </then>
+        </if>
     </target>
 
     <!-- Actionscript -->
@@ -177,7 +199,7 @@
         </exec>
 
         <move file="temp/${name}.ane" todir="../bin"/>
-        <!--<delete dir="temp"/>-->
+        <delete dir="temp"/>
     </target>
 
     <!-- HTML Documentation (must be run manually) -->
