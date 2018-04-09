@@ -24,31 +24,54 @@
 		<packagedDependency>facebook-places-4.31.0.jar</packagedDependency>
 		<packagedDependency>facebook-share-4.31.0.jar</packagedDependency>
 
-        <!-- support -->
+        <packagedDependency>bolts-android-1.4.0.jar</packagedDependency>
+        <packagedDependency>bolts-applinks-1.4.0.jar</packagedDependency>
+        <packagedDependency>bolts-tasks-1.4.0.jar</packagedDependency>
+
+        <!-- google.zxing -->
+        <packagedDependency>core-3.3.0.jar</packagedDependency>
+
+        <!--&lt;!&ndash; arch core &ndash;&gt;-->
+        <!--<packagedDependency>common-1.0.0.jar</packagedDependency>-->
+        <!--&lt;!&ndash; arch lifecycle common &ndash;&gt;-->
+        <!--<packagedDependency>common-1.0.3.jar</packagedDependency>-->
+
+        <!--&lt;!&ndash; arch lifecycle runtime &ndash;&gt;-->
+        <!--<packagedDependency>runtime-1.0.3.jar</packagedDependency>-->
+
+        <!--&lt;!&ndash; support &ndash;&gt;-->
         <!--<packagedDependency>animated-vector-drawable-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>appcompat-v7-27.0.2.jar</packagedDependency>-->
-        <packagedDependency>cardview-v7-27.0.2.jar</packagedDependency>
-        <packagedDependency>customtabs-27.0.2.jar</packagedDependency>
+
+        <!--<packagedDependency>cardview-v7-27.0.2.jar</packagedDependency>-->
+        <!--<packagedDependency>customtabs-27.0.2.jar</packagedDependency>-->
+
         <!--<packagedDependency>support-compat-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>support-core-ui-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>support-core-utils-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>support-fragment-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>support-media-compat-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>support-v4-27.0.2.jar</packagedDependency>-->
+        <!--<packagedDependency>support-annotations-27.0.2.jar</packagedDependency>-->
         <!--<packagedDependency>support-vector-drawable-27.0.2.jar</packagedDependency>-->
-
-        <!-- internal support -->
-        <!--<packagedDependency>support-compat-27.0.2-internal.jar</packagedDependency>-->
-        <!--<packagedDependency>support-core-ui-27.0.2-internal.jar</packagedDependency>-->
-        <!--<packagedDependency>support-core-utils-27.0.2-internal.jar</packagedDependency>-->
-        <!--<packagedDependency>support-fragment-27.0.2-internal.jar</packagedDependency>-->
-        <!--<packagedDependency>support-media-compat-27.0.2-internal.jar</packagedDependency>-->
 
     </packagedDependencies> 
     <packagedResources>
         <packagedResource>
+            <packageName>com.facebook.common</packageName>
+            <folderName>AirFacebook-facebook-common-res</folderName>
+        </packagedResource>
+        <packagedResource>
+            <packageName>com.facebook.login</packageName>
+            <folderName>AirFacebook-facebook-login-res</folderName>
+        </packagedResource>
+        <packagedResource>
+            <packageName>com.facebook.messenger</packageName>
+            <folderName>AirFacebook-facebook-messenger-res</folderName>
+        </packagedResource>
+        <packagedResource>
             <packageName>com.facebook</packageName>
-            <folderName>AirFacebook-res</folderName> 
+            <folderName>AirFacebook-facebook-share-res</folderName>
         </packagedResource>
         <!--<packagedResource>
             <packageName>com.google.android.gms</packageName> 
