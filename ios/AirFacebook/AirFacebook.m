@@ -53,6 +53,7 @@ static AirFacebook* sharedInstance = nil;
         self.defaultShareDialogMode = FBSDKShareDialogModeAutomatic;
         self.defaultAudience = FBSDKDefaultAudienceFriends;
         self.loginBehavior = FBSDKLoginBehaviorNative;
+        self.loginInProgress = false;
     }
     
     return self;
@@ -158,6 +159,7 @@ static AirFacebook* sharedInstance = nil;
 
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler {
     
+    
     return ^(FBSDKLoginManagerLoginResult* result, NSError* error) {
         
         if (error) {
@@ -177,6 +179,8 @@ static AirFacebook* sharedInstance = nil;
             [AirFacebook log:@"Login success! grantedPermissions: %@ declinedPermissions: %@", result.grantedPermissions, result.declinedPermissions];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
         }
+        
+        [AirFacebook.sharedInstance setLoginInProgress:false];
     };
 }
 
@@ -185,6 +189,12 @@ static AirFacebook* sharedInstance = nil;
 #pragma mark - C interface
 
 DEFINE_ANE_FUNCTION(logInWithPermissions) {
+    
+    if([[AirFacebook sharedInstance] loginInProgress]) {
+        return nil;
+    }
+    
+    [AirFacebook.sharedInstance setLoginInProgress:true];
     
     UIApplication* application = [UIApplication sharedApplication];
     UIWindow* keyWindow = application.keyWindow;
