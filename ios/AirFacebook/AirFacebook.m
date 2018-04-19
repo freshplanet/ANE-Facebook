@@ -336,7 +336,9 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath) {
     NSString* callback = FPANE_FREObjectToNSString(argv[4]);
     
     if ([FBSDKAccessToken currentAccessToken]) {
-        [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod]
+        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod];
+        [request setGraphErrorRecoveryDisabled:true];
+        [request
         startWithCompletionHandler:^(FBSDKGraphRequestConnection* connection, id result, NSError* error) {
             if (error) {
                 
