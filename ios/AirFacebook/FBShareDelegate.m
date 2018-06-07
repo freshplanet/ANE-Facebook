@@ -28,24 +28,17 @@
     return self;
 }
 
-- (BOOL)shareContent:(FBSDKShareLinkContent *)content usingShareApi:(BOOL)useShareApi {
+- (BOOL)shareContent:(FBSDKShareLinkContent *)content
+{
+    UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     
-    if (useShareApi) {
-        
-        [FBSDKShareAPI shareWithContent:content delegate:self];
-    }
-    else {
-        
-        UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        
-        FBSDKShareDialog *dialog = [[FBSDKShareDialog alloc] init];
-        dialog.fromViewController = rootViewController;
-        dialog.shareContent = content;
-        dialog.mode = [[AirFacebook sharedInstance] defaultShareDialogMode];
-        dialog.delegate = self;
-        [dialog show];
-    }
-    
+    FBSDKShareDialog *dialog = [[FBSDKShareDialog alloc] init];
+    dialog.fromViewController = rootViewController;
+    dialog.shareContent = content;
+    dialog.mode = [[AirFacebook sharedInstance] defaultShareDialogMode];
+    dialog.delegate = self;
+    [dialog show];
+
     return YES;
 }
 

@@ -19,6 +19,6 @@
 @interface FBShareDelegate : NSObject<FBSDKSharingDelegate>
 
 - (id)initWithCallback:(NSString*)aCallback;
-- (BOOL)shareContent:(FBSDKShareLinkContent*)content usingShareApi:(BOOL)useShareApi;
+- (BOOL)shareContent:(FBSDKShareLinkContent*)content;
 
 @end

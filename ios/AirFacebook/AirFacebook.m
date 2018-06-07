@@ -95,14 +95,14 @@ static AirFacebook* sharedInstance = nil;
     }
 }
 
-- (void)shareContent:(FBSDKShareLinkContent*)content usingShareApi:(BOOL)useShareApi andCallback:(NSString*)callback
+- (void)shareContent:(FBSDKShareLinkContent*)content andCallback:(NSString*)callback
 {
     [AirFacebook log:@"share:usingShareApi:andShareCallback: callback: %@", callback];
     
     if (callback != nil) {
         FBShareDelegate* delegate = [[FBShareDelegate alloc] initWithCallback:callback];
         [shareActivities setObject:delegate forKey:callback];
-        [delegate shareContent:content usingShareApi:useShareApi];
+        [delegate shareContent:content];
     }
 }
 
@@ -438,8 +438,7 @@ DEFINE_ANE_FUNCTION(shareLinkDialog) {
     NSString* contentDescription = [FREConversionUtil toString:[FREConversionUtil getProperty:@"contentDescription" fromObject:argv[0]]];
     NSString* imageUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"imageUrl" fromObject:argv[0]]];
 
-    BOOL useShareApi = FPANE_FREObjectToBOOL(argv[1]);
-    NSString* callback = FPANE_FREObjectToNSString(argv[2]);
+    NSString* callback = FPANE_FREObjectToNSString(argv[1]);
     
     FBSDKShareLinkContent* content = [[FBSDKShareLinkContent alloc] init];
     if (contentUrl != nil) content.contentURL = [NSURL URLWithString:contentUrl];
@@ -450,7 +449,7 @@ DEFINE_ANE_FUNCTION(shareLinkDialog) {
 //    if (contentDescription != nil) content.contentDescription = contentDescription;
 //    if (imageUrl != nil) content.imageURL = [NSURL URLWithString:imageUrl];
     
-    [[AirFacebook sharedInstance] shareContent:content usingShareApi:useShareApi andCallback:callback];
+    [[AirFacebook sharedInstance] shareContent:content andCallback:callback];
     
     return nil;
 }

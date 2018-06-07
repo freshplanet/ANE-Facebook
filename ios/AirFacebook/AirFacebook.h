@@ -32,7 +32,7 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 //- (void)didFinishLaunching:(NSNotification *)notification;
 
 - (void)shareFinishedForCallback:(NSString*)callback;
-- (void)shareContent:(FBSDKShareLinkContent*)content usingShareApi:(BOOL)useShareApi andCallback:(NSString*)callback;
+- (void)shareContent:(FBSDKShareLinkContent*)content andCallback:(NSString*)callback;
 
 @property (nonatomic, getter=isNativeLogEnabled) BOOL nativeLogEnabled;
 @property (nonatomic) FBSDKShareDialogMode defaultShareDialogMode;

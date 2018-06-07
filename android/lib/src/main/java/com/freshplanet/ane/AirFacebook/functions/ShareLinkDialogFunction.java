@@ -34,9 +34,8 @@ public class ShareLinkDialogFunction extends BaseFunction implements AirFacebook
 		String contentDescription = getStringProperty(args[0], "contentDescription");
 		String imageUrl = getStringProperty(args[0], "imageUrl");
         List<String> peopleIds = getStringListProperty(args[0], "peopleIds");
-		Boolean useShareApi = getBooleanFromFREObject(args[1]);
 
-        callback = getStringFromFREObject(args[2]);
+        callback = getStringFromFREObject(args[1]);
 
 		AirFacebookExtension.log("ShareLinkDialogFunction");
 
@@ -54,18 +53,13 @@ public class ShareLinkDialogFunction extends BaseFunction implements AirFacebook
         aaw = AndroidActivityWrapper.GetAndroidActivityWrapper();
         aaw.addActivityResultListener(this);
 
-        if (useShareApi)
-            ShareApi.share(shareLinkContent, this);
-        else {
+        ShareDialog shareDialog = new ShareDialog(aaw.getActivity());
+        shareDialog.registerCallback(callbackManager, this);
 
-            ShareDialog shareDialog = new ShareDialog(aaw.getActivity());
-            shareDialog.registerCallback(callbackManager, this);
-
-            if (shareDialog.canShow(shareLinkContent, AirFacebookExtension.context.getDefaultShareDialogMode()))
-                shareDialog.show(shareLinkContent, AirFacebookExtension.context.getDefaultShareDialogMode());
-            else
-                AirFacebookExtension.log("ERROR - CANNOT SHARE!");
-        }
+        if (shareDialog.canShow(shareLinkContent, AirFacebookExtension.context.getDefaultShareDialogMode()))
+            shareDialog.show(shareLinkContent, AirFacebookExtension.context.getDefaultShareDialogMode());
+        else
+            AirFacebookExtension.log("ERROR - CANNOT SHARE!");
 
 		return null;
 	}
