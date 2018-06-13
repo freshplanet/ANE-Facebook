@@ -324,7 +324,6 @@ package com.freshplanet.ane.AirFacebook {
          * can specify default share dialog mode by setting setDefaultShareDialogMode.
          *
          * @param shareLinkContent Content of share dialog.
-         * @param useShareApi If you have publish_actions permission you can directly share through ShareAPI.
          * @param callback (Optional) A callback function of the following form:
          * <code>function myCallback(data:Object)</code>, where <code>data</code> is the parsed JSON
          * object returned by Facebook.
@@ -332,11 +331,10 @@ package com.freshplanet.ane.AirFacebook {
          * @see #setDefaultShareDialogMode
          */
         public function shareLinkDialog(shareLinkContent:FBShareLinkContent,
-                                        useShareApi:Boolean = false,
                                         callback:Function = null):void {
 
             if (_isInitialized() && shareLinkContent != null)
-                _context.call("shareLinkDialog", shareLinkContent, useShareApi, _getNewCallbackName(callback));
+                _context.call("shareLinkDialog", shareLinkContent, _getNewCallbackName(callback));
         }
 
         /**

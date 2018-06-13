@@ -15,6 +15,7 @@
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <sdkVersion>9.0</sdkVersion>
     <linkerOptions>
+        <option>-lclang_rt.ios</option>
     </linkerOptions>
     <packagedDependencies>
     	<packagedDependency>Bolts/libBolts.a</packagedDependency>
