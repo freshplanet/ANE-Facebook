@@ -77,6 +77,49 @@
   }
 }
 
+#pragma mark - FBSDKSharingContent
+
+- (void)addToParameters:(NSMutableDictionary<NSString *, id> *)parameters
+          bridgeOptions:(FBSDKShareBridgeOptions)bridgeOptions
+{
+  [parameters addEntriesFromDictionary:[self addParameters:parameters bridgeOptions:bridgeOptions]];
+}
+
+- (NSDictionary<NSString *, id> *)addParameters:(NSDictionary<NSString *, id> *)existingParameters
+                                  bridgeOptions:(FBSDKShareBridgeOptions)bridgeOptions
+{
+  NSMutableDictionary<NSString *, id> *updatedParameters = [NSMutableDictionary dictionaryWithDictionary:existingParameters];
+
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_contentURL forKey:@"link"];
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_contentTitle forKey:@"name"];
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_contentDescription forKey:@"description"];
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_imageURL forKey:@"picture"];
+#pragma clang diagnostic pop
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_quote forKey:@"quote"];
+
+  /**
+   Pass link parameter as "messenger_link" due to versioning requirements for message dialog flow.
+   We will only use the new share flow we developed if messenger_link is present, not link.
+   */
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_contentURL forKey:@"messenger_link"];
+
+  return updatedParameters;
+}
+
+#pragma mark - FBSDKSharingValidation
+
+- (BOOL)validateWithOptions:(FBSDKShareBridgeOptions)bridgeOptions error:(NSError *__autoreleasing *)errorRef
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  return ([FBSDKShareUtility validateNetworkURL:_contentURL name:@"contentURL" error:errorRef] &&
+          [FBSDKShareUtility validateNetworkURL:_imageURL name:@"imageURL" error:errorRef]);
+#pragma clang diagnostic pop
+}
+
 #pragma mark - Equality
 
 - (NSUInteger)hash

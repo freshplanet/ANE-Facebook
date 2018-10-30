@@ -160,6 +160,7 @@ static AirFacebook* sharedInstance = nil;
 + (FBOpenSessionCompletionHandler)openSessionCompletionHandler {
     
     
+    
     return ^(FBSDKLoginManagerLoginResult* result, NSError* error) {
         
         if (error) {
@@ -208,7 +209,7 @@ DEFINE_ANE_FUNCTION(logInWithPermissions) {
     FBSDKLoginManager* loginManager = [[FBSDKLoginManager alloc] init];
     loginManager.loginBehavior = [[AirFacebook sharedInstance] loginBehavior];
     loginManager.defaultAudience = [[AirFacebook sharedInstance] defaultAudience];
-    
+    [loginManager logOut];
     if ([type isEqualToString:@"read"]) {
         
         [loginManager logInWithReadPermissions:permissions

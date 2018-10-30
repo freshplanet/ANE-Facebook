@@ -18,15 +18,51 @@
 
 #import "FBSDKShareVideo.h"
 
-#import "FBSDKCoreKit+Internal.h"
-#import "FBSDKSharePhoto.h"
+#import <Photos/Photos.h>
 
-#define FBSDK_SHARE_VIDEO_URL_KEY @"videoURL"
-#define FBSDK_SHARE_VIDEO_PREVIEW_PHOTO_KEY @"previewPhoto"
+#import "FBSDKCoreKit+Internal.h"
+#import "FBSDKShareConstants.h"
+#import "FBSDKSharePhoto.h"
+#import "FBSDKShareUtility.h"
+
+NSString *const kFBSDKShareVideoAssetKey = @"videoAsset";
+NSString *const kFBSDKShareVideoDataKey = @"data";
+NSString *const kFBSDKShareVideoPreviewPhotoKey = @"previewPhoto";
+NSString *const kFBSDKShareVideoURLKey = @"videoURL";
 
 @implementation FBSDKShareVideo
 
 #pragma mark - Class Methods
+
++ (instancetype)videoWithData:(NSData *)data
+{
+  FBSDKShareVideo *video = [[FBSDKShareVideo alloc] init];
+  video.data = data;
+  return video;
+}
+
++ (instancetype)videoWithData:(NSData *)data previewPhoto:(FBSDKSharePhoto *)previewPhoto
+{
+  FBSDKShareVideo *video = [[FBSDKShareVideo alloc] init];
+  video.data = data;
+  video.previewPhoto = previewPhoto;
+  return video;
+}
+
++ (instancetype)videoWithVideoAsset:(PHAsset *)videoAsset
+{
+  FBSDKShareVideo *video = [[FBSDKShareVideo alloc] init];
+  video.videoAsset = videoAsset;
+  return video;
+}
+
++ (instancetype)videoWithVideoAsset:(PHAsset *)videoAsset previewPhoto:(FBSDKSharePhoto *)previewPhoto
+{
+  FBSDKShareVideo *video = [[FBSDKShareVideo alloc] init];
+  video.videoAsset = videoAsset;
+  video.previewPhoto = previewPhoto;
+  return video;
+}
 
 + (instancetype)videoWithVideoURL:(NSURL *)videoURL
 {
@@ -43,11 +79,39 @@
   return video;
 }
 
+#pragma mark - Properties
+
+- (void)setData:(NSData *)data
+{
+  _data = data;
+  _videoAsset = nil;
+  _videoURL = nil;
+  _previewPhoto = nil;
+}
+
+- (void)setVideoAsset:(PHAsset *)videoAsset
+{
+  _data = nil;
+  _videoAsset = [videoAsset copy];
+  _videoURL = nil;
+  _previewPhoto = nil;
+}
+
+- (void)setVideoURL:(NSURL *)videoURL
+{
+  _data = nil;
+  _videoAsset = nil;
+  _videoURL = [videoURL copy];
+  _previewPhoto = nil;
+}
+
 #pragma mark - Equality
 
 - (NSUInteger)hash
 {
   NSUInteger subhashes[] = {
+    [_data hash],
+    [_videoAsset hash],
     [_videoURL hash],
     [_previewPhoto hash],
   };
@@ -68,8 +132,97 @@
 - (BOOL)isEqualToShareVideo:(FBSDKShareVideo *)video
 {
   return (video &&
+          [FBSDKInternalUtility object:_data isEqualToObject:video.data] &&
+          [FBSDKInternalUtility object:_videoAsset isEqualToObject:video.videoAsset] &&
           [FBSDKInternalUtility object:_videoURL isEqualToObject:video.videoURL] &&
           [FBSDKInternalUtility object:_previewPhoto isEqualToObject:video.previewPhoto]);
+}
+
+#pragma mark - FBSDKSharingValidation
+
+- (BOOL)_validateData:(NSData *)data
+          withOptions:(FBSDKShareBridgeOptions)bridgeOptions
+                error:(NSError *__autoreleasing *)errorRef
+{
+  if (data) {
+    if (bridgeOptions & FBSDKShareBridgeOptionsVideoData) {
+      return YES; // will bridge the data
+    }
+  }
+  if ((errorRef != NULL) && !*errorRef) {
+    *errorRef = [NSError fbInvalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                     name:@"data"
+                                                    value:data
+                                                  message:@"Cannot share video data."];
+  }
+  return NO;
+}
+
+- (BOOL)_validateVideoAsset:(PHAsset *)videoAsset
+                withOptions:(FBSDKShareBridgeOptions)bridgeOptions
+                      error:(NSError *__autoreleasing *)errorRef
+{
+  if (videoAsset) {
+    if (PHAssetMediaTypeVideo == videoAsset.mediaType) {
+      if (bridgeOptions & FBSDKShareBridgeOptionsVideoAsset) {
+        return YES; // will bridge the PHAsset.localIdentifier
+      } else {
+        return YES; // will bridge the legacy "assets-library" URL from AVAsset
+      }
+    } else {
+      if (errorRef != NULL) {
+        *errorRef = [NSError fbInvalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                         name:@"videoAsset"
+                                                        value:videoAsset
+                                                      message:@"Must refer to a video file."];
+      }
+      return NO;
+    }
+  }
+  return NO;
+}
+
+- (BOOL)_validateVideoURL:(NSURL *)videoURL
+              withOptions:(FBSDKShareBridgeOptions)bridgeOptions
+                    error:(NSError *__autoreleasing *)errorRef
+{
+  if (videoURL) {
+    if ([[videoURL.scheme lowercaseString] isEqualToString:@"assets-library"]) {
+      return YES; // will bridge the legacy "assets-library" URL
+    } else if (videoURL.isFileURL) {
+      if (bridgeOptions & FBSDKShareBridgeOptionsVideoData) {
+        return YES; // will load the contents of the file and bridge the data
+      }
+    }
+  }
+  if ((errorRef != NULL) && !*errorRef) {
+    *errorRef = [NSError fbInvalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                     name:@"videoURL"
+                                                    value:videoURL
+                                                  message:@"Must refer to an asset file."];
+  }
+  return NO;
+}
+
+- (BOOL)validateWithOptions:(FBSDKShareBridgeOptions)bridgeOptions error:(NSError *__autoreleasing *)errorRef
+{
+  // validate that a valid asset, data, or videoURL value has been set.
+  // don't validate the preview photo; if it isn't valid it'll be dropped from the share; a default one may be created if needed.
+  if (_videoAsset) {
+    return [self _validateVideoAsset:_videoAsset withOptions:bridgeOptions error:errorRef];
+  } else if (_data) {
+    return [self _validateData:_data withOptions:bridgeOptions error:errorRef];
+  } else if (_videoURL) {
+    return [self _validateVideoURL:_videoURL withOptions:bridgeOptions error:errorRef];
+  } else {
+    if ((errorRef != NULL) && !*errorRef) {
+      *errorRef = [NSError fbInvalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                       name:@"video"
+                                                      value:self
+                                                    message:@"Must have an asset, data, or videoURL value."];
+    }
+    return NO;
+  }
 }
 
 #pragma mark - NSCoding
@@ -82,16 +235,23 @@
 - (id)initWithCoder:(NSCoder *)decoder
 {
   if ((self = [self init])) {
-    _videoURL = [decoder decodeObjectOfClass:[NSURL class] forKey:FBSDK_SHARE_VIDEO_URL_KEY];
-    _previewPhoto = [decoder decodeObjectOfClass:[FBSDKSharePhoto class] forKey:FBSDK_SHARE_VIDEO_PREVIEW_PHOTO_KEY];
+    _data = [decoder decodeObjectOfClass:[NSData class] forKey:kFBSDKShareVideoDataKey];
+    NSString *localIdentifier = [decoder decodeObjectOfClass:[NSString class] forKey:kFBSDKShareVideoAssetKey];
+    if (localIdentifier && (PHAuthorizationStatusAuthorized == [PHPhotoLibrary authorizationStatus])) {
+      _videoAsset = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil].firstObject;
+    }
+    _videoURL = [decoder decodeObjectOfClass:[NSURL class] forKey:kFBSDKShareVideoURLKey];
+    _previewPhoto = [decoder decodeObjectOfClass:[FBSDKSharePhoto class] forKey:kFBSDKShareVideoPreviewPhotoKey];
   }
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
-  [encoder encodeObject:_videoURL forKey:FBSDK_SHARE_VIDEO_URL_KEY];
-  [encoder encodeObject:_previewPhoto forKey:FBSDK_SHARE_VIDEO_PREVIEW_PHOTO_KEY];
+  [encoder encodeObject:_data forKey:kFBSDKShareVideoDataKey];
+  [encoder encodeObject:_videoAsset.localIdentifier forKey:kFBSDKShareVideoAssetKey];
+  [encoder encodeObject:_videoURL forKey:kFBSDKShareVideoURLKey];
+  [encoder encodeObject:_previewPhoto forKey:kFBSDKShareVideoPreviewPhotoKey];
 }
 
 #pragma mark - NSCopying
@@ -99,6 +259,8 @@
 - (id)copyWithZone:(NSZone *)zone
 {
   FBSDKShareVideo *copy = [[FBSDKShareVideo alloc] init];
+  copy->_data = [_data copy];
+  copy->_videoAsset = [_videoAsset copy];
   copy->_videoURL = [_videoURL copy];
   copy->_previewPhoto = [_previewPhoto copy];
   return copy;

@@ -66,6 +66,40 @@
   }
 }
 
+#pragma mark - FBSDKSharingContent
+
+- (void)addToParameters:(NSMutableDictionary<NSString *, id> *)parameters
+          bridgeOptions:(FBSDKShareBridgeOptions)bridgeOptions
+{
+  [parameters addEntriesFromDictionary:[self addParameters:parameters bridgeOptions:bridgeOptions]];
+}
+
+- (NSDictionary<NSString *, id> *)addParameters:(NSDictionary<NSString *, id> *)existingParameters
+                                  bridgeOptions:(FBSDKShareBridgeOptions)bridgeOptions
+{
+  NSMutableDictionary<NSString *, id> *updatedParameters = [NSMutableDictionary dictionaryWithDictionary:existingParameters];
+
+  NSString *previewPropertyName = [FBSDKShareUtility getOpenGraphNameAndNamespaceFromFullName:_previewPropertyName namespace:nil];
+  [FBSDKInternalUtility dictionary:updatedParameters
+                         setObject:previewPropertyName
+                            forKey:@"previewPropertyName"];
+  [FBSDKInternalUtility dictionary:updatedParameters setObject:_action.actionType forKey:@"actionType"];
+  [FBSDKInternalUtility dictionary:updatedParameters
+                         setObject:[FBSDKShareUtility convertOpenGraphValueContainer:_action requireNamespace:NO]
+                            forKey:@"action"];
+
+  return updatedParameters;
+}
+
+#pragma mark - FBSDKSharingValidation
+
+- (BOOL)validateWithOptions:(FBSDKShareBridgeOptions)bridgeOptions error:(NSError *__autoreleasing *)errorRef
+{
+  return ([FBSDKShareUtility validateRequiredValue:_action name:@"action" error:errorRef] &&
+          [FBSDKShareUtility validateRequiredValue:_previewPropertyName name:@"previewPropertyName" error:errorRef] &&
+          [FBSDKShareUtility validateRequiredValue:_action[_previewPropertyName] name:_previewPropertyName error:errorRef]);
+}
+
 #pragma mark - Equality
 
 - (NSUInteger)hash

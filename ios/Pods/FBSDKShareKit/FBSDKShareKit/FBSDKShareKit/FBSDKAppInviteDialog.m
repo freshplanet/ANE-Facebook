@@ -21,7 +21,6 @@
 #import "FBSDKCoreKit+Internal.h"
 #import "FBSDKShareConstants.h"
 #import "FBSDKShareDefines.h"
-#import "FBSDKShareError.h"
 #import "FBSDKShareUtility.h"
 
 @implementation FBSDKAppInviteDialog
@@ -68,7 +67,19 @@
 
 - (BOOL)validateWithError:(NSError *__autoreleasing *)errorRef
 {
-  return [FBSDKShareUtility validateAppInviteContent:self.content error:errorRef];
+  if (![FBSDKShareUtility validateRequiredValue:self.content name:@"content" error:errorRef]) {
+    return NO;
+  }
+  if ([self.content respondsToSelector:@selector(validateWithError:)]) {
+    return [self.content validateWithOptions:FBSDKShareBridgeOptionsDefault error:errorRef];
+  }
+  if (errorRef != NULL) {
+    *errorRef = [NSError fbInvalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                     name:@"content"
+                                                    value:self.content
+                                                  message:nil];
+  }
+  return NO;
 }
 
 @end
