@@ -18,19 +18,32 @@
 
 #import <Foundation/Foundation.h>
 
-@class FBSDKShareMessengerGenericTemplateContent;
-@class FBSDKShareMessengerMediaTemplateContent;
-@class FBSDKShareMessengerOpenGraphMusicTemplateContent;
+@class FBSDKShareMessengerURLActionButton;
+@protocol FBSDKShareMessengerActionButton;
+
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerTemplateTypeKey;
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerTemplateKey;
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerPayloadKey;
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerTypeKey;
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerAttachmentKey;
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerElementsKey;
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerButtonsKey;
+
+void AddToContentPreviewDictionaryForButton(NSMutableDictionary<NSString *, id> *dictionary,
+                                            id<FBSDKShareMessengerActionButton> button);
+
+NSDictionary<NSString *, id> *SerializableButtonFromURLButton(FBSDKShareMessengerURLActionButton *button, BOOL isDefaultAction);
+NSArray<NSDictionary<NSString *, id> *> *SerializableButtonsFromButton(id<FBSDKShareMessengerActionButton> button);
 
 @interface FBSDKShareMessengerContentUtility : NSObject
 
-+ (void)addToParameters:(NSMutableDictionary *)parameters
-forShareMessengerGenericTemplateContent:(FBSDKShareMessengerGenericTemplateContent *)genericTemplateContent;
++ (void)addToParameters:(NSMutableDictionary<NSString *, id> *)parameters
+        contentForShare:(NSMutableDictionary<NSString *, id> *)contentForShare
+      contentForPreview:(NSMutableDictionary<NSString *, id> *)contentForPreview;
 
-+ (void)addToParameters:(NSMutableDictionary *)parameters
-forShareMessengerMediaTemplateContent:(FBSDKShareMessengerMediaTemplateContent *)mediaTemplateContent;
-
-+ (void)addToParameters:(NSMutableDictionary *)parameters
-forShareMessengerOpenGraphMusicTemplateContent:(FBSDKShareMessengerOpenGraphMusicTemplateContent *)openGraphMusicTemplate;
++ (BOOL)validateMessengerActionButton:(id<FBSDKShareMessengerActionButton>)button
+                isDefaultActionButton:(BOOL)isDefaultActionButton
+                               pageID:(NSString *)pageID
+                                error:(NSError *__autoreleasing *)errorRef;
 
 @end
