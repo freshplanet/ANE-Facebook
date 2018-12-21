@@ -366,6 +366,10 @@ package com.freshplanet.ane.AirFacebook.appevents {
                     .addStringParam(FBAppEventsConstants.EVENT_PARAM_CURRENCY, currency);
         }
 
+		public static function create_PUSH_OPENED():FBEvent {
+			return FBEvent.create(FBAppEventsConstants.EVENT_NAME_PUSH_OPENED);
+		}
+
         // --------------------------------------------------------------------------------------//
         //																						 //
         // 									 	PRIVATE API										 //

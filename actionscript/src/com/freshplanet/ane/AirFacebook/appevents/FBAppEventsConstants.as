@@ -99,6 +99,11 @@ package com.freshplanet.ane.AirFacebook.appevents {
          */
         public static const EVENT_NAME_VIEWED_CONTENT:String = "fb_mobile_content_view";
 
+		/**
+		 * Log this event when the user has viewed a form of content in the app.
+		 */
+		public static const EVENT_NAME_PUSH_OPENED:String = "fb_mobile_push_opened";
+
         /**
          * Parameter key used to specify an ID for the specific piece of content being logged about.
          * This could be an EAN, article identifier, etc., depending on the nature of the app.
@@ -165,5 +170,7 @@ package com.freshplanet.ane.AirFacebook.appevents {
          * parameter.
          */
         public static const EVENT_PARAM_SUCCESS:String = "fb_success";
+
+
     }
 }
