@@ -100,9 +100,14 @@ package com.freshplanet.ane.AirFacebook.appevents {
         public static const EVENT_NAME_VIEWED_CONTENT:String = "fb_mobile_content_view";
 
 		/**
-		 * Log this event when the user has viewed a form of content in the app.
+		 * Log this event when the user has opened a push notification
 		 */
 		public static const EVENT_NAME_PUSH_OPENED:String = "fb_mobile_push_opened";
+
+		/**
+		 * Log this event when ad was displayed
+		 */
+		public static const EVENT_NAME_AD_IMPRESSION:String = "AdImpression";
 
         /**
          * Parameter key used to specify an ID for the specific piece of content being logged about.
