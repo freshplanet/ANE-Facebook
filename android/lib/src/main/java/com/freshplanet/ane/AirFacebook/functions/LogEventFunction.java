@@ -1,6 +1,7 @@
 package com.freshplanet.ane.AirFacebook.functions;
 
 import android.os.Bundle;
+
 import com.adobe.fre.*;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -18,7 +19,7 @@ public class LogEventFunction extends BaseFunction
 			FREArray paramsTypesArray = (FREArray)args[0].getProperty("paramsTypes");
 			FREArray paramsValuesArray = (FREArray)args[0].getProperty("paramsValues");
 
-			String eventNameString = eventNameObject.getProperty("value").getAsString();
+			String eventNameString = eventNameObject.getAsString();
 			Double valueToSum = valueToSumObject.getAsDouble();
 
 			Bundle parameters = getBundleFromFREArrays(paramsKeysArray, paramsTypesArray, paramsValuesArray);
