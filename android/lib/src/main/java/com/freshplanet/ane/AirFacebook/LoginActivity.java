@@ -13,6 +13,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 
+import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
@@ -40,7 +41,6 @@ public class LoginActivity extends Activity
 		// Get extra values
 		Bundle extras = this.getIntent().getExtras();
 		List<String> permissions = new ArrayList<String>(Arrays.asList(extras.getStringArray(extraPrefix+".permissions")));
-		String type = extras.getString(extraPrefix+".type");
 
 		callbackManager = CallbackManager.Factory.create();
 
@@ -72,11 +72,7 @@ public class LoginActivity extends Activity
 				});
 
 		try {
-			if ("read".equals(type)) {
-				LoginManager.getInstance().logInWithReadPermissions(this, permissions);
-			} else {
-				LoginManager.getInstance().logInWithPublishPermissions(this, permissions);
-			}
+			LoginManager.getInstance().logIn(this, permissions);
 		}
 		catch (Exception e)
 		{

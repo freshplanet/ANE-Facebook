@@ -112,10 +112,6 @@ public class AirFacebookExtensionContext extends FREContext {
 		functions.put("canPresentShareDialog", new CanPresentShareDialogFunction());
 		functions.put("shareLinkDialog", new ShareLinkDialogFunction());
 
-		// Invite dialog
-		functions.put("canPresentAppInviteDialog", new CanPresentAppInviteDialogFunction());
-		functions.put("appInviteDialog", new AppInviteDialogFunction());
-
 		// request dialog
 		functions.put("gameRequestDialog", new GameRequestDialogFunction());
 

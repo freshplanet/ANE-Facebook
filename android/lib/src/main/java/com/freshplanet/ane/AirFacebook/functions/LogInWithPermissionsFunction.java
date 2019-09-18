@@ -16,13 +16,10 @@ public class LogInWithPermissionsFunction extends BaseFunction
 		super.call(context, args);
 		
 		List<String> permissions = getListOfStringFromFREArray((FREArray)args[0]);
-		String type = getStringFromFREObject(args[1]);
 
-		AirFacebookExtension.log("LogInWithPermissionsFunction type:" + type + " permissions:" + permissions.toString());
 
 		Intent i = new Intent(context.getActivity().getApplicationContext(), LoginActivity.class);
 		i.putExtra(LoginActivity.extraPrefix+".permissions", permissions.toArray(new String[permissions.size()]));
-		i.putExtra(LoginActivity.extraPrefix+".type", type);
 		context.getActivity().startActivity(i);
 		
 		return null;
