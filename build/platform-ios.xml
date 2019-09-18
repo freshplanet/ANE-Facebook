@@ -18,7 +18,6 @@
         <option>-lclang_rt.ios</option>
     </linkerOptions>
     <packagedDependencies>
-    	<packagedDependency>Bolts/libBolts.a</packagedDependency>
     	<packagedDependency>FBSDKCoreKit/libFBSDKCoreKit.a</packagedDependency>
     	<packagedDependency>FBSDKLoginKit/libFBSDKLoginKit.a</packagedDependency>
     	<packagedDependency>FBSDKShareKit/libFBSDKShareKit.a</packagedDependency>
