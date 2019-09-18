@@ -18,10 +18,13 @@
 
 #import "FBSDKGameRequestDialog.h"
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKGameRequestFrictionlessRecipientCache.h"
 #import "FBSDKShareConstants.h"
-#import "FBSDKShareError.h"
 #import "FBSDKShareUtility.h"
 
 @interface FBSDKGameRequestDialog () <FBSDKWebDialogDelegate>
@@ -46,11 +49,17 @@ static FBSDKGameRequestFrictionlessRecipientCache *_recipientCache = nil;
   }
 }
 
-+ (instancetype)showWithContent:(FBSDKGameRequestContent *)content delegate:(id<FBSDKGameRequestDialogDelegate>)delegate
++ (instancetype)dialogWithContent:(FBSDKGameRequestContent *)content delegate:(id<FBSDKGameRequestDialogDelegate>)delegate
 {
   FBSDKGameRequestDialog *dialog = [[self alloc] init];
   dialog.content = content;
   dialog.delegate = delegate;
+  return dialog;
+}
+
++ (instancetype)showWithContent:(FBSDKGameRequestContent *)content delegate:(id<FBSDKGameRequestDialogDelegate>)delegate
+{
+  FBSDKGameRequestDialog *dialog = [self dialogWithContent:content delegate:delegate];
   [dialog show];
   return dialog;
 }
@@ -82,9 +91,10 @@ static FBSDKGameRequestFrictionlessRecipientCache *_recipientCache = nil;
 - (BOOL)show
 {
   NSError *error;
-  if (![self canShow]) {
-    error = [FBSDKShareError errorWithCode:FBSDKShareDialogNotAvailableErrorCode
-                                   message:@"Game request dialog is not available."];
+  if (!self.canShow) {
+    error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                   code:FBSDKShareErrorDialogNotAvailable
+                                message:@"Game request dialog is not available."];
     [_delegate gameRequestDialog:self didFailWithError:error];
     return NO;
   }
@@ -100,14 +110,14 @@ static FBSDKGameRequestFrictionlessRecipientCache *_recipientCache = nil;
   }
 
   NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-  [FBSDKInternalUtility dictionary:parameters setObject:[content.recipients componentsJoinedByString:@","] forKey:@"to"];
-  [FBSDKInternalUtility dictionary:parameters setObject:content.message forKey:@"message"];
-  [FBSDKInternalUtility dictionary:parameters setObject:[self _actionTypeNameForActionType:content.actionType] forKey:@"action_type"];
-  [FBSDKInternalUtility dictionary:parameters setObject:content.objectID forKey:@"object_id"];
-  [FBSDKInternalUtility dictionary:parameters setObject:[self _filtersNameForFilters:content.filters] forKey:@"filters"];
-  [FBSDKInternalUtility dictionary:parameters setObject:[content.recipientSuggestions componentsJoinedByString:@","] forKey:@"suggestions"];
-  [FBSDKInternalUtility dictionary:parameters setObject:content.data forKey:@"data"];
-  [FBSDKInternalUtility dictionary:parameters setObject:content.title forKey:@"title"];
+  [FBSDKBasicUtility dictionary:parameters setObject:[content.recipients componentsJoinedByString:@","] forKey:@"to"];
+  [FBSDKBasicUtility dictionary:parameters setObject:content.message forKey:@"message"];
+  [FBSDKBasicUtility dictionary:parameters setObject:[self _actionTypeNameForActionType:content.actionType] forKey:@"action_type"];
+  [FBSDKBasicUtility dictionary:parameters setObject:content.objectID forKey:@"object_id"];
+  [FBSDKBasicUtility dictionary:parameters setObject:[self _filtersNameForFilters:content.filters] forKey:@"filters"];
+  [FBSDKBasicUtility dictionary:parameters setObject:[content.recipientSuggestions componentsJoinedByString:@","] forKey:@"suggestions"];
+  [FBSDKBasicUtility dictionary:parameters setObject:content.data forKey:@"data"];
+  [FBSDKBasicUtility dictionary:parameters setObject:content.title forKey:@"title"];
 
   // check if we are sending to a specific set of recipients.  if we are and they are all frictionless recipients, we
   // can perform this action without displaying the web dialog
@@ -139,7 +149,10 @@ static FBSDKGameRequestFrictionlessRecipientCache *_recipientCache = nil;
     return [self.content validateWithOptions:FBSDKShareBridgeOptionsDefault error:errorRef];
   }
   if (errorRef != NULL) {
-    *errorRef = [FBSDKShareError invalidArgumentErrorWithName:@"content" value:self.content message:nil];
+    *errorRef = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                      name:@"content"
+                                                     value:self.content
+                                                   message:nil];
   }
   return NO;
 }
@@ -156,8 +169,8 @@ static FBSDKGameRequestFrictionlessRecipientCache *_recipientCache = nil;
   }
   [self _cleanUp];
 
-  NSError *error = [FBSDKShareError errorWithCode:[FBSDKTypeUtility unsignedIntegerValue:results[@"error_code"]]
-                                          message:[FBSDKTypeUtility stringValue:results[@"error_message"]]];
+  NSError *error = [FBSDKError errorWithCode:[FBSDKTypeUtility unsignedIntegerValue:results[@"error_code"]]
+                                    message:[FBSDKTypeUtility stringValue:results[@"error_message"]]];
   if (!error.code) {
     // reformat "to[x]" keys into an array.
     int counter = 0;

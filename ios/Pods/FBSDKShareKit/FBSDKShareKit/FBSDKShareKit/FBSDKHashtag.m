@@ -18,7 +18,11 @@
 
 #import "FBSDKHashtag.h"
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 
 #define FBSDK_HASHTAG_STRING_KEY @"hashtag"
 
@@ -71,7 +75,7 @@ static NSRegularExpression *HashtagRegularExpression()
 
 - (NSUInteger)hash
 {
-  return [_stringRepresentation hash];
+  return _stringRepresentation.hash;
 }
 
 - (BOOL)isEqual:(id)object
@@ -98,7 +102,7 @@ static NSRegularExpression *HashtagRegularExpression()
   return YES;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
   if ((self = [self init])) {
     _stringRepresentation = [aDecoder decodeObjectOfClass:[NSString class] forKey:FBSDK_HASHTAG_STRING_KEY];

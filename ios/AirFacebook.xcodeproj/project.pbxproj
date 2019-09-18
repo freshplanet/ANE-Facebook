@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		165F93631E525E5400A12835 /* AirFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93621E525E5400A12835 /* AirFacebook.m */; };
 		165F93641E525E5400A12835 /* AirFacebook.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 165F93611E525E5400A12835 /* AirFacebook.h */; };
-		165F93741E525E9700A12835 /* FBAppInviteDialogDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F936B1E525E9700A12835 /* FBAppInviteDialogDelegate.m */; };
 		165F93751E525E9700A12835 /* FBGameRequestDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F936D1E525E9700A12835 /* FBGameRequestDelegate.m */; };
 		165F93761E525E9700A12835 /* FBShareDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F936F1E525E9700A12835 /* FBShareDelegate.m */; };
 		165F93771E525E9700A12835 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93711E525E9700A12835 /* FPANEUtils.m */; };
@@ -34,8 +33,6 @@
 		165F935E1E525E5400A12835 /* libAirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAirFacebook.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		165F93611E525E5400A12835 /* AirFacebook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirFacebook.h; sourceTree = "<group>"; };
 		165F93621E525E5400A12835 /* AirFacebook.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirFacebook.m; sourceTree = "<group>"; };
-		165F936A1E525E9700A12835 /* FBAppInviteDialogDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBAppInviteDialogDelegate.h; sourceTree = "<group>"; };
-		165F936B1E525E9700A12835 /* FBAppInviteDialogDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBAppInviteDialogDelegate.m; sourceTree = "<group>"; };
 		165F936C1E525E9700A12835 /* FBGameRequestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBGameRequestDelegate.h; sourceTree = "<group>"; };
 		165F936D1E525E9700A12835 /* FBGameRequestDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBGameRequestDelegate.m; sourceTree = "<group>"; };
 		165F936E1E525E9700A12835 /* FBShareDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShareDelegate.h; sourceTree = "<group>"; };
@@ -84,8 +81,6 @@
 			isa = PBXGroup;
 			children = (
 				165F93791E525EA300A12835 /* FlashRuntimeExtensions.h */,
-				165F936A1E525E9700A12835 /* FBAppInviteDialogDelegate.h */,
-				165F936B1E525E9700A12835 /* FBAppInviteDialogDelegate.m */,
 				165F936C1E525E9700A12835 /* FBGameRequestDelegate.h */,
 				165F936D1E525E9700A12835 /* FBGameRequestDelegate.m */,
 				165F936E1E525E9700A12835 /* FBShareDelegate.h */,
@@ -159,6 +154,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 165F93551E525E5400A12835;
@@ -217,7 +213,6 @@
 			files = (
 				165F93631E525E5400A12835 /* AirFacebook.m in Sources */,
 				165F93781E525E9700A12835 /* FREConversionUtil.m in Sources */,
-				165F93741E525E9700A12835 /* FBAppInviteDialogDelegate.m in Sources */,
 				165F93761E525E9700A12835 /* FBShareDelegate.m in Sources */,
 				165F93751E525E9700A12835 /* FBGameRequestDelegate.m in Sources */,
 				165F93771E525E9700A12835 /* FPANEUtils.m in Sources */,
@@ -269,7 +264,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;

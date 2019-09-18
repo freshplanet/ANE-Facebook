@@ -18,10 +18,13 @@
 
 #import "FBSDKLikeDialog.h"
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKShareConstants.h"
 #import "FBSDKShareDefines.h"
-#import "FBSDKShareError.h"
 
 @implementation FBSDKLikeDialog
 
@@ -62,8 +65,9 @@
 {
   NSError *error;
   if (![self canLike]) {
-    error = [FBSDKShareError errorWithCode:FBSDKShareDialogNotAvailableErrorCode
-                                   message:@"Like dialog is not available."];
+    error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                   code:FBSDKShareErrorDialogNotAvailable
+                                message:@"Like dialog is not available."];
     [_delegate likeDialog:self didFailWithError:error];
     return NO;
   }
@@ -73,17 +77,17 @@
   }
 
   NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-  [FBSDKInternalUtility dictionary:parameters setObject:self.objectID forKey:@"object_id"];
-  [FBSDKInternalUtility dictionary:parameters
-                         setObject:NSStringFromFBSDKLikeObjectType(self.objectType)
-                            forKey:@"object_type"];
+  [FBSDKBasicUtility dictionary:parameters setObject:self.objectID forKey:@"object_id"];
+  [FBSDKBasicUtility dictionary:parameters
+                      setObject:NSStringFromFBSDKLikeObjectType(self.objectType)
+                         forKey:@"object_type"];
   FBSDKBridgeAPIRequest * webRequest = [FBSDKBridgeAPIRequest bridgeAPIRequestWithProtocolType:FBSDKBridgeAPIProtocolTypeWeb
                                                                                         scheme:FBSDK_SHARE_JS_DIALOG_SCHEME
                                                                                     methodName:FBSDK_LIKE_METHOD_NAME
                                                                                  methodVersion:nil
                                                                                     parameters:parameters
                                                                                       userInfo:nil];
-  FBSDKBridgeAPICallbackBlock completionBlock = ^(FBSDKBridgeAPIResponse *response) {
+  FBSDKBridgeAPIResponseBlock completionBlock = ^(FBSDKBridgeAPIResponse *response) {
     [self _handleCompletionWithDialogResults:response.responseParameters error:response.error];
   };
 
@@ -97,8 +101,8 @@
                                                                                         parameters:parameters
                                                                                           userInfo:nil];
     void (^networkCompletionBlock)(FBSDKBridgeAPIResponse *) = ^(FBSDKBridgeAPIResponse *response) {
-      if (response.error.code == FBSDKAppVersionUnsupportedErrorCode) {
-        [[FBSDKApplicationDelegate sharedInstance] openBridgeAPIRequest:webRequest
+      if (response.error.code == FBSDKErrorAppVersionUnsupported) {
+        [[FBSDKBridgeAPI sharedInstance] openBridgeAPIRequest:webRequest
                                                 useSafariViewController:useSafariViewController
                                                      fromViewController:self.fromViewController
                                                         completionBlock:completionBlock];
@@ -106,12 +110,12 @@
         completionBlock(response);
       }
     };
-    [[FBSDKApplicationDelegate sharedInstance] openBridgeAPIRequest:nativeRequest
+    [[FBSDKBridgeAPI sharedInstance] openBridgeAPIRequest:nativeRequest
                                             useSafariViewController:useSafariViewController
                                                  fromViewController:self.fromViewController
                                                     completionBlock:networkCompletionBlock];
   } else {
-    [[FBSDKApplicationDelegate sharedInstance] openBridgeAPIRequest:webRequest
+    [[FBSDKBridgeAPI sharedInstance] openBridgeAPIRequest:webRequest
                                             useSafariViewController:useSafariViewController
                                                  fromViewController:self.fromViewController
                                                     completionBlock:completionBlock];
@@ -122,9 +126,11 @@
 
 - (BOOL)validateWithError:(NSError *__autoreleasing *)errorRef
 {
-  if (![self.objectID length]) {
+  if (!self.objectID.length) {
     if (errorRef != NULL) {
-      *errorRef = [FBSDKShareError requiredArgumentErrorWithName:@"objectID" message:nil];
+      *errorRef = [FBSDKError requiredArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                         name:@"objectID"
+                                                      message:nil];
     }
     return NO;
   }

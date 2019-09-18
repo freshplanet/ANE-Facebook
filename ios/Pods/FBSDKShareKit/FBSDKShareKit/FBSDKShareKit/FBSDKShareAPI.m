@@ -18,17 +18,20 @@
 
 #import "FBSDKShareAPI.h"
 
-#if !TARGET_OS_TV
+#if !TARGET_OS_TV && !TARGET_OS_MACCATALYST
 #import <AssetsLibrary/AssetsLibrary.h>
 #endif
 
 #import <FBSDKCoreKit/FBSDKGraphRequest.h>
 #import <FBSDKCoreKit/FBSDKGraphRequestDataAttachment.h>
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKShareConstants.h"
 #import "FBSDKShareDefines.h"
-#import "FBSDKShareError.h"
 #import "FBSDKShareLinkContent.h"
 #import "FBSDKShareOpenGraphAction.h"
 #import "FBSDKShareOpenGraphContent.h"
@@ -50,18 +53,24 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 
 @implementation FBSDKShareAPI {
   NSFileHandle *_fileHandle;
-#if !TARGET_OS_TV
+#if !TARGET_OS_TV && !TARGET_OS_MACCATALYST
   ALAssetRepresentation *_assetRepresentation;
 #endif
 }
 
 #pragma mark - Class Methods
 
-+ (instancetype)shareWithContent:(id<FBSDKSharingContent>)content delegate:(id<FBSDKSharingDelegate>)delegate
++ (instancetype)apiWithContent:(id<FBSDKSharingContent>)content delegate:(id<FBSDKSharingDelegate>)delegate
 {
   FBSDKShareAPI *API = [[self alloc] init];
   API.shareContent = content;
   API.delegate = delegate;
+  return API;
+}
+
++ (instancetype)shareWithContent:(id<FBSDKSharingContent>)content delegate:(id<FBSDKSharingDelegate>)delegate
+{
+  FBSDKShareAPI *API = [self apiWithContent:content delegate:delegate];
   [API share];
   return API;
 }
@@ -75,7 +84,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 
 #pragma mark - Object Lifecycle
 
-#if !TARGET_OS_TV
+#if !TARGET_OS_TV && !TARGET_OS_MACCATALYST
 + (ALAssetsLibrary *)defaultAssetsLibrary {
   static dispatch_once_t pred = 0;
   static ALAssetsLibrary *library = nil;
@@ -111,9 +120,11 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 - (BOOL)createOpenGraphObject:(FBSDKShareOpenGraphObject *)openGraphObject
 {
   NSError *error;
-  if (![self canShare]) {
+  if (!self.canShare) {
     NSString *message = @"Share API is not available; verify 'canShare' returns YES";
-    error = [FBSDKShareError errorWithCode:FBSDKShareDialogNotAvailableErrorCode message:message];
+    error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                   code:FBSDKShareErrorDialogNotAvailable
+                                message:message];
     [_delegate sharer:self didFailWithError:error];
     return NO;
   }
@@ -122,7 +133,9 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors logEntry:message];
   }
   if (!openGraphObject) {
-    error = [FBSDKShareError requiredArgumentErrorWithName:@"openGraphObject" message:nil];
+    error = [FBSDKError requiredArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                   name:@"openGraphObject"
+                                                message:nil];
     [_delegate sharer:self didFailWithError:error];
     return NO;
   }
@@ -144,9 +157,11 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 - (BOOL)share
 {
   NSError *error;
-  if (![self canShare]) {
+  if (!self.canShare) {
     NSString *message = @"Share API is not available; verify 'canShare' returns YES";
-    error = [FBSDKShareError errorWithCode:FBSDKShareDialogNotAvailableErrorCode message:message];
+    error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                   code:FBSDKShareErrorDialogNotAvailable
+                                message:message];
     [_delegate sharer:self didFailWithError:error];
     return NO;
   }
@@ -166,8 +181,11 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     return [self _sharePhotoContent:(FBSDKSharePhotoContent *)shareContent];
   } else if ([shareContent isKindOfClass:[FBSDKShareVideoContent class]]) {
     return [self _shareVideoContent:(FBSDKShareVideoContent *)shareContent];
-  } else if ([shareContent isKindOfClass:[FBSDKShareOpenGraphContent class]]) {
+  } else if ([shareContent isKindOfClass:NSClassFromString(@"FBSDKShareOpenGraphContent")]) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     return [self _shareOpenGraphContent:(FBSDKShareOpenGraphContent *)shareContent];
+#pragma GCC diagnostic pop
   } else {
     return NO;
   }
@@ -178,20 +196,28 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   id<FBSDKSharingContent> shareContent = self.shareContent;
   if (!shareContent) {
     if (errorRef != NULL) {
-      *errorRef = [FBSDKShareError requiredArgumentErrorWithName:@"shareContent" message:@"Share content cannot be null."];
+      *errorRef = [FBSDKError requiredArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                         name:@"shareContent"
+                                                      message:@"Share content cannot be null."];
     }
     return NO;
   }
   if ([shareContent isKindOfClass:[FBSDKShareVideoContent class]]) {
     if (shareContent.peopleIDs.count > 0) {
       if (errorRef != NULL) {
-        *errorRef = [FBSDKShareError invalidArgumentErrorWithName:@"peopleIDs" value:shareContent.peopleIDs message:@"Cannot specify peopleIDs with FBSDKShareVideoContent."];
+        *errorRef = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                          name:@"peopleIDs"
+                                                         value:shareContent.peopleIDs
+                                                       message:@"Cannot specify peopleIDs with FBSDKShareVideoContent."];
       }
       return NO;
     }
     if (shareContent.placeID) {
       if (errorRef != NULL) {
-        *errorRef = [FBSDKShareError invalidArgumentErrorWithName:@"placeID" value:shareContent.placeID message:@"Cannot specify place ID with FBSDKShareVideoContent."];
+        *errorRef = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                          name:@"placeID"
+                                                         value:shareContent.placeID
+                                                       message:@"Cannot specify place ID with FBSDKShareVideoContent."];
       }
       return NO;
     }
@@ -235,10 +261,10 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     } else {
       tags = [content.peopleIDs componentsJoinedByString:@","];
     }
-    [FBSDKInternalUtility dictionary:parameters setObject:tags forKey:@"tags"];
+    [FBSDKBasicUtility dictionary:parameters setObject:tags forKey:@"tags"];
   }
-  [FBSDKInternalUtility dictionary:parameters setObject:content.placeID forKey:@"place"];
-  [FBSDKInternalUtility dictionary:parameters setObject:content.ref forKey:@"ref"];
+  [FBSDKBasicUtility dictionary:parameters setObject:content.placeID forKey:@"place"];
+  [FBSDKBasicUtility dictionary:parameters setObject:content.ref forKey:@"ref"];
 }
 
 - (BOOL)_hasPublishActions
@@ -248,7 +274,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 
 - (BOOL)_shareLinkContent:(FBSDKShareLinkContent *)linkContent
 {
-  FBSDKGraphRequestHandler completionHandler = ^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+  FBSDKGraphRequestBlock completionHandler = ^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
     if (!self->_delegate) {
       return;
     }
@@ -257,23 +283,17 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     } else {
       result = [FBSDKTypeUtility dictionaryValue:result];
       NSMutableDictionary *shareResults = [[NSMutableDictionary alloc] init];
-      [FBSDKInternalUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST
-                                forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
-      [FBSDKInternalUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:result[@"id"]]
-                                forKey:FBSDK_SHARE_RESULT_POST_ID_KEY];
+      [FBSDKBasicUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST
+                             forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
+      [FBSDKBasicUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:result[@"id"]]
+                             forKey:FBSDK_SHARE_RESULT_POST_ID_KEY];
       [self->_delegate sharer:self didCompleteWithResults:shareResults];
     }
   };
   NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
   [self _addCommonParameters:parameters content:linkContent];
-  [FBSDKInternalUtility dictionary:parameters setObject:self.message forKey:@"message"];
-  [FBSDKInternalUtility dictionary:parameters setObject:linkContent.contentURL forKey:@"link"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  [FBSDKInternalUtility dictionary:parameters setObject:linkContent.imageURL forKey:@"picture"];
-  [FBSDKInternalUtility dictionary:parameters setObject:linkContent.contentTitle forKey:@"name"];
-  [FBSDKInternalUtility dictionary:parameters setObject:linkContent.contentDescription forKey:@"description"];
-#pragma clang diagnostic pop
+  [FBSDKBasicUtility dictionary:parameters setObject:self.message forKey:@"message"];
+  [FBSDKBasicUtility dictionary:parameters setObject:linkContent.contentURL forKey:@"link"];
   [[[FBSDKGraphRequest alloc] initWithGraphPath:[self _graphPathWithSuffix:@"feed", nil]
                                      parameters:parameters
                                     tokenString:self.accessToken.tokenString
@@ -282,6 +302,8 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   return YES;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (BOOL)_shareOpenGraphContent:(FBSDKShareOpenGraphContent *)openGraphContent
 {
   // In order to create a new Open Graph action using a custom object that does not already exist (objectID or URL), you
@@ -293,25 +315,26 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   void(^stagingHandler)(NSDictionary *) = ^(NSDictionary *stagedContainer) {
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:stagedContainer];
     [self _addCommonParameters:parameters content:openGraphContent];
-    [FBSDKInternalUtility dictionary:parameters setObject:self.message forKey:@"message"];
+    [FBSDKBasicUtility dictionary:parameters setObject:self.message forKey:@"message"];
 
-    FBSDKGraphRequestHandler requestHandler = ^(FBSDKGraphRequestConnection *requestConnection,
+    FBSDKGraphRequestBlock requestHandler = ^(FBSDKGraphRequestConnection *requestConnection,
                                                 id result,
                                                 NSError *requestError) {
       if (!self->_delegate) {
         return;
       }
       if (requestError) {
-        NSError *error = [FBSDKShareError errorWithCode:FBSDKShareOpenGraphErrorCode
-                                                message:@"Error sharing Open Graph content"
-                                        underlyingError:requestError];
+        NSError *error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                                code:FBSDKShareErrorOpenGraph
+                                             message:@"Error sharing Open Graph content"
+                                     underlyingError:requestError];
         [self->_delegate sharer:self didFailWithError:error];
       } else if (result) {
         NSMutableDictionary *shareResults = [[NSMutableDictionary alloc] init];
-        [FBSDKInternalUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST
-                                  forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
-        [FBSDKInternalUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:result[@"id"]]
-                                  forKey:FBSDK_SHARE_RESULT_POST_ID_KEY];
+        [FBSDKBasicUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST
+                               forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
+        [FBSDKBasicUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:result[@"id"]]
+                               forKey:FBSDK_SHARE_RESULT_POST_ID_KEY];
         [self->_delegate sharer:self didCompleteWithResults:shareResults];
       }
     };
@@ -329,6 +352,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   }
   return YES;
 }
+#pragma GCC diagnostic pop
 
 - (BOOL)_sharePhotoContent:(FBSDKSharePhotoContent *)photoContent
 {
@@ -336,15 +360,15 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   NSMutableArray *requests = [[NSMutableArray alloc] init];
   for (FBSDKSharePhoto *photo in photos) {
     UIImage *image = photo.image;
-    if (!image && [photo.imageURL isFileURL]) {
-      image = [UIImage imageWithContentsOfFile:[photo.imageURL path]];
+    if (!image && photo.imageURL.isFileURL) {
+      image = [UIImage imageWithContentsOfFile:photo.imageURL.path];
     }
     if (image) {
       NSString *graphPath = [self _graphPathWithSuffix:FBSDKShareAPIPhotosEdge, nil];
       NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
       [self _addCommonParameters:parameters content:photoContent];
       NSString *caption = photo.caption ?: self.message;
-      [FBSDKInternalUtility dictionary:parameters setObject:caption forKey:@"caption"];
+      [FBSDKBasicUtility dictionary:parameters setObject:caption forKey:@"caption"];
       parameters[@"picture"] = image;
       [requests addObject:[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
                                                             parameters:parameters
@@ -353,32 +377,32 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
                                                             HTTPMethod:@"POST"]];
     }
   }
-  NSUInteger requestCount = [requests count];
+  NSUInteger requestCount = requests.count;
   NSMutableArray *results = [[NSMutableArray alloc] init];
   NSMutableArray *errors = [[NSMutableArray alloc] init];
   __block NSUInteger completedCount = 0;
-  FBSDKGraphRequestHandler completionHandler = ^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+  FBSDKGraphRequestBlock completionHandler = ^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
     result = [FBSDKTypeUtility dictionaryValue:result];
-    [FBSDKInternalUtility array:results addObject:result];
-    [FBSDKInternalUtility array:errors addObject:error];
+    [FBSDKBasicUtility array:results addObject:result];
+    [FBSDKBasicUtility array:errors addObject:error];
     if (++completedCount != requestCount) {
       return;
     }
     if (!self->_delegate) {
       return;
     }
-    if ([errors count]) {
+    if (errors.count) {
       [self->_delegate sharer:self didFailWithError:errors[0]];
-    } else if ([results count]) {
+    } else if (results.count) {
       NSArray *individualPhotoIDs = [results valueForKeyPath:@"id"];
       // each photo upload will be merged into the same post, so grab the post_id from the first and use that
       NSMutableDictionary *shareResults = [[NSMutableDictionary alloc] init];
-      [FBSDKInternalUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST
-                                forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
+      [FBSDKBasicUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST
+                             forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
       NSDictionary *firstResult = [FBSDKTypeUtility dictionaryValue:results[0]];
-      [FBSDKInternalUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:firstResult[@"post_id"]]
-                                forKey:FBSDK_SHARE_RESULT_POST_ID_KEY];
-      [FBSDKInternalUtility dictionary:shareResults setObject:individualPhotoIDs forKey:FBSDK_SHARE_RESULT_PHOTO_IDS_KEY];
+      [FBSDKBasicUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:firstResult[@"post_id"]]
+                             forKey:FBSDK_SHARE_RESULT_POST_ID_KEY];
+      [FBSDKBasicUtility dictionary:shareResults setObject:individualPhotoIDs forKey:FBSDK_SHARE_RESULT_PHOTO_IDS_KEY];
       [self->_delegate sharer:self didCompleteWithResults:shareResults];
     }
   };
@@ -392,21 +416,18 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 {
   NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
   [self _addCommonParameters:parameters content:videoContent];
-  [FBSDKInternalUtility dictionary:parameters setObject:self.message forKey:@"description"];
+  [FBSDKBasicUtility dictionary:parameters setObject:self.message forKey:@"description"];
   if ([self.accessToken.permissions containsObject:@"ads_management"]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    FBSDKSharePhoto *photo = videoContent.previewPhoto;
-#pragma clang diagnostic pop
+    FBSDKSharePhoto *photo = videoContent.video.previewPhoto;
     UIImage *image = photo.image;
-    if (!image && [photo.imageURL isFileURL]) {
-      image = [UIImage imageWithContentsOfFile:[photo.imageURL path]];
+    if (!image && photo.imageURL.fileURL) {
+      image = [UIImage imageWithContentsOfFile:photo.imageURL.path];
     }
-    [FBSDKInternalUtility dictionary:parameters setObject:image forKey:@"thumb"];
+    [FBSDKBasicUtility dictionary:parameters setObject:image forKey:@"thumb"];
   }
   FBSDKShareVideo *video = videoContent.video;
   NSURL *videoURL = video.videoURL;
-  if ([videoURL isFileURL]) {
+  if (videoURL.fileURL) {
     NSError *fileError;
     _fileHandle = [NSFileHandle fileHandleForReadingFromURL:videoURL error:&fileError];
     if (!_fileHandle) {
@@ -416,7 +437,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     if (![self _addToPendingShareAPI]) {
       return NO;
     }
-    FBSDKVideoUploader *videoUploader = [[FBSDKVideoUploader alloc] initWithVideoName:[videoURL lastPathComponent]
+    FBSDKVideoUploader *videoUploader = [[FBSDKVideoUploader alloc] initWithVideoName:videoURL.lastPathComponent
                                                                             videoSize:(unsigned long)[_fileHandle seekToEndOfFile]
                                                                            parameters:parameters
                                                                              delegate:self];
@@ -424,7 +445,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     [videoUploader start];
     return YES;
   } else if (videoURL) {
-#if TARGET_OS_TV
+#if TARGET_OS_TV || TARGET_OS_MACCATALYST
     return NO;
 #else
     if (![self _addToPendingShareAPI]) {
@@ -433,7 +454,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     [[FBSDKShareAPI defaultAssetsLibrary] assetForURL:videoURL resultBlock:^(ALAsset *asset) {
       self->_assetRepresentation = [asset defaultRepresentation];
       NSUInteger size = (NSUInteger)self->_assetRepresentation.size;
-      FBSDKVideoUploader *videoUploader = [[FBSDKVideoUploader alloc] initWithVideoName:[videoURL lastPathComponent]
+      FBSDKVideoUploader *videoUploader = [[FBSDKVideoUploader alloc] initWithVideoName:videoURL.lastPathComponent
                                                                               videoSize:size
                                                                              parameters:parameters
                                                                                delegate:self];
@@ -484,7 +505,10 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     }
   } else {
     if (errorRef != NULL) {
-      *errorRef = [FBSDKShareError invalidArgumentErrorWithName:key value:value message:nil];
+      *errorRef = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                        name:key
+                                                       value:value
+                                                     message:nil];
     }
     return NO;
   }
@@ -522,9 +546,10 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
         stagedArray[idx] = stagedValue;
         itemDidSucceed();
       } else {
-        NSError *error = [FBSDKShareError invalidArgumentErrorWithName:@"value"
-                                                                 value:item
-                                                               message:@"Error staging object."];
+        NSError *error = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                               name:@"value"
+                                                              value:item
+                                                            message:@"Error staging object."];
         [self->_delegate sharer:self didFailWithError:error];
         itemDidFail();
         *stop = YES;
@@ -551,15 +576,17 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   NSString *type = [FBSDKTypeUtility stringValue:openGraphObject[@"og:type"]];
   if (!type) {
     NSString *message = @"Open Graph objects must contain a og:type value.";
-    NSError *error = [FBSDKShareError requiredArgumentErrorWithName:@"og:type" message:message];
+    NSError *error = [FBSDKError requiredArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                            name:@"og:type"
+                                                         message:message];
     [_delegate sharer:self didFailWithError:error];
     return NO;
   }
   void(^containerHandler)(NSDictionary *) = ^(NSDictionary *stagedContainer) {
     NSError *JSONError;
-    NSString *objectString = [FBSDKInternalUtility JSONStringForObject:stagedContainer
-                                                                 error:&JSONError
-                                                  invalidObjectHandler:NULL];
+    NSString *objectString = [FBSDKBasicUtility JSONStringForObject:stagedContainer
+                                                              error:&JSONError
+                                               invalidObjectHandler:NULL];
     if (!objectString) {
       [self->_delegate sharer:self didFailWithError:JSONError];
       return;
@@ -571,7 +598,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
                                                                   tokenString:self.accessToken.tokenString
                                                                       version:nil
                                                                    HTTPMethod:@"POST"];
-    FBSDKGraphRequestHandler requestCompletionHandler = ^(FBSDKGraphRequestConnection *requestConnection,
+    FBSDKGraphRequestBlock requestCompletionHandler = ^(FBSDKGraphRequestConnection *requestConnection,
                                                           id result,
                                                           NSError *requestError) {
       if (!self->_delegate) {
@@ -580,9 +607,10 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
       if (requestError) {
         NSString *message = [[NSString alloc] initWithFormat:@"Error creating Open Graph object: %@",
                              requestError.description];
-        NSError *error = [FBSDKShareError errorWithCode:FBSDKShareOpenGraphErrorCode
-                                                message:message
-                                        underlyingError:requestError];
+        NSError *error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                                code:FBSDKShareErrorOpenGraph
+                                             message:message
+                                     underlyingError:requestError];
         [self->_delegate sharer:self didFailWithError:error];
       } else if (completionHandler != NULL) {
         completionHandler([FBSDKTypeUtility dictionaryValue:result]);
@@ -669,7 +697,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
                                                                                          @"url": photo.imageURL.absoluteString,
                                                                                          @"user_generated": @(photo.userGenerated),
                                                                                          }];
-    [FBSDKInternalUtility dictionary:stagedPhoto setObject:photo.caption forKey:@"caption"];
+    [FBSDKBasicUtility dictionary:stagedPhoto setObject:photo.caption forKey:@"caption"];
     if (stagingHandler) {
       stagingHandler(stagedPhoto);
     }
@@ -682,30 +710,32 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
                                                                   tokenString:self.accessToken.tokenString
                                                                       version:nil
                                                                    HTTPMethod:@"POST"];
-    FBSDKGraphRequestHandler completionHandler = ^(FBSDKGraphRequestConnection *requestConnection,
+    FBSDKGraphRequestBlock completionHandler = ^(FBSDKGraphRequestConnection *requestConnection,
                                                    id result,
                                                    NSError *requestError) {
       NSString *stagedPhotoURLString = [FBSDKTypeUtility stringValue:result[@"uri"]];
       if (requestError || !stagedPhotoURLString) {
-        NSError *error = [FBSDKShareError errorWithCode:FBSDKShareOpenGraphErrorCode
-                                                message:@"Error staging photo"
-                                        underlyingError:requestError];
+        NSError *error = [FBSDKError errorWithDomain:FBSDKShareErrorDomain
+                                                code:FBSDKShareErrorOpenGraph
+                                             message:@"Error staging photo"
+                                     underlyingError:requestError];
         [self->_delegate sharer:self didFailWithError:error];
       } else if (stagingHandler) {
         NSMutableDictionary *stagedPhoto = [[NSMutableDictionary alloc] initWithDictionary: @{
                                                                                               @"url": stagedPhotoURLString,
                                                                                               @"user_generated": @(photo.userGenerated),
                                                                                               }];
-        [FBSDKInternalUtility dictionary:stagedPhoto setObject:photo.caption forKey:@"caption"];
+        [FBSDKBasicUtility dictionary:stagedPhoto setObject:photo.caption forKey:@"caption"];
         stagingHandler(stagedPhoto);
       }
     };
     [request startWithCompletionHandler:completionHandler];
     return YES;
   } else {
-    NSError *error = [FBSDKShareError invalidArgumentErrorWithName:@"photo"
-                                                             value:photo
-                                                           message:@"Photos must have an imageURL or image."];
+    NSError *error = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                           name:@"photo"
+                                                          value:photo
+                                                        message:@"Photos must have an imageURL or image."];
     [self->_delegate sharer:self didFailWithError:error];
     return NO;
   }
@@ -723,7 +753,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     return YES;
   } else if ([value isKindOfClass:[NSURL class]]) {
     if (stagingHandler != NULL) {
-      stagingHandler([(NSURL *)value absoluteString]);
+      stagingHandler(((NSURL *)value).absoluteString);
     }
     return YES;
   } else if ([value isKindOfClass:[FBSDKSharePhoto class]]) {
@@ -736,9 +766,10 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   } else if ([value isKindOfClass:[NSArray class]]) {
     return [self _stageArray:(NSArray *)value connection:connection stagingHandler:stagingHandler];
   } else {
-    NSError *error = [FBSDKShareError invalidArgumentErrorWithName:@"value"
-                                                             value:value
-                                                           message:@"Invalid value type found in Open Graph object."];
+    NSError *error = [FBSDKError invalidArgumentErrorWithDomain:FBSDKShareErrorDomain
+                                                           name:@"value"
+                                                          value:value
+                                                        message:@"Invalid value type found in Open Graph object."];
     [_delegate sharer:self didFailWithError:error];
     return NO;
   }
@@ -746,11 +777,11 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 
 - (NSString *)_connection:(FBSDKGraphRequestConnection *)connection
                addRequest:(FBSDKGraphRequest *)request
-        completionHandler:(FBSDKGraphRequestHandler)completionHandler
+        completionHandler:(FBSDKGraphRequestBlock)completionHandler
 {
-  NSUInteger requestCount = [connection.requests count];
+  NSUInteger requestCount = connection.requests.count;
   NSString *batchEntryName = [[NSString alloc] initWithFormat:@"request_%lu", (unsigned long)requestCount];
-  [connection addRequest:request completionHandler:completionHandler batchEntryName:batchEntryName];
+  [connection addRequest:request batchEntryName:batchEntryName completionHandler:completionHandler];
   return batchEntryName;
 }
 
@@ -771,7 +802,7 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
   @synchronized(g_pendingFBSDKShareAPI) {
     [g_pendingFBSDKShareAPI removeObject:self];
     _fileHandle = nil;
-#if !TARGET_OS_TV
+#if !TARGET_OS_TV && !TARGET_OS_MACCATALYST
     _assetRepresentation = nil;
 #endif
   }
@@ -790,11 +821,11 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
     }
     return videoChunkData;
   }
-#if !TARGET_OS_TV
+#if !TARGET_OS_TV && !TARGET_OS_MACCATALYST
   else if (_assetRepresentation) {
     NSMutableData *data = [NSMutableData dataWithLength:chunkSize];
     NSError *error;
-    NSUInteger bufferedLength = [_assetRepresentation getBytes:[data mutableBytes] fromOffset:startOffset length:chunkSize error:&error];
+    NSUInteger bufferedLength = [_assetRepresentation getBytes:data.mutableBytes fromOffset:startOffset length:chunkSize error:&error];
     if (bufferedLength != chunkSize || data == nil || error) {
       return nil;
     }
@@ -808,8 +839,8 @@ static NSMutableArray *g_pendingFBSDKShareAPI;
 {
   results = [FBSDKTypeUtility dictionaryValue:results];
   NSMutableDictionary *shareResults = [[NSMutableDictionary alloc] init];
-  [FBSDKInternalUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
-  [FBSDKInternalUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:results[FBSDK_SHARE_VIDEO_ID]] forKey:FBSDK_SHARE_VIDEO_ID];
+  [FBSDKBasicUtility dictionary:shareResults setObject:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_VALUE_POST forKey:FBSDK_SHARE_RESULT_COMPLETION_GESTURE_KEY];
+  [FBSDKBasicUtility dictionary:shareResults setObject:[FBSDKTypeUtility stringValue:results[FBSDK_SHARE_VIDEO_ID]] forKey:FBSDK_SHARE_VIDEO_ID];
   [_delegate sharer:self didCompleteWithResults:shareResults];
   [self _removeFromPendingShareAPI];
 }

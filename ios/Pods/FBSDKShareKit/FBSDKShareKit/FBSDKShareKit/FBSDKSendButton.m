@@ -18,14 +18,21 @@
 
 #import "FBSDKSendButton.h"
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKMessageDialog.h"
 #import "FBSDKMessengerIcon.h"
 
 @interface FBSDKSendButton () <FBSDKButtonImpressionTracking>
 @end
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 @implementation FBSDKSendButton
+#pragma clang diagnostic pop
 {
   FBSDKMessageDialog *_dialog;
 }
@@ -83,14 +90,14 @@
 
 - (BOOL)isImplicitlyDisabled
 {
-  return ![_dialog canShow] || ![_dialog validateWithError:NULL];
+  return !_dialog.canShow || ![_dialog validateWithError:NULL];
 }
 
 #pragma mark - Helper Methods
 
 - (void)_share:(id)sender
 {
-  [self logTapEventWithEventName:FBSDKAppEventNameFBSDKSendButtonDidTap parameters:[self analyticsParameters]];
+  [self logTapEventWithEventName:FBSDKAppEventNameFBSDKSendButtonDidTap parameters:self.analyticsParameters];
   [_dialog show];
 }
 

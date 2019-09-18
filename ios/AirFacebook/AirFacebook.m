@@ -16,7 +16,7 @@
 #import "AirFacebook.h"
 #import "FREConversionUtil.h"
 #import "FBShareDelegate.h"
-#import "FBAppInviteDialogDelegate.h"
+
 #import "FBGameRequestDelegate.h"
 
 FREContext AirFBCtx = nil;
@@ -52,7 +52,7 @@ static AirFacebook* sharedInstance = nil;
         shareActivities = [NSMutableDictionary dictionary];
         self.defaultShareDialogMode = FBSDKShareDialogModeAutomatic;
         self.defaultAudience = FBSDKDefaultAudienceFriends;
-        self.loginBehavior = FBSDKLoginBehaviorNative;
+        self.loginBehavior = FBSDKLoginBehaviorBrowser;
         self.loginInProgress = false;
     }
     
@@ -117,13 +117,7 @@ static AirFacebook* sharedInstance = nil;
 
 - (void)showAppInviteDialogWithContent:(FBSDKAppInviteContent*)content andCallback:(NSString*)callback
 {
-    [AirFacebook log:@"showAppInviteDialog:withCallback: callback: %@", callback];
     
-    if (callback != nil) {
-        FBAppInviteDialogDelegate* delegate = [[FBAppInviteDialogDelegate alloc] initWithCallback:callback];
-        [shareActivities setObject:delegate forKey:callback];
-        [delegate showAppInviteDialogWithContent:content];
-    }
 }
 
 - (void)gameRequestWithContent:(FBSDKGameRequestContent*)content enableFrictionless:(BOOL)frictionless andCallback:(NSString*)callback
@@ -202,27 +196,16 @@ DEFINE_ANE_FUNCTION(logInWithPermissions) {
     UIViewController* rootViewController = keyWindow.rootViewController;
     
     NSArray* permissions = FPANE_FREObjectToNSArrayOfNSString(argv[0]);
-    NSString* type = FPANE_FREObjectToNSString(argv[1]);
     
-    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with %@ permissions: %@", type, [permissions componentsJoinedByString:@", "]]];
+    [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with permissions: %@", [permissions componentsJoinedByString:@", "]]];
     
     FBSDKLoginManager* loginManager = [[FBSDKLoginManager alloc] init];
-    loginManager.loginBehavior = [[AirFacebook sharedInstance] loginBehavior];
     loginManager.defaultAudience = [[AirFacebook sharedInstance] defaultAudience];
     [loginManager logOut];
-    if ([type isEqualToString:@"read"]) {
-        
-        [loginManager logInWithReadPermissions:permissions
-                            fromViewController:rootViewController
-                                       handler:[AirFacebook openSessionCompletionHandler]];
-    }
-    else {
-        
-        [loginManager logInWithPublishPermissions:permissions
-                               fromViewController:rootViewController
-                                          handler:[AirFacebook openSessionCompletionHandler]];
-    }
     
+    [loginManager logInWithPermissions:permissions fromViewController:rootViewController handler:[AirFacebook openSessionCompletionHandler]];
+    
+
     return nil;
 }
 
@@ -457,16 +440,7 @@ DEFINE_ANE_FUNCTION(shareLinkDialog) {
 
 DEFINE_ANE_FUNCTION(appInviteDialog) {
     
-    NSString* appLinkUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"appLinkUrl" fromObject:argv[0]]];
-    NSString* previewImageUrl = [FREConversionUtil toString:[FREConversionUtil getProperty:@"previewImageUrl" fromObject:argv[0]]];
-    
-    NSString* callback = FPANE_FREObjectToNSString(argv[1]);
-    
-    FBSDKAppInviteContent* content = [[FBSDKAppInviteContent alloc] init];
-    if (appLinkUrl != nil) content.appLinkURL = [NSURL URLWithString:appLinkUrl];
-    if (previewImageUrl != nil) content.appInvitePreviewImageURL = [NSURL URLWithString:previewImageUrl];
-    
-    [[AirFacebook sharedInstance] showAppInviteDialogWithContent:content andCallback:callback];
+  
     
     return nil;
 }

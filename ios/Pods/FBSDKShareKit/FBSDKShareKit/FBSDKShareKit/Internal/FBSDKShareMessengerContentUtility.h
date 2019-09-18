@@ -17,24 +17,37 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <FBSDKShareKit/FBSDKShareConstants.h>
 
 @class FBSDKShareMessengerURLActionButton;
 @protocol FBSDKShareMessengerActionButton;
 
-extern NSString *const kFBSDKShareMessengerTemplateTypeKey;
-extern NSString *const kFBSDKShareMessengerTemplateKey;
-extern NSString *const kFBSDKShareMessengerPayloadKey;
-extern NSString *const kFBSDKShareMessengerTypeKey;
-extern NSString *const kFBSDKShareMessengerAttachmentKey;
-extern NSString *const kFBSDKShareMessengerElementsKey;
-extern NSString *const kFBSDKShareMessengerButtonsKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerTemplateTypeKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerTemplateKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerPayloadKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerTypeKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerAttachmentKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerElementsKey;
+DEPRECATED_FOR_MESSENGER
+FOUNDATION_EXPORT NSString *const kFBSDKShareMessengerButtonsKey;
 
+DEPRECATED_FOR_MESSENGER
 void AddToContentPreviewDictionaryForButton(NSMutableDictionary<NSString *, id> *dictionary,
                                             id<FBSDKShareMessengerActionButton> button);
 
 NSDictionary<NSString *, id> *SerializableButtonFromURLButton(FBSDKShareMessengerURLActionButton *button, BOOL isDefaultAction);
+
+DEPRECATED_FOR_MESSENGER
 NSArray<NSDictionary<NSString *, id> *> *SerializableButtonsFromButton(id<FBSDKShareMessengerActionButton> button);
 
+DEPRECATED_FOR_MESSENGER
+NS_SWIFT_NAME(ShareMessengerContentUtility)
 @interface FBSDKShareMessengerContentUtility : NSObject
 
 + (void)addToParameters:(NSMutableDictionary<NSString *, id> *)parameters

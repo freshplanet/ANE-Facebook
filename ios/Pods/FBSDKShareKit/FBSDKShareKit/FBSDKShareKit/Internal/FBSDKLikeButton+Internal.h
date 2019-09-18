@@ -18,12 +18,13 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FBSDKCoreKit+Internal.h"
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+
 #import "FBSDKLikeActionController.h"
 #import "FBSDKLikeButton.h"
 
 @interface FBSDKLikeButton () <FBSDKButtonImpressionTracking>
 
-@property (nonatomic, strong, readwrite) FBSDKLikeActionController *likeActionController;
+@property (nonatomic, strong) FBSDKLikeActionController *likeActionController;
 
 @end

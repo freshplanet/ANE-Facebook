@@ -20,7 +20,11 @@
 
 #import <Photos/Photos.h>
 
+#ifdef COCOAPODS
+#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+#else
 #import "FBSDKCoreKit+Internal.h"
+#endif
 #import "FBSDKHashtag.h"
 #import "FBSDKShareUtility.h"
 
@@ -69,71 +73,59 @@
 
 #pragma mark - FBSDKSharingContent
 
-- (void)addToParameters:(NSMutableDictionary<NSString *, id> *)parameters
-          bridgeOptions:(FBSDKShareBridgeOptions)bridgeOptions
+- (NSDictionary<NSString *, id> *)addParameters:(NSDictionary<NSString *, id> *)existingParameters
+                                  bridgeOptions:(FBSDKShareBridgeOptions)bridgeOptions
 {
+  NSMutableDictionary<NSString *, id> *updatedParameters = [NSMutableDictionary dictionaryWithDictionary:existingParameters];
+
   NSMutableDictionary<NSString *, id> *videoParameters = [[NSMutableDictionary alloc] init];
   if (_video.videoAsset) {
     if (bridgeOptions & FBSDKShareBridgeOptionsVideoAsset) {
       // bridge the PHAsset.localIdentifier
-      [FBSDKInternalUtility dictionary:videoParameters
-                             setObject:_video.videoAsset.localIdentifier
-                                forKey:@"assetIdentifier"];
+      [FBSDKBasicUtility dictionary:videoParameters
+                          setObject:_video.videoAsset.localIdentifier
+                             forKey:@"assetIdentifier"];
     } else {
       // bridge the legacy "assets-library" URL from AVAsset
-      dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-      PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
-      options.version = PHVideoRequestOptionsVersionCurrent;
-      options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
-      options.networkAccessAllowed = YES;
-      [[PHImageManager defaultManager] requestAVAssetForVideo:_video.videoAsset
-                                                      options:options
-                                                resultHandler:^(AVAsset *avAsset, AVAudioMix *audioMix, NSDictionary<NSString *, id> *info) {
-                                                  NSURL *filePathURL = [[(AVURLAsset *)avAsset URL] filePathURL];
-                                                  NSString *pathExtension = [filePathURL pathExtension];
-                                                  NSString *localIdentifier = [self->_video.videoAsset localIdentifier];
-                                                  NSRange range = [localIdentifier rangeOfString:@"/"];
-                                                  NSString *uuid = [localIdentifier substringToIndex:range.location];
-                                                  NSString *assetPath = [NSString stringWithFormat:@"assets-library://asset/asset.%@?id=%@&ext=%@", pathExtension, uuid, pathExtension];
-                                                  if (assetPath) {
-                                                    [FBSDKInternalUtility dictionary:videoParameters
-                                                                           setObject:[NSURL URLWithString:assetPath]
-                                                                              forKey:@"assetURL"];
-                                                  }
-                                                  dispatch_semaphore_signal(semaphore);
-                                                }];
-      dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC));
+      [FBSDKBasicUtility dictionary:videoParameters
+                          setObject:_video.videoAsset.videoURL
+                             forKey:@"assetURL"];
     }
   } else if (_video.data) {
     if (bridgeOptions & FBSDKShareBridgeOptionsVideoData) {
       // bridge the data
-      [FBSDKInternalUtility dictionary:videoParameters
-                             setObject:_video.data
-                                forKey:@"data"];
+      [FBSDKBasicUtility dictionary:videoParameters
+                          setObject:_video.data
+                             forKey:@"data"];
     }
   } else if (_video.videoURL) {
-    if ([[_video.videoURL.scheme lowercaseString] isEqualToString:@"assets-library"]) {
+    if ([_video.videoURL.scheme.lowercaseString isEqualToString:@"assets-library"]) {
       // bridge the legacy "assets-library" URL
-      [FBSDKInternalUtility dictionary:videoParameters
-                             setObject:_video.videoURL
-                                forKey:@"assetURL"];
+      [FBSDKBasicUtility dictionary:videoParameters
+                          setObject:_video.videoURL
+                             forKey:@"assetURL"];
     } else if (_video.videoURL.isFileURL) {
       if (bridgeOptions & FBSDKShareBridgeOptionsVideoData) {
         // load the contents of the file and bridge the data
         NSData *data = [NSData dataWithContentsOfURL:_video.videoURL options:NSDataReadingMappedIfSafe error:NULL];
-        [FBSDKInternalUtility dictionary:videoParameters
-                               setObject:data
-                                  forKey:@"data"];
+        [FBSDKBasicUtility dictionary:videoParameters
+                            setObject:data
+                               forKey:@"data"];
       }
     }
   }
-  [FBSDKInternalUtility dictionary:videoParameters
-                         setObject:[FBSDKShareUtility convertPhoto:_previewPhoto]
-                            forKey:@"previewPhoto"];
 
-  [FBSDKInternalUtility dictionary:parameters
-                         setObject:videoParameters
-                            forKey:@"video"];
+  if (_video.previewPhoto) {
+    [FBSDKBasicUtility dictionary:videoParameters
+                        setObject:[FBSDKShareUtility convertPhoto:_video.previewPhoto]
+                           forKey:@"previewPhoto"];
+  }
+
+  [FBSDKBasicUtility dictionary:updatedParameters
+                      setObject:videoParameters
+                         forKey:@"video"];
+
+  return updatedParameters;
 }
 
 #pragma mark - FBSDKSharingValidation
@@ -151,15 +143,14 @@
 - (NSUInteger)hash
 {
   NSUInteger subhashes[] = {
-    [_contentURL hash],
-    [_hashtag hash],
-    [_peopleIDs hash],
-    [_placeID hash],
-    [_previewPhoto hash],
-    [_ref hash],
-    [_pageID hash],
-    [_video hash],
-    [_shareUUID hash],
+    _contentURL.hash,
+    _hashtag.hash,
+    _peopleIDs.hash,
+    _placeID.hash,
+    _ref.hash,
+    _pageID.hash,
+    _video.hash,
+    _shareUUID.hash,
   };
   return [FBSDKMath hashWithIntegerArray:subhashes count:sizeof(subhashes) / sizeof(subhashes[0])];
 }
@@ -182,10 +173,6 @@
           [FBSDKInternalUtility object:_hashtag isEqualToObject:content.hashtag] &&
           [FBSDKInternalUtility object:_peopleIDs isEqualToObject:content.peopleIDs] &&
           [FBSDKInternalUtility object:_placeID isEqualToObject:content.placeID] &&
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-          [FBSDKInternalUtility object:_previewPhoto isEqualToObject:content.previewPhoto] &&
-#pragma clang diagnostic pop
           [FBSDKInternalUtility object:_ref isEqualToObject:content.ref] &&
           [FBSDKInternalUtility object:_pageID isEqualToObject:content.pageID] &&
           [FBSDKInternalUtility object:_shareUUID isEqualToObject:content.shareUUID] &&
@@ -199,15 +186,13 @@
   return YES;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder
+- (instancetype)initWithCoder:(NSCoder *)decoder
 {
   if ((self = [self init])) {
     _contentURL = [decoder decodeObjectOfClass:[NSURL class] forKey:FBSDK_SHARE_VIDEO_CONTENT_CONTENT_URL_KEY];
     _hashtag = [decoder decodeObjectOfClass:[FBSDKHashtag class] forKey:FBSDK_SHARE_VIDEO_CONTENT_HASHTAG_KEY];
     _peopleIDs = [decoder decodeObjectOfClass:[NSArray class] forKey:FBSDK_SHARE_VIDEO_CONTENT_PEOPLE_IDS_KEY];
     _placeID = [decoder decodeObjectOfClass:[NSString class] forKey:FBSDK_SHARE_VIDEO_CONTENT_PLACE_ID_KEY];
-    _previewPhoto = [decoder decodeObjectOfClass:[FBSDKSharePhoto class]
-                                          forKey:FBSDK_SHARE_VIDEO_CONTENT_PREVIEW_PHOTO_KEY];
     _ref = [decoder decodeObjectOfClass:[NSString class] forKey:FBSDK_SHARE_VIDEO_CONTENT_REF_KEY];
     _pageID = [decoder decodeObjectOfClass:[NSString class] forKey:FBSDK_SHARE_VIDEO_CONTENT_PAGE_ID_KEY];
     _video = [decoder decodeObjectOfClass:[FBSDKShareVideo class] forKey:FBSDK_SHARE_VIDEO_CONTENT_VIDEO_KEY];
@@ -222,7 +207,6 @@
   [encoder encodeObject:_hashtag forKey:FBSDK_SHARE_VIDEO_CONTENT_HASHTAG_KEY];
   [encoder encodeObject:_peopleIDs forKey:FBSDK_SHARE_VIDEO_CONTENT_PEOPLE_IDS_KEY];
   [encoder encodeObject:_placeID forKey:FBSDK_SHARE_VIDEO_CONTENT_PLACE_ID_KEY];
-  [encoder encodeObject:_previewPhoto forKey:FBSDK_SHARE_VIDEO_CONTENT_PREVIEW_PHOTO_KEY];
   [encoder encodeObject:_ref forKey:FBSDK_SHARE_VIDEO_CONTENT_REF_KEY];
   [encoder encodeObject:_pageID forKey:FBSDK_SHARE_VIDEO_CONTENT_PAGE_ID_KEY];
   [encoder encodeObject:_video forKey:FBSDK_SHARE_VIDEO_CONTENT_VIDEO_KEY];
@@ -238,7 +222,6 @@
   copy->_hashtag = [_hashtag copy];
   copy->_peopleIDs = [_peopleIDs copy];
   copy->_placeID = [_placeID copy];
-  copy->_previewPhoto = [_previewPhoto copy];
   copy->_ref = [_ref copy];
   copy->_pageID = [_pageID copy];
   copy->_video = [_video copy];
