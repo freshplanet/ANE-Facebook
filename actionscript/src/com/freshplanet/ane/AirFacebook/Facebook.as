@@ -214,7 +214,7 @@ package com.freshplanet.ane.AirFacebook {
         }
 
         /**
-         * Open a new session with a given set of read permissions.<br><br>
+         * Open a new session with a given set of permissions.<br><br>
          *
          * @param permissions An array of requested <strong>read</strong> permissions.
          * @param callback (Optional) A callback function of the following form:
@@ -226,23 +226,7 @@ package com.freshplanet.ane.AirFacebook {
                                                  callback:Function = null):void {
 
             if (_isInitialized())
-                _logIn(permissions, "read", callback);
-        }
-
-        /**
-         * Open a new session with a given set of publish permissions.<br><br>
-         *
-         * @param permissions An array of requested <strong>publish</strong> permissions.
-         * @param callback (Optional) A callback function of the following form:
-         * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
-         *
-         * @see #logInWithReadPermissions()
-         */
-        public function logInWithPublishPermissions(permissions:Array,
-                                                    callback:Function = null):void {
-
-            if (_isInitialized())
-                _logIn(permissions, "publish", callback);
+                _logIn(permissions, callback);
         }
 
         /**
@@ -336,19 +320,7 @@ package com.freshplanet.ane.AirFacebook {
             if (_isInitialized() && shareLinkContent != null)
                 _context.call("shareLinkDialog", shareLinkContent, _getNewCallbackName(callback));
         }
-
-        /**
-         * Opens app invite dialog.
-         *
-         * @param appInviteContent Content of app invite dialog.
-         * @param callback (TODO)
-         */
-        public function appInviteDialog(appInviteContent:FBAppInviteContent,
-                                        callback:Function = null):void {
-
-            if (_isInitialized() && appInviteContent != null)
-                _context.call("appInviteDialog", appInviteContent, _getNewCallbackName(callback));
-        }
+        
 
         /**
          *
@@ -421,7 +393,7 @@ package com.freshplanet.ane.AirFacebook {
          * @param type
          * @param callback
          */
-        private function _logIn(permissions:Array, type:String, callback:Function = null):void {
+        private function _logIn(permissions:Array, callback:Function = null):void {
 
             if (!isSupported)
                 return;
@@ -430,7 +402,7 @@ package com.freshplanet.ane.AirFacebook {
                 permissions = [];
 
             _openSessionCallback = callback;
-            _context.call('logInWithPermissions', permissions, type);
+            _context.call('logInWithPermissions', permissions);
         }
 
         /**
