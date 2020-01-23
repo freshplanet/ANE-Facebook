@@ -40,20 +40,20 @@
         <!--<packagedDependency>runtime-1.0.3.jar</packagedDependency>-->
 
         <!--&lt;!&ndash; support &ndash;&gt;-->
-        <!--<packagedDependency>animated-vector-drawable-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>appcompat-v7-27.0.2.jar</packagedDependency>-->
+        <!--<packagedDependency>animated-vector-drawable-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>appcompat-v7-28.0.0.jar</packagedDependency>-->
 
-        <!--<packagedDependency>cardview-v7-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>customtabs-27.0.2.jar</packagedDependency>-->
+        <!--<packagedDependency>cardview-v7-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>customtabs-28.0.0.jar</packagedDependency>-->
 
-        <!--<packagedDependency>support-compat-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-core-ui-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-core-utils-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-fragment-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-media-compat-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-v4-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-annotations-27.0.2.jar</packagedDependency>-->
-        <!--<packagedDependency>support-vector-drawable-27.0.2.jar</packagedDependency>-->
+        <!--<packagedDependency>support-compat-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-core-ui-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-core-utils-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-fragment-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-media-compat-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-v4-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-annotations-28.0.0.jar</packagedDependency>-->
+        <!--<packagedDependency>support-vector-drawable-28.0.0.jar</packagedDependency>-->
 
     </packagedDependencies> 
     <packagedResources>
