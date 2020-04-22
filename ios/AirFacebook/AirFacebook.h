@@ -37,7 +37,6 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 @property (nonatomic, getter=isNativeLogEnabled) BOOL nativeLogEnabled;
 @property (nonatomic) FBSDKShareDialogMode defaultShareDialogMode;
 @property (nonatomic) FBSDKDefaultAudience defaultAudience;
-@property (nonatomic) FBSDKLoginBehavior loginBehavior;
 @property(nonatomic, assign) BOOL loginInProgress;
 
 @end

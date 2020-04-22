@@ -49,10 +49,9 @@ static AirFacebook* sharedInstance = nil;
     
     if (self) {
     
-        shareActivities = [NSMutableDictionary dictionary];
+        shareActivities = [[NSMutableDictionary alloc] init];
         self.defaultShareDialogMode = FBSDKShareDialogModeAutomatic;
         self.defaultAudience = FBSDKDefaultAudienceFriends;
-        self.loginBehavior = FBSDKLoginBehaviorBrowser;
         self.loginInProgress = false;
     }
     
@@ -381,11 +380,6 @@ DEFINE_ANE_FUNCTION(setDefaultAudience) {
 }
 
 DEFINE_ANE_FUNCTION(setLoginBehavior) {
-    
-    NSUInteger loginBehavior = FPANE_FREObjectToNSUInteger(argv[0]);
-    
-    [AirFacebook log:@"setLoginBehavior value:%d", loginBehavior];
-    [[AirFacebook sharedInstance] setLoginBehavior:loginBehavior];
     
     return nil;
 }
