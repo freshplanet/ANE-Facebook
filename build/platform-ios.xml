@@ -16,6 +16,8 @@
     <sdkVersion>10.0</sdkVersion>
     <linkerOptions>
         <option>-lclang_rt.ios</option>
+        <option>-ObjC</option>
+        <option>-framework Accelerate</option>
     </linkerOptions>
     <packagedDependencies>
     	<packagedDependency>FBSDKCoreKit/libFBSDKCoreKit.a</packagedDependency>
