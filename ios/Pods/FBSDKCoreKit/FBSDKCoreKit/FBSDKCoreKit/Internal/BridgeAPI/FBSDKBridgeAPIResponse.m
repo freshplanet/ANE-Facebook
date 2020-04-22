@@ -16,6 +16,10 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#import "TargetConditionals.h"
+
+#if !TARGET_OS_TV
+
 #import "FBSDKBridgeAPIResponse.h"
 
 #import "FBSDKBridgeAPIProtocol.h"
@@ -50,18 +54,23 @@ NS_DESIGNATED_INITIALIZER;
                                        error:(NSError *__autoreleasing *)errorRef
 {
   FBSDKBridgeAPIProtocolType protocolType = request.protocolType;
-  switch (protocolType) {
-    case FBSDKBridgeAPIProtocolTypeNative:{
-      if (![FBSDKInternalUtility isFacebookBundleIdentifier:sourceApplication]) {
-        return nil;
+  if (@available(iOS 13.0, *)) {
+    // SourceApplication is not available in iOS 13.
+    // https://forums.developer.apple.com/thread/119118
+  } else {
+    switch (protocolType) {
+      case FBSDKBridgeAPIProtocolTypeNative:{
+        if (![FBSDKInternalUtility isFacebookBundleIdentifier:sourceApplication]) {
+          return nil;
+        }
+        break;
       }
-      break;
-    }
-    case FBSDKBridgeAPIProtocolTypeWeb:{
-      if (![FBSDKInternalUtility isSafariBundleIdentifier:sourceApplication]) {
-        return nil;
+      case FBSDKBridgeAPIProtocolTypeWeb:{
+        if (![FBSDKInternalUtility isSafariBundleIdentifier:sourceApplication]) {
+          return nil;
+        }
+        break;
       }
-      break;
     }
   }
   NSDictionary<NSString *, NSString *> *const queryParameters = [FBSDKBasicUtility dictionaryWithQueryString:responseURL.query];
@@ -119,3 +128,5 @@ NS_DESIGNATED_INITIALIZER;
 }
 
 @end
+
+#endif

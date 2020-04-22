@@ -1,9 +1,9 @@
 platform :ios, '10.0'
 
 target 'AirFacebook' do
-	pod 'FBSDKCoreKit', '5.6.0'
-	pod 'FBSDKShareKit', '5.6.0'
-	pod 'FBSDKLoginKit', '5.6.0'
+	pod 'FBSDKCoreKit', '6.0.0'
+	pod 'FBSDKShareKit', '6.0.0'
+	pod 'FBSDKLoginKit', '6.0.0'
 #    pod 'Bolts', '1.9.0'
 end
 

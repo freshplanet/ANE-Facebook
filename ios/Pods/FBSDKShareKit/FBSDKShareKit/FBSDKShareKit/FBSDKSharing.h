@@ -18,7 +18,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import <FBSDKShareKit/FBSDKSharingContent.h>
+#import "FBSDKSharingContent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,8 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
  @see FBSDKShareDialog
 
  @see FBSDKMessageDialog
-
- @see FBSDKShareAPI
  */
 NS_SWIFT_NAME(Sharing)
 @protocol FBSDKSharing <NSObject>

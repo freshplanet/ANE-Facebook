@@ -20,9 +20,9 @@
 
 #import <sys/time.h>
 
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
 #import <mach-o/dyld.h>
 
+#import "FBSDKCoreKit+Internal.h"
 #import "FBSDKError.h"
 #import "FBSDKSettings+Internal.h"
 #import "FBSDKSettings.h"
@@ -143,7 +143,11 @@ typedef NS_ENUM(NSUInteger, FBSDKInternalUtilityVersionShift)
     hostPrefix = [hostPrefix stringByAppendingString:@"."];
   }
 
-  NSString *host = @"facebook.com";
+  NSString *host =
+  [[FBSDKAccessToken currentAccessToken].graphDomain isEqualToString:@"gaming"]
+  ? @"fb.gg"
+  : @"facebook.com";
+
   NSString *domainPart = [FBSDKSettings facebookDomainPart];
   if (domainPart.length) {
     host = [[NSString alloc] initWithFormat:@"%@.%@", domainPart, host];
@@ -496,7 +500,7 @@ static NSMapTable *_transientObjects;
   }
 
   // Find active key window from UIScene
-  if (@available(iOS 13.0, *)) {
+  if (@available(iOS 13.0, tvOS 13, *)) {
     NSSet *scenes = [[UIApplication sharedApplication] valueForKey:@"connectedScenes"];
     for (id scene in scenes) {
       if (window) {
@@ -531,7 +535,7 @@ static NSMapTable *_transientObjects;
 {
   UIWindow *keyWindow = [self findWindow];
   // SDK expects a key window at this point, if it is not, make it one
-  if (keyWindow !=  nil && !keyWindow.isKeyWindow) {
+  if (keyWindow != nil && !keyWindow.isKeyWindow) {
     [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
                        formatString:@"Unable to obtain a key window, marking %@ as keyWindow", keyWindow.description];
     [keyWindow makeKeyWindow];
