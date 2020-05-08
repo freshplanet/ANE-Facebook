@@ -20,6 +20,7 @@
         <option>-framework Accelerate</option>
     </linkerOptions>
     <packagedDependencies>
+    	<packagedDependency>FBSDKCoreKit/libFBSDKCoreKit.a</packagedDependency>
     	<packagedDependency>FBSDKLoginKit/libFBSDKLoginKit.a</packagedDependency>
     	<packagedDependency>FBSDKShareKit/libFBSDKShareKit.a</packagedDependency>
     </packagedDependencies>
