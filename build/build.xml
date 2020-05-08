@@ -40,6 +40,7 @@
         <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false" flatten="false">
             <fileset dir="../ios/build/Release-iphoneos/">
                 <exclude name="**/*Pods-${name}*"/>
+                <exclude name="**/libFBSDKCoreKit.a"/>
             </fileset>
         </copy>
 
