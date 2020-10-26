@@ -67,7 +67,7 @@
 
         <!-- paths -->
         <property name="build.intermediates" value="../android/lib/build/intermediates"/>
-        <property name="build.release" value="${build.intermediates}/bundles/release"/>
+        <property name="build.release" value="${build.intermediates}/aar_main_jar/release"/>
 
         <!-- make the build directory -->
         <mkdir dir="temp/android"/>
@@ -124,16 +124,16 @@
             </then>
             <else>
                 <copy todir="temp/android/${name}-facebook-common-res">
-                    <fileset dir="../android/lib/dependencies/facebook-common-5.5.1/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-common-7.1.0/res"/>
                 </copy>
                 <copy todir="temp/android/${name}-facebook-login-res">
-                    <fileset dir="../android/lib/dependencies/facebook-login-5.5.1/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-login-7.1.0/res"/>
                 </copy>
                 <copy todir="temp/android/${name}-facebook-messenger-res">
-                    <fileset dir="../android/lib/dependencies/facebook-messenger-5.5.1/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-messenger-7.1.0/res"/>
                 </copy>
                 <copy todir="temp/android/${name}-facebook-share-res">
-                    <fileset dir="../android/lib/dependencies/facebook-share-5.5.1/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-share-7.1.0/res"/>
                 </copy>
             </else>
         </if>
