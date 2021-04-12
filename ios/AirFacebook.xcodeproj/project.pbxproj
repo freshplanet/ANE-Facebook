@@ -13,7 +13,7 @@
 		165F93761E525E9700A12835 /* FBShareDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F936F1E525E9700A12835 /* FBShareDelegate.m */; };
 		165F93771E525E9700A12835 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93711E525E9700A12835 /* FPANEUtils.m */; };
 		165F93781E525E9700A12835 /* FREConversionUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93731E525E9700A12835 /* FREConversionUtil.m */; };
-		A582FC77A12998956DF9F360 /* libPods-AirFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F71D558BD30719FEC6B2A08 /* libPods-AirFacebook.a */; };
+		DB9ECB264F2BFBE64866067F /* Pods_AirFacebook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AA9EE2C66794452757F74CB /* Pods_AirFacebook.framework */; };
 		FA43C145245081F400F3A9A1 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43C144245081F300F3A9A1 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,7 +43,7 @@
 		165F93721E525E9700A12835 /* FREConversionUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FREConversionUtil.h; sourceTree = "<group>"; };
 		165F93731E525E9700A12835 /* FREConversionUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FREConversionUtil.m; sourceTree = "<group>"; };
 		165F93791E525EA300A12835 /* FlashRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlashRuntimeExtensions.h; sourceTree = SOURCE_ROOT; };
-		3F71D558BD30719FEC6B2A08 /* libPods-AirFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AirFacebook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AA9EE2C66794452757F74CB /* Pods_AirFacebook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirFacebook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94DA02F7285FFC3B174A79B4 /* Pods-AirFacebook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirFacebook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook.debug.xcconfig"; sourceTree = "<group>"; };
 		D8F731664E3EEDC74CB8CE46 /* Pods-AirFacebook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirFacebook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook.release.xcconfig"; sourceTree = "<group>"; };
 		FA43C13E2450771700F3A9A1 /* libFBSDKCoreKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKCoreKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,7 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA43C145245081F400F3A9A1 /* Accelerate.framework in Frameworks */,
-				A582FC77A12998956DF9F360 /* libPods-AirFacebook.a in Frameworks */,
+				DB9ECB264F2BFBE64866067F /* Pods_AirFacebook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,7 +108,7 @@
 				FA43C13E2450771700F3A9A1 /* libFBSDKCoreKit.a */,
 				FA43C1402450771800F3A9A1 /* libFBSDKLoginKit.a */,
 				FA43C1422450771800F3A9A1 /* libFBSDKShareKit.a */,
-				3F71D558BD30719FEC6B2A08 /* libPods-AirFacebook.a */,
+				7AA9EE2C66794452757F74CB /* Pods_AirFacebook.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -133,7 +133,6 @@
 				165F935A1E525E5400A12835 /* Sources */,
 				165F935B1E525E5400A12835 /* Frameworks */,
 				165F935C1E525E5400A12835 /* CopyFiles */,
-				05A594664B1BAEA7996E4691 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -178,24 +177,6 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		05A594664B1BAEA7996E4691 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook-resources.sh",
-				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		4CE432EF6620004B389726AC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

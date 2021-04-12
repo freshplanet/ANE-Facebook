@@ -86,12 +86,6 @@ NS_SWIFT_NAME(Settings)
 NS_SWIFT_NAME(jpegCompressionQuality);
 
 /**
- Controls sdk auto initailization.
- If not explicitly set, the default is true
- */
-@property (class, nonatomic, assign, getter=isAutoInitEnabled) BOOL autoInitEnabled;
-
-/**
  Controls the auto logging of basic app events, such as activateApp and deactivateApp.
  If not explicitly set, the default is true
  */
@@ -104,10 +98,16 @@ NS_SWIFT_NAME(jpegCompressionQuality);
 @property (class, nonatomic, assign, getter=isCodelessDebugLogEnabled) BOOL codelessDebugLogEnabled;
 
 /**
- Controls the fb_codeless_debug logging event
+ Controls the access to IDFA
  If not explicitly set, the default is true
  */
 @property (class, nonatomic, assign, getter=isAdvertiserIDCollectionEnabled) BOOL advertiserIDCollectionEnabled;
+
+/**
+ Controls the SKAdNetwork report
+ If not explicitly set, the default is true
+ */
+@property (class, nonatomic, assign, getter=isSKAdNetworkReportEnabled) BOOL SKAdNetworkReportEnabled;
 
 /**
  Whether data such as that generated through FBSDKAppEvents and sent to Facebook
@@ -186,6 +186,38 @@ NS_REFINED_FOR_SWIFT;
  Defaults to `FBSDK_TARGET_PLATFORM_VERSION`.
 */
 @property (class, nonatomic, copy, null_resettable) NSString *graphAPIVersion;
+
+/**
+ The value of the flag advertiser_tracking_enabled that controls the advertiser tracking status of the data sent to Facebook
+ If not explicitly set in iOS14 or above, the default is false in iOS14 or above.
+ */
++ (BOOL)isAdvertiserTrackingEnabled;
+
+/**
+Set the advertiser_tracking_enabled flag. It only works in iOS14 and above.
+ 
+@param advertiserTrackingEnabled the value of the flag
+@return Whether the the value is set successfully. It will always return NO in iOS 13 and below.
+ */
++ (BOOL)setAdvertiserTrackingEnabled:(BOOL)advertiserTrackingEnabled;
+
+/**
+Set the data processing options.
+
+@param options list of options
+*/
++ (void)setDataProcessingOptions:(nullable NSArray<NSString *> *)options;
+
+/**
+Set the data processing options.
+
+@param options list of the options
+@param country code of the country
+@param state code of the state
+*/
++ (void)setDataProcessingOptions:(nullable NSArray<NSString *> *)options
+                         country:(int)country
+                           state:(int)state;
 
 /**
  Enable a particular Facebook SDK logging behavior.

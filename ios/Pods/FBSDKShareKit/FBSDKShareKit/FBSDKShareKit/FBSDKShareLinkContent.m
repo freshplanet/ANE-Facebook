@@ -19,9 +19,9 @@
 #import "FBSDKShareLinkContent.h"
 
 #ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+ #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
 #else
-#import "FBSDKCoreKit+Internal.h"
+ #import "FBSDKCoreKit+Internal.h"
 #endif
 #import "FBSDKHashtag.h"
 #import "FBSDKShareUtility.h"
@@ -76,14 +76,14 @@
 {
   NSMutableDictionary<NSString *, id> *updatedParameters = [NSMutableDictionary dictionaryWithDictionary:existingParameters];
 
-  [FBSDKBasicUtility dictionary:updatedParameters setObject:_contentURL forKey:@"link"];
-  [FBSDKBasicUtility dictionary:updatedParameters setObject:_quote forKey:@"quote"];
+  [FBSDKTypeUtility dictionary:updatedParameters setObject:_contentURL forKey:@"link"];
+  [FBSDKTypeUtility dictionary:updatedParameters setObject:_quote forKey:@"quote"];
 
   /**
    Pass link parameter as "messenger_link" due to versioning requirements for message dialog flow.
    We will only use the new share flow we developed if messenger_link is present, not link.
    */
-  [FBSDKBasicUtility dictionary:updatedParameters setObject:_contentURL forKey:@"messenger_link"];
+  [FBSDKTypeUtility dictionary:updatedParameters setObject:_contentURL forKey:@"messenger_link"];
 
   return updatedParameters;
 }
@@ -125,15 +125,15 @@
 
 - (BOOL)isEqualToShareLinkContent:(FBSDKShareLinkContent *)content
 {
-  return (content &&
-          [FBSDKInternalUtility object:_contentURL isEqualToObject:content.contentURL] &&
-          [FBSDKInternalUtility object:_hashtag isEqualToObject:content.hashtag] &&
-          [FBSDKInternalUtility object:_peopleIDs isEqualToObject:content.peopleIDs] &&
-          [FBSDKInternalUtility object:_placeID isEqualToObject:content.placeID] &&
-          [FBSDKInternalUtility object:_ref isEqualToObject:content.ref] &&
-          [FBSDKInternalUtility object:_pageID isEqualToObject:content.pageID] &&
-          [FBSDKInternalUtility object:_shareUUID isEqualToObject:content.shareUUID]) &&
-          [FBSDKInternalUtility object:_quote isEqualToObject:content.quote];
+  return (content
+    && [FBSDKInternalUtility object:_contentURL isEqualToObject:content.contentURL]
+    && [FBSDKInternalUtility object:_hashtag isEqualToObject:content.hashtag]
+    && [FBSDKInternalUtility object:_peopleIDs isEqualToObject:content.peopleIDs]
+    && [FBSDKInternalUtility object:_placeID isEqualToObject:content.placeID]
+    && [FBSDKInternalUtility object:_ref isEqualToObject:content.ref]
+    && [FBSDKInternalUtility object:_pageID isEqualToObject:content.pageID]
+    && [FBSDKInternalUtility object:_shareUUID isEqualToObject:content.shareUUID])
+  && [FBSDKInternalUtility object:_quote isEqualToObject:content.quote];
 }
 
 #pragma mark - NSCoding

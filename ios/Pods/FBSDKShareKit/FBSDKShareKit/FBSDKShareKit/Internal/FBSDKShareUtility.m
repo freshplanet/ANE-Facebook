@@ -21,9 +21,9 @@
 #import "FBSDKHashtag.h"
 
 #ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+ #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
 #else
-#import "FBSDKCoreKit+Internal.h"
+ #import "FBSDKCoreKit+Internal.h"
 #endif
 #import "FBSDKShareConstants.h"
 #import "FBSDKShareLinkContent.h"
@@ -78,15 +78,15 @@
     FBSDKShareLinkContent *const linkContent = (FBSDKShareLinkContent *)content;
     if (linkContent.contentURL != nil) {
       parameters = [NSMutableDictionary new];
-      [FBSDKBasicUtility dictionary:parameters setObject:linkContent.contentURL.absoluteString forKey:@"href"];
-      [FBSDKBasicUtility dictionary:parameters setObject:linkContent.quote forKey:@"quote"];
+      [FBSDKTypeUtility dictionary:parameters setObject:linkContent.contentURL.absoluteString forKey:@"href"];
+      [FBSDKTypeUtility dictionary:parameters setObject:linkContent.quote forKey:@"quote"];
     }
   }
 
   if (parameters) {
-    [FBSDKBasicUtility dictionary:parameters setObject:[self hashtagStringFromHashtag:content.hashtag] forKey:@"hashtag"];
-    [FBSDKBasicUtility dictionary:parameters setObject:content.placeID forKey:@"place"];
-    [FBSDKBasicUtility dictionary:parameters setObject:[FBSDKShareUtility buildWebShareTags:content.peopleIDs] forKey:@"tags"];
+    [FBSDKTypeUtility dictionary:parameters setObject:[self hashtagStringFromHashtag:content.hashtag] forKey:@"hashtag"];
+    [FBSDKTypeUtility dictionary:parameters setObject:content.placeID forKey:@"place"];
+    [FBSDKTypeUtility dictionary:parameters setObject:[FBSDKShareUtility buildWebShareTags:content.peopleIDs] forKey:@"tags"];
   }
   if (methodNameRef != NULL) {
     *methodNameRef = methodName;
@@ -118,20 +118,20 @@
 + (void)buildAsyncWebPhotoContent:(FBSDKSharePhotoContent *)content
                 completionHandler:(FBSDKWebPhotoContentBlock)completion
 {
-  void(^stageImageCompletion)(NSArray<NSString *> *) = ^(NSArray<NSString *> *stagedURIs) {
+  void (^stageImageCompletion)(NSArray<NSString *> *) = ^(NSArray<NSString *> *stagedURIs) {
     NSString *const methodName = @"share";
     NSMutableDictionary<NSString *, id> *const parameters =
-      [[FBSDKShareUtility parametersForShareContent:content
-                                      bridgeOptions:FBSDKShareBridgeOptionsWebHashtag
-                              shouldFailOnDataError:NO] mutableCopy];
+    [[FBSDKShareUtility parametersForShareContent:content
+                                    bridgeOptions:FBSDKShareBridgeOptionsWebHashtag
+                            shouldFailOnDataError:NO] mutableCopy];
     [parameters removeObjectForKey:@"photos"];
     NSString *const stagedURIJSONString = [FBSDKBasicUtility JSONStringForObject:stagedURIs
                                                                            error:nil
                                                             invalidObjectHandler:NULL];
-    [FBSDKBasicUtility dictionary:parameters
-                        setObject:stagedURIJSONString
-                           forKey:@"media"];
-    [FBSDKBasicUtility dictionary:parameters setObject:[FBSDKShareUtility buildWebShareTags:content.peopleIDs] forKey:@"tags"];
+    [FBSDKTypeUtility dictionary:parameters
+                       setObject:stagedURIJSONString
+                          forKey:@"media"];
+    [FBSDKTypeUtility dictionary:parameters setObject:[FBSDKShareUtility buildWebShareTags:content.peopleIDs] forKey:@"tags"];
     if (completion != NULL) {
       completion(YES, methodName, [parameters copy]);
     }
@@ -147,12 +147,12 @@
   if ([content isKindOfClass:[FBSDKShareLinkContent class]]) {
     FBSDKShareLinkContent *linkContent = (FBSDKShareLinkContent *)content;
     parameters = [[NSMutableDictionary alloc] init];
-    [FBSDKBasicUtility dictionary:parameters setObject:linkContent.contentURL forKey:@"link"];
-    [FBSDKBasicUtility dictionary:parameters setObject:linkContent.quote forKey:@"quote"];
-    [FBSDKBasicUtility dictionary:parameters setObject:[self hashtagStringFromHashtag:linkContent.hashtag] forKey:@"hashtag"];
-    [FBSDKBasicUtility dictionary:parameters setObject:content.placeID forKey:@"place"];
-    [FBSDKBasicUtility dictionary:parameters setObject:[FBSDKShareUtility buildWebShareTags:content.peopleIDs] forKey:@"tags"];
-    [FBSDKBasicUtility dictionary:parameters setObject:linkContent.ref forKey:@"ref"];
+    [FBSDKTypeUtility dictionary:parameters setObject:linkContent.contentURL forKey:@"link"];
+    [FBSDKTypeUtility dictionary:parameters setObject:linkContent.quote forKey:@"quote"];
+    [FBSDKTypeUtility dictionary:parameters setObject:[self hashtagStringFromHashtag:linkContent.hashtag] forKey:@"hashtag"];
+    [FBSDKTypeUtility dictionary:parameters setObject:content.placeID forKey:@"place"];
+    [FBSDKTypeUtility dictionary:parameters setObject:[FBSDKShareUtility buildWebShareTags:content.peopleIDs] forKey:@"tags"];
+    [FBSDKTypeUtility dictionary:parameters setObject:linkContent.ref forKey:@"ref"];
   }
   return [parameters copy];
 }
@@ -175,10 +175,12 @@
                        canvasSize:(CGSize)canvasSize
                        circleSize:(CGSize)circleSize
 {
-  CGRect circleFrame = CGRectMake((canvasSize.width - circleSize.width) / 2.0,
-                                  (canvasSize.height - circleSize.height) / 2.0,
-                                  circleSize.width,
-                                  circleSize.height);
+  CGRect circleFrame = CGRectMake(
+    (canvasSize.width - circleSize.width) / 2.0,
+    (canvasSize.height - circleSize.height) / 2.0,
+    circleSize.width,
+    circleSize.height
+  );
   UIGraphicsBeginImageContextWithOptions(canvasSize, NO, 0);
   CGContextRef context = UIGraphicsGetCurrentContext();
   [color setFill];
@@ -201,17 +203,17 @@
     // This was changed to support a single hashtag; however, the mobile app still expects to receive an array.
     // When hashtag support was added to web dialogs, a single hashtag was passed as a string.
     if (bridgeOptions & FBSDKShareBridgeOptionsWebHashtag) {
-      [FBSDKBasicUtility dictionary:parameters setObject:hashtagString forKey:@"hashtag"];
+      [FBSDKTypeUtility dictionary:parameters setObject:hashtagString forKey:@"hashtag"];
     } else {
-      [FBSDKBasicUtility dictionary:parameters setObject:@[hashtagString] forKey:@"hashtags"];
+      [FBSDKTypeUtility dictionary:parameters setObject:@[hashtagString] forKey:@"hashtags"];
     }
   }
-  [FBSDKBasicUtility dictionary:parameters setObject:shareContent.shareUUID forKey:@"shareUUID"];
-  [FBSDKBasicUtility dictionary:parameters setObject:shareContent.peopleIDs forKey:@"tags"];
-  [FBSDKBasicUtility dictionary:parameters setObject:shareContent.placeID forKey:@"place"];
-  [FBSDKBasicUtility dictionary:parameters setObject:shareContent.ref forKey:@"ref"];
+  [FBSDKTypeUtility dictionary:parameters setObject:shareContent.shareUUID forKey:@"shareUUID"];
+  [FBSDKTypeUtility dictionary:parameters setObject:shareContent.peopleIDs forKey:@"tags"];
+  [FBSDKTypeUtility dictionary:parameters setObject:shareContent.placeID forKey:@"place"];
+  [FBSDKTypeUtility dictionary:parameters setObject:shareContent.ref forKey:@"ref"];
 
-  parameters[@"dataFailuresFatal"] = @(shouldFailOnDataError);
+  [FBSDKTypeUtility dictionary:parameters setObject:@(shouldFailOnDataError) forKey:@"dataFailuresFatal"];
 
   // media/destination-specific content parameters
   if ([shareContent respondsToSelector:@selector(addParameters:bridgeOptions:)]) {
@@ -280,8 +282,7 @@
 {
   if (![self validateRequiredValue:shareContent name:@"shareContent" error:errorRef]) {
     return NO;
-  }
-  else if ([shareContent respondsToSelector:@selector(validateWithOptions:error:)]) {
+  } else if ([shareContent respondsToSelector:@selector(validateWithOptions:error:)]) {
     return [shareContent validateWithOptions:bridgeOptions error:errorRef];
   } else {
     if (errorRef != NULL) {
@@ -311,7 +312,7 @@
   } else if ([object isKindOfClass:[NSArray class]]) {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (id item in (NSArray *)object) {
-      [FBSDKBasicUtility array:array addObject:[self _convertObject:item]];
+      [FBSDKTypeUtility array:array addObject:[self _convertObject:item]];
     }
     object = array;
   }
@@ -324,15 +325,15 @@
     return nil;
   }
   NSMutableDictionary<NSString *, id> *dictionary = [[NSMutableDictionary alloc] init];
-  dictionary[@"user_generated"] = @(photo.userGenerated);
-  [FBSDKBasicUtility dictionary:dictionary setObject:photo.caption forKey:@"caption"];
+  [FBSDKTypeUtility dictionary:dictionary setObject:@(photo.userGenerated) forKey:@"user_generated"];
+  [FBSDKTypeUtility dictionary:dictionary setObject:photo.caption forKey:@"caption"];
 
-  [FBSDKBasicUtility dictionary:dictionary setObject:photo.image ?: photo.imageURL.absoluteString forKey:@"url"];
+  [FBSDKTypeUtility dictionary:dictionary setObject:photo.image ?: photo.imageURL.absoluteString forKey:@"url"];
   return dictionary;
 }
 
 + (void)_stageImagesForPhotoContent:(FBSDKSharePhotoContent *)content
-              withCompletionHandler:(void(^)(NSArray<NSString *> *))completion
+              withCompletionHandler:(void (^)(NSArray<NSString *> *))completion
 {
   __block NSMutableArray<NSString *> *stagedURIs = [NSMutableArray array];
   dispatch_group_t group = dispatch_group_create();
@@ -340,26 +341,27 @@
     if (photo.image != nil) {
       dispatch_group_enter(group);
       NSDictionary *stagingParameters = @{
-                                          @"file" : photo.image,
-                                          };
+        @"file" : photo.image,
+      };
       FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/staging_resources"
                                                                      parameters:stagingParameters
                                                                      HTTPMethod:@"POST"];
       [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
         NSString *photoStagedURI = result[@"uri"];
         if (photoStagedURI != nil) {
-          [stagedURIs addObject:photoStagedURI];
+          [FBSDKTypeUtility array:stagedURIs addObject:photoStagedURI];
           dispatch_group_leave(group);
         }
       }];
     }
   }
 
-  dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-    if (completion != NULL) {
-      completion([stagedURIs copy]);
-    }
-  });
+  dispatch_group_notify(group,
+    dispatch_get_main_queue(), ^{
+      if (completion != NULL) {
+        completion([stagedURIs copy]);
+      }
+    });
 }
 
 + (void)_testObject:(id)object containsMedia:(BOOL *)containsMediaRef containsPhotos:(BOOL *)containsPhotosRef containsVideos:(BOOL *)containsVideosRef
@@ -483,10 +485,10 @@
 
 + (BOOL)validateRequiredValue:(id)value name:(NSString *)name error:(NSError *__autoreleasing *)errorRef
 {
-  if (!value ||
-      ([value isKindOfClass:[NSString class]] && !((NSString *)value).length) ||
-      ([value isKindOfClass:[NSArray class]] && !((NSArray *)value).count) ||
-      ([value isKindOfClass:[NSDictionary class]] && !((NSDictionary *)value).count)) {
+  if (!value
+      || ([value isKindOfClass:[NSString class]] && !((NSString *)value).length)
+      || ([value isKindOfClass:[NSArray class]] && !((NSArray *)value).count)
+      || ([value isKindOfClass:[NSDictionary class]] && !((NSDictionary *)value).count)) {
     if (errorRef != NULL) {
       *errorRef = [FBSDKError requiredArgumentErrorWithDomain:FBSDKShareErrorDomain
                                                          name:name

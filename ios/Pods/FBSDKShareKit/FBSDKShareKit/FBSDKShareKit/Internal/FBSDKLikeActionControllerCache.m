@@ -20,17 +20,18 @@
 
 #if !TARGET_OS_TV
 
-#import "FBSDKLikeActionControllerCache.h"
+ #import "FBSDKLikeActionControllerCache.h"
 
-#import <UIKit/UIKit.h>
+ #import <UIKit/UIKit.h>
 
-#import "FBSDKLikeActionController.h"
+ #import "FBSDKCoreKitInternalImport.h"
+ #import "FBSDKLikeActionController.h"
 
 // after 1 day, expire the cached states
-#define FBSDK_LIKE_ACTION_CONTROLLER_CACHE_TIMEOUT 60 * 24
+ #define FBSDK_LIKE_ACTION_CONTROLLER_CACHE_TIMEOUT 60 * 24
 
-#define FBSDK_LIKE_ACTION_CONTROLLER_CACHE_ACCESS_TOKEN_KEY @"accessTokenString"
-#define FBSDK_LIKE_ACTION_CONTROLLER_CACHE_ITEMS_KEY @"items"
+ #define FBSDK_LIKE_ACTION_CONTROLLER_CACHE_ACCESS_TOKEN_KEY @"accessTokenString"
+ #define FBSDK_LIKE_ACTION_CONTROLLER_CACHE_ITEMS_KEY @"items"
 
 @implementation FBSDKLikeActionControllerCache
 {
@@ -38,7 +39,7 @@
   NSMutableDictionary *_items;
 }
 
-#pragma mark - Object Lifecycle
+ #pragma mark - Object Lifecycle
 
 - (instancetype)initWithAccessTokenString:(NSString *)accessTokenString
 {
@@ -49,7 +50,7 @@
   return self;
 }
 
-#pragma mark - NSCoding
+ #pragma mark - NSCoding
 
 + (BOOL)supportsSecureCoding
 {
@@ -76,7 +77,7 @@
   [encoder encodeObject:_items forKey:FBSDK_LIKE_ACTION_CONTROLLER_CACHE_ITEMS_KEY];
 }
 
-#pragma mark - Public Methods
+ #pragma mark - Public Methods
 
 - (id)objectForKeyedSubscript:(id)key
 {
@@ -91,23 +92,23 @@
 
 - (void)setObject:(id)object forKeyedSubscript:(id)key
 {
-  _items[key] = object;
+  [FBSDKTypeUtility dictionary:_items setObject:object forKey:key];
 }
 
-#pragma mark - Helper Methods
+ #pragma mark - Helper Methods
 
 - (void)_prune
 {
   NSMutableArray *keysToRemove = [[NSMutableArray alloc] init];
-  [_items enumerateKeysAndObjectsUsingBlock:^(NSString *objectID,
-                                              FBSDKLikeActionController *likeActionController,
-                                              BOOL *stop) {
-    NSDate *lastUpdateTime = likeActionController.lastUpdateTime;
-    if (!lastUpdateTime ||
-        ([[NSDate date] timeIntervalSinceDate:lastUpdateTime] > FBSDK_LIKE_ACTION_CONTROLLER_CACHE_TIMEOUT)) {
-      [keysToRemove addObject:objectID];
-    }
-  }];
+  [FBSDKTypeUtility dictionary:_items enumerateKeysAndObjectsUsingBlock:^(NSString *objectID,
+                                                                          FBSDKLikeActionController *likeActionController,
+                                                                          BOOL *stop) {
+                                                                            NSDate *lastUpdateTime = likeActionController.lastUpdateTime;
+                                                                            if (!lastUpdateTime
+                                                                                || ([[NSDate date] timeIntervalSinceDate:lastUpdateTime] > FBSDK_LIKE_ACTION_CONTROLLER_CACHE_TIMEOUT)) {
+                                                                              [keysToRemove addObject:objectID];
+                                                                            }
+                                                                          }];
   [_items removeObjectsForKeys:keysToRemove];
 }
 

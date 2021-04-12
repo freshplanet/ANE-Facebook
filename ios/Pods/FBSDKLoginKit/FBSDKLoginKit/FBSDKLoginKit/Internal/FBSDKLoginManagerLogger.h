@@ -25,16 +25,20 @@
 FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_Native;
 FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_Browser;
 FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_SFVC;
+FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_Applink;
 
 
 NS_SWIFT_NAME(LoginManagerLogger)
 @interface FBSDKLoginManagerLogger : NSObject
-+ (FBSDKLoginManagerLogger *)loggerFromParameters:(NSDictionary *)parameters;
++ (FBSDKLoginManagerLogger *)loggerFromParameters:(NSDictionary *)parameters
+                                         tracking:(FBSDKLoginTracking)tracking;
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
-- (instancetype)initWithLoggingToken:(NSString *)loggingToken NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithLoggingToken:(NSString *)loggingToken
+                            tracking:(FBSDKLoginTracking)tracking
+NS_DESIGNATED_INITIALIZER;
 
 // this must not retain loginManager - only used to conveniently grab various properties to log.
 - (void)startSessionForLoginManager:(FBSDKLoginManager *)loginManager;
@@ -43,10 +47,16 @@ NS_SWIFT_NAME(LoginManagerLogger)
 - (void)startAuthMethod:(NSString *)authMethod;
 - (void)endLoginWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error;
 
-- (NSDictionary *)parametersWithTimeStampAndClientState:(NSDictionary *)loginParams forAuthMethod:(NSString *)authMethod;
+- (void)postLoginHeartbeat;
+
++ (NSDictionary *)parametersWithTimeStampAndClientState:(NSDictionary *)loginParams
+                                          forAuthMethod:(NSString *)authMethod
+                                                 logger:(FBSDKLoginManagerLogger *)logger;
 - (void)willAttemptAppSwitchingBehavior;
 
 - (void)logNativeAppDialogResult:(BOOL)result dialogDuration:(NSTimeInterval)dialogDuration;
+
+- (void)addSingleLoggingExtra:(id)extra forKey:(NSString *)key;
 @end
 
 #endif

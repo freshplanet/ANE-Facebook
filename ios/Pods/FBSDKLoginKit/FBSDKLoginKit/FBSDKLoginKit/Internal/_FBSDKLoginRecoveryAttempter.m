@@ -20,31 +20,27 @@
 
 #if !TARGET_OS_TV
 
-#import "_FBSDKLoginRecoveryAttempter.h"
+ #import "_FBSDKLoginRecoveryAttempter.h"
 
-#import "FBSDKLoginKit+Internal.h"
+ #import "FBSDKLoginKit+Internal.h"
+ #import "FBSDKLoginManagerLoginResult+Internal.h"
 
 @implementation _FBSDKLoginRecoveryAttempter
 
 - (void)attemptRecoveryFromError:(NSError *)error
                      optionIndex:(NSUInteger)recoveryOptionIndex
-                        delegate:(id)delegate
-              didRecoverSelector:(SEL)didRecoverSelector
-                     contextInfo:(void *)contextInfo {
-
-  void(^handler)(BOOL) = ^(BOOL didRecover) {
-    [super completeRecovery:didRecover delegate:delegate didRecoverSelector:didRecoverSelector contextInfo:contextInfo];
-  };
+               completionHandler:(void (^)(BOOL didRecover))completionHandler
+{
   NSSet *currentPermissions = [FBSDKAccessToken currentAccessToken].permissions;
   if (recoveryOptionIndex == 0 && currentPermissions.count > 0) {
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-    [login logInWithPermissions:currentPermissions handler:^(FBSDKLoginManagerLoginResult *result, NSError *loginError) {
+    [login logInWithPermissions:currentPermissions.allObjects fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *loginError) {
       // we can only consider a recovery successful if there are no declines
       // (note this could still set an updated currentAccessToken).
-      handler(!loginError && !result.isCancelled && result.declinedPermissions.count == 0);
+      completionHandler(!loginError && !result.isCancelled && result.declinedPermissions.count == 0);
     }];
   } else {
-    handler(NO);
+    completionHandler(NO);
   }
 }
 

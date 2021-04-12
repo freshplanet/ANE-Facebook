@@ -19,9 +19,9 @@
 #import "FBSDKShareVideo.h"
 
 #ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
+ #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
 #else
-#import "FBSDKCoreKit+Internal.h"
+ #import "FBSDKCoreKit+Internal.h"
 #endif
 #import "FBSDKShareConstants.h"
 #import "FBSDKSharePhoto.h"
@@ -133,11 +133,11 @@ NSString *const kFBSDKShareVideoURLKey = @"videoURL";
 
 - (BOOL)isEqualToShareVideo:(FBSDKShareVideo *)video
 {
-  return (video &&
-          [FBSDKInternalUtility object:_data isEqualToObject:video.data] &&
-          [FBSDKInternalUtility object:_videoAsset isEqualToObject:video.videoAsset] &&
-          [FBSDKInternalUtility object:_videoURL isEqualToObject:video.videoURL] &&
-          [FBSDKInternalUtility object:_previewPhoto isEqualToObject:video.previewPhoto]);
+  return (video
+    && [FBSDKInternalUtility object:_data isEqualToObject:video.data]
+    && [FBSDKInternalUtility object:_videoAsset isEqualToObject:video.videoAsset]
+    && [FBSDKInternalUtility object:_videoURL isEqualToObject:video.videoURL]
+    && [FBSDKInternalUtility object:_previewPhoto isEqualToObject:video.previewPhoto]);
 }
 
 #pragma mark - FBSDKSharingValidation
@@ -296,7 +296,9 @@ NSString *const kFBSDKShareVideoURLKey = @"videoURL";
                                               videoURL = [NSURL URLWithString:assetPath];
                                               dispatch_semaphore_signal(semaphore);
                                             }];
+#ifndef __clang_analyzer__
   dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 500 * NSEC_PER_MSEC));
+#endif // not __clang_analyzer__
   return videoURL;
 }
 
