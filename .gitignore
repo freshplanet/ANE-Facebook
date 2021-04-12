@@ -35,7 +35,7 @@ Thumbs.db
 *.idea
 *.iml
 /out
-/bin
+
 
 local.properties
 ios/build
