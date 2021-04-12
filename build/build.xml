@@ -39,7 +39,8 @@
         <!-- copy the libs and resources to the base temp ios directory -->
         <copy todir="temp/ios" overwrite="true" includeEmptyDirs="false" flatten="false">
             <fileset dir="../ios/build/Release-iphoneos/">
-                <exclude name="**/*Pods-${name}*"/>
+                <exclude name="**/Pods_${name}.framework/**"/>
+                <exclude name="**/XCFrameworkIntermediates/**"/>
             </fileset>
         </copy>
 
@@ -48,6 +49,7 @@
             <path>
                 <dirset dir="../ios/">
                     <include name="**/*.framework"/>
+                    <exclude name="**/Pods_${name}.framework//**"/>
                 </dirset>
             </path>
             <sequential>
@@ -57,6 +59,27 @@
                 </copy>
             </sequential>
         </for>
+
+        <!-- shenanigans with dynamic frameworks  -->
+        <delete dir="../bin/Frameworks"/>
+
+        <copy todir="../bin/Frameworks/FBSDKCoreKit.framework" >
+            <fileset dir="temp/ios/FBSDKCoreKit/FBSDKCoreKit.framework" includes="**/**"/>
+        </copy>
+
+        <delete dir="temp/ios/FBSDKCoreKit"/>
+
+        <copy todir="../bin/Frameworks/FBSDKLoginKit.framework" >
+            <fileset dir="temp/ios/FBSDKLoginKit/FBSDKLoginKit.framework" includes="**/**"/>
+        </copy>
+
+        <delete dir="temp/ios/FBSDKLoginKit"/>
+
+        <copy todir="../bin/Frameworks/FBSDKShareKit.framework" >
+            <fileset dir="temp/ios/FBSDKShareKit/FBSDKShareKit.framework" includes="**/**"/>
+        </copy>
+
+        <delete dir="temp/ios/FBSDKShareKit"/>
 
         <!-- remove the build directory -->
         <delete dir="../ios/build/"/>
