@@ -19,12 +19,12 @@
 #import <Foundation/Foundation.h>
 
 #if SWIFT_PACKAGE
+#import "FBSDKAdvertisingTrackingStatus.h"
 #import "FBSDKCopying.h"
 #else
+#import <FBSDKCoreKit/FBSDKAdvertisingTrackingStatus.h>
 #import <FBSDKCoreKit/FBSDKCopying.h>
 #endif
-
-#import "FBSDKAppEventsUtility.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

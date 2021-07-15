@@ -19,10 +19,17 @@
 #import <Foundation/Foundation.h>
 
 #import "FBSDKGraphRequestHTTPMethod.h"
+#import "FBSDKGraphRequestFlags.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class FBSDKGraphRequestConnection;
+@protocol FBSDKGraphRequestConnecting;
+
+typedef void (^FBSDKGraphRequestCompletion)(id<FBSDKGraphRequestConnecting> _Nullable connection,
+                                            id _Nullable result,
+                                            NSError *_Nullable error);
+
 typedef void (^FBSDKGraphRequestBlock)(FBSDKGraphRequestConnection *_Nullable connection,
                                        id _Nullable result,
                                        NSError *_Nullable error);
@@ -57,12 +64,30 @@ NS_SWIFT_NAME(GraphRequestProtocol)
 @property (nonatomic, copy, readonly) NSString *version;
 
 /**
-  Starts a connection to the Graph API.
- @param handler The handler block to call when the request completes.
+   The graph request flags to use
  */
-- (FBSDKGraphRequestConnection *)startWithCompletionHandler:(nullable FBSDKGraphRequestBlock)handler;
+@property (nonatomic, assign, readonly) FBSDKGraphRequestFlags flags;
 
-- (NSString *)description;
+/**
+ Convenience property to determine if graph error recover is disabled
+ */
+@property (nonatomic, getter = isGraphErrorRecoveryDisabled) BOOL graphErrorRecoveryDisabled;
+
+/**
+  Convenience property to determine if the request has attachments
+ */
+@property (nonatomic, readonly) BOOL hasAttachments;
+
+/**
+  Starts a connection to the Graph API.
+ @param completion The handler block to call when the request completes.
+ */
+- (id<FBSDKGraphRequestConnecting>)startWithCompletion:(nullable FBSDKGraphRequestCompletion)completion;
+
+/**
+  A formatted description of the graph request
+ */
+- (NSString *)formattedDescription;
 
 @end
 

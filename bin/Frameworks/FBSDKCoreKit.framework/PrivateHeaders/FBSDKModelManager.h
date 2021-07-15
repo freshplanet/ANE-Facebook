@@ -22,19 +22,33 @@
 
  #import <Foundation/Foundation.h>
 
+ #import "FBSDKEventProcessing.h"
+
+ @protocol FBSDKDataPersisting;
+ @protocol FBSDKFeatureChecking;
+ @protocol FBSDKFileManaging;
+ @protocol FBSDKGraphRequestProviding;
+ @protocol FBSDKSettings;
+ @protocol FBSDKFileDataExtracting;
+
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^FBSDKDownloadCompletionBlock)(void);
+NS_SWIFT_NAME(ModelManager)
+@interface FBSDKModelManager : NSObject<FBSDKEventProcessing>
 
-@interface FBSDKModelManager : NSObject
+@property (class, nonnull, readonly) FBSDKModelManager *shared;
 
-+ (void)enable;
-+ (nullable NSDictionary *)getRulesForKey:(NSString *)useCase;
-+ (nullable NSData *)getWeightsForKey:(NSString *)useCase;
-+ (nullable NSArray *)getThresholdsForKey:(NSString *)useCase;
-
-+ (BOOL)processIntegrity:(nullable NSString *)param;
-+ (NSString *)processSuggestedEvents:(NSString *)textFeature denseData:(nullable float *)denseData;
+- (void)enable;
+- (nullable NSData *)getWeightsForKey:(NSString *)useCase;
+- (nullable NSArray *)getThresholdsForKey:(NSString *)useCase;
+- (BOOL)processIntegrity:(nullable NSString *)param;
+- (NSString *)processSuggestedEvents:(NSString *)textFeature denseData:(nullable float *)denseData;
+- (void)configureWithFeatureChecker:(id<FBSDKFeatureChecking>)featureChecker
+                graphRequestFactory:(id<FBSDKGraphRequestProviding>)graphRequestFactory
+                        fileManager:(id<FBSDKFileManaging>)fileManager
+                              store:(id<FBSDKDataPersisting>)store
+                           settings:(id<FBSDKSettings>)settings
+                      dataExtractor:(Class<FBSDKFileDataExtracting>)dataExtractor;
 
 @end
 

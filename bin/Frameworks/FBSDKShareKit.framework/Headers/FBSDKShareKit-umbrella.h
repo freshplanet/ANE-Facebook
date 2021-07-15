@@ -17,6 +17,7 @@
 #import "FBSDKCoreKitImport.h"
 #import "FBSDKGameRequestContent.h"
 #import "FBSDKGameRequestDialog.h"
+#import "FBSDKGameRequestURLProvider.h"
 #import "FBSDKHashtag.h"
 #import "FBSDKLikeObjectType.h"
 #import "FBSDKLiking.h"

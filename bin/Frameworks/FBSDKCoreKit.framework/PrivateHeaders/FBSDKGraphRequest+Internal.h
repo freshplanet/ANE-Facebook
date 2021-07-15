@@ -20,23 +20,20 @@
 
 #if SWIFT_PACKAGE
  #import "FBSDKGraphRequest.h"
+ #import "FBSDKGraphRequestFlags.h"
 #else
  #import <FBSDKCoreKit/FBSDKGraphRequest.h>
+ #import <FBSDKCoreKit/FBSDKGraphRequestFlags.h>
 #endif
 
 #import "FBSDKGraphRequestConnectionProviding.h"
-#import "FBSDKGraphRequestFlags.h"
-#import "FBSDKGraphRequestProtocol+Internal.h"
+
+@protocol FBSDKCurrentAccessTokenStringProviding;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FBSDKGraphRequest (Internal) <FBSDKGraphRequestInternal>
+@interface FBSDKGraphRequest (Internal)
 
-// Generally, requests automatically issued by the SDK
-// should not invalidate the token and should disableErrorRecovery
-// so that we don't cause a sudden change in token state or trigger recovery
-// out of context of any user action.
-@property (nonatomic, assign) FBSDKGraphRequestFlags flags;
 @property (nonatomic, readonly, getter = isGraphErrorRecoveryDisabled) BOOL graphErrorRecoveryDisabled;
 @property (nonatomic, readonly) BOOL hasAttachments;
 
@@ -70,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
                     params:(nullable NSDictionary *)params
                 httpMethod:(nullable NSString *)httpMethod
                   forBatch:(BOOL)forBatch;
+
++ (void)setCurrentAccessTokenStringProvider:(Class<FBSDKCurrentAccessTokenStringProviding>)provider;
 
 @end
 
