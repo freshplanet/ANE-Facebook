@@ -29,6 +29,9 @@
  #endif
  #import "FBSDKShareDialog.h"
 
+FBSDKAppEventName FBSDKAppEventNameFBSDKShareButtonImpression = @"fb_share_button_impression";
+FBSDKAppEventName FBSDKAppEventNameFBSDKShareButtonDidTap = @"fb_share_button_did_tap";
+
 @implementation FBSDKShareButton
 {
   FBSDKShareDialog *_dialog;
@@ -83,7 +86,7 @@
          highlightedColor:nil];
 
   [self addTarget:self action:@selector(_share:) forControlEvents:UIControlEventTouchUpInside];
-  _dialog = [[FBSDKShareDialog alloc] init];
+  _dialog = [FBSDKShareDialog new];
 }
 
 - (BOOL)isImplicitlyDisabled

@@ -20,22 +20,42 @@
 #import "FBSDKButton+Subclass.h"
 
 #import "FBSDKAccessToken.h"
-#import "FBSDKAppEvents.h"
+#import "FBSDKAccessToken+AccessTokenProtocols.h"
 #import "FBSDKAppEvents+Internal.h"
-#import "FBSDKApplicationDelegate+Internal.h"
+#import "FBSDKApplicationLifecycleNotifications.h"
+#import "FBSDKGraphRequestFactory.h"
 #import "FBSDKLogo.h"
 #import "FBSDKUIUtility.h"
 #import "FBSDKViewImpressionTracker.h"
+#import "NSNotificationCenter+Extensions.h"
 
 #define HEIGHT_TO_FONT_SIZE 0.47
 #define HEIGHT_TO_MARGIN 0.27
 #define HEIGHT_TO_PADDING 0.23
 #define HEIGHT_TO_TEXT_PADDING_CORRECTION 0.08
 
+@interface FBSDKButton ()
+
+@property (class, nonatomic) id applicationActivationNotifier;
+
+@end
+
 @implementation FBSDKButton
 {
   BOOL _skipIntrinsicContentSizing;
   BOOL _isExplicitlyDisabled;
+}
+
+static id _applicationActivationNotifier;
+
++ (id)applicationActivationNotifier
+{
+  return _applicationActivationNotifier;
+}
+
++ (void)setApplicationActivationNotifier:(id)notifier
+{
+  _applicationActivationNotifier = notifier;
 }
 
 #pragma mark - Object Lifecycle
@@ -94,21 +114,6 @@
   CGSize size = [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
   _skipIntrinsicContentSizing = NO;
   return size;
-}
-
-- (void)layoutSubviews
-{
-  // automatic impression tracking if the button conforms to FBSDKButtonImpressionTracking
-  if ([self conformsToProtocol:@protocol(FBSDKButtonImpressionTracking)]) {
-    NSString *eventName = ((id<FBSDKButtonImpressionTracking>)self).impressionTrackingEventName;
-    NSString *identifier = ((id<FBSDKButtonImpressionTracking>)self).impressionTrackingIdentifier;
-    NSDictionary<NSString *, id> *parameters = ((id<FBSDKButtonImpressionTracking>)self).analyticsParameters;
-    if (eventName && identifier) {
-      FBSDKViewImpressionTracker *impressionTracker = [FBSDKViewImpressionTracker impressionTrackerWithEventName:eventName];
-      [impressionTracker logImpressionWithIdentifier:identifier parameters:parameters];
-    }
-  }
-  [super layoutSubviews];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size
@@ -248,7 +253,7 @@
 
 - (FBSDKIcon *)defaultIcon
 {
-  return [[FBSDKLogo alloc] init];
+  return [FBSDKLogo new];
 }
 
 - (UIColor *)defaultSelectedColor
@@ -430,7 +435,7 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(_applicationDidBecomeActiveNotification:)
                                                name:FBSDKApplicationDidBecomeActiveNotification
-                                             object:[FBSDKApplicationDelegate sharedInstance]];
+                                             object:self.class.applicationActivationNotifier];
 }
 
 - (CGFloat)_fontSizeForHeight:(CGFloat)height

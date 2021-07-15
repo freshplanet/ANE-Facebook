@@ -19,6 +19,7 @@
 #import <Foundation/Foundation.h>
 
 #import "FBSDKCopying.h"
+#import "FBSDKTokenCaching.h"
 
 #ifdef BUCK
 #import <FBSDKCoreKit/FBSDKGraphRequestConnection.h>
@@ -113,6 +114,14 @@ NS_SWIFT_NAME(AccessToken)
 
  */
 @property (class, nonatomic, assign, readonly, getter=isCurrentAccessTokenActive) BOOL currentAccessTokenIsActive;
+
+/**
+ Internal Type exposed to facilitate transition to Swift.
+ API Subject to change or removal without warning. Do not use.
+
+ @warning UNSAFE - DO NOT USE
+ */
+@property (nullable, class, nonatomic, copy) id<FBSDKTokenCaching> tokenCache;
 
 /**
   Returns the app ID.
@@ -268,7 +277,20 @@ NS_SWIFT_NAME(hasGranted(permission:));
 
  If a token is already expired, it cannot be refreshed.
  */
-+ (void)refreshCurrentAccessToken:(nullable FBSDKGraphRequestBlock)completionHandler;
++ (void)refreshCurrentAccessToken:(nullable FBSDKGraphRequestBlock)completionHandler
+DEPRECATED_MSG_ATTRIBUTE("This method is deprecated and will be removed in the next major release. Please use `refreshCurrentAccessTokenWithCompletion:` instead");
+
+/**
+  Refresh the current access token's permission state and extend the token's expiration date,
+  if possible.
+ @param completion an optional callback handler that can surface any errors related to permission refreshing.
+
+ On a successful refresh, the currentAccessToken will be updated so you typically only need to
+  observe the `FBSDKAccessTokenDidChangeNotification` notification.
+
+ If a token is already expired, it cannot be refreshed.
+ */
++ (void)refreshCurrentAccessTokenWithCompletion:(nullable FBSDKGraphRequestCompletion)completion;
 
 @end
 

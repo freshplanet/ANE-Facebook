@@ -23,6 +23,8 @@
 #else
  #import "FBSDKCoreKit+Internal.h"
 #endif
+
+#import "FBSDKCoreKitBasicsImportForShareKit.h"
 #import "FBSDKHashtag.h"
 #import "FBSDKShareUtility.h"
 
@@ -174,7 +176,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-  FBSDKShareLinkContent *copy = [[FBSDKShareLinkContent alloc] init];
+  FBSDKShareLinkContent *copy = [FBSDKShareLinkContent new];
   copy->_contentURL = [_contentURL copy];
   copy->_hashtag = [_hashtag copy];
   copy->_peopleIDs = [_peopleIDs copy];

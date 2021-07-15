@@ -1,35 +1,40 @@
 PODS:
-  - FBSDKCoreKit (9.1.0):
-    - FBSDKCoreKit/Basics (= 9.1.0)
-    - FBSDKCoreKit/Core (= 9.1.0)
-  - FBSDKCoreKit/Basics (9.1.0)
-  - FBSDKCoreKit/Core (9.1.0):
-    - FBSDKCoreKit/Basics
-  - FBSDKLoginKit (9.1.0):
-    - FBSDKLoginKit/Login (= 9.1.0)
-  - FBSDKLoginKit/Login (9.1.0):
-    - FBSDKCoreKit (~> 9.1.0)
-  - FBSDKShareKit (9.1.0):
-    - FBSDKShareKit/Share (= 9.1.0)
-  - FBSDKShareKit/Share (9.1.0):
-    - FBSDKCoreKit (~> 9.1.0)
+  - FBSDKCoreKit (11.0.1):
+    - FBSDKCoreKit/Core (= 11.0.1)
+  - FBSDKCoreKit/Core (11.0.1):
+    - FBSDKCoreKit_Basics (~> 11.0.1)
+  - FBSDKCoreKit_Basics (11.0.1):
+    - FBSDKCoreKit_Basics/Basics (= 11.0.1)
+  - FBSDKCoreKit_Basics/Basics (11.0.1)
+  - FBSDKLoginKit (11.0.1):
+    - FBSDKLoginKit/Login (= 11.0.1)
+  - FBSDKLoginKit/Login (11.0.1):
+    - FBSDKCoreKit (~> 11.0.1)
+    - FBSDKCoreKit_Basics (~> 11.0.1)
+  - FBSDKShareKit (11.0.1):
+    - FBSDKShareKit/Share (= 11.0.1)
+  - FBSDKShareKit/Share (11.0.1):
+    - FBSDKCoreKit (~> 11.0.1)
+    - FBSDKCoreKit_Basics (~> 11.0.1)
 
 DEPENDENCIES:
-  - FBSDKCoreKit (= 9.1.0)
-  - FBSDKLoginKit (= 9.1.0)
-  - FBSDKShareKit (= 9.1.0)
+  - FBSDKCoreKit (= 11.0.1)
+  - FBSDKLoginKit (= 11.0.1)
+  - FBSDKShareKit (= 11.0.1)
 
 SPEC REPOS:
   trunk:
     - FBSDKCoreKit
+    - FBSDKCoreKit_Basics
     - FBSDKLoginKit
     - FBSDKShareKit
 
 SPEC CHECKSUMS:
-  FBSDKCoreKit: a00fe2efd780c195a5e09201bf51c56106245b40
-  FBSDKLoginKit: d98498c598ec09de657385a9349a1f21119b7f86
-  FBSDKShareKit: d5aafc35870083f53c15ec0eb9eda4dfe8037d11
+  FBSDKCoreKit: 38c9e29a3f1436362acacff6486d3a28628c288f
+  FBSDKCoreKit_Basics: 06780a4a12e16596bde8406add02c6aa1bf38616
+  FBSDKLoginKit: 8243e04c590c38b85c69fcf09d1234514d2475c3
+  FBSDKShareKit: e55ddcd33d5169597ae86866faffae0acae971c1
 
-PODFILE CHECKSUM: f3e55d5fe4ad2f1b1eedfb06ff514f77826119f8
+PODFILE CHECKSUM: d3776e27064b76d988093d5e3e0dea40a99a4c6f
 
 COCOAPODS: 1.10.1

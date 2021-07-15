@@ -25,5 +25,6 @@
         <packagedDependency>FBSDKCoreKit.framework</packagedDependency>
         <packagedDependency>FBSDKLoginKit.framework</packagedDependency>
         <packagedDependency>FBSDKShareKit.framework</packagedDependency>
+<!--        <packagedDependency>FBSDKCoreKit_Basics.framework</packagedDependency>-->
     </packagedDependencies>
 </platform>

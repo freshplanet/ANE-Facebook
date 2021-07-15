@@ -23,7 +23,7 @@
 @implementation FBSDKGraphRequestMetadata
 
 - (instancetype)initWithRequest:(id<FBSDKGraphRequest>)request
-              completionHandler:(FBSDKGraphRequestBlock)handler
+              completionHandler:(FBSDKGraphRequestCompletion)handler
                 batchParameters:(NSDictionary *)batchParameters
 {
   if ((self = [super init])) {
@@ -34,7 +34,7 @@
   return self;
 }
 
-- (void)invokeCompletionHandlerForConnection:(FBSDKGraphRequestConnection *)connection
+- (void)invokeCompletionHandlerForConnection:(id<FBSDKGraphRequestConnecting>)connection
                                  withResults:(id)results
                                        error:(NSError *)error
 {
@@ -50,7 +50,7 @@
           self,
           self.batchParameters,
           self.completionHandler,
-          self.request.description];
+          self.request.formattedDescription];
 }
 
 @end

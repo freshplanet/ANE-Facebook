@@ -31,17 +31,14 @@
   #import <FBSDKCoreKit/FBSDKCoreKit.h>
  #endif
 
- #ifdef FBSDKCOCOAPODS
-  #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
- #else
-  #import "FBSDKCoreKit+Internal.h"
- #endif
-
+ #import "FBSDKAuthenticationTokenFactory.h"
+ #import "FBSDKCoreKitBasicsImportForLoginKit.h"
  #import "FBSDKLoginCompletion.h"
  #import "FBSDKLoginConstants.h"
  #import "FBSDKLoginError.h"
  #import "FBSDKLoginManagerLogger.h"
  #import "FBSDKLoginUtility.h"
+ #import "FBSDKMonotonicTime.h"
  #import "FBSDKPermission.h"
  #import "_FBSDKLoginRecoveryAttempter.h"
 
@@ -51,10 +48,6 @@ static NSString *const FBSDKExpectedNonceKey = @"expected_login_nonce";
 static NSString *const FBSDKOauthPath = @"/dialog/oauth";
 static NSString *const SFVCCanceledLogin = @"com.apple.SafariServices.Authentication";
 static NSString *const ASCanceledLogin = @"com.apple.AuthenticationServices.WebAuthenticationSession";
-
-// constants
-FBSDKLoginAuthType FBSDKLoginAuthTypeRerequest = @"rerequest";
-FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 
 @implementation FBSDKLoginManager
 {
@@ -78,7 +71,6 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 {
   self = [super init];
   if (self) {
-    self.authType = FBSDKLoginAuthTypeRerequest;
     NSString *keyChainServiceIdentifier = [NSString stringWithFormat:@"com.facebook.sdk.loginmanager.%@", [NSBundle mainBundle].bundleIdentifier];
     _keychainStore = [[FBSDKKeychainStore alloc] initWithService:keyChainServiceIdentifier accessGroup:nil];
   }
@@ -92,6 +84,16 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
   if (![self validateLoginStartState]) {
     return;
   }
+
+  [self logInFromViewControllerImpl:viewController
+                      configuration:configuration
+                         completion:completion];
+}
+
+- (void)logInFromViewControllerImpl:(UIViewController *)viewController
+                      configuration:(FBSDKLoginConfiguration *)configuration
+                         completion:(FBSDKLoginManagerLoginResultBlock)completion
+{
   if (!configuration) {
     NSString *failureMessage = @"Cannot login without a valid login configuration. Please make sure the `LoginConfiguration` provided is non-nil";
     [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
@@ -126,8 +128,22 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
   if (![self validateLoginStartState]) {
     return;
   }
-  self.fromViewController = fromViewController;
-  [self reauthorizeDataAccess:handler];
+
+  if (!FBSDKAccessToken.currentAccessToken) {
+    NSString *errorMessage = @"Must have an access token for which to reauthorize data access";
+    NSError *error = [FBSDKError errorWithDomain:FBSDKLoginErrorDomain
+                                            code:FBSDKLoginErrorMissingAccessToken
+                                         message:errorMessage];
+    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors logEntry:errorMessage];
+    handler(nil, error);
+    return;
+  }
+
+  FBSDKLoginConfiguration *config = [[FBSDKLoginConfiguration alloc] initWithPermissions:@[] // Don't need to pass permissions for data reauthorization.
+                                                                                tracking:FBSDKLoginTrackingEnabled
+                                                                         messengerPageId:nil
+                                                                                authType:FBSDKLoginAuthTypeReauthorize];
+  [self logInFromViewControllerImpl:fromViewController configuration:config completion:handler];
 }
 
 - (void)logOut
@@ -150,7 +166,10 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 
   NSDictionary *params = [self logInParametersFromURL:url];
   if (params) {
-    id<FBSDKLoginCompleting> completer = [[FBSDKLoginURLCompleter alloc] initWithURLParameters:params appID:[FBSDKSettings appID]];
+    id<FBSDKLoginCompleting> completer = [[FBSDKLoginURLCompleter alloc] initWithURLParameters:params
+                                                                                         appID:FBSDKSettings.appID
+                                                                            connectionProvider:FBSDKGraphRequestConnectionFactory.new
+                                                                    authenticationTokenCreator:FBSDKAuthenticationTokenFactory.new];
     [completer completeLoginWithHandler:^(FBSDKLoginCompletionParameters *parameters) {
       [self completeAuthentication:parameters expectChallenge:NO];
     }];
@@ -185,7 +204,7 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
       NSString *errorStr = @"** WARNING: You are trying to start a login while a previous login has not finished yet."
       "This is unsupported behavior. You should wait until the previous login handler gets called to start a new login.";
       [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                         formatString:@"%@", errorStr];
+                             logEntry:errorStr];
       return NO;
     }
     case FBSDKLoginManagerStatePerformingLogin: {
@@ -287,7 +306,7 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
       _handler = nil;
     } else {
       [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                         formatString:@"** WARNING: You are requesting permissions inside the completion block of an existing login."
+                             logEntry:@"** WARNING: You are requesting permissions inside the completion block of an existing login."
        "This is unsupported behavior. You should request additional permissions only when they are needed, such as requesting for publish_actions"
        "when the user performs a sharing action."];
     }
@@ -306,6 +325,8 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 
 - (NSDictionary *)logInParametersWithConfiguration:(FBSDKLoginConfiguration *)configuration
                                serverConfiguration:(FBSDKServerConfiguration *)serverConfiguration
+                                            logger:(FBSDKLoginManagerLogger *)logger
+                                        authMethod:(NSString *)authMethod
 {
   // Making sure configuration is not nil in case this method gets called
   // internally without specifying a cofiguration.
@@ -320,13 +341,12 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 
   NSMutableDictionary *loginParams = [NSMutableDictionary dictionary];
   [FBSDKTypeUtility dictionary:loginParams setObject:[FBSDKSettings appID] forKey:@"client_id"];
-  [FBSDKTypeUtility dictionary:loginParams setObject:@"fbconnect://success" forKey:@"redirect_uri"];
   [FBSDKTypeUtility dictionary:loginParams setObject:@"touch" forKey:@"display"];
   [FBSDKTypeUtility dictionary:loginParams setObject:@"ios" forKey:@"sdk"];
   [FBSDKTypeUtility dictionary:loginParams setObject:@"true" forKey:@"return_scopes"];
   loginParams[@"sdk_version"] = FBSDK_VERSION_STRING;
   [FBSDKTypeUtility dictionary:loginParams setObject:@([FBSDKInternalUtility isFacebookAppInstalled]) forKey:@"fbapp_pres"];
-  [FBSDKTypeUtility dictionary:loginParams setObject:self.authType forKey:@"auth_type"];
+  [FBSDKTypeUtility dictionary:loginParams setObject:configuration.authType forKey:@"auth_type"];
   [FBSDKTypeUtility dictionary:loginParams setObject:serverConfiguration.loggingToken forKey:@"logging_token"];
   long long cbtInMilliseconds = round(1000 * [NSDate date].timeIntervalSince1970);
   [FBSDKTypeUtility dictionary:loginParams setObject:@(cbtInMilliseconds) forKey:@"cbt"];
@@ -337,9 +357,22 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
   NSSet *permissions = [configuration.requestedPermissions setByAddingObject:[[FBSDKPermission alloc]initWithString:@"openid"]];
   [FBSDKTypeUtility dictionary:loginParams setObject:[permissions.allObjects componentsJoinedByString:@","] forKey:@"scope"];
 
+  if (configuration.messengerPageId) {
+    [FBSDKTypeUtility dictionary:loginParams setObject:configuration.messengerPageId forKey:@"messenger_page_id"];
+  }
+
+  NSError *error;
+  NSURL *redirectURL = [FBSDKInternalUtility appURLWithHost:@"authorize" path:@"" queryParameters:@{} error:&error];
+  if (!error) {
+    [FBSDKTypeUtility dictionary:loginParams
+                       setObject:redirectURL.absoluteString
+                          forKey:@"redirect_uri"];
+  }
+
   NSString *expectedChallenge = [FBSDKLoginManager stringForChallenge];
   NSDictionary *state = @{@"challenge" : [FBSDKUtility URLEncode:expectedChallenge]};
-  [FBSDKTypeUtility dictionary:loginParams setObject:[FBSDKBasicUtility JSONStringForObject:state error:NULL invalidObjectHandler:nil] forKey:@"state"];
+  NSString *clientState = [FBSDKLoginManagerLogger clientStateForAuthMethod:authMethod andExistingState:state logger:logger];
+  [FBSDKTypeUtility dictionary:loginParams setObject:clientState forKey:@"state"];
   [self storeExpectedChallenge:expectedChallenge];
 
   NSString *responseType;
@@ -360,6 +393,12 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 
   [FBSDKTypeUtility dictionary:loginParams setObject:configuration.nonce forKey:@"nonce"];
   [self storeExpectedNonce:configuration.nonce keychainStore:_keychainStore];
+
+  NSTimeInterval timeValue = (NSTimeInterval)FBSDKMonotonicTimeGetCurrentSeconds();
+  NSString *e2eTimestampString = [FBSDKBasicUtility JSONStringForObject:@{ @"init" : @(timeValue) }
+                                                                  error:NULL
+                                                   invalidObjectHandler:NULL];
+  [FBSDKTypeUtility dictionary:loginParams setObject:e2eTimestampString forKey:@"e2e"];
 
   return loginParams;
 }
@@ -397,33 +436,8 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
   return nil;
 }
 
-- (void)reauthorizeDataAccess:(FBSDKLoginManagerLoginResultBlock)handler
-{
-  if (!FBSDKAccessToken.currentAccessToken) {
-    NSString *errorMessage = @"Must have an access token for which to reauthorize data access";
-    NSError *error = [FBSDKError errorWithDomain:FBSDKLoginErrorDomain
-                                            code:FBSDKLoginErrorMissingAccessToken
-                                         message:errorMessage];
-    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors logEntry:errorMessage];
-    handler(nil, error);
-    return;
-  }
-  FBSDKServerConfiguration *serverConfiguration = [FBSDKServerConfigurationManager cachedServerConfiguration];
-  _handler = [handler copy];
-  // Don't need to pass permissions for data reauthorization.
-  _requestedPermissions = [NSSet set];
-  _configuration = [[FBSDKLoginConfiguration alloc] initWithTracking:FBSDKLoginTrackingEnabled];
-  _logger = [[FBSDKLoginManagerLogger alloc] initWithLoggingToken:serverConfiguration.loggingToken
-                                                         tracking:_configuration.tracking];
-  self.authType = FBSDKLoginAuthTypeReauthorize;
-  [_logger startSessionForLoginManager:self];
-  [self logIn];
-}
-
 - (void)logIn
 {
-  FBSDKServerConfiguration *serverConfiguration = [FBSDKServerConfigurationManager cachedServerConfiguration];
-  NSDictionary *loginParams = [self logInParametersWithConfiguration:_configuration serverConfiguration:serverConfiguration];
   self->_usedSFAuthSession = NO;
 
   void (^completion)(BOOL, NSError *) = ^void (BOOL didPerformLogIn, NSError *error) {
@@ -440,10 +454,10 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
     }
   };
 
-  [self performBrowserLogInWithParameters:loginParams handler:^(BOOL openedURL,
-                                                                NSError *openedURLError) {
-                                                                  completion(openedURL, openedURLError);
-                                                                }];
+  [self performBrowserLogInWithHandler:^(BOOL openedURL,
+                                         NSError *openedURLError) {
+                                           completion(openedURL, openedURLError);
+                                         }];
 }
 
 - (void)storeExpectedChallenge:(NSString *)challengeExpected
@@ -462,19 +476,27 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
 
 + (NSString *)stringForChallenge
 {
-  NSString *challenge = [FBSDKCrypto randomString:FBClientStateChallengeLength];
+  NSString *challenge = fb_randomString(FBClientStateChallengeLength);
 
   return [challenge stringByReplacingOccurrencesOfString:@"+" withString:@"="];
 }
 
 - (void)validateReauthentication:(FBSDKAccessToken *)currentToken withResult:(FBSDKLoginManagerLoginResult *)loginResult
 {
-  FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me"
-                                                                   parameters:@{@"fields" : @""}
-                                                                  tokenString:loginResult.token.tokenString
-                                                                   HTTPMethod:nil
-                                                                        flags:FBSDKGraphRequestFlagDoNotInvalidateTokenOnError | FBSDKGraphRequestFlagDisableErrorRecovery];
-  [requestMe startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+  id<FBSDKGraphRequestConnectionProviding> provider = [FBSDKGraphRequestConnectionFactory new];
+  [self validateReauthenticationWithGraphRequestConnectionProvider:provider withToken:currentToken withResult:loginResult];
+}
+
+- (void)validateReauthenticationWithGraphRequestConnectionProvider:(nonnull id<FBSDKGraphRequestConnectionProviding>)connectionProvider
+                                                         withToken:(FBSDKAccessToken *)currentToken
+                                                        withResult:(FBSDKLoginManagerLoginResult *)loginResult
+{
+  FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me"
+                                                                 parameters:@{@"fields" : @""}
+                                                                tokenString:loginResult.token.tokenString
+                                                                 HTTPMethod:nil
+                                                                      flags:FBSDKGraphRequestFlagDoNotInvalidateTokenOnError | FBSDKGraphRequestFlagDisableErrorRecovery];
+  FBSDKGraphRequestCompletion handler = ^(id<FBSDKGraphRequestConnecting> connection, id result, NSError *error) {
     NSString *actualID = result[@"id"];
     if ([currentToken.userID isEqualToString:actualID]) {
       [FBSDKAccessToken setCurrentAccessToken:loginResult.token];
@@ -487,33 +509,32 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
                                              userInfo:userInfo];
       [self invokeHandler:nil error:resultError];
     }
-  }];
+  };
+
+  id<FBSDKGraphRequestConnecting> connection = [connectionProvider createGraphRequestConnection];
+  [connection addRequest:request completion:handler];
+  [connection start];
 }
 
 // change bool to auth method string.
-- (void)performBrowserLogInWithParameters:(NSDictionary *)loginParams
-                                  handler:(FBSDKBrowserLoginSuccessBlock)handler
+- (void)performBrowserLogInWithHandler:(FBSDKBrowserLoginSuccessBlock)handler
 {
   [_logger willAttemptAppSwitchingBehavior];
 
-  FBSDKServerConfiguration *configuration = [FBSDKServerConfigurationManager cachedServerConfiguration];
-  BOOL useSafariViewController = [configuration useSafariViewControllerForDialogName:FBSDKDialogConfigurationNameLogin];
+  FBSDKServerConfiguration *serverConfiguration = [FBSDKServerConfigurationManager cachedServerConfiguration];
+  BOOL useSafariViewController = [serverConfiguration useSafariViewControllerForDialogName:FBSDKDialogConfigurationNameLogin];
   NSString *authMethod = (useSafariViewController ? FBSDKLoginManagerLoggerAuthMethod_SFVC : FBSDKLoginManagerLoggerAuthMethod_Browser);
 
-  loginParams = [FBSDKLoginManagerLogger parametersWithTimeStampAndClientState:loginParams
-                                                                 forAuthMethod:authMethod
-                                                                        logger:_logger];
-  NSURL *authURL = nil;
+  NSDictionary *loginParams = [self logInParametersWithConfiguration:_configuration
+                                                 serverConfiguration:serverConfiguration
+                                                              logger:_logger
+                                                          authMethod:authMethod];
   NSError *error;
-  NSURL *redirectURL = [FBSDKInternalUtility appURLWithHost:@"authorize" path:@"" queryParameters:@{} error:&error];
-  if (!error) {
-    NSMutableDictionary *browserParams = [loginParams mutableCopy];
-    [FBSDKTypeUtility dictionary:browserParams
-                       setObject:redirectURL
-                          forKey:@"redirect_uri"];
+  NSURL *authURL = nil;
+  if (loginParams[@"redirect_uri"]) {
     authURL = [FBSDKInternalUtility facebookURLWithHostPrefix:@"m."
                                                          path:FBSDKOauthPath
-                                              queryParameters:browserParams
+                                              queryParameters:loginParams
                                                         error:&error];
   }
 
@@ -658,7 +679,9 @@ FBSDKLoginAuthType FBSDKLoginAuthTypeReauthorize = @"reauthorize";
   if (isFacebookURL) {
     NSDictionary *urlParameters = [FBSDKLoginUtility queryParamsFromLoginURL:url];
     id<FBSDKLoginCompleting> completer = [[FBSDKLoginURLCompleter alloc] initWithURLParameters:urlParameters
-                                                                                         appID:[FBSDKSettings appID]];
+                                                                                         appID:FBSDKSettings.appID
+                                                                            connectionProvider:FBSDKGraphRequestConnectionFactory.new
+                                                                    authenticationTokenCreator:FBSDKAuthenticationTokenFactory.new];
 
     // any necessary strong reference is maintained by the FBSDKLoginURLCompleter handler
     [completer completeLoginWithHandler:^(FBSDKLoginCompletionParameters *parameters) {

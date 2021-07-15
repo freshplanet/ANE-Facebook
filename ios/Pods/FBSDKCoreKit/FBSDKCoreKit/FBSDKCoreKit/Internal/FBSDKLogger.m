@@ -18,8 +18,9 @@
 
 #import "FBSDKLogger.h"
 
+#import "FBSDKCoreKitBasicsImport.h"
 #import "FBSDKInternalUtility.h"
-#import "FBSDKSettings+Internal.h"
+#import "FBSDKSettings.h"
 
 static NSUInteger g_serialNumberCounter = 1111;
 static NSMutableDictionary *g_stringsToReplace = nil;
@@ -41,7 +42,7 @@ static NSMutableDictionary *g_startTimesWithTags = nil;
     _active = [FBSDKSettings.loggingBehaviors containsObject:loggingBehavior];
     _loggingBehavior = loggingBehavior;
     if (_active) {
-      _internalContents = [[NSMutableString alloc] init];
+      _internalContents = [NSMutableString new];
       _loggerSerialNumber = [FBSDKLogger generateSerialNumber];
     }
   }
@@ -117,29 +118,23 @@ static NSMutableDictionary *g_startTimesWithTags = nil;
 
 + (NSUInteger)generateSerialNumber
 {
-  return g_serialNumberCounter++;
+  @synchronized(self) {
+    return ++g_serialNumberCounter;
+  }
 }
 
 + (void)singleShotLogEntry:(NSString *)loggingBehavior
                   logEntry:(NSString *)logEntry
 {
-  if ([FBSDKSettings.loggingBehaviors containsObject:loggingBehavior]) {
-    FBSDKLogger *logger = [[FBSDKLogger alloc] initWithLoggingBehavior:loggingBehavior];
-    [logger appendString:logEntry];
-    [logger emitToNSLog];
-  }
+  FBSDKLogger *logger = [[FBSDKLogger alloc] initWithLoggingBehavior:loggingBehavior];
+  [logger logEntry:logEntry];
 }
 
-+ (void)singleShotLogEntry:(NSString *)loggingBehavior
-              formatString:(NSString *)formatString, ...
+- (void)logEntry:(NSString *)logEntry
 {
-  if ([FBSDKSettings.loggingBehaviors containsObject:loggingBehavior]) {
-    va_list vaArguments;
-    va_start(vaArguments, formatString);
-    NSString *logString = [[NSString alloc] initWithFormat:formatString arguments:vaArguments];
-    va_end(vaArguments);
-
-    [self singleShotLogEntry:loggingBehavior logEntry:logString];
+  if ([FBSDKSettings.loggingBehaviors containsObject:_loggingBehavior]) {
+    [self appendString:logEntry];
+    [self emitToNSLog];
   }
 }
 
@@ -177,7 +172,7 @@ static NSMutableDictionary *g_startTimesWithTags = nil;
 {
   if ([FBSDKSettings.loggingBehaviors containsObject:loggingBehavior]) {
     if (!g_startTimesWithTags) {
-      g_startTimesWithTags = [[NSMutableDictionary alloc] init];
+      g_startTimesWithTags = [NSMutableDictionary new];
     }
 
     if (g_startTimesWithTags.count >= 1000) {
@@ -201,7 +196,7 @@ static NSMutableDictionary *g_startTimesWithTags = nil;
 
   if (FBSDKSettings.loggingBehaviors.count > 0) { // otherwise there's no logging.
     if (!g_stringsToReplace) {
-      g_stringsToReplace = [[NSMutableDictionary alloc] init];
+      g_stringsToReplace = [NSMutableDictionary new];
     }
 
     [g_stringsToReplace setValue:replaceWith forKey:replace];

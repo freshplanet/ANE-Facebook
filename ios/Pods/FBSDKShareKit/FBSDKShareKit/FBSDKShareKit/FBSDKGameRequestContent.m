@@ -153,13 +153,15 @@
                                                 isIn:@[@(FBSDKGameRequestActionTypeNone),
                                                        @(FBSDKGameRequestActionTypeSend),
                                                        @(FBSDKGameRequestActionTypeAskFor),
-                                                       @(FBSDKGameRequestActionTypeTurn)]
+                                                       @(FBSDKGameRequestActionTypeTurn),
+                                                       @(FBSDKGameRequestActionTypeInvite)]
                                                error:errorRef]
   && [FBSDKShareUtility validateArgumentWithName:@"filters"
                                            value:_filters
                                             isIn:@[@(FBSDKGameRequestFilterNone),
                                                    @(FBSDKGameRequestFilterAppUsers),
-                                                   @(FBSDKGameRequestFilterAppNonUsers)]
+                                                   @(FBSDKGameRequestFilterAppNonUsers),
+                                                   @(FBSDKGameRequestFilterEverybody)]
                                            error:errorRef];
 }
 
@@ -242,7 +244,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-  FBSDKGameRequestContent *copy = [[FBSDKGameRequestContent alloc] init];
+  FBSDKGameRequestContent *copy = [FBSDKGameRequestContent new];
   copy->_actionType = _actionType;
   copy->_data = [_data copy];
   copy->_filters = _filters;

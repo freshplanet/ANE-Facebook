@@ -27,6 +27,8 @@
  #else
   #import "FBSDKCoreKit+Internal.h"
  #endif
+
+ #import "FBSDKCoreKitBasicsImportForShareKit.h"
  #import "FBSDKShareUtility.h"
 
 static NSString *const FBSDKCameraEffectArgumentsArgumentsKey = @"arguments";
@@ -139,7 +141,7 @@ static NSString *const FBSDKCameraEffectArgumentsArgumentsKey = @"arguments";
 
 - (id)_valueForKey:(NSString *)key
 {
-  key = [FBSDKTypeUtility stringValue:key];
+  key = [FBSDKTypeUtility coercedToStringValue:key];
   return (key ? [FBSDKTypeUtility objectValue:_arguments[key]] : nil);
 }
 

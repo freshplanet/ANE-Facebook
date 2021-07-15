@@ -19,16 +19,37 @@
 #import "FBSDKError.h"
 
 #import "FBSDKConstants.h"
-#import "FBSDKErrorReport.h"
+#import "FBSDKCoreKitBasicsImport.h"
+#import "FBSDKErrorReporting.h"
 #import "FBSDKFeatureManager.h"
-#import "FBSDKInternalUtility.h"
 #import "FBSDKSettings.h"
+
+@interface FBSDKError ()
+
+@property (class, nullable, nonatomic) id<FBSDKErrorReporting> errorReporter;
+
+@end
 
 @implementation FBSDKError
 
-static BOOL isErrorReportEnabled = NO;
+static id<FBSDKErrorReporting> _errorReporter;
 
 #pragma mark - Class Methods
+
++ (id<FBSDKErrorReporting>)errorReporter
+{
+  return _errorReporter;
+}
+
++ (void)setErrorReporter:(id<FBSDKErrorReporting>)errorReporter
+{
+  _errorReporter = errorReporter;
+}
+
++ (void)configureWithErrorReporter:(id<FBSDKErrorReporting>)errorReporter
+{
+  self.errorReporter = errorReporter;
+}
 
 + (NSError *)errorWithCode:(NSInteger)code message:(NSString *)message
 {
@@ -75,9 +96,7 @@ static BOOL isErrorReportEnabled = NO;
   [FBSDKTypeUtility dictionary:fullUserInfo setObject:message forKey:FBSDKErrorDeveloperMessageKey];
   [FBSDKTypeUtility dictionary:fullUserInfo setObject:underlyingError forKey:NSUnderlyingErrorKey];
   userInfo = fullUserInfo.count ? [fullUserInfo copy] : nil;
-  if (isErrorReportEnabled) {
-    [FBSDKErrorReport saveError:code errorDomain:domain message:message];
-  }
+  [self.errorReporter saveError:code errorDomain:domain message:message];
 
   return [[NSError alloc] initWithDomain:domain code:code userInfo:userInfo];
 }
@@ -116,7 +135,7 @@ static BOOL isErrorReportEnabled = NO;
   if (!message) {
     message = [[NSString alloc] initWithFormat:@"Invalid value for %@: %@", name, value];
   }
-  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary *userInfo = [NSMutableDictionary new];
   [FBSDKTypeUtility dictionary:userInfo setObject:name forKey:FBSDKErrorArgumentNameKey];
   [FBSDKTypeUtility dictionary:userInfo setObject:value forKey:FBSDKErrorArgumentValueKey];
   return [self errorWithDomain:domain
@@ -144,7 +163,7 @@ static BOOL isErrorReportEnabled = NO;
     message =
     [[NSString alloc] initWithFormat:@"Invalid item (%@) found in collection for %@: %@", item, name, collection];
   }
-  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary *userInfo = [NSMutableDictionary new];
   [FBSDKTypeUtility dictionary:userInfo setObject:name forKey:FBSDKErrorArgumentNameKey];
   [FBSDKTypeUtility dictionary:userInfo setObject:item forKey:FBSDKErrorArgumentValueKey];
   [FBSDKTypeUtility dictionary:userInfo setObject:collection forKey:FBSDKErrorArgumentCollectionKey];
@@ -205,9 +224,15 @@ static BOOL isErrorReportEnabled = NO;
   }
 }
 
-+ (void)enableErrorReport
+#if DEBUG
+ #if FBSDKTEST
+
++ (void)reset
 {
-  isErrorReportEnabled = YES;
+  _errorReporter = nil;
 }
+
+ #endif
+#endif
 
 @end

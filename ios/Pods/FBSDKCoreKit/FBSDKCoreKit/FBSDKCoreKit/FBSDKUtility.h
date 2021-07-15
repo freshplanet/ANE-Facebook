@@ -86,6 +86,22 @@ NS_SWIFT_NAME(encode(urlString:));
 + (nullable NSString *)SHA256Hash:(nullable NSObject *)input
 NS_SWIFT_NAME(sha256Hash(_:));
 
+/**
+ Returns the graphdomain stored in FBSDKAuthenticationToken or FBSDKAccessToken 
+ */
++ (NSString *)getGraphDomainFromToken;
+
+/**
+ Internal Type exposed to facilitate transition to Swift.
+ API Subject to change or removal without warning. Do not use.
+
+ @warning UNSAFE - DO NOT USE
+ */
++ (NSURL *)unversionedFacebookURLWithHostPrefix:(NSString *)hostPrefix
+                                           path:(NSString *)path
+                                queryParameters:(NSDictionary *)queryParameters
+                                          error:(NSError *__autoreleasing *)errorRef;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -19,6 +19,12 @@
 #import "FBSDKGraphRequestPiggybackManager.h"
 
 #import "FBSDKCoreKit+Internal.h"
+#import "FBSDKCoreKitBasicsImport.h"
+#import "FBSDKGraphRequestConnecting+Internal.h"
+#import "FBSDKServerConfigurationLoading.h"
+#import "FBSDKServerConfigurationProviding.h"
+#import "FBSDKSettings+SettingsLogging.h"
+#import "FBSDKSettings+SettingsProtocols.h"
 
 static int const FBSDKTokenRefreshThresholdSeconds = 24 * 60 * 60; // day
 static int const FBSDKTokenRefreshRetrySeconds = 60 * 60; // hour
@@ -26,12 +32,51 @@ static int const FBSDKTokenRefreshRetrySeconds = 60 * 60; // hour
 @implementation FBSDKGraphRequestPiggybackManager
 
 static NSDate *_lastRefreshTry = nil;
+static Class<FBSDKAccessTokenProviding, FBSDKAccessTokenSetting> _tokenWallet = nil;
+static id<FBSDKSettings> _settings;
+static Class<FBSDKServerConfigurationProviding, FBSDKServerConfigurationLoading> _serverConfiguration;
+static id<FBSDKGraphRequestProviding> _requestProvider;
 
-+ (void)addPiggybackRequests:(FBSDKGraphRequestConnection *)connection
++ (Class<FBSDKAccessTokenProviding, FBSDKAccessTokenSetting>)tokenWallet
 {
-  if ([FBSDKSettings appID].length > 0) {
+  return _tokenWallet;
+}
+
++ (id<FBSDKSettings>)settings
+{
+  return _settings;
+}
+
++ (Class<FBSDKServerConfigurationProviding, FBSDKServerConfigurationLoading>)serverConfiguration
+{
+  return _serverConfiguration;
+}
+
++ (id<FBSDKGraphRequestProviding>)requestProvider
+{
+  return _requestProvider;
+}
+
++ (void)configureWithTokenWallet:(Class<FBSDKAccessTokenProviding, FBSDKAccessTokenSetting>)tokenWallet
+                        settings:(id<FBSDKSettings>)settings
+             serverConfiguration:(Class<FBSDKServerConfigurationProviding, FBSDKServerConfigurationLoading>)serverConfiguration
+                 requestProvider:(id<FBSDKGraphRequestProviding>)requestProvider
+{
+  if (self == [FBSDKGraphRequestPiggybackManager class]) {
+    _tokenWallet = tokenWallet;
+    _settings = settings;
+    _serverConfiguration = serverConfiguration;
+    _requestProvider = requestProvider;
+  }
+}
+
++ (void)addPiggybackRequests:(id<FBSDKGraphRequestConnecting>)connection
+{
+  if ([self.settings appID].length > 0) {
     BOOL safeForPiggyback = YES;
-    for (FBSDKGraphRequestMetadata *metadata in connection.requests) {
+    id<_FBSDKGraphRequestConnecting> internalConnection = FBSDK_CAST_TO_PROTOCOL_OR_NIL(connection, _FBSDKGraphRequestConnecting);
+
+    for (FBSDKGraphRequestMetadata *metadata in internalConnection.requests) {
       if (![self _safeForPiggyback:metadata.request]) {
         safeForPiggyback = NO;
         break;
@@ -44,9 +89,9 @@ static NSDate *_lastRefreshTry = nil;
   }
 }
 
-+ (void)addRefreshPiggyback:(FBSDKGraphRequestConnection *)connection permissionHandler:(FBSDKGraphRequestBlock)permissionHandler
++ (void)addRefreshPiggyback:(id<FBSDKGraphRequestConnecting>)connection permissionHandler:(FBSDKGraphRequestCompletion)permissionHandler
 {
-  FBSDKAccessToken *expectedToken = [FBSDKAccessToken currentAccessToken];
+  FBSDKAccessToken *expectedToken = [self.tokenWallet currentAccessToken];
   if (!expectedToken) {
     return;
   }
@@ -60,7 +105,7 @@ static NSDate *_lastRefreshTry = nil;
   __block int expectingCallbacksCount = 2;
   void (^expectingCallbackComplete)(void) = ^{
     if (--expectingCallbacksCount == 0) {
-      FBSDKAccessToken *currentToken = [FBSDKAccessToken currentAccessToken];
+      FBSDKAccessToken *currentToken = [self.tokenWallet currentAccessToken];
       NSDate *expirationDate = currentToken.expirationDate;
       if (expirationDateNumber != nil) {
         expirationDate = (expirationDateNumber.doubleValue > 0
@@ -89,28 +134,28 @@ static NSDate *_lastRefreshTry = nil;
       #pragma clange diagnostic pop
 
       if (expectedToken == currentToken) {
-        [FBSDKAccessToken setCurrentAccessToken:refreshedToken];
+        [self.tokenWallet setCurrentAccessToken:refreshedToken];
       }
     }
   };
-  FBSDKGraphRequest *extendRequest = [[FBSDKGraphRequest alloc] initWithGraphPath:@"oauth/access_token"
-                                                                       parameters:@{@"grant_type" : @"fb_extend_sso_token",
-                                                                                    @"fields" : @"",
-                                                                                    @"client_id" : expectedToken.appID}
-                                                                            flags:FBSDKGraphRequestFlagDisableErrorRecovery];
+  id<FBSDKGraphRequest> extendRequest = [self.requestProvider createGraphRequestWithGraphPath:@"oauth/access_token"
+                                                                                   parameters:@{@"grant_type" : @"fb_extend_sso_token",
+                                                                                                @"fields" : @"",
+                                                                                                @"client_id" : expectedToken.appID}
+                                                                                        flags:FBSDKGraphRequestFlagDisableErrorRecovery];
 
-  [connection addRequest:extendRequest completionHandler:^(FBSDKGraphRequestConnection *innerConnection, id result, NSError *error) {
+  [connection addRequest:extendRequest completion:^(id<FBSDKGraphRequestConnecting> innerConnection, id result, NSError *error) {
     tokenString = [FBSDKTypeUtility dictionary:result objectForKey:@"access_token" ofType:NSString.class];
     expirationDateNumber = [FBSDKTypeUtility dictionary:result objectForKey:@"expires_at" ofType:NSNumber.class];
     dataAccessExpirationDateNumber = [FBSDKTypeUtility dictionary:result objectForKey:@"data_access_expiration_time" ofType:NSNumber.class];
     graphDomain = [FBSDKTypeUtility dictionary:result objectForKey:@"graph_domain" ofType:NSString.class];
     expectingCallbackComplete();
   }];
-  FBSDKGraphRequest *permissionsRequest = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/permissions"
-                                                                            parameters:@{@"fields" : @""}
-                                                                                 flags:FBSDKGraphRequestFlagDisableErrorRecovery];
+  id<FBSDKGraphRequest> permissionsRequest = [self.requestProvider createGraphRequestWithGraphPath:@"me/permissions"
+                                                                                        parameters:@{@"fields" : @""}
+                                                                                             flags:FBSDKGraphRequestFlagDisableErrorRecovery];
 
-  [connection addRequest:permissionsRequest completionHandler:^(FBSDKGraphRequestConnection *innerConnection, id result, NSError *error) {
+  [connection addRequest:permissionsRequest completion:^(id<FBSDKGraphRequestConnecting> innerConnection, id result, NSError *error) {
     if (!error) {
       permissions = [NSMutableSet set];
       declinedPermissions = [NSMutableSet set];
@@ -128,13 +173,13 @@ static NSDate *_lastRefreshTry = nil;
   }];
 }
 
-+ (void)addRefreshPiggybackIfStale:(FBSDKGraphRequestConnection *)connection
++ (void)addRefreshPiggybackIfStale:(id<FBSDKGraphRequestConnecting>)connection
 {
   // don't piggy back more than once an hour as a cheap way of
   // retrying in cases of errors and preventing duplicate refreshes.
   // obviously this is not foolproof but is simple and sufficient.
   NSDate *now = [NSDate date];
-  NSDate *tokenRefreshDate = [FBSDKAccessToken currentAccessToken].refreshDate;
+  NSDate *tokenRefreshDate = [self.tokenWallet currentAccessToken].refreshDate;
   if (tokenRefreshDate
       && [now timeIntervalSinceDate:[self _lastRefreshTry]] > [self _tokenRefreshRetryInSeconds]
       && [now timeIntervalSinceDate:tokenRefreshDate] > [self _tokenRefreshThresholdInSeconds]) {
@@ -143,25 +188,25 @@ static NSDate *_lastRefreshTry = nil;
   }
 }
 
-+ (void)addServerConfigurationPiggyback:(FBSDKGraphRequestConnection *)connection
++ (void)addServerConfigurationPiggyback:(id<FBSDKGraphRequestConnecting>)connection
 {
-  if (![FBSDKServerConfigurationManager cachedServerConfiguration].isDefaults
-      && [[NSDate date] timeIntervalSinceDate:[FBSDKServerConfigurationManager cachedServerConfiguration].timestamp]
+  if (![self.serverConfiguration cachedServerConfiguration].isDefaults
+      && [[NSDate date] timeIntervalSinceDate:[self.serverConfiguration cachedServerConfiguration].timestamp]
       < FBSDK_SERVER_CONFIGURATION_MANAGER_CACHE_TIMEOUT) {
     return;
   }
-  NSString *appID = [FBSDKSettings appID];
-  FBSDKGraphRequest *serverConfigurationRequest = [FBSDKServerConfigurationManager requestToLoadServerConfiguration:appID];
+  NSString *appID = [self.settings appID];
+  id<FBSDKGraphRequest> serverConfigurationRequest = [self.serverConfiguration requestToLoadServerConfiguration:appID];
   [connection addRequest:serverConfigurationRequest
-       completionHandler:^(FBSDKGraphRequestConnection *conn, id result, NSError *error) {
-         [FBSDKServerConfigurationManager processLoadRequestResponse:result error:error appID:appID];
-       }];
+              completion:^(id<FBSDKGraphRequestConnecting> conn, id result, NSError *error) {
+                [self.serverConfiguration processLoadRequestResponse:result error:error appID:appID];
+              }];
 }
 
 + (BOOL)_safeForPiggyback:(id<FBSDKGraphRequest>)request
 {
-  BOOL isVersionSafe = [request.version isEqualToString:[FBSDKSettings graphAPIVersion]];
-  BOOL hasAttachments = [(id<FBSDKGraphRequestInternal>)request hasAttachments];
+  BOOL isVersionSafe = [request.version isEqualToString:[self.settings graphAPIVersion]];
+  BOOL hasAttachments = [(id<FBSDKGraphRequest>)request hasAttachments];
   return isVersionSafe && !hasAttachments;
 }
 
@@ -187,5 +232,22 @@ static NSDate *_lastRefreshTry = nil;
 {
   _lastRefreshTry = date;
 }
+
+#if DEBUG
+ #if FBSDKTEST
+
++ (void)setTokenWallet:(Class<FBSDKAccessTokenProviding, FBSDKAccessTokenSetting>)tokenWallet
+{
+  _tokenWallet = tokenWallet;
+}
+
++ (void)reset
+{
+  _tokenWallet = nil;
+  _lastRefreshTry = nil;
+}
+
+ #endif
+#endif
 
 @end

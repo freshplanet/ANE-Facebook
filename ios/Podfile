@@ -2,9 +2,9 @@ platform :ios, '10.0'
 
 target 'AirFacebook' do
   use_frameworks! 
-	pod 'FBSDKCoreKit', '9.1.0'
-	pod 'FBSDKShareKit', '9.1.0'
-	pod 'FBSDKLoginKit', '9.1.0'
+	pod 'FBSDKCoreKit', '11.0.1'
+	pod 'FBSDKShareKit', '11.0.1'
+	pod 'FBSDKLoginKit', '11.0.1'
 #    pod 'Bolts', '1.9.0'
 end
 

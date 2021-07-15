@@ -313,6 +313,14 @@
 
  #pragma mark - Helper Methods
 
+typedef float (*FBSDKLimitFunctionType)(float);
+static inline CGFloat FBSDKPointsForScreenPixels(FBSDKLimitFunctionType limitFunction,
+                                                 CGFloat screenScale,
+                                                 CGFloat pointValue)
+{
+  return limitFunction(pointValue * screenScale) / screenScale;
+}
+
 - (UIEdgeInsets)_borderInsets
 {
   // inset the border bounds by 1/2 of the border width, since it is drawn split between inside and outside of the path
@@ -350,7 +358,10 @@
   self.borderWidth = 1.0;
   self.contentMode = UIViewContentModeRedraw;
   self.fillColor = [UIColor whiteColor];
-  self.foregroundColor = FBSDKUIColorWithRGB(0x6A, 0x71, 0x80);
+  self.foregroundColor = [UIColor colorWithRed:(0x6A / 255.0)
+                                         green:(0x71 / 255.0)
+                                          blue:(0x80 / 255.0)
+                                         alpha:1.0];
   self.opaque = NO;
 }
 

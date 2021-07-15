@@ -22,6 +22,8 @@
 
  #import "FBSDKLoginError.h"
 
+ #import "FBSDKCoreKitBasicsImportForLoginKit.h"
+
  #ifdef FBSDKCOCOAPODS
   #import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
  #else
@@ -148,7 +150,7 @@ typedef NS_ERROR_ENUM(FBSDKLoginErrorDomain, FBSDKLoginErrorSubcode)
 {
   NSError *error = nil;
 
-  NSMutableDictionary<NSString *, id> *userInfo = [[NSMutableDictionary alloc] init];
+  NSMutableDictionary<NSString *, id> *userInfo = [NSMutableDictionary new];
   [FBSDKTypeUtility dictionary:userInfo setObject:[FBSDKTypeUtility dictionary:parameters objectForKey:@"error_message" ofType:NSString.class] forKey:FBSDKErrorDeveloperMessageKey];
 
   if (userInfo.count > 0) {

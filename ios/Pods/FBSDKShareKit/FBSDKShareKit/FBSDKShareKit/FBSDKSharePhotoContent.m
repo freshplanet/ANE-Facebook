@@ -25,6 +25,8 @@
 #else
  #import "FBSDKCoreKit+Internal.h"
 #endif
+
+#import "FBSDKCoreKitBasicsImportForShareKit.h"
 #import "FBSDKHashtag.h"
 #import "FBSDKSharePhoto.h"
 #import "FBSDKShareUtility.h"
@@ -86,11 +88,11 @@
 {
   NSMutableDictionary<NSString *, id> *updatedParameters = [NSMutableDictionary dictionaryWithDictionary:existingParameters];
 
-  NSMutableArray<UIImage *> *images = [[NSMutableArray alloc] init];
+  NSMutableArray<UIImage *> *images = [NSMutableArray new];
   for (FBSDKSharePhoto *photo in _photos) {
     if (photo.photoAsset) {
       // load the asset and bridge the image
-      PHImageRequestOptions *imageRequestOptions = [[PHImageRequestOptions alloc] init];
+      PHImageRequestOptions *imageRequestOptions = [PHImageRequestOptions new];
       imageRequestOptions.resizeMode = PHImageRequestOptionsResizeModeExact;
       imageRequestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
       imageRequestOptions.synchronous = YES;
@@ -221,7 +223,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-  FBSDKSharePhotoContent *copy = [[FBSDKSharePhotoContent alloc] init];
+  FBSDKSharePhotoContent *copy = [FBSDKSharePhotoContent new];
   copy->_contentURL = [_contentURL copy];
   copy->_hashtag = [_hashtag copy];
   copy->_peopleIDs = [_peopleIDs copy];

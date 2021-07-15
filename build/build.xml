@@ -62,6 +62,11 @@
 
         <!-- shenanigans with dynamic frameworks  -->
         <delete dir="../bin/Frameworks"/>
+        <delete dir="temp/ios/FBSDKCoreKit_Basics"/>
+
+        <copy todir="../bin/Frameworks/FBSDKCoreKit_Basics.framework" >
+            <fileset dir="temp/ios/FBSDKCoreKit_Basics.framework" includes="**/**"/>
+        </copy>
 
         <copy todir="../bin/Frameworks/FBSDKCoreKit.framework" >
             <fileset dir="temp/ios/FBSDKCoreKit/FBSDKCoreKit.framework" includes="**/**"/>

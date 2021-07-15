@@ -22,6 +22,7 @@
 #import <sys/time.h>
 
 #import "FBSDKCoreKit+Internal.h"
+#import "FBSDKCoreKitBasicsImport.h"
 #import "FBSDKError.h"
 #import "FBSDKSettings.h"
 #import "FBSDKSettings+Internal.h"
@@ -38,16 +39,28 @@ typedef NS_ENUM(NSUInteger, FBSDKInternalUtilityVersionShift) {
   // FBSDKInternalUtilityPatchVersionShift = 0, // unused
 };
 
+@interface FBSDKInternalUtility ()
+
+// TODO: Replace this with an instance variable i.e.: @property (nonnull, nonatomic) id<FBSDKLogging> logger;
+@property (class, nonnull, nonatomic) Class<FBSDKLogging> loggerType;
+@property (nonatomic) BOOL isConfigured;
+
+@end
+
 @implementation FBSDKInternalUtility
 
+static id<FBSDKInfoDictionaryProviding> _infoDictionaryProvider;
+static Class<FBSDKLogging> _loggerType;
+
 // These are stored at the class level so that they can be reset in unit tests
-static dispatch_once_t *fetchApplicationQuerySchemesToken;
-static dispatch_once_t *checkIfFacebookAppInstalledToken;
-static dispatch_once_t *checkIfMessengerAppInstalledToken;
-static dispatch_once_t *checkIfMSQRDPlayerAppInstalledToken;
-static dispatch_once_t *checkRegisteredCanOpenUrlSchemesToken;
-static dispatch_once_t *checkOperatingSystemVersionToken;
-static dispatch_once_t *fetchUrlSchemesToken;
+static dispatch_once_t fetchApplicationQuerySchemesToken;
+static dispatch_once_t checkIfFacebookAppInstalledToken;
+static dispatch_once_t checkIfMessengerAppInstalledToken;
+static dispatch_once_t checkIfMSQRDPlayerAppInstalledToken;
+static dispatch_once_t checkRegisteredCanOpenUrlSchemesToken;
+static dispatch_once_t checkOperatingSystemVersionToken;
+static dispatch_once_t fetchUrlSchemesToken;
+static dispatch_once_t sharedUtilityNonce;
 
 static BOOL ShouldOverrideHostWithGamingDomain(NSString *hostPrefix)
 {
@@ -56,9 +69,52 @@ static BOOL ShouldOverrideHostWithGamingDomain(NSString *hostPrefix)
   && ([hostPrefix isEqualToString:@"graph."] || [hostPrefix isEqualToString:@"graph-video."]);
 }
 
+// Transitional singleton introduced as a way to change the usage semantics
+// from a type-based interface to an instance-based interface.
++ (instancetype)sharedUtility
+{
+  static id instance;
+  dispatch_once(&sharedUtilityNonce, ^{
+    instance = [self new];
+  });
+  return instance;
+}
+
 #pragma mark - Class Methods
 
++ (void)configureWithInfoDictionaryProvider:(id<FBSDKInfoDictionaryProviding>)infoDictionaryProvider
+{
+  if (self == FBSDKInternalUtility.class) {
+    _infoDictionaryProvider = infoDictionaryProvider;
+
+    self.sharedUtility.isConfigured = YES;
+  }
+}
+
++ (id<FBSDKInfoDictionaryProviding>)infoDictionaryProvider
+{
+  return _infoDictionaryProvider;
+}
+
++ (void)setLoggerType:(Class<FBSDKLogging>)loggerType
+{
+  _loggerType = loggerType;
+}
+
++ (Class<FBSDKLogging>)loggerType
+{
+  if (_loggerType == nil) {
+    _loggerType = [FBSDKLogger class];
+  }
+  return _loggerType;
+}
+
 + (NSString *)appURLScheme
+{
+  return self.sharedUtility.appURLScheme;
+}
+
+- (NSString *)appURLScheme
 {
   NSString *appID = ([FBSDKSettings appID] ?: @"");
   NSString *suffix = ([FBSDKSettings appURLSchemeSuffix] ?: @"");
@@ -207,10 +263,10 @@ static BOOL ShouldOverrideHostWithGamingDomain(NSString *hostPrefix)
         && [versionScanner scanInteger:NULL]
         && [versionScanner scanString:@"." intoString:NULL]
         && [versionScanner scanInteger:NULL]) {
-      [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                             logEntry:[NSString stringWithFormat:@"Invalid Graph API version:%@, assuming %@ instead",
-                                       version,
-                                       [FBSDKSettings graphAPIVersion]]];
+      [self.loggerType singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
+                                 logEntry:[NSString stringWithFormat:@"Invalid Graph API version:%@, assuming %@ instead",
+                                           version,
+                                           [FBSDKSettings graphAPIVersion]]];
       version = nil;
     }
     if (![path hasPrefix:@"/"]) {
@@ -262,9 +318,7 @@ static BOOL ShouldOverrideHostWithGamingDomain(NSString *hostPrefix)
     .minorVersion = 0,
     .patchVersion = 0,
   };
-  static dispatch_once_t once_token;
-  checkOperatingSystemVersionToken = &once_token;
-  dispatch_once(&once_token, ^{
+  dispatch_once(&checkOperatingSystemVersionToken, ^{
     operatingSystemVersion = [NSProcessInfo processInfo].operatingSystemVersion;
   });
   return operatingSystemVersion;
@@ -335,7 +389,7 @@ static NSMapTable *_transientObjects;
 {
   NSAssert([NSThread isMainThread], @"Must be called from the main thread!");
   if (!_transientObjects) {
-    _transientObjects = [[NSMapTable alloc] init];
+    _transientObjects = [NSMapTable new];
   }
   NSUInteger count = ((NSNumber *)[_transientObjects objectForKey:object]).unsignedIntegerValue;
   [_transientObjects setObject:@(count + 1) forKey:object];
@@ -353,9 +407,10 @@ static NSMapTable *_transientObjects;
   } else if (count != 0) {
     [_transientObjects setObject:@(count - 1) forKey:object];
   } else {
-    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                       formatString:@"unregisterTransientObject:%@ count is 0. This may indicate a bug in the FBSDK. Please"
-     " file a report to developers.facebook.com/bugs if you encounter any problems. Thanks!", [object class]];
+    NSString *msg = [NSString stringWithFormat:@"unregisterTransientObject:%@ count is 0. This may indicate a bug in the FBSDK. Please"
+                     " file a report to developers.facebook.com/bugs if you encounter any problems. Thanks!", [object class]];
+    [self.loggerType singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
+                               logEntry:msg];
   }
 }
 
@@ -375,9 +430,7 @@ static NSMapTable *_transientObjects;
 
 + (BOOL)isFacebookAppInstalled
 {
-  static dispatch_once_t once_token;
-  checkIfFacebookAppInstalledToken = &once_token;
-  dispatch_once(&once_token, ^{
+  dispatch_once(&checkIfFacebookAppInstalledToken, ^{
     [FBSDKInternalUtility checkRegisteredCanOpenURLScheme:FBSDK_CANOPENURL_FACEBOOK];
   });
   return [self _canOpenURLScheme:FBSDK_CANOPENURL_FACEBOOK];
@@ -385,9 +438,7 @@ static NSMapTable *_transientObjects;
 
 + (BOOL)isMessengerAppInstalled
 {
-  static dispatch_once_t once_token;
-  checkIfMessengerAppInstalledToken = &once_token;
-  dispatch_once(&once_token, ^{
+  dispatch_once(&checkIfMessengerAppInstalledToken, ^{
     [FBSDKInternalUtility checkRegisteredCanOpenURLScheme:FBSDK_CANOPENURL_MESSENGER];
   });
   return [self _canOpenURLScheme:FBSDK_CANOPENURL_MESSENGER];
@@ -395,9 +446,7 @@ static NSMapTable *_transientObjects;
 
 + (BOOL)isMSQRDPlayerAppInstalled
 {
-  static dispatch_once_t once_token;
-  checkIfMSQRDPlayerAppInstalledToken = &once_token;
-  dispatch_once(&once_token, ^{
+  dispatch_once(&checkIfMSQRDPlayerAppInstalledToken, ^{
     [FBSDKInternalUtility checkRegisteredCanOpenURLScheme:FBSDK_CANOPENURL_MSQRD_PLAYER];
   });
   return [self _canOpenURLScheme:FBSDK_CANOPENURL_MSQRD_PLAYER];
@@ -407,17 +456,18 @@ static NSMapTable *_transientObjects;
 
 + (BOOL)_canOpenURLScheme:(NSString *)scheme
 {
-  scheme = [FBSDKTypeUtility stringValue:scheme];
+  scheme = [FBSDKTypeUtility coercedToStringValue:scheme];
   if (!scheme) {
     return NO;
   }
 
-  NSURLComponents *components = [[NSURLComponents alloc] init];
+  NSURLComponents *components = [NSURLComponents new];
   @try {
     components.scheme = scheme;
   } @catch (NSException *exception) {
-    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                       formatString:@"Invalid URL scheme provided: %@", scheme];
+    NSString *msg = [NSString stringWithFormat:@"Invalid URL scheme provided: %@", scheme];
+    [self.loggerType singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
+                               logEntry:msg];
     return NO;
   }
 
@@ -427,6 +477,7 @@ static NSMapTable *_transientObjects;
 
 + (void)validateAppID
 {
+  [self.sharedUtility validateConfiguration];
   if (![FBSDKSettings appID]) {
     NSString *reason = @"App ID not found. Add a string value with your app ID for the key "
     @"FacebookAppID to the Info.plist or call [FBSDKSettings setAppID:].";
@@ -436,6 +487,7 @@ static NSMapTable *_transientObjects;
 
 + (NSString *)validateRequiredClientAccessToken
 {
+  [self.sharedUtility validateConfiguration];
   if (![FBSDKSettings clientToken]) {
     NSString *reason = @"ClientToken is required to be set for this operation. "
     @"Set the FacebookClientToken in the Info.plist or call [FBSDKSettings setClientToken:]. "
@@ -465,7 +517,7 @@ static NSMapTable *_transientObjects;
   }
 }
 
-+ (UIWindow *)findWindow
+- (UIWindow *)findWindow
 {
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -506,19 +558,20 @@ static NSMapTable *_transientObjects;
   }
 
   if (topWindow == nil) {
-    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                       formatString:@"Unable to find a valid UIWindow", nil];
+    [self.class.loggerType singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
+                                     logEntry:@"Unable to find a valid UIWindow"];
   }
   return topWindow;
 }
 
 + (UIViewController *)topMostViewController
 {
-  UIWindow *keyWindow = [self findWindow];
+  UIWindow *keyWindow = [self.sharedUtility findWindow];
   // SDK expects a key window at this point, if it is not, make it one
   if (keyWindow != nil && !keyWindow.isKeyWindow) {
-    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
-                       formatString:@"Unable to obtain a key window, marking %@ as keyWindow", keyWindow.description];
+    NSString *msg = [NSString stringWithFormat:@"Unable to obtain a key window, marking %@ as keyWindow", keyWindow.description];
+    [self.loggerType singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors
+                               logEntry:msg];
     [keyWindow makeKeyWindow];
   }
 
@@ -534,7 +587,7 @@ static NSMapTable *_transientObjects;
 {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
   if (@available(iOS 13.0, *)) {
-    return [self findWindow].windowScene.interfaceOrientation;
+    return [self.sharedUtility findWindow].windowScene.interfaceOrientation;
   } else {
     return UIInterfaceOrientationUnknown;
   }
@@ -562,12 +615,11 @@ static NSMapTable *_transientObjects;
 
 + (BOOL)isRegisteredURLScheme:(NSString *)urlScheme
 {
-  static NSArray *urlTypes = nil;
+  [self.sharedUtility validateConfiguration];
 
-  static dispatch_once_t once_token;
-  fetchUrlSchemesToken = &once_token;
-  dispatch_once(&once_token, ^{
-    urlTypes = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleURLTypes"];
+  static NSArray *urlTypes = nil;
+  dispatch_once(&fetchUrlSchemesToken, ^{
+    urlTypes = [self.infoDictionaryProvider.infoDictionary valueForKey:@"CFBundleURLTypes"];
   });
   for (NSDictionary *urlType in urlTypes) {
     NSArray *urlSchemes = [urlType valueForKey:@"CFBundleURLSchemes"];
@@ -581,10 +633,7 @@ static NSMapTable *_transientObjects;
 + (void)checkRegisteredCanOpenURLScheme:(NSString *)urlScheme
 {
   static NSMutableSet *checkedSchemes = nil;
-
-  static dispatch_once_t once_token;
-  checkRegisteredCanOpenUrlSchemesToken = &once_token;
-  dispatch_once(&once_token, ^{
+  dispatch_once(&checkRegisteredCanOpenUrlSchemesToken, ^{
     checkedSchemes = [NSMutableSet set];
   });
 
@@ -598,18 +647,15 @@ static NSMapTable *_transientObjects;
 
   if (![self isRegisteredCanOpenURLScheme:urlScheme]) {
     NSString *reason = [NSString stringWithFormat:@"%@ is missing from your Info.plist under LSApplicationQueriesSchemes and is required.", urlScheme];
-    [FBSDKLogger singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors logEntry:reason];
+    [self.loggerType singleShotLogEntry:FBSDKLoggingBehaviorDeveloperErrors logEntry:reason];
   }
 }
 
 + (BOOL)isRegisteredCanOpenURLScheme:(NSString *)urlScheme
 {
   static NSArray *schemes = nil;
-
-  static dispatch_once_t once_token;
-  fetchApplicationQuerySchemesToken = &once_token;
-  dispatch_once(&once_token, ^{
-    schemes = [[NSBundle mainBundle].infoDictionary valueForKey:@"LSApplicationQueriesSchemes"];
+  dispatch_once(&fetchApplicationQuerySchemesToken, ^{
+    schemes = [self.infoDictionaryProvider.infoDictionary valueForKey:@"LSApplicationQueriesSchemes"];
   });
 
   return [schemes containsObject:urlScheme];
@@ -633,59 +679,53 @@ static NSMapTable *_transientObjects;
   return NO;
 }
 
+- (void)validateConfiguration
+{
+#if DEBUG
+  if (!self.isConfigured) {
+    static NSString *const reason = @"As of v9.0, you must initialize the SDK prior to calling any methods or setting any properties. "
+    "You can do this by calling `FBSDKApplicationDelegate`'s `application:didFinishLaunchingWithOptions:` method. "
+    "Learn more: https://developers.facebook.com/docs/ios/getting-started";
+    @throw [NSException exceptionWithName:@"InvalidOperationException" reason:reason userInfo:nil];
+  }
+#endif
+}
+
 #pragma mark - Testability
 
 #if DEBUG
+ #if FBSDKTEST
 
-+ (void)resetQuerySchemesCache
++ (void)reset
 {
   if (fetchApplicationQuerySchemesToken) {
-    *fetchApplicationQuerySchemesToken = 0;
+    fetchApplicationQuerySchemesToken = 0;
   }
-}
-
-+ (void)resetDidCheckRegisteredCanOpenUrlSchemes
-{
   if (checkRegisteredCanOpenUrlSchemesToken) {
-    *checkRegisteredCanOpenUrlSchemesToken = 0;
+    checkRegisteredCanOpenUrlSchemesToken = 0;
   }
-}
-
-+ (void)resetIsFacebookAppInstalledCache
-{
   if (checkIfFacebookAppInstalledToken) {
-    *checkIfFacebookAppInstalledToken = 0;
+    checkIfFacebookAppInstalledToken = 0;
   }
-}
-
-+ (void)resetDidCheckIfMessengerAppInstalledCache
-{
   if (checkIfMessengerAppInstalledToken) {
-    *checkIfMessengerAppInstalledToken = 0;
+    checkIfMessengerAppInstalledToken = 0;
   }
-}
-
-+ (void)resetDidCheckIfMSQRDAppInstalledCache
-{
   if (checkIfMSQRDPlayerAppInstalledToken) {
-    *checkIfMSQRDPlayerAppInstalledToken = 0;
+    checkIfMSQRDPlayerAppInstalledToken = 0;
   }
-}
-
-+ (void)resetDidCheckOperatingSystemVersion
-{
   if (checkOperatingSystemVersionToken) {
-    *checkOperatingSystemVersionToken = 0;
+    checkOperatingSystemVersionToken = 0;
   }
-}
-
-+ (void)resetFetchingUrlSchemes
-{
   if (fetchUrlSchemesToken) {
-    *fetchUrlSchemesToken = 0;
+    fetchUrlSchemesToken = 0;
   }
+  if (sharedUtilityNonce) {
+    sharedUtilityNonce = 0;
+  }
+  _infoDictionaryProvider = nil;
 }
 
+ #endif
 #endif
 
 @end
