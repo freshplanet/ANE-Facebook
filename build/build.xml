@@ -149,16 +149,16 @@
             </then>
             <else>
                 <copy todir="temp/android/${name}-facebook-common-res">
-                    <fileset dir="../android/lib/dependencies/facebook-common-8.2.0/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-common-12.0.0/res"/>
                 </copy>
                 <copy todir="temp/android/${name}-facebook-login-res">
-                    <fileset dir="../android/lib/dependencies/facebook-login-8.2.0/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-login-12.0.0/res"/>
                 </copy>
                 <copy todir="temp/android/${name}-facebook-messenger-res">
-                    <fileset dir="../android/lib/dependencies/facebook-messenger-8.2.0/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-messenger-12.0.0/res"/>
                 </copy>
                 <copy todir="temp/android/${name}-facebook-share-res">
-                    <fileset dir="../android/lib/dependencies/facebook-share-8.2.0/res"/>
+                    <fileset dir="../android/lib/dependencies/facebook-share-12.0.0/res"/>
                 </copy>
             </else>
         </if>

@@ -75,11 +75,7 @@ public class AirFacebookExtensionContext extends FREContext {
     private FREFunction deactivateApp = new FREFunction() {
         @Override
         public FREObject call(FREContext ctx, FREObject[] args) {
-
-            Activity activity = ctx.getActivity();
-            Application application = activity.getApplication();
-            AppEventsLogger.deactivateApp(application);
-
+        	// now works automatically
             return null;
         }
     };

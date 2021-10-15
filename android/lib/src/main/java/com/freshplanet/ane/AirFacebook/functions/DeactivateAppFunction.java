@@ -11,13 +11,7 @@ public class DeactivateAppFunction extends BaseFunction
 	public FREObject call(FREContext context, FREObject[] args)
 	{
 		super.call(context, args);
-
-		if(AirFacebookExtension.context.getAppID() != null) {
-			AppEventsLogger.deactivateApp(context.getActivity(), AirFacebookExtension.context.getAppID());
-		} else {
-			AppEventsLogger.deactivateApp(context.getActivity());
-		}
-		
+		// now works automatically
 		return null;
 	}
 
