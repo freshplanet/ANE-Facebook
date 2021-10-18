@@ -15,9 +15,8 @@
 <platform xmlns="http://ns.adobe.com/air/extension/22.0">
     <packagedDependencies>
 
-<!--        <packagedDependency>activity-1.2.0.jar</packagedDependency>-->
+<!--        <packagedDependency>activity-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>annotation-1.1.0.jar</packagedDependency>-->
-<!--        <packagedDependency>annotation-experimental-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>annotations-13.0.jar</packagedDependency>-->
 <!--        <packagedDependency>appcompat-1.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>appcompat-resources-1.1.0.jar</packagedDependency>-->
@@ -30,48 +29,44 @@
 <!--        <packagedDependency>core-3.3.3.jar</packagedDependency>-->
 <!--        <packagedDependency>core-common-2.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>core-ktx-1.3.2.jar</packagedDependency>-->
-<!--        <packagedDependency>core-runtime-2.1.0.jar</packagedDependency>-->
+<!--        <packagedDependency>core-runtime-2.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>cursoradapter-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>customview-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>documentfile-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>drawerlayout-1.0.0.jar</packagedDependency>-->
-        <packagedDependency>facebook-android-sdk-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-applinks-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-common-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-core-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-gamingservices-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-login-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-messenger-12.0.0.jar</packagedDependency>
-        <packagedDependency>facebook-share-12.0.0.jar</packagedDependency>
-<!--        <packagedDependency>fragment-1.3.0.jar</packagedDependency>-->
+        <packagedDependency>facebook-android-sdk-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-applinks-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-common-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-core-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-gamingservices-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-login-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-messenger-11.0.0.jar</packagedDependency>
+        <packagedDependency>facebook-share-11.0.0.jar</packagedDependency>
+<!--        <packagedDependency>fragment-1.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>installreferrer-1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>interpolator-1.0.0.jar</packagedDependency>-->
-<!--        <packagedDependency>kotlin-stdlib-1.5.10.jar</packagedDependency>-->
-<!--        <packagedDependency>kotlin-stdlib-common-1.5.10.jar</packagedDependency>-->
-<!--        <packagedDependency>kotlin-stdlib-jdk7-1.5.10.jar</packagedDependency>-->
-<!--        <packagedDependency>kotlin-stdlib-jdk8-1.5.10.jar</packagedDependency>-->
+<!--        <packagedDependency>kotlin-stdlib-1.4.10.jar</packagedDependency>-->
+<!--        <packagedDependency>kotlin-stdlib-common-1.4.10.jar</packagedDependency>-->
+<!--        <packagedDependency>kotlin-stdlib-jdk7-1.4.10.jar</packagedDependency>-->
 <!--        <packagedDependency>legacy-support-core-ui-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>legacy-support-core-utils-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>legacy-support-v4-1.0.0.jar</packagedDependency>-->
-<!--        <packagedDependency>lifecycle-common-2.3.0.jar</packagedDependency>-->
+<!--        <packagedDependency>lifecycle-common-2.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>lifecycle-livedata-2.0.0.jar</packagedDependency>-->
-<!--        <packagedDependency>lifecycle-livedata-core-2.3.0.jar</packagedDependency>-->
-<!--        <packagedDependency>lifecycle-runtime-2.3.0.jar</packagedDependency>-->
-<!--        <packagedDependency>lifecycle-viewmodel-2.3.0.jar</packagedDependency>-->
-<!--        <packagedDependency>lifecycle-viewmodel-savedstate-2.3.0.jar</packagedDependency>-->
+<!--        <packagedDependency>lifecycle-livedata-core-2.0.0.jar</packagedDependency>-->
+<!--        <packagedDependency>lifecycle-runtime-2.1.0.jar</packagedDependency>-->
+<!--        <packagedDependency>lifecycle-viewmodel-2.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>loader-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>localbroadcastmanager-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>media-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>print-1.0.0.jar</packagedDependency>-->
-<!--        <packagedDependency>savedstate-1.1.0.jar</packagedDependency>-->
+<!--        <packagedDependency>savedstate-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>slidingpanelayout-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>swiperefreshlayout-1.0.0.jar</packagedDependency>-->
-<!--        <packagedDependency>tracing-1.0.0.jar</packagedDependency>-->
 <!--        <packagedDependency>vectordrawable-1.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>vectordrawable-animated-1.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>versionedparcelable-1.1.0.jar</packagedDependency>-->
 <!--        <packagedDependency>viewpager-1.0.0.jar</packagedDependency>-->
-
 
     </packagedDependencies> 
     <packagedResources>
