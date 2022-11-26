@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.facebook.android:facebook-android-sdk:11.0.0'
+    implementation 'com.facebook.android:facebook-android-sdk:11.3.0'
 
 }
 
@@ -18,11 +18,11 @@ android {
     useLibrary  'org.apache.http.legacy'
 
     compileSdkVersion 30
-    buildToolsVersion '30.0.2'
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
     }
 }
 

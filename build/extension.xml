@@ -21,13 +21,13 @@
   <versionNumber>2.0.0</versionNumber>
   <platforms>
 
-    <platform name="iPhone-ARM">
+<!--     <platform name="iPhone-ARM">
         <applicationDeployment>
             <nativeLibrary>libAirFacebook.a</nativeLibrary>
             <initializer>AirFacebookInitializer</initializer> 
             <finalizer>AirFacebookFinalizer</finalizer>
         </applicationDeployment>
-    </platform>
+    </platform> -->
 
     <platform name="Android-ARM"> 
         <applicationDeployment> 
@@ -45,13 +45,13 @@
         </applicationDeployment>
     </platform>
 
-    <platform name="Android-x86">
+<!--     <platform name="Android-x86">
         <applicationDeployment>
             <nativeLibrary>libAirFacebook.jar</nativeLibrary>
             <initializer>com.freshplanet.ane.AirFacebook.AirFacebookExtension</initializer>
             <finalizer>com.freshplanet.ane.AirFacebook.AirFacebookExtension</finalizer>
         </applicationDeployment>
-    </platform>
+    </platform> -->
 
      <platform name="default">
         <applicationDeployment/> 
