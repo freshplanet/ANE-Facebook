@@ -12,7 +12,7 @@
     </taskdef>
 
     <!-- All -->
-    <target name="all" depends="ios, android, swc, package" description="Full build of extension"/>
+    <target name="all" depends="android, swc, package" description="Full build of extension"/>
 
     <!-- iOS -->
     <target name="ios" description="Build iOS Library">
@@ -224,7 +224,7 @@
             <arg value="${name}.ane"/>
             <arg value="../extension.xml"/>
             <arg line="-swc swc/${name}.swc"/>
-            <arg line="-platform iPhone-ARM -platformoptions ../platform-ios.xml -C ios/ ."/>
+            <!-- <arg line="-platform iPhone-ARM -platformoptions ../platform-ios.xml -C ios/ ."/> -->
             <arg line="-platform Android-ARM -platformoptions ../platform-android.xml -C android/ ."/>
             <arg line="-platform Android-ARM64 -platformoptions ../platform-android.xml -C android/ ."/>
             <arg line="-platform Android-x86 -platformoptions ../platform-android.xml -C android/ ."/>
