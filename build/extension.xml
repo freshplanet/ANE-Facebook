@@ -45,13 +45,13 @@
         </applicationDeployment>
     </platform>
 
-    <platform name="Android-x86">
+<!--     <platform name="Android-x86">
         <applicationDeployment>
             <nativeLibrary>libAirFacebook.jar</nativeLibrary>
             <initializer>com.freshplanet.ane.AirFacebook.AirFacebookExtension</initializer>
             <finalizer>com.freshplanet.ane.AirFacebook.AirFacebookExtension</finalizer>
         </applicationDeployment>
-    </platform>
+    </platform> -->
 
      <platform name="default">
         <applicationDeployment/> 
