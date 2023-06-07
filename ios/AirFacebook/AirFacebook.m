@@ -231,9 +231,15 @@ DEFINE_ANE_FUNCTION(initFacebook) {
     [AirFacebook log:@"initFacebook"];
     
     NSString* callback = FPANE_FREObjectToNSString(argv[1]);
+    BOOL limitDataUse = FPANE_FREObjectToBOOL(argv[2]);
     
     // maybe we dont need this sharedInstance
     [AirFacebook sharedInstance];
+    
+    if(limitDataUse) {
+        [FBSDKSettings setDataProcessingOptions:@[@"LDU"] country:0 state:0];
+    }
+    
     
     [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication] didFinishLaunchingWithOptions:[NSMutableDictionary dictionary]];
     

@@ -90,6 +90,7 @@ package com.freshplanet.ane.AirFacebook {
          *
          * @param appID             A Facebook application ID (must be set for Android if there is missing FacebookId in application descriptor).<br><br>
          * @param onInitialized     Called when Facebook SDK initialization is complete.
+         * @param limitDataUse      Enable or disable LLimited Data Use (LDU)
          * <code>
          *     &lt;meta-data android:name="com.facebook.sdk.ApplicationId" android:value="fb{YOUR_FB_APP_ID}"/&gt;
          * </code>
@@ -98,14 +99,16 @@ package com.freshplanet.ane.AirFacebook {
          * Facebook SDK code in this ANE was modified to recognize FB_APP_ID prefixed with "fb".
          */
         public function init(appID:String = null,
-                             onInitialized:Function = null):void {
+                             onInitialized:Function = null,
+                             limitDataUse:Boolean = false
+                             ):void {
 
             if (isSupported && _context != null) {
 
                 _context.call("setNativeLogEnabled", Facebook.nativeLogEnabled);
                 log("ANE Facebook version: " + VERSION);
                 // iOS is synchronous but we will simulate async to have consistent API
-                _context.call("initFacebook", appID, _getNewCallbackName(onInitialized));
+                _context.call("initFacebook", appID, _getNewCallbackName(onInitialized), limitDataUse);
             } else {
 
                 log("Can't initialize extension! Unsupported platform or context couldn't be created!")
