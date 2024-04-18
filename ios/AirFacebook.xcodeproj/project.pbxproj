@@ -14,7 +14,6 @@
 		165F93771E525E9700A12835 /* FPANEUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93711E525E9700A12835 /* FPANEUtils.m */; };
 		165F93781E525E9700A12835 /* FREConversionUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 165F93731E525E9700A12835 /* FREConversionUtil.m */; };
 		DB9ECB264F2BFBE64866067F /* Pods_AirFacebook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AA9EE2C66794452757F74CB /* Pods_AirFacebook.framework */; };
-		FA43C145245081F400F3A9A1 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43C144245081F300F3A9A1 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,10 +45,6 @@
 		7AA9EE2C66794452757F74CB /* Pods_AirFacebook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AirFacebook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94DA02F7285FFC3B174A79B4 /* Pods-AirFacebook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirFacebook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook.debug.xcconfig"; sourceTree = "<group>"; };
 		D8F731664E3EEDC74CB8CE46 /* Pods-AirFacebook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirFacebook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AirFacebook/Pods-AirFacebook.release.xcconfig"; sourceTree = "<group>"; };
-		FA43C13E2450771700F3A9A1 /* libFBSDKCoreKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKCoreKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA43C1402450771800F3A9A1 /* libFBSDKLoginKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKLoginKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA43C1422450771800F3A9A1 /* libFBSDKShareKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFBSDKShareKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA43C144245081F300F3A9A1 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +52,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA43C145245081F400F3A9A1 /* Accelerate.framework in Frameworks */,
 				DB9ECB264F2BFBE64866067F /* Pods_AirFacebook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -104,10 +98,6 @@
 		97DD5A86EF5434691995E3D0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FA43C144245081F300F3A9A1 /* Accelerate.framework */,
-				FA43C13E2450771700F3A9A1 /* libFBSDKCoreKit.a */,
-				FA43C1402450771800F3A9A1 /* libFBSDKLoginKit.a */,
-				FA43C1422450771800F3A9A1 /* libFBSDKShareKit.a */,
 				7AA9EE2C66794452757F74CB /* Pods_AirFacebook.framework */,
 			);
 			name = Frameworks;
@@ -253,7 +243,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -298,7 +288,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -313,6 +303,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 94DA02F7285FFC3B174A79B4 /* Pods-AirFacebook.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"$(inherited)",
@@ -326,6 +318,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D8F731664E3EEDC74CB8CE46 /* Pods-AirFacebook.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"$(inherited)",

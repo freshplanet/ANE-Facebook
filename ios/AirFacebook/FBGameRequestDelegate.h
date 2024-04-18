@@ -14,7 +14,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <FBSDKShareKit/FBSDKShareKit.h>
+
+@import FBSDKGamingServicesKit;
 
 @interface FBGameRequestDelegate : NSObject<FBSDKGameRequestDialogDelegate>
 
