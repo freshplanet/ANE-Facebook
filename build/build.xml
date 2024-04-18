@@ -62,33 +62,30 @@
 
         <!-- shenanigans with dynamic frameworks  -->
         <delete dir="../bin/Frameworks"/>
-<!--        <delete dir="temp/ios/FBSDKCoreKit_Basics"/>-->
-<!--        <delete dir="temp/ios/FBSDKCoreKit_Basics.framework"/>-->
 
         <copy todir="../bin/Frameworks/FBSDKCoreKit.framework" >
-            <fileset dir="temp/ios/FBSDKCoreKit/FBSDKCoreKit.framework" includes="**/**"/>
+            <fileset dir="temp/ios/FBSDKCoreKit.framework" includes="**/**"/>
         </copy>
 
         <copy todir="../bin/Frameworks/FBSDKCoreKit_Basics.framework" >
             <fileset dir="temp/ios/FBSDKCoreKit_Basics.framework" includes="**/**"/>
         </copy>
-        <delete dir="temp/ios/FBSDKCoreKit_Basics"/>
-        <delete dir="temp/ios/FBSDKCoreKit_Basics.framework"/>
-
-        <delete dir="temp/ios/FBSDKCoreKit"/>
 
         <copy todir="../bin/Frameworks/FBSDKLoginKit.framework" >
-            <fileset dir="temp/ios/FBSDKLoginKit/FBSDKLoginKit.framework" includes="**/**"/>
+            <fileset dir="temp/ios/FBSDKLoginKit.framework" includes="**/**"/>
         </copy>
-
-        <delete dir="temp/ios/FBSDKLoginKit"/>
 
         <copy todir="../bin/Frameworks/FBSDKShareKit.framework" >
-            <fileset dir="temp/ios/FBSDKShareKit/FBSDKShareKit.framework" includes="**/**"/>
+            <fileset dir="temp/ios/FBSDKShareKit.framework" includes="**/**"/>
         </copy>
 
-        <delete dir="temp/ios/FBSDKShareKit"/>
-        <delete dir="temp/ios/FBAEMKit.framework"/>
+        <copy todir="../bin/Frameworks/FBSDKGamingServicesKit.framework" >
+            <fileset dir="temp/ios/FBSDKGamingServicesKit.framework" includes="**/**"/>
+        </copy>
+
+        <copy todir="../bin/Frameworks/FBAEMKit.framework" >
+            <fileset dir="temp/ios/FBAEMKit.framework" includes="**/**"/>
+        </copy>
 
         <!-- remove the build directory -->
         <delete dir="../ios/build/"/>
