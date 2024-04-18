@@ -1,40 +1,42 @@
 PODS:
-  - FBSDKCoreKit (11.0.1):
-    - FBSDKCoreKit/Core (= 11.0.1)
-  - FBSDKCoreKit/Core (11.0.1):
-    - FBSDKCoreKit_Basics (~> 11.0.1)
-  - FBSDKCoreKit_Basics (11.0.1):
-    - FBSDKCoreKit_Basics/Basics (= 11.0.1)
-  - FBSDKCoreKit_Basics/Basics (11.0.1)
-  - FBSDKLoginKit (11.0.1):
-    - FBSDKLoginKit/Login (= 11.0.1)
-  - FBSDKLoginKit/Login (11.0.1):
-    - FBSDKCoreKit (~> 11.0.1)
-    - FBSDKCoreKit_Basics (~> 11.0.1)
-  - FBSDKShareKit (11.0.1):
-    - FBSDKShareKit/Share (= 11.0.1)
-  - FBSDKShareKit/Share (11.0.1):
-    - FBSDKCoreKit (~> 11.0.1)
-    - FBSDKCoreKit_Basics (~> 11.0.1)
+  - FBAEMKit (17.0.0):
+    - FBSDKCoreKit_Basics (= 17.0.0)
+  - FBSDKCoreKit (17.0.0):
+    - FBAEMKit (= 17.0.0)
+    - FBSDKCoreKit_Basics (= 17.0.0)
+  - FBSDKCoreKit_Basics (17.0.0)
+  - FBSDKGamingServicesKit (17.0.0):
+    - FBSDKCoreKit (= 17.0.0)
+    - FBSDKCoreKit_Basics (= 17.0.0)
+    - FBSDKShareKit (= 17.0.0)
+  - FBSDKLoginKit (17.0.0):
+    - FBSDKCoreKit (= 17.0.0)
+  - FBSDKShareKit (17.0.0):
+    - FBSDKCoreKit (= 17.0.0)
 
 DEPENDENCIES:
-  - FBSDKCoreKit (= 11.0.1)
-  - FBSDKLoginKit (= 11.0.1)
-  - FBSDKShareKit (= 11.0.1)
+  - FBSDKCoreKit (= 17.0.0)
+  - FBSDKGamingServicesKit (= 17.0.0)
+  - FBSDKLoginKit (= 17.0.0)
+  - FBSDKShareKit (= 17.0.0)
 
 SPEC REPOS:
   trunk:
+    - FBAEMKit
     - FBSDKCoreKit
     - FBSDKCoreKit_Basics
+    - FBSDKGamingServicesKit
     - FBSDKLoginKit
     - FBSDKShareKit
 
 SPEC CHECKSUMS:
-  FBSDKCoreKit: 38c9e29a3f1436362acacff6486d3a28628c288f
-  FBSDKCoreKit_Basics: 06780a4a12e16596bde8406add02c6aa1bf38616
-  FBSDKLoginKit: 8243e04c590c38b85c69fcf09d1234514d2475c3
-  FBSDKShareKit: e55ddcd33d5169597ae86866faffae0acae971c1
+  FBAEMKit: 31a20c2d8744d8c57d3a5b7ae4e27b4fdd819193
+  FBSDKCoreKit: dac911b656816f8d0b06e5fa4bac60e89505bb3b
+  FBSDKCoreKit_Basics: 92b7b7458d57091370b0b6cc197578874c3b4b16
+  FBSDKGamingServicesKit: 0ae05466560dca03aa6c8691746e664c351b5d9e
+  FBSDKLoginKit: 5d5271ebfd1e39c6b071de8db5c4bd6255be3561
+  FBSDKShareKit: 09dbbe11cf43a4a831b92f064f974e9a01b4f8bc
 
-PODFILE CHECKSUM: d3776e27064b76d988093d5e3e0dea40a99a4c6f
+PODFILE CHECKSUM: 08c22c6b2d398777abe0af879c1870dafa7bec8b
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.15.2
