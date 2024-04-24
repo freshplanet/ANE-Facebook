@@ -91,12 +91,14 @@ package {
             blocks.push(new TestBlock("logInWithReadPermissions", function():void {
 
                 ane.logInWithReadPermissions(["email", "user_birthday", "user_friends"],
+                                             "123",
                                              _logInWithReadPermissionsCallback);
             }));
 
             blocks.push(new TestBlock("logInWithPublishPermissions", function():void {
 
                 ane.logInWithReadPermissions(["publish_actions"],
+                                             "123",
                                              _logInWithPublishPermissionsCallback);
             }));
 

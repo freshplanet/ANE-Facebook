@@ -217,19 +217,38 @@ package com.freshplanet.ane.AirFacebook {
         }
 
         /**
+         * Current Facebook friend IDs that also authorized in the app
+         * 
+         */
+        public function get friendIDs():Array {
+
+            var friendIDs:Array = [];
+
+            if (_isInitialized()) {
+
+                friendIDs = _context.call('getFriendIDs') as Array;
+                log(friendIDs ? friendIDs.toString() : "Can't get friend IDs");
+            }
+
+            return friendIDs;
+        }
+
+        /**
          * Open a new session with a given set of permissions.<br><br>
          *
          * @param permissions An array of requested <strong>read</strong> permissions.
+         * @param nonce A non-empty string for limited login token verification
          * @param callback (Optional) A callback function of the following form:
          * <code>function myCallback(success:Boolean, userCancelled:Boolean, error:String = null)</code>
          *
          * @see #logInWithPublishPermissions()
          */
         public function logInWithReadPermissions(permissions:Array,
+                                                 nonce:String = "123",
                                                  callback:Function = null):void {
 
             if (_isInitialized())
-                _logIn(permissions, callback);
+                _logIn(permissions, nonce, callback);
         }
 
         /**
@@ -396,7 +415,7 @@ package com.freshplanet.ane.AirFacebook {
          * @param type
          * @param callback
          */
-        private function _logIn(permissions:Array, callback:Function = null):void {
+        private function _logIn(permissions:Array, nonce:String, callback:Function = null):void {
 
             if (!isSupported)
                 return;
@@ -405,7 +424,7 @@ package com.freshplanet.ane.AirFacebook {
                 permissions = [];
 
             _openSessionCallback = callback;
-            _context.call('logInWithPermissions', permissions);
+            _context.call('logInWithPermissions', permissions, nonce);
         }
 
         /**
