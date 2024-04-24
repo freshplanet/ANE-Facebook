@@ -37,7 +37,9 @@ typedef void (^FBOpenSessionCompletionHandler)(FBSDKLoginManagerLoginResult *res
 @property (nonatomic, getter=isNativeLogEnabled) BOOL nativeLogEnabled;
 @property (nonatomic) FBSDKShareDialogMode defaultShareDialogMode;
 @property (nonatomic) FBSDKDefaultAudience defaultAudience;
-@property(nonatomic, assign) BOOL loginInProgress;
+@property (nonatomic, assign) BOOL loginInProgress;
+@property (nonatomic, strong) NSSet<NSString*>* grantedPermissions;
+@property (nonatomic, strong) NSString* appID;
 
 @end
 

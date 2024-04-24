@@ -19,6 +19,8 @@
 
 #import "FBGameRequestDelegate.h"
 
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
+
 FREContext AirFBCtx = nil;
 
 @implementation AirFacebook {
@@ -53,6 +55,8 @@ static AirFacebook* sharedInstance = nil;
         self.defaultShareDialogMode = FBSDKShareDialogModeAutomatic;
         self.defaultAudience = FBSDKDefaultAudienceFriends;
         self.loginInProgress = false;
+        self.appID = [[NSString alloc] init];
+        self.grantedPermissions = [[NSSet alloc] init];
     }
     
     return self;
@@ -171,6 +175,7 @@ static AirFacebook* sharedInstance = nil;
         else {
             
             [AirFacebook log:@"Login success! grantedPermissions: %@ declinedPermissions: %@", result.grantedPermissions, result.declinedPermissions];
+            [[AirFacebook sharedInstance] setGrantedPermissions:result.grantedPermissions];
             [AirFacebook dispatchEvent:@"OPEN_SESSION_SUCCESS" withMessage:@"OK"];
         }
         
@@ -198,13 +203,27 @@ DEFINE_ANE_FUNCTION(logInWithPermissions) {
     
     [AirFacebook log:[NSString stringWithFormat:@"Trying to open session with permissions: %@", [permissions componentsJoinedByString:@", "]]];
     
-    FBSDKLoginManager* loginManager = [[FBSDKLoginManager alloc] init];
+    FBSDKLoginManager* loginManager = [FBSDKLoginManager new];
     loginManager.defaultAudience = [[AirFacebook sharedInstance] defaultAudience];
     [loginManager logOut];
-    
-    [loginManager logInWithPermissions:permissions fromViewController:rootViewController handler:[AirFacebook openSessionCompletionHandler]];
-    
 
+    FBSDKLoginTracking tracking = FBSDKLoginTrackingEnabled;
+    if (@available(iOS 17.0, *)) {
+        ATTrackingManagerAuthorizationStatus status = [ATTrackingManager trackingAuthorizationStatus];
+        if (status != ATTrackingManagerAuthorizationStatusAuthorized)
+        {
+            tracking = FBSDKLoginTrackingLimited;
+        }
+    }
+
+    FBSDKLoginConfiguration *configuration =
+    [[FBSDKLoginConfiguration alloc] initWithPermissions:permissions
+                                                tracking:tracking];
+
+    [loginManager logInFromViewController:rootViewController
+                            configuration:configuration
+                               completion:[AirFacebook openSessionCompletionHandler]];
+    
     return nil;
 }
 
@@ -230,6 +249,9 @@ DEFINE_ANE_FUNCTION(initFacebook) {
     
     [AirFacebook log:@"initFacebook"];
     
+    NSString* appID = FPANE_FREObjectToNSString(argv[0]);
+    [AirFacebook log:@"AppID: %@", appID];
+    [[AirFacebook sharedInstance] setAppID:appID];
     NSString* callback = FPANE_FREObjectToNSString(argv[1]);
     BOOL limitDataUse = FPANE_FREObjectToBOOL(argv[2]);
     
@@ -269,9 +291,13 @@ DEFINE_ANE_FUNCTION(getAccessToken) {
     
     FREObject result = NULL;
     FBSDKAccessToken* token = [FBSDKAccessToken currentAccessToken];
+
+    // getting id token string
+    NSString *idTokenString =
+      FBSDKAuthenticationToken.currentAuthenticationToken.tokenString;
     
     if (token != NULL) {
-        
+        [AirFacebook log:@"AccessToken %@", token.tokenString];
         FRENewObject((const uint8_t*)"com.freshplanet.ane.AirFacebook.FBAccessToken", 0, NULL, &result, NULL);
         FRESetObjectProperty(result, (const uint8_t*)"appID", FPANE_NSStringToFREObject(token.appID), NULL);
         FRESetObjectProperty(result, (const uint8_t*)"declinedPermissions", FPANE_NSArrayToFREObject([token.declinedPermissions allObjects]), NULL);
@@ -280,6 +306,35 @@ DEFINE_ANE_FUNCTION(getAccessToken) {
         FRESetObjectProperty(result, (const uint8_t*)"refreshDate", FPANE_doubleToFREObject([token.refreshDate timeIntervalSince1970]), NULL);
         FRESetObjectProperty(result, (const uint8_t*)"tokenString", FPANE_NSStringToFREObject(token.tokenString), NULL);
         FRESetObjectProperty(result, (const uint8_t*)"userID", FPANE_NSStringToFREObject(token.userID), NULL);
+        FRESetObjectProperty(result, (const uint8_t*)"isLimitedLogin", FPANE_BOOLToFREObject(false), NULL);
+    }
+    else if (idTokenString != NULL) {
+        // getting user ID
+        NSString *userID =
+          FBSDKProfile.currentProfile.userID;
+
+        NSString *appID = [[AirFacebook sharedInstance] appID];
+        NSSet<NSString*> *grantedPermissions = [[AirFacebook sharedInstance] grantedPermissions];
+        
+        [AirFacebook log:@"AppID %@", appID];
+        [AirFacebook log:@"AccessToken JWT %@", idTokenString];
+        [AirFacebook log:@"UserID %@", userID];
+        
+        FRENewObject((const uint8_t*)"com.freshplanet.ane.AirFacebook.FBAccessToken", 0, NULL, &result, NULL);
+        if (appID != NULL) {
+            FRESetObjectProperty(result, (const uint8_t*)"appID", FPANE_NSStringToFREObject(appID), NULL);
+        }
+        FRESetObjectProperty(result, (const uint8_t*)"declinedPermissions", FPANE_NSArrayToFREObject(@[]), NULL);
+        FRESetObjectProperty(result, (const uint8_t*)"expirationDate", FPANE_doubleToFREObject(0.0), NULL);
+        if (grantedPermissions != NULL) {
+            FRESetObjectProperty(result, (const uint8_t*)"permissions", FPANE_NSArrayToFREObject([grantedPermissions allObjects]), NULL);
+        }
+        FRESetObjectProperty(result, (const uint8_t*)"refreshDate", FPANE_doubleToFREObject(0.0), NULL);
+        FRESetObjectProperty(result, (const uint8_t*)"tokenString", FPANE_NSStringToFREObject(idTokenString), NULL);
+        if (userID != NULL) {
+            FRESetObjectProperty(result, (const uint8_t*)"userID", FPANE_NSStringToFREObject(userID), NULL);
+        }
+        FRESetObjectProperty(result, (const uint8_t*)"isLimitedLogin", FPANE_BOOLToFREObject(true), NULL);
     }
         
     return result;

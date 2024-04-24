@@ -58,6 +58,11 @@ package com.freshplanet.ane.AirFacebook {
         public var userID:String;
 
         /**
+         * Flag to determine if token is limited login authentification JWT token
+         */
+        public var isLimitedLogin:Boolean;
+
+        /**
          *
          * @return
          */
@@ -72,6 +77,7 @@ package com.freshplanet.ane.AirFacebook {
             str += " refreshDate:'" + refreshDate + "'";
             str += " tokenString:'" + tokenString + "'";
             str += " userID:'" + userID + "'";
+            str += " isLimitedLogin:'" + isLimitedLogin + "'";
 
             return str + "]";
         }
