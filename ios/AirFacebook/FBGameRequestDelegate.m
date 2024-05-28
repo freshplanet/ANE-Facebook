@@ -30,12 +30,7 @@
 
 - (void)gameRequestWithContent:(FBSDKGameRequestContent*)content enableFrictionless:(BOOL)frictionless {
     
-    FBSDKGameRequestDialog* dialog = [[FBSDKGameRequestDialog alloc] init];
-    dialog.content = content;
-    dialog.delegate = self;
-    dialog.frictionlessRequestsEnabled = frictionless;
-    
-    [dialog show];
+    [FBSDKGameRequestDialog showWithContent:content delegate:self].isFrictionlessRequestsEnabled = frictionless;
 }
 
 - (void)gameRequestDialog:(FBSDKGameRequestDialog*)gameRequestDialog didCompleteWithResults:(NSDictionary*)results {

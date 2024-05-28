@@ -237,7 +237,7 @@ DEFINE_ANE_FUNCTION(initFacebook) {
     [AirFacebook sharedInstance];
     
     if(limitDataUse) {
-        [FBSDKSettings setDataProcessingOptions:@[@"LDU"] country:0 state:0];
+        [[FBSDKSettings sharedSettings] setDataProcessingOptions:@[@"LDU"] country:0 state:0];
     }
     
     
@@ -328,7 +328,7 @@ DEFINE_ANE_FUNCTION(requestWithGraphPath) {
         FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:graphPath parameters:parameters HTTPMethod:httpMethod];
         [request setGraphErrorRecoveryDisabled:true];
         [request
-        startWithCompletionHandler:^(FBSDKGraphRequestConnection* connection, id result, NSError* error) {
+         startWithCompletion:^(id<FBSDKGraphRequestConnecting>  _Nullable connection, id  _Nullable result, NSError * _Nullable error) {
             if (error) {
                 
                 if (callback) {
@@ -404,9 +404,7 @@ DEFINE_ANE_FUNCTION(canPresentShareDialog) {
     
     UIViewController* rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     
-    FBSDKShareDialog* dialog = [[FBSDKShareDialog alloc] init];
-    dialog.fromViewController = rootViewController;
-    dialog.mode = [[AirFacebook sharedInstance] defaultShareDialogMode];
+    FBSDKShareDialog* dialog = [FBSDKShareDialog dialogWithViewController:rootViewController withContent:nil delegate:nil];
     BOOL canShow = [dialog canShow];
     
     return FPANE_BOOLToFREObject(canShow);
@@ -476,7 +474,7 @@ DEFINE_ANE_FUNCTION(gameRequestDialog) {
 
 DEFINE_ANE_FUNCTION(activateApp) {
     
-    [FBSDKAppEvents activateApp];
+    [[FBSDKAppEvents shared] activateApp];
     return nil;
 }
 
@@ -488,7 +486,7 @@ DEFINE_ANE_FUNCTION(AirFacebookLogEvent) {
                                                               [FREConversionUtil getProperty:@"paramsTypes" fromObject:argv[0]],
                                                               [FREConversionUtil getProperty:@"paramsValues" fromObject:argv[0]]);
     
-    [FBSDKAppEvents logEvent:eventName valueToSum:[valueToSum doubleValue] parameters:parameters];
+    [[FBSDKAppEvents shared] logEvent:eventName valueToSum:[valueToSum doubleValue] parameters:parameters];
     return nil;
 }
 

@@ -32,12 +32,8 @@
 {
     UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     
-    FBSDKShareDialog *dialog = [[FBSDKShareDialog alloc] init];
-    dialog.fromViewController = rootViewController;
-    dialog.shareContent = content;
-    dialog.mode = [[AirFacebook sharedInstance] defaultShareDialogMode];
-    dialog.delegate = self;
-    [dialog show];
+    [FBSDKShareDialog showFromViewController:rootViewController
+                        withContent:content delegate:self].mode = [[AirFacebook sharedInstance] defaultShareDialogMode];
 
     return YES;
 }
