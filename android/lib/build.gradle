@@ -14,15 +14,16 @@ task copyDependencies(type: Copy) {
 }
 
 android {
+    namespace 'com.freshplanet.ane.AirFacebook'
 
     useLibrary  'org.apache.http.legacy'
 
-    compileSdkVersion 33
-    buildToolsVersion '33.0.2'
+    compileSdkVersion 35
+    buildToolsVersion '35.0.0'
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 33
+        minSdkVersion 19
+        targetSdkVersion 35
     }
 }
 
