@@ -15,7 +15,9 @@ public class InitFacebookFunction extends BaseFunction
         String appID = getStringFromFREObject(args[0]);
 		final String callback = getStringFromFREObject(args[1]);
 		boolean limitDataUse = getBooleanFromFREObject(args[2]);
+		boolean enableAutoAppEvents = getBooleanFromFREObject(args[3]);
 
+		FacebookSdk.setAutoLogAppEventsEnabled(enableAutoAppEvents);
 		if(limitDataUse) {
 			FacebookSdk.setDataProcessingOptions(new String[] {"LDU"}, 0, 0);
 		}
