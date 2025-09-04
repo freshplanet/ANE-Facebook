@@ -385,7 +385,6 @@ package com.freshplanet.ane.AirFacebook {
                 _context.addEventListener(StatusEvent.STATUS, _onStatus);
 
                 NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, _onInvoke);
-                NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, _onActivate);
                 NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, _onDeactivate);
             }
         }
