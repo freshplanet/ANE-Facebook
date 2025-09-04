@@ -198,7 +198,11 @@ FREObject FPANE_BOOLToFREObject(BOOL boolean)
 FREObject FPANE_NSStringToFREObject(NSString *string)
 {
     FREObject result;
-    FRENewObjectFromUTF8((uint32_t)string.length, (const uint8_t *)[string UTF8String], &result);
+    if (string)
+    {
+        const char* stringUtf8 = [string UTF8String];
+        FRENewObjectFromUTF8(strlen(stringUtf8), (const uint8_t *)stringUtf8, &result);
+    }
     return result;
 }
 

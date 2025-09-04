@@ -44,9 +44,9 @@ public class ShareLinkDialogFunction extends BaseFunction implements AirFacebook
 		if (peopleIds != null) builder.setPeopleIds(peopleIds);
 		if (placeId != null) builder.setPlaceId(placeId);
 		if (ref != null) builder.setRef(ref);
-		if (contentTitle != null) builder.setContentTitle(contentTitle);
-		if (imageUrl != null) builder.setImageUrl(Uri.parse(imageUrl));
-		if (contentDescription != null) builder.setContentDescription(contentDescription);
+		// if (contentTitle != null) builder.setContentTitle(contentTitle);
+		// if (imageUrl != null) builder.setImageUrl(Uri.parse(imageUrl));
+		// if (contentDescription != null) builder.setContentDescription(contentDescription);
 		ShareLinkContent shareLinkContent = builder.build();
 
         callbackManager = CallbackManager.Factory.create();
