@@ -232,14 +232,15 @@ DEFINE_ANE_FUNCTION(initFacebook) {
     
     NSString* callback = FPANE_FREObjectToNSString(argv[1]);
     BOOL limitDataUse = FPANE_FREObjectToBOOL(argv[2]);
+    BOOL enableAutoAppEvents = FPANE_FREObjectToBOOL(argv[3]);
     
     // maybe we dont need this sharedInstance
     [AirFacebook sharedInstance];
     
+    FBSDKSettings.sharedSettings.isAutoLogAppEventsEnabled = enableAutoAppEvents;
     if(limitDataUse) {
         [[FBSDKSettings sharedSettings] setDataProcessingOptions:@[@"LDU"] country:0 state:0];
     }
-    
     
     [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication] didFinishLaunchingWithOptions:[NSMutableDictionary dictionary]];
     

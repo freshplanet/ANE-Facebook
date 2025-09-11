@@ -100,7 +100,8 @@ package com.freshplanet.ane.AirFacebook {
          */
         public function init(appID:String = null,
                              onInitialized:Function = null,
-                             limitDataUse:Boolean = false
+                             limitDataUse:Boolean = false,
+                             enableAutoAppEvents:Boolean = false
                              ):void {
 
             if (isSupported && _context != null) {
@@ -108,7 +109,7 @@ package com.freshplanet.ane.AirFacebook {
                 _context.call("setNativeLogEnabled", Facebook.nativeLogEnabled);
                 log("ANE Facebook version: " + VERSION);
                 // iOS is synchronous but we will simulate async to have consistent API
-                _context.call("initFacebook", appID, _getNewCallbackName(onInitialized), limitDataUse);
+                _context.call("initFacebook", appID, _getNewCallbackName(onInitialized), limitDataUse, enableAutoAppEvents);
             } else {
 
                 log("Can't initialize extension! Unsupported platform or context couldn't be created!")
@@ -385,7 +386,6 @@ package com.freshplanet.ane.AirFacebook {
                 _context.addEventListener(StatusEvent.STATUS, _onStatus);
 
                 NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, _onInvoke);
-                NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, _onActivate);
                 NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, _onDeactivate);
             }
         }
